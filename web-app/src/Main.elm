@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Browser exposing (sandbox)
-import Html exposing (Html, button, div, text, table, td, th, tr)
-import Html.Attributes exposing (class, id)
+import Html exposing (Html, button, br, div, h1, input, section, text, table, td, th, tr)
+import Html.Attributes exposing (class, id, maxlength, placeholder, style, type_)
 import Html.Events exposing (onClick)
 import List exposing (append)
 
@@ -56,7 +56,28 @@ update msg fragebogen =
 view : Fragebogen -> Html Msg
 view fragebogen =
   div []
-    [ table [ class "table is-striped" ] (fragenTable fragebogen)
+    [ section [ class "hero is-primary" ]
+        [ div [ class "hero-body" ]
+            [
+                div [ class "container" ]
+                    [ h1 [ class "title" ] [ text "Fragebogen" ]
+                    ]
+            ]
+        ]
+    , div [ class "container is-fluid", style "margin-bottom" "10px" ] 
+        [ table [ class "table is-striped", style "width" "100%" ] (fragenTable fragebogen) 
+        ]
+    , div [ class "container", style "margin-bottom" "10px"]
+        [ text "Bearbeitungszeit"
+        , input [ class "input", type_ "text", placeholder "HH:MM", maxlength 5, style "width" "150px", style "margin-left" "10px", style "margin-bottom" "10px" ] []
+        , br [] []
+        , text "Erscheinungszeit"
+        , input [ class "input", type_ "text", placeholder "DD:MM:YYYY", maxlength 10, style "width" "150px", style "margin-left" "10px" ] []
+        ]
+    , div [ class "container" ]
+        [ button [ style "margin-right" "10px" ] [ text "Neue Frage" ]
+        , button [] [ text "Neue Anmerkung"] 
+        ]
     ]
 
 fragenTable : Fragebogen -> List (Html Msg)
@@ -67,13 +88,19 @@ tableHead : Html Msg
 tableHead =
     tr [] [ 
         th [] [ 
-            text "id" 
+            text "ID" 
         ], 
         th [] [ 
-            text "Foo" 
+            text "Fragetext" 
         ], 
         th [] [ 
-            text "Bar" 
+            text "Hinweis" 
+        ],
+        th [] [
+            text "Typ"
+        ],
+        th [] [
+            text "Aktion"
         ]
     ]
 
@@ -83,14 +110,16 @@ getTable index element =
         Anmerkung a ->
             tr [ id (String.fromInt index) ]
                 [ td [] [ text (String.fromInt index) ]
-                , td [] [ text "foo" ]
-                , td [] [ text "bar" ]
+                , td [] [ text a.text ]
                 ]
 
         Frage f->
             tr [ id (String.fromInt index) ]
                 [ td [] [ text (String.fromInt index) ]
-                , td [] [ text "foo" ]
-                , td [] [ text "bar" ]
+                , td [] [ text f.text ]
+                , td [] [ text f.hinweis ]
+                , td [] [ text f.typ ]
+                , td [] [ button [ style "margin-right" "10px" ] [ text "B" ]
+                        , button [] [ text "L" ] ]
                 ]
 

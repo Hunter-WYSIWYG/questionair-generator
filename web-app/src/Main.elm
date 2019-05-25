@@ -12,14 +12,23 @@ main =
 
 --types
 type Msg 
+    --Changing Input
     = ChangeEditTime String
     | ChangeViewingTime_Begin String
     | ChangeViewingTime_End String
+    | ChangeNote String
+    | ChangeQuestion_text String
+    | ChangeQuestion_newAwnser Answer
+    | ChangeQuestion_note String
+    | ChangeQuestion_typ String 
+    --Modals
     | ViewOrClose_vtModal
     | ViewOrClose_etModal
     | ViewOrClose_noteModal
-    | ChangeNote String
+    | ViewOrClose_questionModal
+    --Other
     | SetNote
+    | SetQuestion
     | DeleteItem FB_element
     | Submit
 
@@ -33,6 +42,7 @@ type alias Questionnaire =
     , editTime_modal : Bool
     , viewingTime_modal : Bool
     , newNote_modal : Bool
+    , newQuestion_modal : Bool
     --newInputs
     , validationResult : ValidationResult
     , input_editTime : String
@@ -72,6 +82,7 @@ initQuestionnaire =
     , viewingTime_modal = False
     , editTime_modal = False
     , newNote_modal = False
+    , newQuestion_modal = False
     --new inputs
     , validationResult = NotDone
     , input_viewingTime_Begin = ""
@@ -82,7 +93,8 @@ initQuestionnaire =
 --Beispielfrage
 initQuestion : FB_element
 initQuestion = 
-    Question    { id = 0, text = "Wie geht's?"
+    Question    { id = 0
+                , text = "Wie geht's?"
                 , antworten = []
                 , hinweis = "Das ist eine Question"
                 , typ = "Typ 1" }
@@ -92,18 +104,77 @@ initQuestion =
 update : Msg -> Questionnaire -> Questionnaire
 update msg questionnaire =
     case msg of
+        --changing input
         ChangeEditTime newTime ->
             { questionnaire | input_editTime = newTime }
         ChangeViewingTime_Begin newTime ->
             { questionnaire | input_viewingTime_Begin = newTime }
         ChangeViewingTime_End newTime ->
             { questionnaire | input_viewingTime_End = newTime }
+        ChangeNote string ->
+            { questionnaire | newElement = Note { id = (List.length questionnaire.elements), text = string } }
+        ChangeQuestion_text string -> 
+            case questionnaire.newElement of
+                Question record -> 
+                    { questionnaire | newElement = Question     { id = record.id
+                                                                , text = string
+                                                                , antworten = record.antworten
+                                                                , hinweis = record.hinweis
+                                                                , typ = record.typ} }
+                Note record ->
+                    questionnaire
+        ChangeQuestion_newAwnser newAnswer -> 
+            case questionnaire.newElement of
+                Question record -> 
+                    { questionnaire | newElement = Question     { id = record.id
+                                                                , text = record.text
+                                                                , antworten = record.antworten ++ [ newAnswer ]
+                                                                , hinweis = record.hinweis
+                                                                , typ = record.typ} }
+                Note record ->
+                    questionnaire
+        ChangeQuestion_note string -> 
+            case questionnaire.newElement of
+                Question record -> 
+                    { questionnaire | newElement = Question     { id = record.id
+                                                                , text = record.text
+                                                                , antworten = record.antworten
+                                                                , hinweis = string
+                                                                , typ = record.typ} }
+                Note record ->
+                    questionnaire
+        ChangeQuestion_typ string -> 
+            case questionnaire.newElement of
+                Question record -> 
+                    { questionnaire | newElement = Question     { id = record.id
+                                                                , text = record.text
+                                                                , antworten = record.antworten
+                                                                , hinweis = record.hinweis
+                                                                , typ = string } }
+                Note record ->
+                    questionnaire
+        --modals
         ViewOrClose_vtModal ->
             if questionnaire.viewingTime_modal == False then { questionnaire | viewingTime_modal = True }
             else { questionnaire | viewingTime_modal = False }
         ViewOrClose_etModal ->
             if questionnaire.editTime_modal == False then { questionnaire | editTime_modal = True }
             else { questionnaire | editTime_modal = False }
+        ViewOrClose_noteModal ->
+            if questionnaire.newNote_modal == False then    { questionnaire | newNote_modal = True 
+                                                            , newElement = Note     { id = (List.length questionnaire.elements)
+                                                                                    , text = "" } }
+            else { questionnaire | newNote_modal = False }
+        ViewOrClose_questionModal ->
+            if questionnaire.newQuestion_modal == False then    { questionnaire | newQuestion_modal = True
+                                                                , newElement = Question  { id = (List.length questionnaire.elements)
+                                                                                         , text = "" 
+                                                                                         , antworten = []
+                                                                                         , hinweis = ""
+                                                                                         , typ = ""} 
+                                                                }
+            else { questionnaire | newQuestion_modal = False }
+        --Other
         DeleteItem element ->
             { questionnaire | elements = (deleteItemFrom element questionnaire.elements) }
         Submit ->
@@ -115,17 +186,14 @@ update msg questionnaire =
                                     , viewingTime_Begin = questionnaire.input_viewingTime_Begin
                                     , viewingTime_End = questionnaire.input_viewingTime_End}
             else { questionnaire | validationResult = validate questionnaire }
-        ViewOrClose_noteModal ->
-            if questionnaire.newNote_modal == False then { questionnaire | newNote_modal = True }
-            else { questionnaire | newNote_modal = False }
         SetNote ->
             { questionnaire     | elements = append questionnaire.elements [questionnaire.newElement]
                                 , newNote_modal = False }
-        ChangeNote string ->
-            { questionnaire | newElement = Note { id = (List.length questionnaire.elements) + 1, text = string } }
+        SetQuestion -> 
+            { questionnaire     | elements = append questionnaire.elements [questionnaire.newElement]
+                                , newQuestion_modal = False }
+        
 
-        
-        
 
 deleteItemFrom : FB_element -> List FB_element -> List FB_element
 deleteItemFrom element list =
@@ -173,12 +241,16 @@ view questionnaire =
                 , onClick ViewOrClose_vtModal ] []
         ]
     , div [ class "container is-fluid" ]
-        [ button [ style "margin-right" "10px" ] [ text "Neue Frage" ]
-        , button [ onClick ViewOrClose_noteModal ] [ text "Neue Anmerkung"] 
+        [ button    [ style "margin-right" "10px" 
+                    , onClick ViewOrClose_questionModal ] 
+                        [ text "Neue Frage" ]
+        , button    [ onClick ViewOrClose_noteModal ] 
+                        [ text "Neue Anmerkung"] 
         ]
     , viewEditTime_modal questionnaire
     , viewViewingTime_modal questionnaire
     , viewNewNote_modal questionnaire
+    , viewNewQuestion_modal questionnaire
     ]
 
 getViewingTime : Questionnaire -> String
@@ -305,6 +377,57 @@ viewNewNote_modal questionnaire =
     else 
         div [] []
     
+viewNewQuestion_modal : Questionnaire -> Html Msg
+viewNewQuestion_modal questionnaire =
+    if questionnaire.newQuestion_modal then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "Neue Frage" ] ]
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [ text "Fragetext: "
+                        , input 
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "180px"
+                            , style "margin-left" "10px"
+                            , style "margin-right" "10px"
+                            , onInput ChangeQuestion_text ] 
+                            []
+                        , br [] []
+                        , text "Hinweis: "
+                        , input 
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "180px"
+                            , style "margin-left" "10px"
+                            , style "margin-right" "10px"
+                            , onInput ChangeQuestion_note ] 
+                            []
+                        , br [] []
+                        , text "Typ: "
+                        , input 
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "180px"
+                            , style "margin-left" "10px"
+                            , style "margin-right" "10px"
+                            , onInput ChangeQuestion_typ ] 
+                            []
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button    [ class "button is-success"
+                                , onClick SetQuestion ]  [ text "Übernehmen" ] ]
+                ]
+            , button    [ class "modal-close is-large" 
+                        , onClick ViewOrClose_questionModal ] [] 
+            ]
+    else 
+        div [] []
+
 --Table of Questions
 fragenTable : Questionnaire -> List (Html Msg)
 fragenTable questionnaire =
@@ -339,7 +462,11 @@ getTable index element =
                 , td [] [ text a.text ]
                 , td [] []
                 , td [] []
-                , td [] []
+                , td [] [ i [   class "fas fa-cog"
+                                , style "margin-right" "10px" ] []
+                        , i [   class "fas fa-trash-alt" 
+                                , onClick (DeleteItem element) ] [] 
+                        ]
                 ]
 
         Question f->
@@ -355,6 +482,7 @@ getTable index element =
                         ]
                 ]
 
+--Error Message for viewTime and editTime modals
 viewValidation : Questionnaire -> Html msg
 viewValidation questionnaire =
     let

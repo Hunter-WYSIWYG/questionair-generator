@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser exposing (sandbox)
-import Html exposing (Html, button, br, div, footer, form, h1, header, i, input, p, section, text, table, td, th, tr)
+import Html exposing (Html, button, br, div, footer, form, h1, header, i, input, label, p, section, text, table, td, th, tr)
 import Html.Attributes exposing (class, id, maxlength, minlength, name, placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import List exposing (append)
@@ -29,6 +29,8 @@ type Msg
     --Other
     | SetNote
     | SetQuestion
+    | EditQuestion FB_element
+    | EditNote FB_element
     | DeleteItem FB_element
     | Submit
 
@@ -63,7 +65,8 @@ type FB_element
 type alias Answer = 
     { id : Int
     , text : String
-    , typ : String }
+    --, typ : String 
+    }
 
 type ValidationResult
     = NotDone
@@ -96,8 +99,8 @@ initQuestion =
     Question    { id = 0
                 , text = "Wie geht's?"
                 , antworten = []
-                , hinweis = "Das ist eine Question"
-                , typ = "Typ 1" }
+                , hinweis = "Das ist eine Frage"
+                , typ = "Single Choice" }
 
 
 --Update logic
@@ -192,6 +195,12 @@ update msg questionnaire =
         SetQuestion -> 
             { questionnaire     | elements = append questionnaire.elements [questionnaire.newElement]
                                 , newQuestion_modal = False }
+        EditQuestion element ->
+            { questionnaire     | newElement = element
+                                , newQuestion_modal = True }
+        EditNote element ->
+            { questionnaire     | newElement = element
+                                , newNote_modal = True }
         
 
 
@@ -213,6 +222,25 @@ validate questionnaire =
     else
         ValidationOK
 
+getText_newElement : FB_element -> String
+getText_newElement element =
+    case element of
+        Question record -> record.text
+        Note record -> record.text
+
+--Better alternative?
+getHinweis_newElement : FB_element -> String
+getHinweis_newElement element =
+    case element of
+        Question record -> record.hinweis
+        Note record -> "None"
+
+getTyp_newElement : FB_element -> String
+getTyp_newElement element =
+    case element of
+        Question record -> record.typ
+        Note record -> "None"
+
 --View
 
 view : Questionnaire -> Html Msg
@@ -227,7 +255,7 @@ view questionnaire =
             ]
         ]
     , div [ class "container is-fluid", style "margin-bottom" "10px" ] 
-        [ table [ class "table is-striped", style "width" "100%" ] (fragenTable questionnaire) 
+        [ table [ class "table is-striped", style "width" "100%" ] (questionsTable questionnaire) 
         ]
     , div [ class "container is-fluid", style "margin-bottom" "10px"]
         [ text ("Bearbeitungszeit: " ++ (getViewingTime questionnaire))
@@ -363,6 +391,7 @@ viewNewNote_modal questionnaire =
                             , style "width" "180px"
                             , style "margin-left" "10px"
                             , style "margin-right" "10px"
+                            , value (getText_newElement questionnaire.newElement)
                             , onInput ChangeNote ] 
                             []
                         ]
@@ -387,35 +416,32 @@ viewNewQuestion_modal questionnaire =
                     [ p [ class "modal-card-title" ] [ text "Neue Frage" ] ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ text "Fragetext: "
+                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
+                        , br [] []
+                        , button    [ style "margin-bottom" "10px" ] [ text "Neue Antwort" ]
+                        , br [] []
+                        , text "Fragetext: "
                         , input 
                             [ class "input"
                             , type_ "text"
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
-                            , onInput ChangeQuestion_text ] 
+                            , style "width" "100%"
+                            , value (getText_newElement questionnaire.newElement)
+                            , onInput ChangeQuestion_text] 
                             []
                         , br [] []
                         , text "Hinweis: "
                         , input 
                             [ class "input"
                             , type_ "text"
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
+                            , style "width" "100%"
+                            , value (getHinweis_newElement questionnaire.newElement)
                             , onInput ChangeQuestion_note ] 
                             []
                         , br [] []
-                        , text "Typ: "
-                        , input 
-                            [ class "input"
-                            , type_ "text"
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
-                            , onInput ChangeQuestion_typ ] 
-                            []
+                        , text ("Typ: " ++ (getTyp_newElement questionnaire.newElement) ) 
+                        , br [] []
+                        , radio "Single Choice" (ChangeQuestion_typ "Single Choice")
+                        , radio "Multiple Choice" (ChangeQuestion_typ "Multiple Choice") 
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
@@ -429,12 +455,12 @@ viewNewQuestion_modal questionnaire =
         div [] []
 
 --Table of Questions
-fragenTable : Questionnaire -> List (Html Msg)
-fragenTable questionnaire =
-    append [ tableHead ] (List.indexedMap getTable questionnaire.elements)
+questionsTable : Questionnaire -> List (Html Msg)
+questionsTable questionnaire =
+    append [ tableHead_questions ] (List.indexedMap getQuestionTable questionnaire.elements)
 
-tableHead : Html Msg
-tableHead =
+tableHead_questions : Html Msg
+tableHead_questions =
     tr [] [ 
         th [] [ 
             text "ID" 
@@ -453,8 +479,8 @@ tableHead =
         ]
     ]
 
-getTable : Int -> FB_element -> Html Msg
-getTable index element =
+getQuestionTable : Int -> FB_element -> Html Msg
+getQuestionTable index element =
     case element of
         Note a ->
             tr [ id (String.fromInt index) ]
@@ -463,7 +489,8 @@ getTable index element =
                 , td [] []
                 , td [] []
                 , td [] [ i [   class "fas fa-cog"
-                                , style "margin-right" "10px" ] []
+                                , style "margin-right" "10px"
+                                , onClick (EditNote element) ] []
                         , i [   class "fas fa-trash-alt" 
                                 , onClick (DeleteItem element) ] [] 
                         ]
@@ -476,11 +503,46 @@ getTable index element =
                 , td [] [ text f.hinweis ]
                 , td [] [ text f.typ ]
                 , td [] [ i [   class "fas fa-cog"
-                                , style "margin-right" "10px" ] []
+                                , style "margin-right" "10px"
+                                , onClick (EditQuestion element) ] []
                         , i [   class "fas fa-trash-alt" 
                                 , onClick (DeleteItem element) ] [] 
                         ]
                 ]
+
+--Table of Answers
+answersTable : Questionnaire -> List (Html Msg)
+answersTable questionnaire =
+    case questionnaire.newElement of
+        Question record ->
+            append [ tableHead_answers ] (List.indexedMap getAnswerTable record.antworten)
+        Note record ->
+            []
+
+tableHead_answers : Html Msg
+tableHead_answers =
+    tr [] [ 
+        th [] [ 
+            text "ID" 
+        ], 
+        th [] [ 
+            text "Text" 
+        ],
+        th [] [
+            text "Aktion"
+        ]
+    ]
+
+getAnswerTable : Int -> Answer -> Html Msg
+getAnswerTable index element =
+    tr [ id (String.fromInt index) ]
+        [ td [] [ text (String.fromInt index) ]
+        , td [] [ text element.text ]
+        , td [] [ i [   class "fas fa-cog"
+                , style "margin-right" "10px" ] []
+                , i [   class "fas fa-trash-alt" ] [] 
+        ]
+    ]
 
 --Error Message for viewTime and editTime modals
 viewValidation : Questionnaire -> Html msg
@@ -493,3 +555,13 @@ viewValidation questionnaire =
                 ValidationOK -> ("green", "OK")
     in
         div [ style "color" color ] [ text message ]
+
+--radio control
+radio : String -> msg -> Html msg
+radio value msg =
+    label
+        [ style "padding" "20px" ]
+        [ input [ type_ "radio"
+                , name "font-size"
+                , onClick msg ] []
+        , text value ]

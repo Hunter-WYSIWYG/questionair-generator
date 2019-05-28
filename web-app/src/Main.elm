@@ -5,7 +5,6 @@ import Html exposing (Html, button, br, div, footer, form, h1, header, i, input,
 import Html.Attributes exposing (class, id, maxlength, minlength, name, placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import List exposing (append)
-import Dialog
 
 main =
   Browser.sandbox { init = initQuestionnaire, view = view, update = update }
@@ -217,7 +216,10 @@ validate questionnaire =
             && (String.length questionnaire.viewingTime_End) == 0) then
         ValidationOK
     else if ((String.length questionnaire.input_viewingTime_Begin) /= 16 
-            || (String.length questionnaire.viewingTime_End) /= 16) then
+            && (String.length questionnaire.viewingTime_Begin) /= 0) then
+        Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
+    else if ((String.length questionnaire.input_viewingTime_End) /= 16 
+            && (String.length questionnaire.viewingTime_End) /= 0) then
         Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
     else
         ValidationOK
@@ -326,6 +328,8 @@ viewViewingTime_modal questionnaire =
                             , style "margin-left" "10px" 
                             , onInput ChangeViewingTime_End ] []
                         ]
+                    , br [] []
+                    , viewValidation questionnaire
                     ]
                 , footer [ class "modal-card-foot" ]
                     [ button    [ class "button is-success"

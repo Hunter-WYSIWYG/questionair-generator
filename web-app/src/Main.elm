@@ -15,8 +15,7 @@ type Msg
     = ChangeEditTime String
     | ChangeViewingTime_Begin String
     | ChangeViewingTime_End String
-    | ChangeNote String
-    | ChangeQuestion_text String
+    | ChangeQuestionOrNote_text String
     | ChangeQuestion_newAwnser Answer
     | ChangeQuestion_note String
     | ChangeQuestion_typ String 
@@ -117,9 +116,7 @@ update msg questionnaire =
             { questionnaire | input_viewingTime_Begin = newTime }
         ChangeViewingTime_End newTime ->
             { questionnaire | input_viewingTime_End = newTime }
-        ChangeNote string ->
-            { questionnaire | newElement = Note { id = (List.length questionnaire.elements), text = string } }
-        ChangeQuestion_text string -> 
+        ChangeQuestionOrNote_text string -> 
             case questionnaire.newElement of
                 Question record -> 
                     { questionnaire | newElement = Question     { id = record.id
@@ -128,7 +125,8 @@ update msg questionnaire =
                                                                 , hinweis = record.hinweis
                                                                 , typ = record.typ} }
                 Note record ->
-                    questionnaire
+                    { questionnaire | newElement = Note { id = record.id
+                                                        , text = string } }
         ChangeQuestion_newAwnser newAnswer -> 
             case questionnaire.newElement of
                 Question record -> 
@@ -193,8 +191,12 @@ update msg questionnaire =
                                     , viewingTime_End = questionnaire.input_viewingTime_End}
             else { questionnaire | validationResult = validate questionnaire }
         SetNote ->
-            { questionnaire     | elements = append questionnaire.elements [questionnaire.newElement]
-                                , newNote_modal = False }
+            if questionnaire.editMode == False
+            then { questionnaire    | elements = append questionnaire.elements [questionnaire.newElement]
+                                    , newNote_modal = False }
+            else { questionnaire    | elements = (List.map (\ e -> (updateElement questionnaire.newElement e)) questionnaire.elements)
+                                    , newNote_modal = False
+                                    , editMode = False }
         SetQuestion -> 
             if questionnaire.editMode == False
             then { questionnaire    | elements = append questionnaire.elements [questionnaire.newElement]
@@ -422,7 +424,7 @@ viewNewNote_modal questionnaire =
                             , style "margin-left" "10px"
                             , style "margin-right" "10px"
                             , value (getText_newElement questionnaire.newElement)
-                            , onInput ChangeNote ] 
+                            , onInput ChangeQuestionOrNote_text ] 
                             []
                         ]
                     ]
@@ -456,7 +458,7 @@ viewNewQuestion_modal questionnaire =
                             , type_ "text"
                             , style "width" "100%"
                             , value (getText_newElement questionnaire.newElement)
-                            , onInput ChangeQuestion_text] 
+                            , onInput ChangeQuestionOrNote_text] 
                             []
                         , br [] []
                         , text "Hinweis: "

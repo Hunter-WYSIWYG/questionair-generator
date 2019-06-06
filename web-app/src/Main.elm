@@ -49,7 +49,9 @@ type alias Questionnaire =
     , input_editTime : String
     , input_viewingTime_Begin : String
     , input_viewingTime_End : String
-    , newElement : FB_element }
+    , newElement : FB_element
+    --editMode for EditQuestion and EditNote
+    , editMode : Bool }
 
 type FB_element 
     = Note  { id : Int
@@ -90,7 +92,9 @@ initQuestionnaire =
     , input_viewingTime_Begin = ""
     , input_viewingTime_End = ""
     , input_editTime = ""
-    , newElement = initQuestion }
+    , newElement = initQuestion
+    --editMode
+    , editMode = False }
 
 --Beispielfrage
 initQuestion : FB_element
@@ -192,16 +196,38 @@ update msg questionnaire =
             { questionnaire     | elements = append questionnaire.elements [questionnaire.newElement]
                                 , newNote_modal = False }
         SetQuestion -> 
-            { questionnaire     | elements = append questionnaire.elements [questionnaire.newElement]
-                                , newQuestion_modal = False }
+            if questionnaire.editMode == False
+            then { questionnaire    | elements = append questionnaire.elements [questionnaire.newElement]
+                                    , newQuestion_modal = False }
+            else { questionnaire    | elements = (List.map (\ e -> (updateElement questionnaire.newElement e)) questionnaire.elements)
+                                    , newQuestion_modal = False
+                                    , editMode = False }
         EditQuestion element ->
             { questionnaire     | newElement = element
-                                , newQuestion_modal = True }
+                                , newQuestion_modal = True
+                                , editMode = True }
         EditNote element ->
             { questionnaire     | newElement = element
-                                , newNote_modal = True }
+                                , newNote_modal = True
+                                , editMode = True }
         
 
+updateElementList : FB_element -> List FB_element -> List FB_element
+updateElementList elementToUpdate list = 
+    List.map (updateElement elementToUpdate) list 
+            
+updateElement elementToUpdate element =
+    if (getID element) == (getID elementToUpdate) 
+    then elementToUpdate
+    else element
+
+getID : FB_element -> Int
+getID element =
+    case element of
+        Question record ->
+            record.id
+        Note record ->
+            record.id
 
 deleteItemFrom : FB_element -> List FB_element -> List FB_element
 deleteItemFrom element list =

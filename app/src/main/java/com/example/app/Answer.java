@@ -18,4 +18,12 @@ public class Answer implements Serializable {
 		chosenValues = new ArrayList<>(1);
 		chosenValues.add(chosenIndex);
 	}
+	
+	public QuestionType getqType() {
+		return qType;
+	}
+	
+	public List<Integer> getChosenValues() {
+		return chosenValues;
+	}
 }

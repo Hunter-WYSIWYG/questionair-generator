@@ -13,10 +13,25 @@ public class Answer implements Serializable {
 		chosenValues = null;
 	}
 	
-	public Answer(int chosenIndex) {
-		qType = QuestionType.SingleChoice;
-		chosenValues = new ArrayList<>(1);
-		chosenValues.add(chosenIndex);
+	public Answer(QuestionType qtyp, int chosenIndex) {
+		if(qtyp==QuestionType.SingleChoice) {
+			qType = QuestionType.SingleChoice;
+			chosenValues = new ArrayList<>(1);
+			chosenValues.add(chosenIndex);
+		} else {
+			qType = QuestionType.MultipleChoice;
+			chosenValues = new ArrayList<>(1);
+		}
+	}
+	
+	public void AddAnswer(int chosenIndex){
+		if(qType==QuestionType.SingleChoice) {
+			return;
+		} else {
+			chosenValues.add(chosenIndex);
+			return;
+		}
+		
 	}
 	
 	public QuestionType getqType() {

@@ -7,4 +7,19 @@
         android:layout_height="match_parent"
         tools:context=".SaveAnswersActivity">
 
+    <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewres" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintVertical_bias="0.16000003"/>
+    <Button
+            android:text="Save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonres"
+            android:onClick="saveButtonClick"
+            app:layout_constraintTop_toBottomOf="@+id/textViewres" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"/>
 </android.support.constraint.ConstraintLayout>

@@ -4,7 +4,6 @@
       <option name="GENERATE_FINAL_LOCALS" value="true" />
       <option name="GENERATE_FINAL_PARAMETERS" value="true" />
       <option name="USE_EXTERNAL_ANNOTATIONS" value="true" />
-      <option name="REPLACE_INSTANCEOF_AND_CAST" value="true" />
     </JavaCodeStyleSettings>
     <codeStyleSettings language="JAVA">
       <option name="KEEP_LINE_BREAKS" value="false" />

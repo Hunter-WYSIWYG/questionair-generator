@@ -1,0 +1,118 @@
+{
+  "questionnaireName" : "Example Questionnaire: Cats and Dogs",
+  "questions" : [
+    {
+      "questionID" : 1,
+      "questionTitle" : "Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?",
+      "type" : 0,
+      "answers" : [
+        {
+          "answerID" : 1,
+          "answerText" : "Ja",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 2,
+          "answerText" : "Nein",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 3,
+          "answerText" : "ehhhh",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 4,
+          "answerText" : "mehhh",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 5,
+          "answerText" : "ehhhh",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 6,
+          "answerText" : "mehhh",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 7,
+          "answerText" : "ehhhh",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 8,
+          "answerText" : "mehhh",
+          "answerType" : 0
+        }, {
+          "answerID" : 9,
+          "answerText" : "ehhhh",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 10,
+          "answerText" : "mehhh",
+          "answerType" : 0
+        }
+      ]
+    },
+    {
+      "questionID" : 2,
+      "questionTitle" : "Mögen Sie Katzen?",
+      "type" : 0,
+      "answers" : [
+        {
+          "answerID" : 1,
+          "answerText" : "Ja",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 2,
+          "answerText" : "Nein",
+          "answerType" : 1
+        }
+      ]
+    },
+    {
+      "questionID" : 3,
+      "questionTitle" : "Mögen Sie Katzen wirklich?",
+      "type" : 0,
+      "answers" : [
+        {
+          "answerID" : 1,
+          "answerText" : "JaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJa",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 2,
+          "answerText" : "Ja weil",
+          "answerType" : 1
+        }
+      ]
+    },
+    {
+      "questionID" : 4,
+      "questionTitle" : "Katzen?",
+      "type" : 1,
+      "answers" : [
+        {
+          "answerID" : 1,
+          "answerText" : "JaJaJaJJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJa",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 2,
+          "answerText" : "Ja weil",
+          "answerType" : 1
+        },
+        {
+          "answerID" : 3,
+          "answerText" : "ehhhh",
+          "answerType" : 0
+        }
+      ]
+    }
+  ]
+
+}

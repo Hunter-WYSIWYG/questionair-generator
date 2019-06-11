@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Browser exposing (sandbox)
-import Html exposing (Html, button, br, div, footer, form, h1, header, i, input, label, p, section, text, table, td, th, tr)
-import Html.Attributes exposing (class, id, maxlength, minlength, name, placeholder, style, type_, value)
+import Html exposing (Html, a, button, br, div, footer, form, h1, header, i, input, label, p, section, text, table, td, th, tr)
+import Html.Attributes exposing (class, href, id, maxlength, minlength, name, placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import List exposing (append)
 
@@ -12,7 +12,8 @@ main =
 --types
 type Msg 
     --Changing Input
-    = ChangeEditTime String
+    = ChangeQuestionnaireTitle String
+    | ChangeEditTime String
     | ChangeViewingTime_Begin String
     | ChangeViewingTime_End String
     | ChangeQuestionOrNote_text String
@@ -24,6 +25,7 @@ type Msg
     | ViewOrClose_etModal
     | ViewOrClose_noteModal
     | ViewOrClose_questionModal
+    | ViewOrClose_titleModal
     --Other
     | SetNote
     | SetQuestion
@@ -33,12 +35,14 @@ type Msg
     | Submit
 
 type alias Questionnaire = 
-    { elements : List FB_element
+    { title : String 
+    , elements : List FB_element
     --times
     , viewingTime_Begin : String
     , viewingTime_End : String
     , editTime : String
     --modals
+    , title_modal : Bool
     , editTime_modal : Bool
     , viewingTime_modal : Bool
     , newNote_modal : Bool
@@ -76,12 +80,14 @@ type ValidationResult
 --Init
 initQuestionnaire : Questionnaire 
 initQuestionnaire = 
-    { elements = [initQuestion]
+    { title = "Neuer Fragebogen" 
+    , elements = [initQuestion]
     --times
     , viewingTime_Begin = ""
     , viewingTime_End = ""
     , editTime = ""
     --modals
+    , title_modal = False
     , viewingTime_modal = False
     , editTime_modal = False
     , newNote_modal = False
@@ -110,6 +116,8 @@ update : Msg -> Questionnaire -> Questionnaire
 update msg questionnaire =
     case msg of
         --changing input
+        ChangeQuestionnaireTitle newTitle ->
+            { questionnaire | title = newTitle }
         ChangeEditTime newTime ->
             { questionnaire | input_editTime = newTime }
         ChangeViewingTime_Begin newTime ->
@@ -158,6 +166,9 @@ update msg questionnaire =
                 Note record ->
                     questionnaire
         --modals
+        ViewOrClose_titleModal ->
+            if questionnaire.title_modal == False then { questionnaire | title_modal = True }
+            else { questionnaire | title_modal = False }
         ViewOrClose_vtModal ->
             if questionnaire.viewingTime_modal == False then { questionnaire | viewingTime_modal = True }
             else { questionnaire | viewingTime_modal = False }
@@ -280,7 +291,13 @@ view questionnaire =
         [ div [ class "hero-body" ]
             [
                 div [ class "container is-fluid" ]
-                    [ h1 [ class "title" ] [ text "Fragebogen" ]
+                    [ h1 [ class "title" ] 
+                        [ text questionnaire.title 
+                        , i [ class "fas fa-cog"
+                            , style "margin-left" "10px"
+                            , onClick (ViewOrClose_titleModal) ] 
+                            []
+                        ]
                     ]
             ]
         ]
@@ -304,7 +321,11 @@ view questionnaire =
                         [ text "Neue Frage" ]
         , button    [ onClick ViewOrClose_noteModal ] 
                         [ text "Neue Anmerkung"] 
+        , br [] []
+        , br [] []
+        , a         [ class "button", href "../index.html" ] [ text "Hauptmenü" ]
         ]
+    , viewTitle_modal questionnaire 
     , viewEditTime_modal questionnaire
     , viewViewingTime_modal questionnaire
     , viewNewNote_modal questionnaire
@@ -402,6 +423,38 @@ viewEditTime_modal questionnaire =
                 ]
             , button    [ class "modal-close is-large" 
                         , onClick ViewOrClose_etModal ] [] 
+            ]
+    else 
+        div [] []
+
+viewTitle_modal : Questionnaire -> Html Msg
+viewTitle_modal questionnaire =
+    if questionnaire.title_modal then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "Neue Anmerkung" ] ]
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [ text "Text: "
+                        , input 
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "180px"
+                            , style "margin-left" "10px"
+                            , style "margin-right" "10px"
+                            , value (questionnaire.title)
+                            , onInput ChangeQuestionnaireTitle ] 
+                            []
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button    [ class "button is-success"
+                                , onClick ViewOrClose_titleModal]  [ text "Übernehmen" ] ]
+                ]
+            , button    [ class "modal-close is-large" 
+                        , onClick ViewOrClose_titleModal ] [] 
             ]
     else 
         div [] []

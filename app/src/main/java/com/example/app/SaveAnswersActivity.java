@@ -21,38 +21,40 @@ public class SaveAnswersActivity extends AppCompatActivity {
 	private int size;
 	private List<String> answers;
 	private String res;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_save_answers);
 		Bundle more = getIntent().getExtras();
 		assert more != null;
-		res="";
+		res = "";
 		size = more.getInt("size", 0);
-		aList=new ArrayList<>(size);
-		answers=new ArrayList<>(size);
+		aList = new ArrayList<>(size);
+		answers = new ArrayList<>(size);
 		/* get answers from intent */
 		for (int i = 0; i < size; i++) {
 			aList.add((Answer) more.getSerializable("a" + i));
 			answers.add("");
 		}
 		/* save to answer list */
-		for(int j=0;j<aList.size();j++){
-			for(int k=0;k<aList.get(j).getChosenValues().size();k++){
-				if(k==0) {
+		for (int j = 0; j < aList.size(); j++) {
+			for (int k = 0; k < aList.get(j).getChosenValues().size(); k++) {
+				if (k == 0) {
 					answers.set(j, aList.get(j).getChosenValues().get(k).toString());
 				} else {
-					answers.set(j,answers.get(j)+","+aList.get(j).getChosenValues().get(k).toString());
+					answers.set(j, answers.get(j) + "," + aList.get(j).getChosenValues().get(k).toString());
 				}
 			}
 		}
 		/*show user his answers for failsafe*/
-		for(int i=0;i<answers.size();i++){
-		res+="Frage "+(i+1)+" Antwort "+answers.get(i)+"\n";
+		for (int i = 0; i < answers.size(); i++) {
+			res += "Frage " + (i + 1) + " Antwort " + answers.get(i) + "\n";
 		}
-		TextView tv =findViewById(R.id.textViewres);
+		TextView tv = findViewById(R.id.textViewres);
 		tv.setText(res);//Wieso startet die activity nicht???????
 	}
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
@@ -62,11 +64,12 @@ public class SaveAnswersActivity extends AppCompatActivity {
 		}
 		return true;
 	}
+	
 	public void onBackPressed() {
-		Toast myToast = Toast.makeText(this, "Vergiss es!",
-				Toast.LENGTH_SHORT);
+		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
 		myToast.show();
 	}
+	
 	//save to json without format
 	public void saveButtonClick(View view) {
 		Gson gson = new Gson();
@@ -91,13 +94,11 @@ public class SaveAnswersActivity extends AppCompatActivity {
 			writer.write(textToWrite);
 			
 			writer.close();
-			Toast myToast = Toast.makeText(this, "Gespeichert!",
-					Toast.LENGTH_SHORT);
+			Toast myToast = Toast.makeText(this, "Gespeichert!", Toast.LENGTH_SHORT);
 			myToast.show();
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast myToast = Toast.makeText(this, "Nicht Gespeichert!",
-					Toast.LENGTH_SHORT);
+			Toast myToast = Toast.makeText(this, "Nicht Gespeichert!", Toast.LENGTH_SHORT);
 			myToast.show();
 		}
 	}

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Contract;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 public class QuestionDisplayActivity extends AppCompatActivity {
 	private int current;
 	private int size;
@@ -65,7 +66,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		/* process next Question */
 		
 		currentQ = qList.get(current);
-		 /* set Layout */
+		/* set Layout */
 		TextView qid = findViewById(R.id.QuestionID);
 		qid.setText("Frage #" + currentQ.getId());
 		
@@ -111,11 +112,11 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							if (i == 0) {
 								constraintSet.connect(bID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 8);
 							} else {
-								constraintSet.connect(bID, ConstraintSet.TOP,  ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);
+								constraintSet.connect(bID, ConstraintSet.TOP, ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);
 							}
 							final int marginRight = screenWidth >> 1;
 							constraintSet.connect(bID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, marginRight);
-							final int marginBot = ((amountOptions-i)*(3*screenHeight/4))/(amountOptions);
+							final int marginBot = ((amountOptions - i) * (3 * screenHeight / 4)) / (amountOptions);
 							constraintSet.connect(bID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
 							constraintSet.connect(bID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
 							b.requestLayout();
@@ -128,7 +129,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(tvID, ConstraintSet.TOP, bID, ConstraintSet.TOP, 0);
 							constraintSet.connect(tvID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, 8);
 							constraintSet.connect(tvID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
-							constraintSet.connect(tvID, ConstraintSet.LEFT, bID, ConstraintSet.RIGHT, marginRight/16);
+							constraintSet.connect(tvID, ConstraintSet.LEFT, bID, ConstraintSet.RIGHT, marginRight / 16);
 							sv.requestLayout();
 							break;
 						case EnterText:
@@ -144,7 +145,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 								}
 							});
 							
-							b.setText(String.format(Locale.GERMAN, "%d."+o.getAnswerText(), i));
+							b.setText(String.format(Locale.GERMAN, "%d." + o.getAnswerText(), i));
 							int etbID = ("but" + i + "ton").hashCode();//generating a unique but knowable id
 							b.setId(etbID);
 							constraintLayout.addView(b);
@@ -156,7 +157,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							}
 							final int etmarginRight = screenWidth >> 1;
 							constraintSet.connect(etbID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, etmarginRight);
-							final int etmarginBot = ((amountOptions-i)*(3*screenHeight/4))/(amountOptions);
+							final int etmarginBot = ((amountOptions - i) * (3 * screenHeight / 4)) / (amountOptions);
 							constraintSet.connect(etbID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, etmarginBot);
 							constraintSet.connect(etbID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
 							b.requestLayout();
@@ -169,7 +170,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(ettvID, ConstraintSet.TOP, etbID, ConstraintSet.TOP, 0);
 							constraintSet.connect(ettvID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, 8);
 							constraintSet.connect(ettvID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, etmarginBot);
-							constraintSet.connect(ettvID, ConstraintSet.LEFT, etbID, ConstraintSet.RIGHT, etmarginRight/16);
+							constraintSet.connect(ettvID, ConstraintSet.LEFT, etbID, ConstraintSet.RIGHT, etmarginRight / 16);
 							et.requestLayout();
 							break;
 						case Slider:
@@ -208,11 +209,11 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							if (i == 0) {
 								constraintSet.connect(bID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 8);
 							} else {
-								constraintSet.connect(bID, ConstraintSet.TOP,  ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);
+								constraintSet.connect(bID, ConstraintSet.TOP, ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);
 							}
 							final int marginRight = screenWidth >> 1;
 							constraintSet.connect(bID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, marginRight);
-							final int marginBot = ((amountOptions-i)*(3*screenHeight/4))/(amountOptions);
+							final int marginBot = ((amountOptions - i) * (3 * screenHeight / 4)) / (amountOptions);
 							constraintSet.connect(bID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
 							constraintSet.connect(bID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
 							b.requestLayout();
@@ -225,7 +226,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(tvID, ConstraintSet.TOP, bID, ConstraintSet.TOP, 0);
 							constraintSet.connect(tvID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, 8);
 							constraintSet.connect(tvID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
-							constraintSet.connect(tvID, ConstraintSet.LEFT, bID, ConstraintSet.RIGHT, marginRight/16);
+							constraintSet.connect(tvID, ConstraintSet.LEFT, bID, ConstraintSet.RIGHT, marginRight / 16);
 							sv.requestLayout();
 							break;
 						case EnterText:
@@ -241,7 +242,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 								}
 							});
 							
-							b.setText(String.format(Locale.GERMAN, "%d."+o.getAnswerText(), i));
+							b.setText(String.format(Locale.GERMAN, "%d." + o.getAnswerText(), i));
 							int etbID = ("but" + i + "ton").hashCode();//generating a unique but knowable id
 							b.setId(etbID);
 							constraintLayout.addView(b);
@@ -253,7 +254,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							}
 							final int etmarginRight = screenWidth >> 1;
 							constraintSet.connect(etbID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, etmarginRight);
-							final int etmarginBot = ((amountOptions-i)*(3*screenHeight/4))/(amountOptions);
+							final int etmarginBot = ((amountOptions - i) * (3 * screenHeight / 4)) / (amountOptions);
 							constraintSet.connect(etbID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, etmarginBot);
 							constraintSet.connect(etbID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
 							b.requestLayout();
@@ -266,7 +267,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(ettvID, ConstraintSet.TOP, etbID, ConstraintSet.TOP, 0);
 							constraintSet.connect(ettvID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, 8);
 							constraintSet.connect(ettvID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, etmarginBot);
-							constraintSet.connect(ettvID, ConstraintSet.LEFT, etbID, ConstraintSet.RIGHT, etmarginRight/16);
+							constraintSet.connect(ettvID, ConstraintSet.LEFT, etbID, ConstraintSet.RIGHT, etmarginRight / 16);
 							et.requestLayout();
 							break;
 						case Slider:
@@ -301,6 +302,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		constraintLayout.setConstraintSet(constraintSet);
 	}
+	
 	/* remove back button action bar */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		ActionBar actionBar = getActionBar();
@@ -311,17 +313,17 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 		return true;
 	}
+	
 	/* disable back button bottom */
 	public void onBackPressed() {
-		Toast myToast = Toast.makeText(this, "Vergiss es!",
-				Toast.LENGTH_SHORT);
+		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
 		myToast.show();
 	}
+	
 	/* handle next click */
 	public void nextClick() {
 		if (noneClicked()) {
-			Toast nosel = Toast.makeText(this, "Bitte Eingabe tätigen!",
-					Toast.LENGTH_SHORT);
+			Toast nosel = Toast.makeText(this, "Bitte Eingabe tätigen!", Toast.LENGTH_SHORT);
 			nosel.show();
 			return;
 		}
@@ -366,8 +368,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			} else {
 				pressedButtons.set(i, false);
 			}
-			Toast myToast = Toast.makeText(this, "Antwort gewählt :"+pressedButton,
-					Toast.LENGTH_SHORT);
+			Toast myToast = Toast.makeText(this, "Antwort gewählt :" + pressedButton, Toast.LENGTH_SHORT);
 			myToast.show();
 		}
 	}
@@ -377,7 +378,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			if (i == pressedButton) {
 				pressedButtons.set(i, !pressedButtons.get(i));
 			}
-			if(pressedButtons.get(pressedButton)==true) {
+			if (pressedButtons.get(pressedButton) == true) {
 				Toast myToast = Toast.makeText(this, "Antwort gewählt :" + pressedButton, Toast.LENGTH_SHORT);
 				myToast.show();
 			} else {
@@ -394,12 +395,12 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			case SingleChoice:
 				for (int i = 0; i < amountOptions; i++) {
 					if (pressedButtons.get(i)) {
-						return new Answer(QuestionType.SingleChoice,i);
+						return new Answer(QuestionType.SingleChoice, i);
 					}
 				}
 				break;
 			case MultipleChoice:
-				Answer mult =new Answer(QuestionType.MultipleChoice,-1);
+				Answer mult = new Answer(QuestionType.MultipleChoice, -1);
 				for (int i = 0; i < amountOptions; i++) {
 					if (pressedButtons.get(i)) {
 						mult.AddAnswer(i);

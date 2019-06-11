@@ -22,10 +22,11 @@ public class MainActivity extends AppCompatActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate( savedInstanceState );
-		setContentView( R.layout.activity_main );
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 		q = importQuestions();
 	}
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
@@ -35,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
 		}
 		return true;
 	}
+	
 	public void onBackPressed() {
-		Toast myToast = Toast.makeText(this, "Vergiss es!",
-				Toast.LENGTH_SHORT);
+		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
 		myToast.show();
 	}
 	
@@ -48,46 +49,46 @@ public class MainActivity extends AppCompatActivity {
 		// File > Project Structure > Add Dependency
 		try {
 			AssetManager assetManager = getAssets();
-			InputStream ims = assetManager.open( "example-questionnaire.json" );
+			InputStream ims = assetManager.open("example-questionnaire.json");
 			
 			Gson gson = new Gson();
-			Reader reader = new InputStreamReader( ims );
+			Reader reader = new InputStreamReader(ims);
 			
-			Questionnaire quest = gson.fromJson( reader, Questionnaire.class );
+			Questionnaire quest = gson.fromJson(reader, Questionnaire.class);
 			// test if read file :
-			Toast success = Toast.makeText( this, "Alles erfolgreich eingelesen! Fragebogenname: " + quest.getName(), Toast.LENGTH_LONG );
+			Toast success = Toast.makeText(this, "Alles erfolgreich eingelesen! Fragebogenname: " + quest.getName(), Toast.LENGTH_LONG);
 			success.show();
 			return quest;
 			
-		} catch ( IOException e ) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			// test if failed to read file :
 			final StackTraceElement[] stackTrace = e.getStackTrace();
-			Toast failure = Toast.makeText( this, "Fehler beim Einlesen.\n" + Arrays.toString( stackTrace ), Toast.LENGTH_LONG );
+			Toast failure = Toast.makeText(this, "Fehler beim Einlesen.\n" + Arrays.toString(stackTrace), Toast.LENGTH_LONG);
 			failure.show();
 			return null;
 		}
 	}
 	
 	public void startButtonClick(View view) {
-		if ( q == null ) {
-			Toast toast = Toast.makeText( this, "q was null", Toast.LENGTH_LONG );
+		if (q == null) {
+			Toast toast = Toast.makeText(this, "q was null", Toast.LENGTH_LONG);
 			toast.show();
 			return;
 		}
 		List<Question> list = q.getQuestionList();
-		if ( list == null ) {
-			Toast toast = Toast.makeText( this, "list was null", Toast.LENGTH_LONG );
+		if (list == null) {
+			Toast toast = Toast.makeText(this, "list was null", Toast.LENGTH_LONG);
 			toast.show();
 			return;
 		}
-		Intent i = new Intent( this, QuestionDisplayActivity.class );
-		i.putExtra( "size", list.size() );
-		i.putExtra( "current", 0 );
-		for ( int j = 0; j < list.size(); j++ ) {
-			i.putExtra( "q" + j, list.get( j ) );
-			i.putExtra( "a" + j, (String)null );
+		Intent i = new Intent(this, QuestionDisplayActivity.class);
+		i.putExtra("size", list.size());
+		i.putExtra("current", 0);
+		for (int j = 0; j < list.size(); j++) {
+			i.putExtra("q" + j, list.get(j));
+			i.putExtra("a" + j, (String) null);
 		}
-		startActivity( i );
+		startActivity(i);
 	}
 }

@@ -14,7 +14,7 @@ public class Answer implements Serializable {
 	}
 	
 	public Answer(QuestionType qtyp, int chosenIndex) {
-		if(qtyp==QuestionType.SingleChoice) {
+		if (qtyp == QuestionType.SingleChoice) {
 			qType = QuestionType.SingleChoice;
 			chosenValues = new ArrayList<>(1);
 			chosenValues.add(chosenIndex);
@@ -24,8 +24,8 @@ public class Answer implements Serializable {
 		}
 	}
 	
-	public void AddAnswer(int chosenIndex){
-		if(qType==QuestionType.SingleChoice) {
+	public void AddAnswer(int chosenIndex) {
+		if (qType == QuestionType.SingleChoice) {
 			return;
 		} else {
 			chosenValues.add(chosenIndex);

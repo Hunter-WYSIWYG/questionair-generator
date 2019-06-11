@@ -68,11 +68,14 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		currentQ = qList.get(current);
 		/* set Layout */
 		TextView qid = findViewById(R.id.QuestionID);
-		qid.setText("Frage #" + currentQ.getId());
+		qid.setText(String.format(Locale.GERMANY, "Frage #%d", currentQ.getId()));
 		
 		TextView qt = findViewById(R.id.QuestionText);
 		qt.setText(currentQ.getTitle());
 		qt.requestLayout();//redraw with new text
+		
+		final int screenHeightNotUsed = qt.getBottom();
+		
 		/* process Answers */
 		
 		List<Option> options = currentQ.getOptionList();
@@ -108,28 +111,33 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							int bID = ("but" + i + "ton").hashCode();//generating a unique but knowable id
 							b.setId(bID);
 							constraintLayout.addView(b);
-							b.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
+							b.setLayoutParams(new ConstraintLayout.LayoutParams(32, 32));
 							if (i == 0) {
-								constraintSet.connect(bID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 8);
+								constraintSet.connect(bID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 128);
 							} else {
 								constraintSet.connect(bID, ConstraintSet.TOP, ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);
 							}
-							final int marginRight = screenWidth >> 1;
+							final int marginRight = screenWidth - (screenWidth >> 2);
 							constraintSet.connect(bID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, marginRight);
 							final int marginBot = ((amountOptions - i) * (3 * screenHeight / 4)) / (amountOptions);
 							constraintSet.connect(bID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
 							constraintSet.connect(bID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
 							b.requestLayout();
+							b.invalidate();
 							
 							tv.setText(o.getAnswerText());
 							int tvID = (i == (amountOptions - 1)) ? "last".hashCode() : ("Text" + i + "View").hashCode();//generating a unique but knowable id
+							//tv.setId(tvID);
 							sv.setId(tvID);
+							//constraintLayout.addView(tv);
 							constraintLayout.addView(sv);
+							//tv.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
 							sv.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
 							constraintSet.connect(tvID, ConstraintSet.TOP, bID, ConstraintSet.TOP, 0);
 							constraintSet.connect(tvID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, 8);
 							constraintSet.connect(tvID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
 							constraintSet.connect(tvID, ConstraintSet.LEFT, bID, ConstraintSet.RIGHT, marginRight / 16);
+							//tv.requestLayout();
 							sv.requestLayout();
 							break;
 						case EnterText:
@@ -280,6 +288,49 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				break;
 		}
 		
+		Button neu = new Button(this);
+		TextView neuTV = new TextView(this);
+		ScrollView neuSV = new ScrollView(this);
+		neuSV.addView(neuTV);
+		final int index = 0;
+		neu.setOnClickListener(new View.OnClickListener() {
+			final int buttonInd = index;
+			
+			@Override
+			public void onClick(final View v) {
+				optionClickHandlerSingle(buttonInd);
+			}
+		});
+		
+		neu.setText(String.format(Locale.GERMAN, "%d.", 0));
+		int bID = ("neuer Versuch").hashCode();//generating a unique but knowable id
+		neu.setId(bID);
+		constraintLayout.addView(neu);
+		neu.setLayoutParams(new ConstraintLayout.LayoutParams(32, 32));
+		constraintSet.connect(bID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 8);
+		//constraintSet.connect(bID, ConstraintSet.TOP, R.id.QuestionDisplayLayout, ConstraintSet.TOP, 128);
+		final int marginRight = screenWidth - (screenWidth >> 2);
+		constraintSet.connect(bID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, marginRight);
+		final int marginBot = ((amountOptions) * (3 * screenHeight / 4)) / (amountOptions);
+		constraintSet.connect(bID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
+		constraintSet.connect(bID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
+		neu.requestLayout();
+		
+		neuTV.setText(options.get(0).getAnswerText());
+		int tvID = ("Text" + 0 + "View").hashCode();//generating a unique but knowable id
+		neuTV.setId(tvID);
+		neuSV.setId(tvID);
+		//constraintLayout.addView(neuTV);
+		constraintLayout.addView(neuSV);
+		//neuTV.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
+		neuSV.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
+		constraintSet.connect(tvID, ConstraintSet.TOP, bID, ConstraintSet.TOP, 0);
+		constraintSet.connect(tvID, ConstraintSet.RIGHT, R.id.QuestionDisplayLayout, ConstraintSet.RIGHT, 8);
+		constraintSet.connect(tvID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
+		constraintSet.connect(tvID, ConstraintSet.LEFT, bID, ConstraintSet.RIGHT, marginRight / 16);
+		//neuTV.requestLayout();
+		neuSV.requestLayout();
+		
 		/* create 'next' Button */
 		
 		Button nextButton = new Button(this);
@@ -301,6 +352,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		nextButton.requestLayout();
 		
 		constraintLayout.setConstraintSet(constraintSet);
+		constraintLayout.requestLayout();
 	}
 	
 	/* remove back button action bar */
@@ -378,7 +430,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			if (i == pressedButton) {
 				pressedButtons.set(i, !pressedButtons.get(i));
 			}
-			if (pressedButtons.get(pressedButton) == true) {
+			if (pressedButtons.get(pressedButton)) {
 				Toast myToast = Toast.makeText(this, "Antwort gewählt :" + pressedButton, Toast.LENGTH_SHORT);
 				myToast.show();
 			} else {

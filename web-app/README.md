@@ -1,22 +1,28 @@
-*Elm installieren:
+* Elm installieren:
 	https://guide.elm-lang.org/install.html
 
-*Ggf. Editor einrichten
+* Ggf. Editor einrichten
 
-*Anschließend mit Terminal in fragebogengenerator/web-app/src/ wechseln
+* Eigenen Branch anlegen
 
-*Eigenen Branch anlegen
+* Anschließend mit Terminal in fragebogengenerator/web-app/src/ wechseln
+  
+* Zum Kompilieren:
+```
+  elm make Main.elm --output Main.js
+```
+* Um eine Vorschau zu sehen: 
+```
+  elm reactor
+```
+Dann auf localhost:8000/index.html aufrufen.
 
-*elm init ausführen (einmalig)
-
-*elm make Main.html ausführen (nach jeder Änderung in Main.elm)
-
-*Regelmäßig git commit und git push ausführen
+* Regelmäßig git commit und git push ausführen
 
 ----------------------------------------------------------------
 
-*Link zur Referenz für Elm-Sprache:
+* Link zur Referenz für Elm-Sprache:
 	https://package.elm-lang.org/
 
-*Link zu Bulma:
+* Link zu Bulma:
 	bulma.io

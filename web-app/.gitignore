@@ -1,0 +1,3 @@
+-- exclude all generated content
+elm-stuff
+Main.js

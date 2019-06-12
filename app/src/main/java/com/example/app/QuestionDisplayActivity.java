@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Contract;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 public class QuestionDisplayActivity extends AppCompatActivity {
 	private int current;
 	private int size;
@@ -65,7 +66,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		/* process next Question */
 		
 		currentQ = qList.get(current);
-		 /* set Layout */
+		/* set Layout */
 		TextView qid = findViewById(R.id.QuestionID);
 		qid.setText("Frage #" + currentQ.getId());
 		
@@ -84,8 +85,13 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		switch (currentQ.getType()) {
 			case SingleChoice:
-				for (int i = 0; i < amountOptions; i++) {
-					Option o = options.get(i);
+				for (int i = -1; i < amountOptions; i++) {
+					Option o;
+					if(i>=0) {
+						o = options.get(i);
+					} else {
+						o= new Option (-1,"Baseline Option",OptionType.StaticText);
+					}
 					Button b = null;
 					switch (o.getType()) {
 						case StaticText:
@@ -108,7 +114,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							b.setId(bID);
 							constraintLayout.addView(b);
 							b.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
-							if (i == 0) {
+							if (i == -1) {
 								constraintSet.connect(bID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 8);
 							} else {
 								constraintSet.connect(bID, ConstraintSet.TOP,  ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);
@@ -119,7 +125,6 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(bID, ConstraintSet.BOTTOM, R.id.QuestionDisplayLayout, ConstraintSet.BOTTOM, marginBot);
 							constraintSet.connect(bID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
 							b.requestLayout();
-							
 							tv.setText(o.getAnswerText());
 							int tvID = (i == (amountOptions - 1)) ? "last".hashCode() : ("Text" + i + "View").hashCode();//generating a unique but knowable id
 							sv.setId(tvID);
@@ -149,7 +154,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							b.setId(etbID);
 							constraintLayout.addView(b);
 							b.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
-							if (i == 0) {
+							if (i == -1) {
 								constraintSet.connect(etbID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 8);
 							} else {
 								constraintSet.connect(etbID, ConstraintSet.TOP, ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);
@@ -181,8 +186,13 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				}
 				break;
 			case MultipleChoice:
-				for (int i = 0; i < amountOptions; i++) {
-					Option o = options.get(i);
+				for (int i = -1; i < amountOptions; i++) {
+					Option o;
+					if(i>=0) {
+						o = options.get(i);
+					} else {
+						o= new Option (-1,"Baseline Option",OptionType.StaticText);
+					}
 					Button b = null;
 					switch (o.getType()) {
 						case StaticText:
@@ -205,7 +215,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							b.setId(bID);
 							constraintLayout.addView(b);
 							b.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
-							if (i == 0) {
+							if (i == -1) {
 								constraintSet.connect(bID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 8);
 							} else {
 								constraintSet.connect(bID, ConstraintSet.TOP,  ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);
@@ -246,7 +256,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							b.setId(etbID);
 							constraintLayout.addView(b);
 							b.setLayoutParams(new ConstraintLayout.LayoutParams(16, 16));
-							if (i == 0) {
+							if (i == -1) {
 								constraintSet.connect(etbID, ConstraintSet.TOP, R.id.QuestionText, ConstraintSet.BOTTOM, 8);
 							} else {
 								constraintSet.connect(etbID, ConstraintSet.TOP, ("Text" + (i - 1) + "View").hashCode(), ConstraintSet.BOTTOM, 8);

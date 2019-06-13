@@ -468,6 +468,7 @@ update msg questionnaire =
             , Cmd.none)
 
 
+-- extracts the title of the questionnaire
 decodeTitle : String -> String
 decodeTitle content =
     case Decode.decodeString (Decode.field "title" Decode.string) content of 
@@ -477,6 +478,7 @@ decodeTitle content =
             ""
 
 
+--extracts the elements (notes, questions) of the questionnaire
 decodeElements : String -> List FB_element
 decodeElements content = 
     case Decode.decodeString (Decode.at ["elements"] (Decode.list elementDecoder)) content of 
@@ -486,11 +488,13 @@ decodeElements content =
             []
 
 
+--decodes the elements either to a note, or to a question
 elementDecoder : Decode.Decoder FB_element
 elementDecoder = 
     Decode.oneOf [ noteDecoder, questionDecoder ]
     
 
+--decodes a note
 noteDecoder : Decode.Decoder FB_element
 noteDecoder =
     Decode.map2 NoteRecord
@@ -498,6 +502,8 @@ noteDecoder =
         (Decode.field "text" Decode.string)
         |> Decode.map Note
 
+
+--decodes a question
 questionDecoder : Decode.Decoder FB_element
 questionDecoder =
     Decode.map5 QuestionRecord
@@ -508,6 +514,8 @@ questionDecoder =
         (Decode.field "question_type" Decode.string)
         |> Decode.map Question
 
+
+--decodes a answer
 answerDecoder : Decode.Decoder Answer
 answerDecoder = 
     Decode.map3 Answer

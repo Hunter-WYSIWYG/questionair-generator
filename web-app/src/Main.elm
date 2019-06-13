@@ -97,17 +97,23 @@ type alias Questionnaire =
 
 
 type FB_element
-    = Note
-        { id : Int
-        , text : String
-        }
-    | Question
-        { id : Int
-        , text : String
-        , antworten : List Answer
-        , hinweis : String
-        , typ : String
-        }
+    = Note NoteRecord
+    | Question QuestionRecord
+
+
+type alias NoteRecord = 
+    { id : Int
+    , text : String
+    }
+
+
+type alias QuestionRecord =
+    { id : Int
+    , text : String
+    , antworten : List Answer
+    , hinweis : String
+    , typ : String
+    }
 
 
 type alias Answer =
@@ -446,7 +452,7 @@ update msg questionnaire =
 
         JsonRequested ->
             ( questionnaire
-            , Select.file ["text/csv"] JsonSelected
+            , Select.file ["text/json"] JsonSelected
             )
 
         JsonSelected file ->
@@ -455,9 +461,59 @@ update msg questionnaire =
             )
 
         JsonLoaded content ->
-            ( { questionnaire | tmp = content }
-            , Cmd.none
-            )
+            (   { questionnaire 
+                    | title = decodeTitle content 
+                    , elements = decodeElements content
+                }   
+            , Cmd.none)
+
+
+decodeTitle : String -> String
+decodeTitle content =
+    case Decode.decodeString (Decode.field "title" Decode.string) content of 
+        Ok val ->
+            val
+        Err e ->
+            ""
+
+
+decodeElements : String -> List FB_element
+decodeElements content = 
+    case Decode.decodeString (Decode.at ["elements"] (Decode.list elementDecoder)) content of 
+        Ok elements ->
+            elements
+        Err e ->
+            []
+
+
+elementDecoder : Decode.Decoder FB_element
+elementDecoder = 
+    Decode.oneOf [ noteDecoder, questionDecoder ]
+    
+
+noteDecoder : Decode.Decoder FB_element
+noteDecoder =
+    Decode.map2 NoteRecord
+        (Decode.field "id" Decode.int)
+        (Decode.field "text" Decode.string)
+        |> Decode.map Note
+
+questionDecoder : Decode.Decoder FB_element
+questionDecoder =
+    Decode.map5 QuestionRecord
+        (Decode.field "id" Decode.int)
+        (Decode.field "text" Decode.string)
+        (Decode.field "answers" (Decode.list answerDecoder))
+        (Decode.field "hint" Decode.string) 
+        (Decode.field "question_type" Decode.string)
+        |> Decode.map Question
+
+answerDecoder : Decode.Decoder Answer
+answerDecoder = 
+    Decode.map3 Answer
+        (Decode.field "id" Decode.int)
+        (Decode.field "text" Decode.string)
+        (Decode.field "_type" Decode.string)
 
 
 setPredefinedAnswers : String -> List Answer

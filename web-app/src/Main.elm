@@ -44,6 +44,7 @@ type ModalType
     | NewNoteModal
     | QuestionModal
     | TitleModal
+    | AnswerModal
 
 
 type alias Questionnaire =
@@ -61,6 +62,7 @@ type alias Questionnaire =
     , showViewingTimeModal : Bool
     , showNewNoteModal : Bool
     , showNewQuestionModal : Bool
+    , showNewAnswerModal : Bool
 
     --newInputs
     , validationResult : ValidationResult
@@ -68,6 +70,7 @@ type alias Questionnaire =
     , inputViewingTimeBegin : String
     , inputViewingTimeEnd : String
     , newElement : FB_element
+    , newAnswer : Answer
 
     --editMode for EditQuestion and EditNote
     , editMode : Bool
@@ -122,6 +125,7 @@ initQuestionnaire =
     , showEditTimeModal = False
     , showNewNoteModal = False
     , showNewQuestionModal = False
+    , showNewAnswerModal = False
 
     --new inputs
     , validationResult = NotDone
@@ -129,6 +133,7 @@ initQuestionnaire =
     , inputViewingTimeEnd = ""
     , inputEditTime = ""
     , newElement = initQuestion
+    , newAnswer = initAnswer
 
     --editMode
     , editMode = False
@@ -149,7 +154,13 @@ initQuestion =
         , typ = "Single Choice"
         }
 
-
+initAnswer : Answer
+initAnswer =
+    { id = 0
+    , text = "Beispiel"
+    --type can be "free" or "regular"
+    , typ = "free"
+    }
 
 --Update logic
 
@@ -290,6 +301,25 @@ update msg questionnaire =
 
                     else
                         changedQuestionnaire
+
+                AnswerModal ->
+                    let
+                        changedQuestionnaire =
+                            { questionnaire | showNewAnswerModal = not questionnaire.showNewAnswerModal }
+                    in
+                    if changedQuestionnaire.showNewAnswerModal == True then
+                        { changedQuestionnaire
+                            | newAnswer =
+                                    { id = (List.length [])
+                                    , text = ""
+                                    --type can be "free" or "regular"
+                                    , typ = "free"
+                                    }
+                        }
+
+                    else
+                        changedQuestionnaire
+
 
         --Other
         DeleteItem element ->
@@ -508,6 +538,7 @@ view questionnaire =
         , viewViewingTimeModal questionnaire
         , viewNewNoteModal questionnaire
         , viewNewQuestionModal questionnaire
+        , viewNewAnswerModal questionnaire
         ]
 
 
@@ -806,7 +837,7 @@ viewNewQuestionModal questionnaire =
                     [ div []
                         [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
                         , br [] []
-                        , button [ style "margin-bottom" "10px" ] [ text "Neue Antwort" ]
+                        , button [ style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
                         , showInputBipolarUnipolar questionnaire
                         , br [] []
                         , text "Fragetext: "
@@ -855,6 +886,41 @@ viewNewQuestionModal questionnaire =
 
     else
         div [] []
+
+
+viewNewAnswerModal : Questionnaire -> Html Msg
+viewNewAnswerModal questionnaire =
+    if questionnaire.showNewAnswerModal then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "Neue Antwort" ] ]
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [ text "Text: "
+                        , input
+                            []
+                            []
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button
+                        [ class "button is-success"
+                        ]
+                        [ text "Übernehmen" ]
+                    ]
+                ]
+            , button
+                [ class "modal-close is-large"
+                , onClick (ViewOrClose AnswerModal)
+                ]
+                []
+            ]
+
+    else
+        div [] []
+
 
 -- Show input for bipolar and unipolar Question
 showInputBipolarUnipolar : Questionnaire -> Html Msg

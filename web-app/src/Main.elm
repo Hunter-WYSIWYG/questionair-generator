@@ -31,6 +31,7 @@ type
       --Other
     | SetNote
     | SetQuestion
+    | SetPolarAnswers String
     | EditQuestion FB_element
     | EditNote FB_element
     | DeleteItem FB_element
@@ -90,8 +91,8 @@ type FB_element
 type alias Answer =
     { id : Int
     , text : String
-
-    --, type : String
+    --type can be "free" or "regular"
+    , typ : String
     }
 
 
@@ -235,7 +236,7 @@ update msg questionnaire =
                     { questionnaire
                         | newElement =
                             Question
-                                { record | typ = string }
+                                { record | typ = string, antworten = (setPredefinedAnswers string) }
                     }
 
                 Note record ->
@@ -314,6 +315,15 @@ update msg questionnaire =
                     , inputEditTime = ""
                 }
 
+        SetPolarAnswers string ->
+            case questionnaire.newElement of
+                Question record ->
+                    if record.typ == "Skaliert unipolar" 
+                    then { questionnaire | newElement = Question { record | antworten = (getUnipolarAnswers string) } }
+                    else { questionnaire | newElement = Question { record | antworten = (getBipolarAnswers string) } }
+                Note record ->
+                    questionnaire
+
         SetNote ->
             if questionnaire.editMode == False then
                 { questionnaire
@@ -355,6 +365,40 @@ update msg questionnaire =
                 , showNewNoteModal = True
                 , editMode = True
             }
+
+
+setPredefinedAnswers : String -> List Answer
+setPredefinedAnswers questionType = 
+    if questionType == "Ja/Nein Frage" then [ (regularAnswer 0 "Ja"), (regularAnswer 1 "Nein") ]
+    else []
+
+
+regularAnswer : Int -> String -> Answer
+regularAnswer int string = 
+    { id = int
+    , text = string
+    , typ = "regular" 
+    }
+
+
+getUnipolarAnswers : String -> List Answer
+getUnipolarAnswers string = 
+    case String.toInt string of 
+        Nothing -> []
+        Just val -> getAnswersWithRange 1 val 0
+
+
+getBipolarAnswers : String -> List Answer
+getBipolarAnswers string = 
+    case String.toInt string of 
+        Nothing -> []
+        Just val -> getAnswersWithRange (-val) val 0
+
+
+getAnswersWithRange : Int -> Int -> Int -> List Answer
+getAnswersWithRange begin end index =
+    if begin == end then [ regularAnswer index (String.fromInt end) ]
+    else [ regularAnswer index (String.fromInt begin) ] ++ (getAnswersWithRange (begin+1) end (index+1))
 
 
 updateElementList : FB_element -> List FB_element -> List FB_element
@@ -554,8 +598,7 @@ getEditTime questionnaire =
 
     else
         "Von " ++ questionnaire.viewingTimeBegin ++ " Bis " ++ questionnaire.viewingTimeEnd
-
-
+        
 
 --MODALS
 
@@ -764,6 +807,7 @@ viewNewQuestionModal questionnaire =
                         [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
                         , br [] []
                         , button [ style "margin-bottom" "10px" ] [ text "Neue Antwort" ]
+                        , showInputBipolarUnipolar questionnaire
                         , br [] []
                         , text "Fragetext: "
                         , input
@@ -789,6 +833,9 @@ viewNewQuestionModal questionnaire =
                         , br [] []
                         , radio "Single Choice" (ChangeQuestionType "Single Choice")
                         , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
+                        , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
+                        , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
+                        , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
@@ -809,6 +856,24 @@ viewNewQuestionModal questionnaire =
     else
         div [] []
 
+-- Show input for bipolar and unipolar Question
+showInputBipolarUnipolar : Questionnaire -> Html Msg
+showInputBipolarUnipolar questionnaire = 
+    case questionnaire.newElement of
+        Question record ->
+            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar"
+                then input 
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , placeholder "Anzahl Antworten"
+                        , onInput SetPolarAnswers
+                        ] []
+            else div [] []
+        Note record ->
+            div [] []
 
 
 --radio button control

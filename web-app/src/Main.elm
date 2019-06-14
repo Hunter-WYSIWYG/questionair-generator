@@ -1,4 +1,4 @@
-module Main exposing (Answer, FB_element(..), Msg(..), Questionnaire, ValidationResult(..), answersTable, deleteItemFrom, getAnswerTable, getEditTime, getElementText, getID, getQuestionHinweis, getQuestionTable, getQuestionTyp, getViewingTime, initQuestion, initQuestionnaire, main, questionsTable, radio, tableHead_answers, tableHead_questions, update, updateElement, updateElementList, validate, view, viewEditTimeModal, viewNewNoteModal, viewNewQuestionModal, viewTitleModal, viewValidation, viewViewingTimeModal)
+module Main exposing (Answer, Q_element(..), Msg(..), Questionnaire, ValidationResult(..), answersTable, deleteItemFrom, getAnswerTable, getEditTime, getElementText, getID, getQuestionHinweis, getQuestionTable, getQuestionTyp, getViewingTime, initQuestion, initQuestionnaire, main, questionsTable, radio, tableHead_answers, tableHead_questions, update, updateElement, updateElementList, validate, view, viewEditTimeModal, viewNewNoteModal, viewNewQuestionModal, viewTitleModal, viewValidation, viewViewingTimeModal)
 
 import Browser
 import File exposing (File)
@@ -7,6 +7,7 @@ import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, inp
 import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput, on)
 import Json.Decode as Decode
+import Json.Encode as Encode exposing (encode, object)
 import List exposing (append)
 import Task
 
@@ -39,15 +40,16 @@ type
     | SetNote
     | SetQuestion
     | SetPolarAnswers String
-    | EditQuestion FB_element
-    | EditNote FB_element
-    | DeleteItem FB_element
+    | EditQuestion Q_element
+    | EditNote Q_element
+    | DeleteItem Q_element
     | Submit
     | LeaveOrEnterMenu
     | LeaveOrEnterUpload
     | JsonRequested
     | JsonSelected File
     | JsonLoaded String
+    | DownloadQuestionnaire
 
 
 type ModalType
@@ -60,7 +62,7 @@ type ModalType
 
 type alias Questionnaire =
     { title : String
-    , elements : List FB_element
+    , elements : List Q_element
 
     --times
     , viewingTimeBegin : String
@@ -79,7 +81,7 @@ type alias Questionnaire =
     , inputEditTime : String
     , inputViewingTimeBegin : String
     , inputViewingTimeEnd : String
-    , newElement : FB_element
+    , newElement : Q_element
 
     --editMode for EditQuestion and EditNote
     , editMode : Bool
@@ -96,7 +98,7 @@ type alias Questionnaire =
     }
 
 
-type FB_element
+type Q_element
     = Note NoteRecord
     | Question QuestionRecord
 
@@ -110,8 +112,8 @@ type alias NoteRecord =
 type alias QuestionRecord =
     { id : Int
     , text : String
-    , antworten : List Answer
-    , hinweis : String
+    , answers : List Answer
+    , hint : String
     , typ : String
     }
 
@@ -143,8 +145,8 @@ subscriptions model =
 
 initQuestionnaire : () -> (Questionnaire, Cmd Msg)
 initQuestionnaire _ =
-    ({ title = "Neuer Fragebogen"
-    , elements = [ initQuestion ]
+    ({ title = "Titel eingeben"
+    , elements = []
 
     --times
     , viewingTimeBegin = ""
@@ -170,54 +172,21 @@ initQuestionnaire _ =
 
     , menu = True
     , upload = False
+
+    --Debug
     , tmp = ""
     }
     , Cmd.none)
 
-initQuestionnaire2 : (Questionnaire, Cmd Msg)
-initQuestionnaire2 =
-    ({ title = "Neuer Fragebogen"
-    , elements = [ initQuestion ]
 
-    --times
-    , viewingTimeBegin = ""
-    , viewingTimeEnd = ""
-    , editTime = ""
-
-    --modals
-    , showTitleModal = False
-    , showViewingTimeModal = False
-    , showEditTimeModal = False
-    , showNewNoteModal = False
-    , showNewQuestionModal = False
-
-    --new inputs
-    , validationResult = NotDone
-    , inputViewingTimeBegin = ""
-    , inputViewingTimeEnd = ""
-    , inputEditTime = ""
-    , newElement = initQuestion
-
-    --editMode
-    , editMode = False
-
-    , menu = True
-    , upload = False
-    , tmp = ""
-    }
-    , Cmd.none)
-
---Beispielfrage
-
-
-initQuestion : FB_element
+initQuestion : Q_element
 initQuestion =
     Question
         { id = 0
-        , text = "Wie geht's?"
-        , antworten = []
-        , hinweis = "Das ist eine Frage"
-        , typ = "Single Choice"
+        , text = "Beispielfrage"
+        , answers = []
+        , hint = ""
+        , typ = ""
         }
 
 
@@ -283,7 +252,7 @@ update msg questionnaire =
                     ({ questionnaire
                         | newElement =
                             Question
-                                { record | antworten = record.antworten ++ [ newAnswer ] }
+                                { record | answers = record.answers ++ [ newAnswer ] }
                     }, Cmd.none)
 
                 Note record ->
@@ -295,7 +264,7 @@ update msg questionnaire =
                     ({ questionnaire
                         | newElement =
                             Question
-                                { record | hinweis = string }
+                                { record | hint = string }
                     }, Cmd.none)
 
                 Note record ->
@@ -307,7 +276,7 @@ update msg questionnaire =
                     ({ questionnaire
                         | newElement =
                             Question
-                                { record | typ = string, antworten = (setPredefinedAnswers string) }
+                                { record | typ = string, answers = (setPredefinedAnswers string) }
                     }, Cmd.none)
 
                 Note record ->
@@ -353,8 +322,8 @@ update msg questionnaire =
                                 Question
                                     { id = List.length questionnaire.elements
                                     , text = ""
-                                    , antworten = []
-                                    , hinweis = ""
+                                    , answers = []
+                                    , hint = ""
                                     , typ = ""
                                     }
                         }, Cmd.none)
@@ -390,8 +359,8 @@ update msg questionnaire =
             case questionnaire.newElement of
                 Question record ->
                     if record.typ == "Skaliert unipolar" 
-                    then ({ questionnaire | newElement = Question { record | antworten = (getUnipolarAnswers string) } }, Cmd.none)
-                    else ({ questionnaire | newElement = Question { record | antworten = (getBipolarAnswers string) } }, Cmd.none)
+                    then ({ questionnaire | newElement = Question { record | answers = (getUnipolarAnswers string) } }, Cmd.none)
+                    else ({ questionnaire | newElement = Question { record | answers = (getBipolarAnswers string) } }, Cmd.none)
                 Note record ->
                     (questionnaire, Cmd.none)
 
@@ -467,6 +436,9 @@ update msg questionnaire =
                 }   
             , Cmd.none)
 
+        DownloadQuestionnaire ->
+            ( { questionnaire | tmp = (encodeQuestionnaire questionnaire)}, Cmd.none)
+
 
 -- extracts the title of the questionnaire
 decodeTitle : String -> String
@@ -479,7 +451,7 @@ decodeTitle content =
 
 
 --extracts the elements (notes, questions) of the questionnaire
-decodeElements : String -> List FB_element
+decodeElements : String -> List Q_element
 decodeElements content = 
     case Decode.decodeString (Decode.at ["elements"] (Decode.list elementDecoder)) content of 
         Ok elements ->
@@ -489,13 +461,13 @@ decodeElements content =
 
 
 --decodes the elements either to a note, or to a question
-elementDecoder : Decode.Decoder FB_element
+elementDecoder : Decode.Decoder Q_element
 elementDecoder = 
     Decode.oneOf [ questionDecoder, noteDecoder ]
     
 
 --decodes a note
-noteDecoder : Decode.Decoder FB_element
+noteDecoder : Decode.Decoder Q_element
 noteDecoder =
     Decode.map2 NoteRecord
         (Decode.field "id" Decode.int)
@@ -504,7 +476,7 @@ noteDecoder =
 
 
 --decodes a question
-questionDecoder : Decode.Decoder FB_element
+questionDecoder : Decode.Decoder Q_element
 questionDecoder =
     Decode.map5 QuestionRecord
         (Decode.field "id" Decode.int)
@@ -522,6 +494,49 @@ answerDecoder =
         (Decode.field "id" Decode.int)
         (Decode.field "text" Decode.string)
         (Decode.field "_type" Decode.string)
+
+    
+--encodes questionnaire as a json
+encodeQuestionnaire : Questionnaire -> String
+encodeQuestionnaire questionnaire = 
+    encode 4 
+        (object 
+            [ ("title", Encode.string questionnaire.title )
+            , ("elements", Encode.list elementEncoder questionnaire.elements)
+            ]
+        )
+
+
+--encodes Q_element
+elementEncoder : Q_element -> Encode.Value
+elementEncoder element =
+    case element of 
+        Note record ->
+            object 
+                [ ("_type", Encode.string "Note")
+                , ("id", Encode.int record.id)
+                , ("text", Encode.string record.text)
+                ]
+        
+        Question record ->
+            object 
+                [ ("_type", Encode.string "Question")
+                , ("id", Encode.int record.id)
+                , ("text", Encode.string record.text)
+                , ("hint", Encode.string record.hint)
+                , ("question_type", Encode.string record.typ)
+                , ("answers", Encode.list answerEncoder record.answers)
+                ]
+
+
+--encodes answers
+answerEncoder : Answer -> Encode.Value
+answerEncoder answer = 
+    object 
+        [ ("id", Encode.int answer.id)
+        , ("text", Encode.string answer.text)
+        , ("_type", Encode.string answer.typ)
+        ]
 
 
 setPredefinedAnswers : String -> List Answer
@@ -558,7 +573,7 @@ getAnswersWithRange begin end index =
     else [ regularAnswer index (String.fromInt begin) ] ++ (getAnswersWithRange (begin+1) end (index+1))
 
 
-updateElementList : FB_element -> List FB_element -> List FB_element
+updateElementList : Q_element -> List Q_element -> List Q_element
 updateElementList elementToUpdate list =
     List.map (updateElement elementToUpdate) list
 
@@ -571,7 +586,7 @@ updateElement elementToUpdate element =
         element
 
 
-getID : FB_element -> Int
+getID : Q_element -> Int
 getID element =
     case element of
         Question record ->
@@ -581,7 +596,7 @@ getID element =
             record.id
 
 
-deleteItemFrom : FB_element -> List FB_element -> List FB_element
+deleteItemFrom : Q_element -> List Q_element -> List Q_element
 deleteItemFrom element list =
     Tuple.first (List.partition (\e -> e /= element) list)
 
@@ -619,7 +634,7 @@ isValidEditTime editTime =
 -- getters for input boxes
 
 
-getElementText : FB_element -> String
+getElementText : Q_element -> String
 getElementText element =
     case element of
         Question record ->
@@ -629,17 +644,17 @@ getElementText element =
             record.text
 
 
-getQuestionHinweis : FB_element -> String
+getQuestionHinweis : Q_element -> String
 getQuestionHinweis element =
     case element of
         Question record ->
-            record.hinweis
+            record.hint
 
         Note record ->
             "None"
 
 
-getQuestionTyp : FB_element -> String
+getQuestionTyp : Q_element -> String
 getQuestionTyp element =
     case element of
         Question record ->
@@ -660,17 +675,7 @@ view questionnaire =
     else if questionnaire.upload then 
         showUpload questionnaire
     else
-        div []
-            [ showHeroQuestionnaireTitle questionnaire
-            , showQuestionList questionnaire
-            , showTimes questionnaire
-            , showCreateQuestionOrNoteButtons questionnaire
-            , viewTitleModal questionnaire
-            , viewEditTimeModal questionnaire
-            , viewViewingTimeModal questionnaire
-            , viewNewNoteModal questionnaire
-            , viewNewQuestionModal questionnaire
-            ]
+        showEditQuestionnaire questionnaire 
 
 
 
@@ -701,6 +706,7 @@ showMenu =
             ]
         ]
 
+showUpload : Questionnaire -> Html Msg
 showUpload questionnaire = 
     div [] 
         [ showHeroWith "Upload"
@@ -715,6 +721,22 @@ showUpload questionnaire =
             ]    
         , text questionnaire.tmp
         ]
+
+
+showEditQuestionnaire : Questionnaire -> Html Msg
+showEditQuestionnaire questionnaire =
+    div []
+        [ showHeroQuestionnaireTitle questionnaire
+        , showQuestionList questionnaire
+        , showTimes questionnaire
+        , showCreateQuestionOrNoteButtons questionnaire
+        , viewTitleModal questionnaire
+        , viewEditTimeModal questionnaire
+        , viewViewingTimeModal questionnaire
+        , viewNewNoteModal questionnaire
+        , viewNewQuestionModal questionnaire
+        ]
+
 
 showHeroQuestionnaireTitle : Questionnaire -> Html Msg
 showHeroQuestionnaireTitle questionnaire =
@@ -775,7 +797,12 @@ showCreateQuestionOrNoteButtons questionnaire =
             [ text "Neue Anmerkung" ]
         , br [] []
         , br [] []
-        , button [ onClick LeaveOrEnterMenu ] [ text "Hauptmenü" ]
+        , button 
+            [ onClick LeaveOrEnterMenu
+            , style "margin-right" "10px" ] 
+            [ text "Hauptmenü" ]
+        , button [ onClick DownloadQuestionnaire ] [ text "Download" ]
+        , text questionnaire.tmp
         ]
 
 
@@ -1020,7 +1047,7 @@ viewNewQuestionModal questionnaire =
                             ]
                             []
                         , br [] []
-                        , text "Hinweis: "
+                        , text "hint: "
                         , input
                             [ class "input"
                             , type_ "text"
@@ -1069,7 +1096,7 @@ showInputBipolarUnipolar questionnaire =
                         , style "width" "100px"
                         , style "margin-left" "10px"
                         , style "margin-top" "2px"
-                        , placeholder "Anzahl Antworten"
+                        , placeholder "Anzahl answers"
                         , onInput SetPolarAnswers
                         ] []
             else div [] []
@@ -1113,7 +1140,7 @@ tableHead_questions =
             [ text "Fragetext"
             ]
         , th []
-            [ text "Hinweis"
+            [ text "hint"
             ]
         , th []
             [ text "Typ"
@@ -1124,7 +1151,7 @@ tableHead_questions =
         ]
 
 
-getQuestionTable : Int -> FB_element -> Html Msg
+getQuestionTable : Int -> Q_element -> Html Msg
 getQuestionTable index element =
     case element of
         Note a ->
@@ -1152,7 +1179,7 @@ getQuestionTable index element =
             tr [ id (String.fromInt index) ]
                 [ td [] [ text (String.fromInt index) ]
                 , td [] [ text f.text ]
-                , td [] [ text f.hinweis ]
+                , td [] [ text f.hint ]
                 , td [] [ text f.typ ]
                 , td []
                     [ i
@@ -1178,7 +1205,7 @@ answersTable : Questionnaire -> List (Html Msg)
 answersTable questionnaire =
     case questionnaire.newElement of
         Question record ->
-            append [ tableHead_answers ] (List.indexedMap getAnswerTable record.antworten)
+            append [ tableHead_answers ] (List.indexedMap getAnswerTable record.answers)
 
         Note record ->
             []

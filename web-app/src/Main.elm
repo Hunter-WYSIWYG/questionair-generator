@@ -491,7 +491,7 @@ decodeElements content =
 --decodes the elements either to a note, or to a question
 elementDecoder : Decode.Decoder FB_element
 elementDecoder = 
-    Decode.oneOf [ noteDecoder, questionDecoder ]
+    Decode.oneOf [ questionDecoder, noteDecoder ]
     
 
 --decodes a note

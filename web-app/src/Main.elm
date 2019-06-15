@@ -23,14 +23,17 @@ type
     | ChangeViewingTimeBegin String
     | ChangeViewingTimeEnd String
     | ChangeQuestionOrNoteText String
+    | ChangeAnswerText String                       --neu
     | ChangeQuestionNewAnswer Answer
     | ChangeQuestionNote String
     | ChangeQuestionType String
+    | ChangeAnswerType String                       --neu
       --Modals
     | ViewOrClose ModalType
       --Other
     | SetNote
     | SetQuestion
+    | SetAnswer                       --neu
     | SetPolarAnswers String
     | EditQuestion FB_element
     | EditNote FB_element
@@ -157,9 +160,9 @@ initQuestion =
 initAnswer : Answer
 initAnswer =
     { id = 0
-    , text = "Beispiel"
+    , text = ""
     --type can be "free" or "regular"
-    , typ = "free"
+    , typ = ""
     }
 
 --Update logic
@@ -217,6 +220,12 @@ update msg questionnaire =
                 Note record ->
                     { questionnaire | newElement = Note (changedRecord record) }
 
+        ChangeAnswerText string ->
+            { questionnaire
+                | newAnswer = 
+                    Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ                                --neu
+            }
+
         ChangeQuestionNewAnswer newAnswer ->
             case questionnaire.newElement of
                 Question record ->
@@ -252,6 +261,12 @@ update msg questionnaire =
 
                 Note record ->
                     questionnaire
+
+        ChangeAnswerType string ->
+            { questionnaire
+                | newAnswer =
+                    Answer questionnaire.newAnswer.id questionnaire.newAnswer.text string
+            }
 
         --open or close modals
         ViewOrClose modalType ->
@@ -313,7 +328,7 @@ update msg questionnaire =
                                     { id = (List.length [])
                                     , text = ""
                                     --type can be "free" or "regular"
-                                    , typ = "free"
+                                    , typ = ""
                                     }
                         }
 
@@ -382,6 +397,16 @@ update msg questionnaire =
                     , editMode = False
                 }
 
+        SetAnswer ->                                                                    --neu
+            case questionnaire.newElement of
+                Question record ->
+                    { questionnaire | newElement = Question { record | antworten = append (getAntworten questionnaire.newElement) [ questionnaire.newAnswer ] }
+                    , showNewAnswerModal = False
+                    }
+                Note record ->
+                    questionnaire
+            
+
         EditQuestion element ->
             { questionnaire
                 | newElement = element
@@ -396,6 +421,14 @@ update msg questionnaire =
                 , editMode = True
             }
 
+getAntworten : FB_element -> List Answer                            --neu
+getAntworten element =
+    case element of
+        Question record ->
+            record.antworten
+
+        Note record ->
+            []
 
 setPredefinedAnswers : String -> List Answer
 setPredefinedAnswers questionType = 
@@ -408,6 +441,13 @@ regularAnswer int string =
     { id = int
     , text = string
     , typ = "regular" 
+    }
+
+freeAnswer : Int -> String -> Answer                                        --neu
+freeAnswer int string = 
+    { id = int
+    , text = string
+    , typ = "free" 
     }
 
 
@@ -501,6 +541,9 @@ getElementText element =
         Note record ->
             record.text
 
+getAnswerText : Answer -> String                                            --neu
+getAnswerText answer = answer.text
+
 
 getQuestionHinweis : FB_element -> String
 getQuestionHinweis element =
@@ -520,6 +563,9 @@ getQuestionTyp element =
 
         Note record ->
             "None"
+
+getAnswerType : Answer -> String                                            --neu
+getAnswerType answer = answer.typ
 
 
 
@@ -898,15 +944,28 @@ viewNewAnswerModal questionnaire =
                     [ p [ class "modal-card-title" ] [ text "Neue Antwort" ] ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ text "Text: "
+                        [ text "Antworttext: "
                         , input
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "100%"
+                            , value (getAnswerText questionnaire.newAnswer)             --getAnswerText, newAnswer
+                            , onInput ChangeAnswerText                                  --ChangeAnswerText
+                            ]
                             []
-                            []
+                        ]
+                    , br [] []
+                    , div []
+                        [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)  --getAnswerType, .newAnswer                       --neu
+                        , br [] []
+                        , radio "Fester Wert" (ChangeAnswerType "Fester Wert")      --ChangeAnswerType
+                        , radio "Frei Eingabe" (ChangeAnswerType "Freie Eingabe")   --ChangeAnswerType
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
                     [ button
                         [ class "button is-success"
+                        , onClick SetAnswer
                         ]
                         [ text "Übernehmen" ]
                     ]

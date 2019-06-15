@@ -3,7 +3,7 @@ module Main exposing (Answer, Q_element(..), Msg(..), Questionnaire, ValidationR
 import Browser
 import File exposing (File)
 import File.Select as Select
-import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, input, label, p, section, table, td, text, th, tr)
+import Html exposing (Html, a, nav, br, button, div, footer, form, h1, header, i, input, label, p, section, table, td, text, th, tr)
 import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput, on)
 import Json.Decode as Decode
@@ -44,8 +44,11 @@ type
     | EditNote Q_element
     | DeleteItem Q_element
     | Submit
+    | EditQuestionnaire
     | LeaveOrEnterMenu
+    | ShowMainMenu
     | LeaveOrEnterUpload
+    | EnterUpload
     | JsonRequested
     | JsonSelected File
     | JsonLoaded String
@@ -92,6 +95,9 @@ type alias Questionnaire =
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
     , upload : Bool
+
+    -- a page to edit Questionnaires
+    , editQuestionnaire : Bool
 
     --Debug
     , tmp : String
@@ -172,6 +178,7 @@ initQuestionnaire _ =
 
     , menu = True
     , upload = False
+    , editQuestionnaire = False
 
     --Debug
     , tmp = ""
@@ -410,6 +417,9 @@ update msg questionnaire =
             ({ questionnaire 
                 | menu = not questionnaire.menu 
                 , upload = False }, Cmd.none)
+        
+        ShowMainMenu -> ({questionnaire | menu = True}, Cmd.none)
+        EnterUpload -> ({questionnaire | upload = True, menu = False }, Cmd.none)
 
         LeaveOrEnterUpload ->
             ({ questionnaire 
@@ -417,6 +427,9 @@ update msg questionnaire =
                 , upload = not questionnaire.upload
             }, Cmd.none)
         
+        EditQuestionnaire ->
+            ({questionnaire | menu = False, upload = False, editQuestionnaire = True}, Cmd.none)
+
         --Json
 
         JsonRequested ->
@@ -670,12 +683,14 @@ getQuestionTyp element =
 
 view : Questionnaire -> Html Msg
 view questionnaire =
+ div[] [showNavbar,
     if questionnaire.menu then 
         showMenu
     else if questionnaire.upload then 
         showUpload questionnaire
-    else
-        showEditQuestionnaire questionnaire 
+    else if questionnaire.editQuestionnaire then
+        showEditQuestionnaire questionnaire
+    else showMenu]
 
 
 
@@ -690,11 +705,24 @@ showHeroWith string =
             ]
         ]
 
+showNavbar : Html Msg
+showNavbar = 
+    nav [ class "navbar is-link is-fixed-top" ]
+        [ div [ class "navbar-brand" ]
+            [ h1 [style "vertical-align" "middle", class "navbar-item title is-4" ] [ text "Fragebogengenerator" ]]
+        , div [ class "navbar-menu"] [
+                a [class "navbar-item", onClick ShowMainMenu] [text "Hauptmenü"],
+                a [class "navbar-item", onClick EnterUpload] [text "Fragebogen Hochladen"],
+                a [class "navbar-item", onClick EditQuestionnaire] [text "Fragebogen Erstellen"]
+            ]
+        ]
+
 showMenu : Html Msg
 showMenu = 
     div [] 
-        [ showHeroWith "Hauptmenü"
-        , div [ class "content has-text-centered", style "margin-top" "10px" ]
+        [ 
+        {--, showHeroWith "Hauptmenü"--}
+        div [ class "content has-text-centered", style "margin-top" "10px" ]
             [ div [ class "columns" ] 
                 [ div [ class "column" ]
                     [ button [ onClick LeaveOrEnterMenu ] [ text "Fragebogen erstellen" ] 

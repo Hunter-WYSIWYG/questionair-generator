@@ -3,7 +3,7 @@ module Main exposing (Answer, Q_element(..), Msg(..), Questionnaire, ValidationR
 import Browser
 import File exposing (File)
 import File.Select as Select
-import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, input, label, p, section, table, td, text, th, tr)
+import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, input, label, p, section, table, td, text, th, tr, thead, tbody)
 import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput, on)
 import Json.Decode as Decode
@@ -760,7 +760,22 @@ showHeroQuestionnaireTitle questionnaire =
 showQuestionList : Questionnaire -> Html Msg
 showQuestionList questionnaire =
     div [ class "container is-fluid", style "margin-bottom" "10px" ]
-        [ table [ class "table is-striped", style "width" "100%" ] (questionsTable questionnaire)
+        [ table [ class "table is-striped" 
+                ] 
+                [ thead [ style "display" "block"
+                        , style "width" "100%"
+                        ] 
+                        [ (tableHead_questions) 
+                        ]
+                , tbody [ style "overflow-y" "auto"
+                        , style "overflow-x" "auto"
+                        , style "height" "10em"
+                        , style "width" "100%"
+                        , style "display" "block"
+                        ]
+                        (questionsTable questionnaire) 
+                ]
+                
         ]
 
 
@@ -1127,28 +1142,29 @@ radio value msg =
 
 questionsTable : Questionnaire -> List (Html Msg)
 questionsTable questionnaire =
-    append [ tableHead_questions ] (List.indexedMap getQuestionTable questionnaire.elements)
+    append [ {- tableHead_questions -} ] (List.indexedMap getQuestionTable questionnaire.elements)
 
 
 tableHead_questions : Html Msg
 tableHead_questions =
     tr []
-        [ th []
-            [ text "ID"
-            ]
-        , th []
-            [ text "Fragetext"
-            ]
-        , th []
-            [ text "hint"
-            ]
-        , th []
-            [ text "Typ"
-            ]
-        , th []
-            [ text "Aktion"
-            ]
+        [ th [style "width" "5%"]
+             [ text "ID"
+             ]
+        , th [style "width" "40%"]
+             [ text "Fragetext"
+             ]
+        , th [style "width" "25%"]
+             [ text "hint"
+             ]
+        , th [style "width" "20%"]
+             [ text "Typ"
+             ]
+        , th [style "width" "10%"]
+             [ text "Aktion"
+             ]
         ]
+    
 
 
 getQuestionTable : Int -> Q_element -> Html Msg
@@ -1156,14 +1172,13 @@ getQuestionTable index element =
     case element of
         Note a ->
             tr [ id (String.fromInt index) ]
-                [ td [] [ text (String.fromInt index) ]
-                , td [] [ text a.text ]
-                , td [] []
-                , td [] []
-                , td []
+                [ td [style "width" "5%"] [ text (String.fromInt index) ]
+                , td [style "width" "40%"] [ text a.text ]
+                , td [style "width" "25%"] []
+                , td [style "width" "20%"] []
+                , td [style "width" "10%"]
                     [ i
                         [ class "fas fa-cog"
-                        , style "margin-right" "10px"
                         , onClick (EditNote element)
                         ]
                         []
@@ -1177,14 +1192,13 @@ getQuestionTable index element =
 
         Question f ->
             tr [ id (String.fromInt index) ]
-                [ td [] [ text (String.fromInt index) ]
-                , td [] [ text f.text ]
-                , td [] [ text f.hint ]
-                , td [] [ text f.typ ]
-                , td []
+                [ td [style "width" "5%"] [ text (String.fromInt index) ]
+                , td [style "width" "40%"] [ text f.text ]
+                , td [style "width" "25%"] [ text f.hint ]
+                , td [style "width" "20%"] [ text f.typ ]
+                , td [style "width" "10%"]
                     [ i
                         [ class "fas fa-cog"
-                        , style "margin-right" "10px"
                         , onClick (EditQuestion element)
                         ]
                         []

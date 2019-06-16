@@ -23,21 +23,23 @@ type
     | ChangeViewingTimeBegin String
     | ChangeViewingTimeEnd String
     | ChangeQuestionOrNoteText String
-    | ChangeAnswerText String                       --neu
+    | ChangeAnswerText String                       
     | ChangeQuestionNewAnswer Answer
     | ChangeQuestionNote String
     | ChangeQuestionType String
-    | ChangeAnswerType String                       --neu
+    | ChangeAnswerType String                       
       --Modals
     | ViewOrClose ModalType
       --Other
     | SetNote
     | SetQuestion
-    | SetAnswer                       --neu
+    | SetAnswer                       
     | SetPolarAnswers String
     | EditQuestion FB_element
     | EditNote FB_element
+    | EditAnswer Answer
     | DeleteItem FB_element
+    | DeleteAnswer Answer
     | Submit
 
 
@@ -53,6 +55,7 @@ type ModalType
 type alias Questionnaire =
     { title : String
     , elements : List FB_element
+    , answerelements : List Answer
 
     --times
     , viewingTimeBegin : String
@@ -116,6 +119,7 @@ initQuestionnaire : Questionnaire
 initQuestionnaire =
     { title = "Neuer Fragebogen"
     , elements = [ initQuestion ]
+    , answerelements = [initAnswer]
 
     --times
     , viewingTimeBegin = ""
@@ -221,11 +225,9 @@ update msg questionnaire =
                     { questionnaire | newElement = Note (changedRecord record) }
 
         ChangeAnswerText string ->
-            { questionnaire
-                | newAnswer = 
-                    Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ                                --neu
-            }
 
+            { questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }                              
+            
         ChangeQuestionNewAnswer newAnswer ->
             case questionnaire.newElement of
                 Question record ->
@@ -325,7 +327,7 @@ update msg questionnaire =
                     if changedQuestionnaire.showNewAnswerModal == True then
                         { changedQuestionnaire
                             | newAnswer =
-                                    { id = (List.length [])
+                                    { id = (List.length questionnaire.answerelements)
                                     , text = ""
                                     --type can be "free" or "regular"
                                     , typ = ""
@@ -339,6 +341,10 @@ update msg questionnaire =
         --Other
         DeleteItem element ->
             { questionnaire | elements = deleteItemFrom element questionnaire.elements }
+
+
+        DeleteAnswer element ->
+            { questionnaire | answerelements = deleteItemFromAnswer element questionnaire.answerelements }
 
         -- validate inputs on submit and then save changes
         Submit ->
@@ -397,14 +403,20 @@ update msg questionnaire =
                     , editMode = False
                 }
 
-        SetAnswer ->                                                                    --neu
-            case questionnaire.newElement of
-                Question record ->
-                    { questionnaire | newElement = Question { record | antworten = append (getAntworten questionnaire.newElement) [ questionnaire.newAnswer ] }
+        SetAnswer ->                                                                    
+            if questionnaire.editMode == False then
+                { questionnaire
+                    | answerelements = append questionnaire.answerelements [ questionnaire.newAnswer ]
                     , showNewAnswerModal = False
-                    }
-                Note record ->
-                    questionnaire
+                }
+
+            else
+                { questionnaire
+                    | answerelements = List.map (\e -> updateAnswer questionnaire.newAnswer e) questionnaire.answerelements
+                    , showNewAnswerModal = False
+                    , editMode = False
+                }
+
             
 
         EditQuestion element ->
@@ -421,7 +433,16 @@ update msg questionnaire =
                 , editMode = True
             }
 
-getAntworten : FB_element -> List Answer                            --neu
+
+        EditAnswer element ->
+            { questionnaire
+                | newAnswer = element
+                , showNewAnswerModal = True
+                , editMode = True
+            }
+
+
+getAntworten : FB_element -> List Answer                            
 getAntworten element =
     case element of
         Question record ->
@@ -443,7 +464,7 @@ regularAnswer int string =
     , typ = "regular" 
     }
 
-freeAnswer : Int -> String -> Answer                                        --neu
+freeAnswer : Int -> String -> Answer                                        
 freeAnswer int string = 
     { id = int
     , text = string
@@ -475,6 +496,9 @@ updateElementList : FB_element -> List FB_element -> List FB_element
 updateElementList elementToUpdate list =
     List.map (updateElement elementToUpdate) list
 
+updateAnswerList : Answer -> List Answer -> List Answer
+updateAnswerList answerToUpdate list =
+    List.map (updateAnswer answerToUpdate) list
 
 updateElement elementToUpdate element =
     if getID element == getID elementToUpdate then
@@ -483,6 +507,12 @@ updateElement elementToUpdate element =
     else
         element
 
+updateAnswer answerToUpdate answer =
+    if getAnswerID answer == getAnswerID answerToUpdate then
+        answerToUpdate
+
+    else
+        answer
 
 getID : FB_element -> Int
 getID element =
@@ -493,12 +523,18 @@ getID element =
         Note record ->
             record.id
 
+getAnswerID : Answer -> Int
+getAnswerID answer = answer.id
+
+
 
 deleteItemFrom : FB_element -> List FB_element -> List FB_element
 deleteItemFrom element list =
     Tuple.first (List.partition (\e -> e /= element) list)
 
-
+deleteItemFromAnswer : Answer -> List Answer -> List Answer
+deleteItemFromAnswer element list =
+    Tuple.first (List.partition (\e -> e /= element) list)
 
 -- Input Validation
 
@@ -541,7 +577,7 @@ getElementText element =
         Note record ->
             record.text
 
-getAnswerText : Answer -> String                                            --neu
+getAnswerText : Answer -> String                                           
 getAnswerText answer = answer.text
 
 
@@ -564,7 +600,7 @@ getQuestionTyp element =
         Note record ->
             "None"
 
-getAnswerType : Answer -> String                                            --neu
+getAnswerType : Answer -> String                                            
 getAnswerType answer = answer.typ
 
 
@@ -956,10 +992,10 @@ viewNewAnswerModal questionnaire =
                         ]
                     , br [] []
                     , div []
-                        [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)  --getAnswerType, .newAnswer                       --neu
+                        [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)  --getAnswerType, .newAnswer                      
                         , br [] []
                         , radio "Fester Wert" (ChangeAnswerType "Fester Wert")      --ChangeAnswerType
-                        , radio "Frei Eingabe" (ChangeAnswerType "Freie Eingabe")   --ChangeAnswerType
+                        , radio "Freie Eingabe" (ChangeAnswerType "Freie Eingabe")   --ChangeAnswerType
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
@@ -1102,7 +1138,7 @@ answersTable : Questionnaire -> List (Html Msg)
 answersTable questionnaire =
     case questionnaire.newElement of
         Question record ->
-            append [ tableHead_answers ] (List.indexedMap getAnswerTable record.antworten)
+            append [ tableHead_answers ] (List.indexedMap getAnswerTable questionnaire.answerelements)
 
         Note record ->
             []
@@ -1118,23 +1154,32 @@ tableHead_answers =
             [ text "Text"
             ]
         , th []
+            [ text "Typ"
+            ]
+        , th []
             [ text "Aktion"
             ]
         ]
 
 
 getAnswerTable : Int -> Answer -> Html Msg
-getAnswerTable index element =
+getAnswerTable index answer =
     tr [ id (String.fromInt index) ]
         [ td [] [ text (String.fromInt index) ]
-        , td [] [ text element.text ]
+        , td [] [ text answer.text ]
+        , td [] [ text answer.typ ]
         , td []
             [ i
                 [ class "fas fa-cog"
                 , style "margin-right" "10px"
+                , onClick (EditAnswer answer)
                 ]
                 []
-            , i [ class "fas fa-trash-alt" ] []
+            , i 
+                [ class "fas fa-trash-alt" 
+                , onClick (DeleteAnswer answer)
+                ] 
+                []
             ]
         ]
 

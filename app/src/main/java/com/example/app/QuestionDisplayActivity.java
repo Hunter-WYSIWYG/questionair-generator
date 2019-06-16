@@ -2,6 +2,7 @@ package com.example.app;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -68,7 +69,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		currentQ = qList.get(current);
 		/* set Layout */
 		TextView qid = findViewById(R.id.QuestionID);
-		qid.setText("Frage #" + currentQ.getId());
+		qid.setText("Frage " + currentQ.getId());
 		
 		TextView qt = findViewById(R.id.QuestionText);
 		qt.setText(currentQ.getTitle());
@@ -82,9 +83,10 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		for (int i = 0; i < amountOptions; i++) {
 			pressedButtons.add(false);
 		}
-		
+		TextView questiontypeTV = (TextView)findViewById(R.id.qTypeText);
 		switch (currentQ.getType()) {
 			case SingleChoice:
+				questiontypeTV.setText("Single-Choice-Frage");
 				for (int i = -1; i < amountOptions; i++) {
 					Option o;
 					if(i>=0) {
@@ -186,6 +188,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				}
 				break;
 			case MultipleChoice:
+				questiontypeTV.setText("Multiple-Choice-Frage");
 				for (int i = -1; i < amountOptions; i++) {
 					Option o;
 					if(i>=0) {
@@ -373,10 +376,11 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		for (int i = 0; i < amountOptions; i++) {
 			if (i == pressedButton) {
 				pressedButtons.set(i, true);
+				
 			} else {
 				pressedButtons.set(i, false);
 			}
-			Toast myToast = Toast.makeText(this, "Antwort gewählt :"+pressedButton,
+			Toast myToast = Toast.makeText(this, "Antwort gewählt: "+pressedButton,
 					Toast.LENGTH_SHORT);
 			myToast.show();
 		}
@@ -388,10 +392,10 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				pressedButtons.set(i, !pressedButtons.get(i));
 			}
 			if(pressedButtons.get(pressedButton)==true) {
-				Toast myToast = Toast.makeText(this, "Antwort gewählt :" + pressedButton, Toast.LENGTH_SHORT);
+				Toast myToast = Toast.makeText(this, "Antwort gewählt: " + pressedButton, Toast.LENGTH_SHORT);
 				myToast.show();
 			} else {
-				Toast myToast = Toast.makeText(this, "Antwort abgewählt :" + pressedButton, Toast.LENGTH_SHORT);
+				Toast myToast = Toast.makeText(this, "Antwort abgewählt: " + pressedButton, Toast.LENGTH_SHORT);
 				myToast.show();
 			}
 		}

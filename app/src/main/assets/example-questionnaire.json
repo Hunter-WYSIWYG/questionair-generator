@@ -1,65 +1,51 @@
 {
-  "questionnaireName" : "Example Questionnaire: Cats and Dogs",
+  "questionnaireName" : "Example Questionnaire:\nTag im Rueckblick",
   "questions" : [
     {
       "questionID" : 1,
-      "questionTitle" : "Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?Mögen Sie Hunde?",
+      "questionTitle" : "Wie war Ihr Tag?",
       "type" : 0,
       "answers" : [
         {
           "answerID" : 1,
-          "answerText" : "Ja",
+          "answerText" : "Gut",
           "answerType" : 0
         },
         {
           "answerID" : 2,
-          "answerText" : "Nein",
+          "answerText" : "Sehr gut",
           "answerType" : 0
         },
         {
           "answerID" : 3,
-          "answerText" : "ehhhh",
+          "answerText" : "Schlecht",
           "answerType" : 0
         },
         {
           "answerID" : 4,
-          "answerText" : "mehhh",
+          "answerText" : "Sehr schlecht",
           "answerType" : 0
         },
         {
           "answerID" : 5,
-          "answerText" : "ehhhh",
+          "answerText" : "War mal besser",
           "answerType" : 0
         },
         {
           "answerID" : 6,
-          "answerText" : "mehhh",
+          "answerText" : "War mal schlechter",
           "answerType" : 0
         },
         {
           "answerID" : 7,
-          "answerText" : "ehhhh",
-          "answerType" : 0
-        },
-        {
-          "answerID" : 8,
-          "answerText" : "mehhh",
-          "answerType" : 0
-        }, {
-          "answerID" : 9,
-          "answerText" : "ehhhh",
-          "answerType" : 0
-        },
-        {
-          "answerID" : 10,
-          "answerText" : "mehhh",
+          "answerText" : "Mensa hatte Schnitzel",
           "answerType" : 0
         }
       ]
     },
     {
       "questionID" : 2,
-      "questionTitle" : "Mögen Sie Katzen?",
+      "questionTitle" : "Hatten Sie genug Schlaf?",
       "type" : 0,
       "answers" : [
         {
@@ -76,40 +62,40 @@
     },
     {
       "questionID" : 3,
-      "questionTitle" : "Mögen Sie Katzen wirklich?",
+      "questionTitle" : "Hatten Sie genug sozialen Kontakt?",
       "type" : 0,
       "answers" : [
         {
           "answerID" : 1,
-          "answerText" : "JaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJa",
+          "answerText" : "Ja, alles war gut",
           "answerType" : 0
         },
         {
           "answerID" : 2,
-          "answerText" : "Ja weil",
+          "answerText" : "Nein, folgendes:",
           "answerType" : 1
         }
       ]
     },
     {
       "questionID" : 4,
-      "questionTitle" : "Katzen?",
+      "questionTitle" : "Welche Gefühle haben Sie heute verspürt?",
       "type" : 1,
       "answers" : [
         {
           "answerID" : 1,
-          "answerText" : "JaJaJaJJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJaJa",
+          "answerText" : "Trauer",
           "answerType" : 0
         },
         {
           "answerID" : 2,
-          "answerText" : "Ja weil",
-          "answerType" : 1
+          "answerText" : "Freude",
+          "answerType" : 0
         },
         {
           "answerID" : 3,
-          "answerText" : "ehhhh",
-          "answerType" : 0
+          "answerText" : "Andere:",
+          "answerType" : 1
         }
       ]
     }

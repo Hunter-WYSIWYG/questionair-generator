@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.Gson;
 
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		q = importQuestions();
+		TextView tv = (TextView)findViewById(R.id.dynamicQname);
+		tv.setText(q.getName());
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {

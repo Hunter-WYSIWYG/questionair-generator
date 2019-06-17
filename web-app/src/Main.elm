@@ -727,10 +727,7 @@ showEditQuestionnaire : Questionnaire -> Html Msg
 showEditQuestionnaire questionnaire =
     div []
         [ showHeroQuestionnaireTitle questionnaire
-        , div
-            [ class "table is-striped container is-fluid", style "width" "100%" ]
-            [ table [ class "table is-striped", style "width" "100%" ] [ tableHead_questions ] ]
-        , div [ style "height" "40vh", style "overflow-y" "auto" ] [ showQuestionList questionnaire ]
+        , showQuestionList questionnaire
         , showTimes questionnaire
         , showCreateQuestionOrNoteButtons questionnaire
         , viewTitleModal questionnaire
@@ -762,19 +759,14 @@ showHeroQuestionnaireTitle questionnaire =
 
 showQuestionList : Questionnaire -> Html Msg
 showQuestionList questionnaire =
-    div [ class "container is-fluid", style "margin-bottom" "10px" ]
+    div [ class "box container is-fluid", style "flex-basis" "80%", style "overflow-y" "auto", style "height" "60vh",style "margin-top" "2em", style "margin-bottom" "2em" ]
         [ table [ class "table is-striped" 
                 ] 
-                [ thead [ style "display" "block"
-                        , style "width" "100%"
+                [ thead [
                         ] 
                         [ (tableHead_questions) 
                         ]
-                , tbody [ style "overflow-y" "auto"
-                        , style "overflow-x" "auto"
-                        , style "height" "10em"
-                        , style "width" "100%"
-                        , style "display" "block"
+                , tbody [
                         ]
                         (questionsTable questionnaire) 
                 ]

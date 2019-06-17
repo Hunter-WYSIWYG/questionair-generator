@@ -75,13 +75,13 @@ public class MainActivity extends AppCompatActivity {
 	
 	public void startButtonClick(View view) {
 		if (q == null) {
-			Toast toast = Toast.makeText(this, "q was null", Toast.LENGTH_LONG);
+			Toast toast = Toast.makeText(this, "q was null", Toast.LENGTH_SHORT);
 			toast.show();
 			return;
 		}
 		List<Question> list = q.getQuestionList();
 		if (list == null) {
-			Toast toast = Toast.makeText(this, "list was null", Toast.LENGTH_LONG);
+			Toast toast = Toast.makeText(this, "list was null", Toast.LENGTH_SHORT);
 			toast.show();
 			return;
 		}

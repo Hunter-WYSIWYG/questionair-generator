@@ -61,7 +61,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		/* show Status */
 		
-		Toast toast = Toast.makeText(this, "result: " + current + ", " + qList.size() + ", " + qList.get(current).getType(), Toast.LENGTH_LONG);
+		Toast toast = Toast.makeText(this, "result: " + current + ", " + qList.size() + ", " + qList.get(current).getType(), Toast.LENGTH_SHORT);
 		toast.show();
 		
 		/* process next Question */
@@ -83,7 +83,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		for (int i = 0; i < amountOptions; i++) {
 			pressedButtons.add(false);
 		}
-		TextView questiontypeTV = (TextView)findViewById(R.id.qTypeText);
+		TextView questiontypeTV = (TextView)findViewById(R.id.QuestionText);
 		switch (currentQ.getType()) {
 			case SingleChoice:
 				questiontypeTV.setText("Single-Choice-Frage");

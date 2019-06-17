@@ -30,11 +30,12 @@
              android:layout_marginEnd="32dp" android:layout_marginRight="32dp"
              android:textAppearance="@style/TextAppearance.AppCompat.Large" android:layout_marginTop="32dp"
              app:layout_constraintHorizontal_bias="0.347"/>
-     <TextView
-             android:text="Fragetyp"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content" tools:layout_editor_absoluteY="5dp"
-             tools:layout_editor_absoluteX="4dp" android:id="@+id/qTypeText"/>
+  <TextView
+          android:text="Fragetyp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/qTypeText" app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"/>
      <View
              android:id="@+id/divider"
              android:layout_width="match_parent"

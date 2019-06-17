@@ -47,8 +47,6 @@ type
     | DeleteItem Q_element
     | Submit
     | EditQuestionnaire
-    | LeaveOrEnterMenu
-    | ShowMainMenu
     | LeaveOrEnterUpload
     | EnterUpload
     | JsonRequested
@@ -90,9 +88,6 @@ type alias Questionnaire =
 
     --editMode for EditQuestion and EditNote
     , editMode : Bool
-
-    --menu determines whether we are in the main menu
-    , menu : Bool
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -180,7 +175,6 @@ initQuestionnaire _ =
 
       --editMode
       , editMode = False
-      , menu = True
       , upload = False
       , editQuestionnaire = False
 
@@ -453,30 +447,22 @@ update msg questionnaire =
             , Cmd.none
             )
 
-        LeaveOrEnterMenu ->
+        EnterUpload ->
             ( { questionnaire
-                | menu = not questionnaire.menu
-                , upload = False
+                | upload = True
               }
             , Cmd.none
             )
 
-        ShowMainMenu ->
-            ( { questionnaire | menu = True }, Cmd.none )
-
-        EnterUpload ->
-            ( { questionnaire | upload = True, menu = False }, Cmd.none )
-
         LeaveOrEnterUpload ->
             ( { questionnaire
-                | menu = False
-                , upload = not questionnaire.upload
+                | upload = not questionnaire.upload
               }
             , Cmd.none
             )
 
         EditQuestionnaire ->
-            ( { questionnaire | menu = False, upload = False, editQuestionnaire = True }, Cmd.none )
+            ( { questionnaire | upload = False, editQuestionnaire = True }, Cmd.none )
 
         --Json
         JsonRequested ->
@@ -774,17 +760,14 @@ view : Questionnaire -> Html Msg
 view questionnaire =
     div []
         [ showNavbar
-        , if questionnaire.menu then
-            showMenu
-
-          else if questionnaire.upload then
+        , if questionnaire.upload then
             showUpload questionnaire
 
           else if questionnaire.editQuestionnaire then
             showEditQuestionnaire questionnaire
 
           else
-            showMenu
+            showEditQuestionnaire questionnaire
         ]
 
 
@@ -810,26 +793,8 @@ showNavbar =
             [ h1 [ style "vertical-align" "middle", class "navbar-item title is-4" ] [ text "Fragebogengenerator" ] ]
         , div [ class "navbar-menu" ]
             [ div [ class "navbar-start" ]
-                [ a [ class "navbar-item", onClick ShowMainMenu ] [ text "Hauptmenü" ]
+                [ a [ class "navbar-item", onClick EditQuestionnaire ] [ text "Fragebogen Erstellen" ]
                 , a [ class "navbar-item", onClick EnterUpload ] [ text "Fragebogen Hochladen" ]
-                , a [ class "navbar-item", onClick EditQuestionnaire ] [ text "Fragebogen Erstellen" ]
-                ]
-            ]
-        ]
-
-
-showMenu : Html Msg
-showMenu =
-    div []
-        [ {--, showHeroWith "Hauptmenü"--}
-          div [ class "content has-text-centered", style "margin-top" "10px" ]
-            [ div [ class "columns" ]
-                [ div [ class "column" ]
-                    [ button [ onClick LeaveOrEnterMenu ] [ text "Fragebogen erstellen" ]
-                    ]
-                , div [ class "column" ]
-                    [ button [ onClick LeaveOrEnterUpload ] [ text "Fragebogen hochladen" ]
-                    ]
                 ]
             ]
         ]
@@ -842,9 +807,6 @@ showUpload questionnaire =
         , br [] []
         , div [ class "columns has-text-centered" ]
             [ div [ class "column" ]
-                [ button [ onClick LeaveOrEnterMenu ] [ text "Zurück" ]
-                ]
-            , div [ class "column" ]
                 [ button [ onClick JsonRequested ] [ text "Datei auswählen" ]
                 ]
             ]
@@ -926,11 +888,12 @@ showCreateQuestionOrNoteButtons questionnaire =
             [ text "Neue Anmerkung" ]
         , br [] []
         , br [] []
-        , button
+
+        {--, button
             [ onClick LeaveOrEnterMenu
             , style "margin-right" "10px"
             ]
-            [ text "Hauptmenü" ]
+            [ text "Hauptmenü" ]--}
         , button [ onClick DownloadQuestionnaire ] [ text "Download" ]
         , text questionnaire.tmp
         ]

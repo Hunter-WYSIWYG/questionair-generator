@@ -31,18 +31,23 @@ type
     | ChangeViewingTimeBegin String
     | ChangeViewingTimeEnd String
     | ChangeQuestionOrNoteText String
-    | ChangeQuestionNewAnswer Answer
+    | ChangeAnswerText String                       
     | ChangeQuestionNote String
     | ChangeQuestionType String
+    | ChangeAnswerType String                       
       --Modals
     | ViewOrClose ModalType
       --Other
     | SetNote
     | SetQuestion
+    | SetAnswer                       
     | SetPolarAnswers String
     | EditQuestion Q_element
     | EditNote Q_element
     | DeleteItem Q_element
+    | EditAnswer Answer
+    | ChangeQuestionNewAnswer Answer
+    | DeleteAnswer Answer
     | Submit
     | LeaveOrEnterMenu
     | LeaveOrEnterUpload
@@ -58,6 +63,7 @@ type ModalType
     | NewNoteModal
     | QuestionModal
     | TitleModal
+    | AnswerModal
 
 
 type alias Questionnaire =
@@ -75,6 +81,7 @@ type alias Questionnaire =
     , showViewingTimeModal : Bool
     , showNewNoteModal : Bool
     , showNewQuestionModal : Bool
+    , showNewAnswerModal : Bool
 
     --newInputs
     , validationResult : ValidationResult
@@ -82,6 +89,7 @@ type alias Questionnaire =
     , inputViewingTimeBegin : String
     , inputViewingTimeEnd : String
     , newElement : Q_element
+    , newAnswer : Answer
 
     --editMode for EditQuestion and EditNote
     , editMode : Bool
@@ -159,6 +167,7 @@ initQuestionnaire _ =
     , showEditTimeModal = False
     , showNewNoteModal = False
     , showNewQuestionModal = False
+    , showNewAnswerModal = False
 
     --new inputs
     , validationResult = NotDone
@@ -166,6 +175,7 @@ initQuestionnaire _ =
     , inputViewingTimeEnd = ""
     , inputEditTime = ""
     , newElement = initQuestion
+    , newAnswer = initAnswer
 
     --editMode
     , editMode = False
@@ -189,7 +199,13 @@ initQuestion =
         , typ = ""
         }
 
-
+initAnswer : Answer
+initAnswer =
+    { id = 0
+    , text = ""
+    --type can be "free" or "regular"
+    , typ = ""
+    }
 
 --Update logic
 
@@ -197,7 +213,7 @@ initQuestion =
 update : Msg -> Questionnaire -> (Questionnaire, Cmd Msg)
 update msg questionnaire =
     case msg of
-        --changing input
+        --changing properties of questionnaire
         ChangeQuestionnaireTitle newTitle ->
             ({ questionnaire | title = newTitle }, Cmd.none)
 
@@ -234,6 +250,10 @@ update msg questionnaire =
                 | validationResult = validate changedQuestionnaire
             }, Cmd.none)
 
+        DeleteItem element ->
+            ({ questionnaire | elements = deleteItemFrom element questionnaire.elements }, Cmd.none)
+
+        --changing properties of notes or questions
         ChangeQuestionOrNoteText string ->
             let
                 changedRecord rec =
@@ -281,6 +301,17 @@ update msg questionnaire =
 
                 Note record ->
                     (questionnaire, Cmd.none)
+
+
+        --changing properties of answers
+        ChangeAnswerText string ->
+            ({ questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }, Cmd.none)     
+
+        ChangeAnswerType string ->
+            ({ questionnaire
+                | newAnswer =
+                    Answer questionnaire.newAnswer.id questionnaire.newAnswer.text string
+            }, Cmd.none)
 
         --open or close modals
         ViewOrClose modalType ->
@@ -331,9 +362,28 @@ update msg questionnaire =
                     else
                         (changedQuestionnaire, Cmd.none)
 
+                AnswerModal ->
+                    let
+                        changedQuestionnaire =
+                            { questionnaire | showNewAnswerModal = not questionnaire.showNewAnswerModal }
+                    in
+                    if changedQuestionnaire.showNewAnswerModal == True then
+                        ({ changedQuestionnaire
+                            | newAnswer =
+                                    { id = (List.length (getAntworten questionnaire.newElement))
+                                    , text = ""
+                                    --type can be "free" or "regular"
+                                    , typ = ""
+                                    }
+                        }, Cmd.none)
+
+                    else
+                        (changedQuestionnaire, Cmd.none)
+
+        DeleteAnswer answer ->
+            ({ questionnaire | newElement = deleteAnswerFromItem answer questionnaire.newElement }, Cmd.none)
+
         --Other
-        DeleteItem element ->
-            ({ questionnaire | elements = deleteItemFrom element questionnaire.elements }, Cmd.none)
 
         -- validate inputs on submit and then save changes
         Submit ->
@@ -392,6 +442,25 @@ update msg questionnaire =
                     , editMode = False
                 }, Cmd.none)
 
+        SetAnswer ->                                                                    
+            case questionnaire.newElement of
+                Question record ->
+                    ({ questionnaire
+                        | newElement =
+                            Question { record | answers = record.answers ++ [ questionnaire.newAnswer ] }
+                        , showNewAnswerModal = False
+                    }, Cmd.none)
+
+                Note record ->
+                    (questionnaire, Cmd.none)     
+
+        EditAnswer element ->
+            ({ questionnaire
+                | newAnswer = element
+                , showNewAnswerModal = True
+            }, Cmd.none)
+
+        --Edits already existing elements
         EditQuestion element ->
             ({ questionnaire
                 | newElement = element
@@ -539,6 +608,15 @@ answerEncoder answer =
         ]
 
 
+getAntworten : Q_element -> List Answer                            
+getAntworten element =
+    case element of
+        Question record ->
+            record.answers
+
+        Note record ->
+            []
+
 setPredefinedAnswers : String -> List Answer
 setPredefinedAnswers questionType = 
     if questionType == "Ja/Nein Frage" then [ (regularAnswer 0 "Ja"), (regularAnswer 1 "Nein") ]
@@ -550,6 +628,13 @@ regularAnswer int string =
     { id = int
     , text = string
     , typ = "regular" 
+    }
+
+freeAnswer : Int -> String -> Answer                                        
+freeAnswer int string = 
+    { id = int
+    , text = string
+    , typ = "free" 
     }
 
 
@@ -577,6 +662,9 @@ updateElementList : Q_element -> List Q_element -> List Q_element
 updateElementList elementToUpdate list =
     List.map (updateElement elementToUpdate) list
 
+updateAnswerList : Answer -> List Answer -> List Answer
+updateAnswerList answerToUpdate list =
+    List.map (updateAnswer answerToUpdate) list
 
 updateElement elementToUpdate element =
     if getID element == getID elementToUpdate then
@@ -585,6 +673,12 @@ updateElement elementToUpdate element =
     else
         element
 
+updateAnswer answerToUpdate answer =
+    if getAnswerID answer == getAnswerID answerToUpdate then
+        answerToUpdate
+
+    else
+        answer
 
 getID : Q_element -> Int
 getID element =
@@ -595,12 +689,22 @@ getID element =
         Note record ->
             record.id
 
+getAnswerID : Answer -> Int
+getAnswerID answer = answer.id
+
+
 
 deleteItemFrom : Q_element -> List Q_element -> List Q_element
 deleteItemFrom element list =
     Tuple.first (List.partition (\e -> e /= element) list)
 
-
+deleteAnswerFromItem : Answer -> Q_element -> Q_element
+deleteAnswerFromItem answer element =
+    case element of 
+        Question record ->
+            Question { record | answers = Tuple.first (List.partition (\e -> e /= answer) record.answers) }
+        Note record ->
+            Note record
 
 -- Input Validation
 
@@ -643,6 +747,9 @@ getElementText element =
         Note record ->
             record.text
 
+getAnswerText : Answer -> String                                           
+getAnswerText answer = answer.text
+
 
 getQuestionHinweis : Q_element -> String
 getQuestionHinweis element =
@@ -662,6 +769,9 @@ getQuestionTyp element =
 
         Note record ->
             "None"
+
+getAnswerType : Answer -> String                                            
+getAnswerType answer = answer.typ
 
 
 
@@ -735,6 +845,7 @@ showEditQuestionnaire questionnaire =
         , viewViewingTimeModal questionnaire
         , viewNewNoteModal questionnaire
         , viewNewQuestionModal questionnaire
+        , viewNewAnswerModal questionnaire
         ]
 
 
@@ -1034,7 +1145,7 @@ viewNewQuestionModal questionnaire =
                     [ div []
                         [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
                         , br [] []
-                        , button [ style "margin-bottom" "10px" ] [ text "Neue Antwort" ]
+                        , button [ style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
                         , showInputBipolarUnipolar questionnaire
                         , br [] []
                         , text "Fragetext: "
@@ -1083,6 +1194,54 @@ viewNewQuestionModal questionnaire =
 
     else
         div [] []
+
+
+viewNewAnswerModal : Questionnaire -> Html Msg
+viewNewAnswerModal questionnaire =
+    if questionnaire.showNewAnswerModal then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "Neue Antwort" ] ]
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [ text "Antworttext: "
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "100%"
+                            , value (getAnswerText questionnaire.newAnswer)             --getAnswerText, newAnswer
+                            , onInput ChangeAnswerText                                  --ChangeAnswerText
+                            ]
+                            []
+                        ]
+                    , br [] []
+                    , div []
+                        [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)  --getAnswerType, .newAnswer                      
+                        , br [] []
+                        , radio "Fester Wert" (ChangeAnswerType "Fester Wert")      --ChangeAnswerType
+                        , radio "Freie Eingabe" (ChangeAnswerType "Freie Eingabe")   --ChangeAnswerType
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button
+                        [ class "button is-success"
+                        , onClick SetAnswer
+                        ]
+                        [ text "Übernehmen" ]
+                    ]
+                ]
+            , button
+                [ class "modal-close is-large"
+                , onClick (ViewOrClose AnswerModal)
+                ]
+                []
+            ]
+
+    else
+        div [] []
+
 
 -- Show input for bipolar and unipolar Question
 showInputBipolarUnipolar : Questionnaire -> Html Msg
@@ -1205,7 +1364,7 @@ answersTable : Questionnaire -> List (Html Msg)
 answersTable questionnaire =
     case questionnaire.newElement of
         Question record ->
-            append [ tableHead_answers ] (List.indexedMap getAnswerTable record.answers)
+            append [ tableHead_answers ] (List.indexedMap getAnswerTable (getAntworten questionnaire.newElement))
 
         Note record ->
             []
@@ -1221,23 +1380,32 @@ tableHead_answers =
             [ text "Text"
             ]
         , th []
+            [ text "Typ"
+            ]
+        , th []
             [ text "Aktion"
             ]
         ]
 
 
 getAnswerTable : Int -> Answer -> Html Msg
-getAnswerTable index element =
+getAnswerTable index answer =
     tr [ id (String.fromInt index) ]
         [ td [] [ text (String.fromInt index) ]
-        , td [] [ text element.text ]
+        , td [] [ text answer.text ]
+        , td [] [ text answer.typ ]
         , td []
             [ i
                 [ class "fas fa-cog"
                 , style "margin-right" "10px"
+                , onClick (EditAnswer answer)
                 ]
                 []
-            , i [ class "fas fa-trash-alt" ] []
+            , i 
+                [ class "fas fa-trash-alt" 
+                , onClick (DeleteAnswer answer)
+                ] 
+                []
             ]
         ]
 

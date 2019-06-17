@@ -3,7 +3,7 @@ module Main exposing (Answer, Q_element(..), Msg(..), Questionnaire, ValidationR
 import Browser
 import File exposing (File)
 import File.Select as Select
-import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, input, label, p, section, table, td, text, th, tr, thead, tbody)
+import Html exposing (Html, thead, tbody, a, br, button, div, footer, form, h1, header, i, input, label, nav, p, section, span, table, td, text, th, tr)
 import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput, on)
 import Json.Decode as Decode
@@ -727,7 +727,10 @@ showEditQuestionnaire : Questionnaire -> Html Msg
 showEditQuestionnaire questionnaire =
     div []
         [ showHeroQuestionnaireTitle questionnaire
-        , showQuestionList questionnaire
+        , div
+            [ class "table is-striped container is-fluid", style "width" "100%" ]
+            [ table [ class "table is-striped", style "width" "100%" ] [ tableHead_questions ] ]
+        , div [ style "height" "40vh", style "overflow-y" "auto" ] [ showQuestionList questionnaire ]
         , showTimes questionnaire
         , showCreateQuestionOrNoteButtons questionnaire
         , viewTitleModal questionnaire
@@ -1142,7 +1145,9 @@ radio value msg =
 
 questionsTable : Questionnaire -> List (Html Msg)
 questionsTable questionnaire =
-    append [ {- tableHead_questions -} ] (List.indexedMap getQuestionTable questionnaire.elements)
+    {--[ tableHead_questions ]
+        ++--}
+    List.indexedMap getQuestionTable questionnaire.elements
 
 
 tableHead_questions : Html Msg

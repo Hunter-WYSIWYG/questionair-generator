@@ -24,7 +24,6 @@ type
     | ChangeViewingTimeEnd String
     | ChangeQuestionOrNoteText String
     | ChangeAnswerText String                       
-    | ChangeQuestionNewAnswer Answer
     | ChangeQuestionNote String
     | ChangeQuestionType String
     | ChangeAnswerType String                       
@@ -55,7 +54,6 @@ type ModalType
 type alias Questionnaire =
     { title : String
     , elements : List FB_element
-    , answerelements : List Answer
 
     --times
     , viewingTimeBegin : String
@@ -119,7 +117,6 @@ initQuestionnaire : Questionnaire
 initQuestionnaire =
     { title = "Neuer Fragebogen"
     , elements = [ initQuestion ]
-    , answerelements = [initAnswer]
 
     --times
     , viewingTimeBegin = ""
@@ -175,7 +172,7 @@ initAnswer =
 update : Msg -> Questionnaire -> Questionnaire
 update msg questionnaire =
     case msg of
-        --changing input
+        --changing properties of questionnaire
         ChangeQuestionnaireTitle newTitle ->
             { questionnaire | title = newTitle }
 
@@ -212,6 +209,10 @@ update msg questionnaire =
                 | validationResult = validate changedQuestionnaire
             }
 
+        DeleteItem element ->
+            { questionnaire | elements = deleteItemFrom element questionnaire.elements }
+
+        --changing properties of notes or questions
         ChangeQuestionOrNoteText string ->
             let
                 changedRecord rec =
@@ -222,24 +223,8 @@ update msg questionnaire =
                     { questionnaire | newElement = Question (changedRecord record) }
 
                 Note record ->
-                    { questionnaire | newElement = Note (changedRecord record) }
-
-        ChangeAnswerText string ->
-
-            { questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }                              
-            
-        ChangeQuestionNewAnswer newAnswer ->
-            case questionnaire.newElement of
-                Question record ->
-                    { questionnaire
-                        | newElement =
-                            Question
-                                { record | antworten = record.antworten ++ [ newAnswer ] }
-                    }
-
-                Note record ->
-                    questionnaire
-
+                    { questionnaire | newElement = Note (changedRecord record) }                         
+    
         ChangeQuestionNote string ->
             case questionnaire.newElement of
                 Question record ->
@@ -263,6 +248,11 @@ update msg questionnaire =
 
                 Note record ->
                     questionnaire
+
+
+        --changing properties of answers
+        ChangeAnswerText string ->
+            { questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }     
 
         ChangeAnswerType string ->
             { questionnaire
@@ -327,7 +317,7 @@ update msg questionnaire =
                     if changedQuestionnaire.showNewAnswerModal == True then
                         { changedQuestionnaire
                             | newAnswer =
-                                    { id = (List.length questionnaire.answerelements)
+                                    { id = (List.length (getAntworten questionnaire.newElement))
                                     , text = ""
                                     --type can be "free" or "regular"
                                     , typ = ""
@@ -337,14 +327,10 @@ update msg questionnaire =
                     else
                         changedQuestionnaire
 
+        DeleteAnswer answer ->
+            { questionnaire | newElement = deleteAnswerFromItem answer questionnaire.newElement }
 
         --Other
-        DeleteItem element ->
-            { questionnaire | elements = deleteItemFrom element questionnaire.elements }
-
-
-        DeleteAnswer element ->
-            { questionnaire | answerelements = deleteItemFromAnswer element questionnaire.answerelements }
 
         -- validate inputs on submit and then save changes
         Submit ->
@@ -404,21 +390,18 @@ update msg questionnaire =
                 }
 
         SetAnswer ->                                                                    
-            if questionnaire.editMode == False then
-                { questionnaire
-                    | answerelements = append questionnaire.answerelements [ questionnaire.newAnswer ]
-                    , showNewAnswerModal = False
-                }
+            case questionnaire.newElement of
+                Question record ->
+                    { questionnaire
+                        | newElement =
+                            Question { record | antworten = record.antworten ++ [ questionnaire.newAnswer ] }
+                        , showNewAnswerModal = False
+                    }
 
-            else
-                { questionnaire
-                    | answerelements = List.map (\e -> updateAnswer questionnaire.newAnswer e) questionnaire.answerelements
-                    , showNewAnswerModal = False
-                    , editMode = False
-                }
+                Note record ->
+                    questionnaire     
 
-            
-
+        --Edits already existing elements
         EditQuestion element ->
             { questionnaire
                 | newElement = element
@@ -438,7 +421,6 @@ update msg questionnaire =
             { questionnaire
                 | newAnswer = element
                 , showNewAnswerModal = True
-                , editMode = True
             }
 
 
@@ -532,9 +514,13 @@ deleteItemFrom : FB_element -> List FB_element -> List FB_element
 deleteItemFrom element list =
     Tuple.first (List.partition (\e -> e /= element) list)
 
-deleteItemFromAnswer : Answer -> List Answer -> List Answer
-deleteItemFromAnswer element list =
-    Tuple.first (List.partition (\e -> e /= element) list)
+deleteAnswerFromItem : Answer -> FB_element -> FB_element
+deleteAnswerFromItem answer element =
+    case element of 
+        Question record ->
+            Question { record | antworten = Tuple.first (List.partition (\e -> e /= answer) record.antworten) }
+        Note record ->
+            Note record
 
 -- Input Validation
 
@@ -1138,7 +1124,7 @@ answersTable : Questionnaire -> List (Html Msg)
 answersTable questionnaire =
     case questionnaire.newElement of
         Question record ->
-            append [ tableHead_answers ] (List.indexedMap getAnswerTable questionnaire.answerelements)
+            append [ tableHead_answers ] (List.indexedMap getAnswerTable (getAntworten questionnaire.newElement))
 
         Note record ->
             []

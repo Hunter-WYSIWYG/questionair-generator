@@ -1,4 +1,4 @@
-module Main exposing (Answer, Q_element(..), Msg(..), Questionnaire, ValidationResult(..), answersTable, deleteItemFrom, getAnswerTable, getEditTime, getElementText, getID, getQuestionHinweis, getQuestionTable, getQuestionTyp, getViewingTime, initQuestion, initQuestionnaire, main, questionsTable, radio, tableHead_answers, tableHead_questions, update, updateElement, updateElementList, validate, view, viewEditTimeModal, viewNewNoteModal, viewNewQuestionModal, viewTitleModal, viewValidation, viewViewingTimeModal)
+module Main exposing (..)
 
 import Browser
 import File exposing (File)

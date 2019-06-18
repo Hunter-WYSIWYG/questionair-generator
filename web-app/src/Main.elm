@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Browser
 import File exposing (File)
+import File.Download as Download
 import File.Select as Select
 import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, input, label, nav, p, section, table, tbody, thead, td, text, th, tr)
 import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, style, type_, value)
@@ -109,8 +110,8 @@ type alias Questionnaire =
     -- a page to edit Questionnaires
     , editQuestionnaire : Bool
 
-    --Debug
-    , tmp : String
+    --Json export
+    , export : String
     }
 
 
@@ -194,7 +195,7 @@ initQuestionnaire _ =
     , upload = False
 
     --Debug
-    , tmp = ""
+    , export = ""
     }
     , Cmd.none)
 
@@ -557,7 +558,7 @@ update msg questionnaire =
 
         --Everything releated to download
         DownloadQuestionnaire ->
-            ( { questionnaire | tmp = encodeQuestionnaire questionnaire }, Cmd.none )
+            ( questionnaire, save questionnaire (encodeQuestionnaire questionnaire) )
 
 
 getAntworten : Q_element -> List Answer                            
@@ -848,6 +849,11 @@ elementEncoder element =
                 ]
 
 
+--Save to file system
+save : Questionnaire -> String -> Cmd msg
+save questionnaire export =
+  Download.string (questionnaire.title ++ ".json") "application/json" export
+
 
 --encodes answers
 answerEncoder : Answer -> Encode.Value
@@ -916,7 +922,6 @@ showUpload questionnaire =
                 [ button [ onClick JsonRequested ] [ text "Datei auswählen" ]
                 ]
             ]
-        , text questionnaire.tmp
         ]
 
 
@@ -1006,7 +1011,6 @@ showCreateQuestionOrNoteButtons questionnaire =
         , br [] []
         , br [] []
         , button [ onClick DownloadQuestionnaire ] [ text "Download" ]
-        , text questionnaire.tmp
         ]
 
 
@@ -1304,17 +1308,17 @@ viewNewAnswerModal questionnaire =
                             [ class "input"
                             , type_ "text"
                             , style "width" "100%"
-                            , value (getAnswerText questionnaire.newAnswer)             --getAnswerText, newAnswer
-                            , onInput ChangeAnswerText                                  --ChangeAnswerText
+                            , value (getAnswerText questionnaire.newAnswer)             
+                            , onInput ChangeAnswerText                                  
                             ]
                             []
                         ]
                     , br [] []
                     , div []
-                        [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)  --getAnswerType, .newAnswer                      
+                        [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)                       
                         , br [] []
-                        , radio "Fester Wert" (ChangeAnswerType "Fester Wert")      --ChangeAnswerType
-                        , radio "Freie Eingabe" (ChangeAnswerType "Freie Eingabe")   --ChangeAnswerType
+                        , radio "Fester Wert" (ChangeAnswerType "regular")      
+                        , radio "Freie Eingabe" (ChangeAnswerType "free")  
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]

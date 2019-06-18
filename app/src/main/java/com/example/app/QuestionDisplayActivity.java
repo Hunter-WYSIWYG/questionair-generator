@@ -83,7 +83,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		for (int i = 0; i < amountOptions; i++) {
 			pressedButtons.add(false);
 		}
-		TextView questiontypeTV = (TextView)findViewById(R.id.QuestionText);
+		TextView questiontypeTV = (TextView)findViewById(R.id.qTypeText);
 		switch (currentQ.getType()) {
 			case SingleChoice:
 				questiontypeTV.setText("Single-Choice-Frage");

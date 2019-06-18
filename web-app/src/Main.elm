@@ -899,7 +899,7 @@ showNavbar : Html Msg
 showNavbar =
     nav [ class "navbar is-link is-fixed-top" ]
         [ div [ class "navbar-brand" ]
-            [ h1 [ style "vertical-align" "middle", class "navbar-item title is-4" ] [ text "Fragebogengenerator" ] ]
+            [ p [ class "navbar-item", style "padding-top" "0.5em" ] [ text "Fragebogengenerator" ] ]
         , div [ class "navbar-menu" ]
             [ div [ class "navbar-start" ]
                 [ a [ class "navbar-item", onClick EditQuestionnaire ] [ text "Fragebogen Erstellen" ]

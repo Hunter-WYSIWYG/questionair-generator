@@ -36,27 +36,32 @@ type
     | ChangeAnswerText String                       
     | ChangeQuestionNote String
     | ChangeQuestionType String
-    | ChangeAnswerType String                       
-      --Modals
+    | ChangeAnswerType String     
+    | ChangeQuestionNewAnswer Answer              
+    --Modals
     | ViewOrClose ModalType
-      --Other
+    --Save input to questionnaire
     | SetNote
     | SetQuestion
     | SetAnswer                       
     | SetPolarAnswers String
+    --Edit existing elements or answers
     | EditQuestion Q_element
     | EditNote Q_element
-    | DeleteItem Q_element
     | EditAnswer Answer
-    | ChangeQuestionNewAnswer Answer
-    | DeleteAnswer Answer
-    | Submit
     | EditQuestionnaire
+    --Delete existing elements or answers
+    | DeleteItem Q_element
+    | DeleteAnswer Answer
+    --Validation of times
+    | Submit
+    --Everything releated to upload
     | LeaveOrEnterUpload
     | EnterUpload
     | JsonRequested
     | JsonSelected File
     | JsonLoaded String
+    --Everything releated to download
     | DownloadQuestionnaire
 
 
@@ -218,7 +223,7 @@ initAnswer =
 update : Msg -> Questionnaire -> ( Questionnaire, Cmd Msg )
 update msg questionnaire =
     case msg of
-        --changing properties of questionnaire
+        --changing properties of notes or questions or answers
         ChangeQuestionnaireTitle newTitle ->
             ( { questionnaire | title = newTitle }, Cmd.none )
 
@@ -261,10 +266,6 @@ update msg questionnaire =
             , Cmd.none
             )
 
-        DeleteItem element ->
-            ({ questionnaire | elements = deleteItemFrom element questionnaire.elements }, Cmd.none)
-
-        --changing properties of notes or questions
         ChangeQuestionOrNoteText string ->
             let
                 changedRecord rec =
@@ -319,8 +320,6 @@ update msg questionnaire =
                 Note record ->
                     ( questionnaire, Cmd.none )
 
-
-        --changing properties of answers
         ChangeAnswerText string ->
             ({ questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }, Cmd.none)     
 
@@ -401,35 +400,7 @@ update msg questionnaire =
                     else
                         (changedQuestionnaire, Cmd.none)
 
-        DeleteAnswer answer ->
-            ({ questionnaire | newElement = deleteAnswerFromItem answer questionnaire.newElement }, Cmd.none)
-
-        --Other
-
-        -- validate inputs on submit and then save changes
-        Submit ->
-            if validate questionnaire == ValidationOK then
-                ( { questionnaire
-                    | validationResult = ValidationOK
-                    , showViewingTimeModal = False
-                    , showEditTimeModal = False
-                    , editTime = questionnaire.inputEditTime
-                    , viewingTimeBegin = questionnaire.inputViewingTimeBegin
-                    , viewingTimeEnd = questionnaire.inputViewingTimeEnd
-                  }
-                , Cmd.none
-                )
-
-            else
-                ( { questionnaire
-                    | validationResult = validate questionnaire
-                    , inputViewingTimeBegin = ""
-                    , inputViewingTimeEnd = ""
-                    , inputEditTime = ""
-                  }
-                , Cmd.none
-                )
-
+        --Save input to questionnaire
         SetPolarAnswers string ->
             case questionnaire.newElement of
                 Question record ->
@@ -488,7 +459,9 @@ update msg questionnaire =
                     }, Cmd.none)
 
                 Note record ->
-                    (questionnaire, Cmd.none)     
+                    (questionnaire, Cmd.none)    
+
+        --Edits already existing elements
 
         EditAnswer element ->
             ({ questionnaire
@@ -496,7 +469,6 @@ update msg questionnaire =
                 , showNewAnswerModal = True
             }, Cmd.none)
 
-        --Edits already existing elements
         EditQuestion element ->
             ( { questionnaire
                 | newElement = element
@@ -513,7 +485,43 @@ update msg questionnaire =
                 , editMode = True
               }
             , Cmd.none
-            )
+            ) 
+
+        EditQuestionnaire ->
+            ( { questionnaire | upload = False, editQuestionnaire = True }, Cmd.none )
+
+        --Delete existing elements or answers
+        DeleteItem element ->
+            ({ questionnaire | elements = deleteItemFrom element questionnaire.elements }, Cmd.none)
+
+        DeleteAnswer answer ->
+            ({ questionnaire | newElement = deleteAnswerFromItem answer questionnaire.newElement }, Cmd.none)
+
+        -- validate inputs on submit and then save changes
+        Submit ->
+            if validate questionnaire == ValidationOK then
+                ( { questionnaire
+                    | validationResult = ValidationOK
+                    , showViewingTimeModal = False
+                    , showEditTimeModal = False
+                    , editTime = questionnaire.inputEditTime
+                    , viewingTimeBegin = questionnaire.inputViewingTimeBegin
+                    , viewingTimeEnd = questionnaire.inputViewingTimeEnd
+                  }
+                , Cmd.none
+                )
+
+            else
+                ( { questionnaire
+                    | validationResult = validate questionnaire
+                    , inputViewingTimeBegin = ""
+                    , inputViewingTimeEnd = ""
+                    , inputEditTime = ""
+                  }
+                , Cmd.none
+                )        
+
+        --Everything releated to upload
 
         EnterUpload ->
             ( { questionnaire
@@ -529,10 +537,6 @@ update msg questionnaire =
             , Cmd.none
             )
 
-        EditQuestionnaire ->
-            ( { questionnaire | upload = False, editQuestionnaire = True }, Cmd.none )
-
-        --Json
         JsonRequested ->
             ( questionnaire
             , Select.file [ "text/json" ] JsonSelected
@@ -551,136 +555,9 @@ update msg questionnaire =
             , Cmd.none
             )
 
+        --Everything releated to download
         DownloadQuestionnaire ->
             ( { questionnaire | tmp = encodeQuestionnaire questionnaire }, Cmd.none )
-
-
-
--- extracts the title of the questionnaire
-
-
-decodeTitle : String -> String
-decodeTitle content =
-    case Decode.decodeString (Decode.field "title" Decode.string) content of
-        Ok val ->
-            val
-
-        Err e ->
-            ""
-
-
-
---extracts the elements (notes, questions) of the questionnaire
-
-
-decodeElements : String -> List Q_element
-decodeElements content =
-    case Decode.decodeString (Decode.at [ "elements" ] (Decode.list elementDecoder)) content of
-        Ok elements ->
-            elements
-
-        Err e ->
-            []
-
-
-
---decodes the elements either to a note, or to a question
-
-
-elementDecoder : Decode.Decoder Q_element
-elementDecoder =
-    Decode.oneOf [ questionDecoder, noteDecoder ]
-
-
-
---decodes a note
-
-
-noteDecoder : Decode.Decoder Q_element
-noteDecoder =
-    Decode.map2 NoteRecord
-        (Decode.field "id" Decode.int)
-        (Decode.field "text" Decode.string)
-        |> Decode.map Note
-
-
-
---decodes a question
-
-
-questionDecoder : Decode.Decoder Q_element
-questionDecoder =
-    Decode.map5 QuestionRecord
-        (Decode.field "id" Decode.int)
-        (Decode.field "text" Decode.string)
-        (Decode.field "answers" (Decode.list answerDecoder))
-        (Decode.field "hint" Decode.string)
-        (Decode.field "question_type" Decode.string)
-        |> Decode.map Question
-
-
-
---decodes a answer
-
-
-answerDecoder : Decode.Decoder Answer
-answerDecoder =
-    Decode.map3 Answer
-        (Decode.field "id" Decode.int)
-        (Decode.field "text" Decode.string)
-        (Decode.field "_type" Decode.string)
-
-
-
---encodes questionnaire as a json
-
-
-encodeQuestionnaire : Questionnaire -> String
-encodeQuestionnaire questionnaire =
-    encode 4
-        (object
-            [ ( "title", Encode.string questionnaire.title )
-            , ( "elements", Encode.list elementEncoder questionnaire.elements )
-            ]
-        )
-
-
-
---encodes Q_element
-
-
-elementEncoder : Q_element -> Encode.Value
-elementEncoder element =
-    case element of
-        Note record ->
-            object
-                [ ( "_type", Encode.string "Note" )
-                , ( "id", Encode.int record.id )
-                , ( "text", Encode.string record.text )
-                ]
-
-        Question record ->
-            object
-                [ ( "_type", Encode.string "Question" )
-                , ( "id", Encode.int record.id )
-                , ( "text", Encode.string record.text )
-                , ( "hint", Encode.string record.hint )
-                , ( "question_type", Encode.string record.typ )
-                , ( "answers", Encode.list answerEncoder record.answers )
-                ]
-
-
-
---encodes answers
-
-
-answerEncoder : Answer -> Encode.Value
-answerEncoder answer =
-    object
-        [ ( "id", Encode.int answer.id )
-        , ( "text", Encode.string answer.text )
-        , ( "_type", Encode.string answer.typ )
-        ]
 
 
 getAntworten : Q_element -> List Answer                            
@@ -691,6 +568,7 @@ getAntworten element =
 
         Note record ->
             []
+
 
 setPredefinedAnswers : String -> List Answer
 setPredefinedAnswers questionType =
@@ -707,6 +585,7 @@ regularAnswer int string =
     , text = string
     , typ = "regular"
     }
+
 
 freeAnswer : Int -> String -> Answer                                        
 freeAnswer int string = 
@@ -749,9 +628,11 @@ updateElementList : Q_element -> List Q_element -> List Q_element
 updateElementList elementToUpdate list =
     List.map (updateElement elementToUpdate) list
 
+
 updateAnswerList : Answer -> List Answer -> List Answer
 updateAnswerList answerToUpdate list =
     List.map (updateAnswer answerToUpdate) list
+
 
 updateElement elementToUpdate element =
     if getID element == getID elementToUpdate then
@@ -760,12 +641,14 @@ updateElement elementToUpdate element =
     else
         element
 
+
 updateAnswer answerToUpdate answer =
     if getAnswerID answer == getAnswerID answerToUpdate then
         answerToUpdate
 
     else
         answer
+
 
 getID : Q_element -> Int
 getID element =
@@ -776,14 +659,15 @@ getID element =
         Note record ->
             record.id
 
+
 getAnswerID : Answer -> Int
 getAnswerID answer = answer.id
-
 
 
 deleteItemFrom : Q_element -> List Q_element -> List Q_element
 deleteItemFrom element list =
     Tuple.first (List.partition (\e -> e /= element) list)
+
 
 deleteAnswerFromItem : Answer -> Q_element -> Q_element
 deleteAnswerFromItem answer element =
@@ -860,6 +744,119 @@ getQuestionTyp element =
 getAnswerType : Answer -> String                                            
 getAnswerType answer = answer.typ
 
+
+--DECODER
+
+
+-- extracts the title of the questionnaire
+decodeTitle : String -> String
+decodeTitle content =
+    case Decode.decodeString (Decode.field "title" Decode.string) content of
+        Ok val ->
+            val
+
+        Err e ->
+            ""
+
+
+
+--extracts the elements (notes, questions) of the questionnaire
+decodeElements : String -> List Q_element
+decodeElements content =
+    case Decode.decodeString (Decode.at [ "elements" ] (Decode.list elementDecoder)) content of
+        Ok elements ->
+            elements
+
+        Err e ->
+            []
+
+
+
+--decodes the elements either to a note, or to a question
+elementDecoder : Decode.Decoder Q_element
+elementDecoder =
+    Decode.oneOf [ questionDecoder, noteDecoder ]
+
+
+
+--decodes a note
+noteDecoder : Decode.Decoder Q_element
+noteDecoder =
+    Decode.map2 NoteRecord
+        (Decode.field "id" Decode.int)
+        (Decode.field "text" Decode.string)
+        |> Decode.map Note
+
+
+
+--decodes a question
+questionDecoder : Decode.Decoder Q_element
+questionDecoder =
+    Decode.map5 QuestionRecord
+        (Decode.field "id" Decode.int)
+        (Decode.field "text" Decode.string)
+        (Decode.field "answers" (Decode.list answerDecoder))
+        (Decode.field "hint" Decode.string)
+        (Decode.field "question_type" Decode.string)
+        |> Decode.map Question
+
+
+
+--decodes a answer
+answerDecoder : Decode.Decoder Answer
+answerDecoder =
+    Decode.map3 Answer
+        (Decode.field "id" Decode.int)
+        (Decode.field "text" Decode.string)
+        (Decode.field "_type" Decode.string)
+
+
+--ENCODER
+
+
+--encodes questionnaire as a json
+encodeQuestionnaire : Questionnaire -> String
+encodeQuestionnaire questionnaire =
+    encode 4
+        (object
+            [ ( "title", Encode.string questionnaire.title )
+            , ( "elements", Encode.list elementEncoder questionnaire.elements )
+            ]
+        )
+
+
+
+--encodes Q_element
+elementEncoder : Q_element -> Encode.Value
+elementEncoder element =
+    case element of
+        Note record ->
+            object
+                [ ( "_type", Encode.string "Note" )
+                , ( "id", Encode.int record.id )
+                , ( "text", Encode.string record.text )
+                ]
+
+        Question record ->
+            object
+                [ ( "_type", Encode.string "Question" )
+                , ( "id", Encode.int record.id )
+                , ( "text", Encode.string record.text )
+                , ( "hint", Encode.string record.hint )
+                , ( "question_type", Encode.string record.typ )
+                , ( "answers", Encode.list answerEncoder record.answers )
+                ]
+
+
+
+--encodes answers
+answerEncoder : Answer -> Encode.Value
+answerEncoder answer =
+    object
+        [ ( "id", Encode.int answer.id )
+        , ( "text", Encode.string answer.text )
+        , ( "_type", Encode.string answer.typ )
+        ]
 
 
 --View
@@ -1033,7 +1030,6 @@ getEditTime questionnaire =
 
     else
         "Von " ++ questionnaire.viewingTimeBegin ++ " Bis " ++ questionnaire.viewingTimeEnd
-
 
 
 --MODALS

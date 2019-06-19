@@ -1255,7 +1255,7 @@ viewNewQuestionModal questionnaire =
                             ]
                             []
                         , br [] []
-                        , text "hint: "
+                        , text "Hinweis: "
                         , input
                             [ class "input"
                             , type_ "text"
@@ -1405,7 +1405,7 @@ tableHead_questions =
              [ text "Fragetext"
              ]
         , th [style "width" "25%"]
-             [ text "hint"
+             [ text "Hinweis"
              ]
         , th [style "width" "20%"]
              [ text "Typ"

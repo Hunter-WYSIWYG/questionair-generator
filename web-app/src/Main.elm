@@ -10,6 +10,7 @@ import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Json.Encode as Encode exposing (encode, object)
 import List exposing (append)
+import List.Extra exposing (swapAt, updateAt)
 import Task
 
 
@@ -51,6 +52,11 @@ type
     | EditNote Q_element
     | EditAnswer Answer
     | EditQuestionnaire
+    --Change order of elements
+    | PutUpEl Q_element
+    | PutDownEl Q_element
+    | PutUpAns Answer
+    | PutDownAns Answer
     --Delete existing elements or answers
     | DeleteItem Q_element
     | DeleteAnswer Answer
@@ -109,9 +115,6 @@ type alias Questionnaire =
 
     -- a page to edit Questionnaires
     , editQuestionnaire : Bool
-
-    --Json export
-    , export : String
     }
 
 
@@ -193,9 +196,6 @@ initQuestionnaire _ =
     , editMode = False
     , editQuestionnaire = True
     , upload = False
-
-    --Debug
-    , export = ""
     }
     , Cmd.none)
 
@@ -491,6 +491,27 @@ update msg questionnaire =
         EditQuestionnaire ->
             ( { questionnaire | upload = False, editQuestionnaire = True }, Cmd.none )
 
+        --Change order of elements
+        PutDownEl element ->
+            if (getID element) /= ((List.length questionnaire.elements) - 1) 
+            then ({ questionnaire | elements = putElementDown questionnaire.elements element }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutUpEl element ->
+            if (getID element) /= 0
+            then ({ questionnaire | elements = putElementUp questionnaire.elements element }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutUpAns answer ->
+            if answer.id /= 0
+            then ({ questionnaire | newElement = putAnswerUp questionnaire.newElement answer }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutDownAns answer ->
+            if answer.id /= ((List.length (getAntworten questionnaire.newElement)) - 1)
+            then ({ questionnaire | newElement = putAnswerDown questionnaire.newElement answer }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
         --Delete existing elements or answers
         DeleteItem element ->
             ({ questionnaire | elements = deleteItemFrom element questionnaire.elements }, Cmd.none)
@@ -559,6 +580,62 @@ update msg questionnaire =
         --Everything releated to download
         DownloadQuestionnaire ->
             ( questionnaire, save questionnaire (encodeQuestionnaire questionnaire) )
+
+
+--helper for changing order of elements
+putElementDown : List Q_element -> Q_element -> List Q_element
+putElementDown list element = 
+    swapAt (getID element) ((getID element) + 1) (List.map (updateID (getID element) ((getID element) + 1)) list)
+    --List.map (updateID (getID element) ((getID element) + 1)) list
+
+
+putElementUp : List Q_element -> Q_element -> List Q_element
+putElementUp list element = 
+    swapAt (getID element) ((getID element) - 1) (List.map (updateID (getID element) ((getID element) - 1)) list)
+
+
+putAnswerUp : Q_element -> Answer -> Q_element
+putAnswerUp newElement answer =
+    case newElement of 
+        Note record ->
+            Note record
+
+        Question record ->
+            Question { record | answers = swapAt answer.id (answer.id - 1) (List.map (updateAnsID answer.id (answer.id - 1)) record.answers)}
+
+
+putAnswerDown : Q_element -> Answer -> Q_element
+putAnswerDown newElement answer =
+    case newElement of 
+        Note record ->
+            Note record
+
+        Question record ->
+            Question { record | answers = swapAt answer.id (answer.id + 1) (List.map (updateAnsID answer.id (answer.id + 1)) record.answers)}
+
+
+setNewID : Q_element -> Int -> Q_element
+setNewID element new =
+    case element of 
+        Note record ->
+            Note { record | id = new }
+
+        Question record -> 
+            Question { record | id = new }
+
+
+updateID : Int -> Int -> Q_element -> Q_element
+updateID old new element =   
+    if (getID element) == old then (setNewID element new)
+    else if (getID element) == new then (setNewID element old) 
+    else element
+
+
+updateAnsID : Int -> Int -> Answer -> Answer
+updateAnsID old new answer =
+    if answer.id == old then { answer | id = new }
+    else if answer.id == new then { answer | id = old }
+    else answer
 
 
 getAntworten : Q_element -> List Answer                            
@@ -1442,9 +1519,20 @@ getQuestionTable index element =
                 , td [style "width" "25%"] []
                 , td [style "width" "20%"] []
                 , td [style "width" "10%"]
-                    [ i
+                    [ i 
+                        [ class "fas fa-arrow-up"
+                        , onClick (PutUpEl element) ]
+                        []
+                    , i 
+                        [ class "fas fa-arrow-down"
+                        , onClick (PutDownEl element)
+                        , style "margin-left" "1em"
+                        , style "margin-right" "1em" ]
+                        []
+                    , i
                         [ class "fas fa-cog"
                         , onClick (EditNote element)
+                        , style "margin-right" "1em"
                         ]
                         []
                     , i
@@ -1462,10 +1550,20 @@ getQuestionTable index element =
                 , td [style "width" "25%"] [ text f.hint ]
                 , td [style "width" "20%"] [ text f.typ ]
                 , td [style "width" "10%"]
-                    [ i
+                    [ i 
+                        [ class "fas fa-arrow-up"
+                        , onClick (PutUpEl element) ] 
+                        []
+                    , i 
+                        [ class "fas fa-arrow-down"
+                        , onClick (PutDownEl element) 
+                        , style "margin-left" "1em"
+                        , style "margin-right" "1em"]
+                        []
+                    , i
                         [ class "fas fa-cog"
                         , onClick (EditQuestion element)
-                        ]
+                        , style "margin-right" "1em"]
                         []
                     , i
                         [ class "fas fa-trash-alt"
@@ -1515,9 +1613,19 @@ getAnswerTable index answer =
         , td [] [ text answer.text ]
         , td [] [ text answer.typ ]
         , td []
-            [ i
+            [ i 
+                [ class "fas fa-arrow-up"
+                , onClick (PutUpAns answer) ] 
+                []
+            , i 
+                [ class "fas fa-arrow-down"
+                , onClick (PutDownAns answer)
+                , style "margin-left" "1em"
+                , style "margin-right" "1em" ]
+                []
+            , i
                 [ class "fas fa-cog"
-                , style "margin-right" "10px"
+                , style "margin-right" "1em"
                 , onClick (EditAnswer answer)
                 ]
                 []

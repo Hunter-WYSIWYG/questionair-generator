@@ -10,6 +10,7 @@ import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Json.Encode as Encode exposing (encode, object)
 import List exposing (append)
+import List.Extra exposing (swapAt, updateAt)
 import Task
 
 
@@ -51,6 +52,9 @@ type
     | EditNote Q_element
     | EditAnswer Answer
     | EditQuestionnaire
+    --Change order of elements
+    | PutUp Q_element
+    | PutDown Q_element
     --Delete existing elements or answers
     | DeleteItem Q_element
     | DeleteAnswer Answer
@@ -112,6 +116,7 @@ type alias Questionnaire =
 
     --Json export
     , export : String
+    , tmp : List Int
     }
 
 
@@ -196,6 +201,7 @@ initQuestionnaire _ =
 
     --Debug
     , export = ""
+    , tmp = [1,2,3]
     }
     , Cmd.none)
 
@@ -491,6 +497,17 @@ update msg questionnaire =
         EditQuestionnaire ->
             ( { questionnaire | upload = False, editQuestionnaire = True }, Cmd.none )
 
+        --Change order of elements
+        PutDown element ->
+            if (getID element) /= ((List.length questionnaire.elements) - 1) 
+            then ({ questionnaire | elements = putElementDown questionnaire.elements element }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutUp element ->
+            if (getID element) /= 0
+            then ({ questionnaire | elements = putElementUp questionnaire.elements element }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
         --Delete existing elements or answers
         DeleteItem element ->
             ({ questionnaire | elements = deleteItemFrom element questionnaire.elements }, Cmd.none)
@@ -560,6 +577,34 @@ update msg questionnaire =
         DownloadQuestionnaire ->
             ( questionnaire, save questionnaire (encodeQuestionnaire questionnaire) )
 
+
+--helper for changing order of elements
+putElementDown : List Q_element -> Q_element -> List Q_element
+putElementDown list element = 
+    swapAt (getID element) ((getID element) + 1) (List.map (updateID (getID element) ((getID element) + 1)) list)
+    --List.map (updateID (getID element) ((getID element) + 1)) list
+
+
+putElementUp : List Q_element -> Q_element -> List Q_element
+putElementUp list element = 
+    swapAt (getID element) ((getID element) - 1) (List.map (updateID (getID element) ((getID element) - 1)) list)
+
+
+setNewID : Q_element -> Int -> Q_element
+setNewID element new =
+    case element of 
+        Note record ->
+            Note { record | id = new }
+
+        Question record -> 
+            Question { record | id = new }
+
+
+updateID : Int -> Int -> Q_element -> Q_element
+updateID old new element =   
+    if (getID element) == old then (setNewID element new)
+    else if (getID element) == new then (setNewID element old) 
+    else element
 
 getAntworten : Q_element -> List Answer                            
 getAntworten element =
@@ -938,6 +983,7 @@ showEditQuestionnaire questionnaire =
         , viewNewNoteModal questionnaire
         , viewNewQuestionModal questionnaire
         , viewNewAnswerModal questionnaire
+        , text (Debug.toString questionnaire.elements)
         ]
 
 
@@ -1427,7 +1473,15 @@ getQuestionTable index element =
                 , td [style "width" "25%"] []
                 , td [style "width" "20%"] []
                 , td [style "width" "10%"]
-                    [ i
+                    [ i 
+                        [ class "fas fa-arrow-up"
+                        , onClick (PutUp element) ]
+                        []
+                    , i 
+                        [ class "fas fa-arrow-down"
+                        , onClick (PutDown element) ]
+                        []
+                    , i
                         [ class "fas fa-cog"
                         , onClick (EditNote element)
                         ]
@@ -1447,7 +1501,15 @@ getQuestionTable index element =
                 , td [style "width" "25%"] [ text f.hint ]
                 , td [style "width" "20%"] [ text f.typ ]
                 , td [style "width" "10%"]
-                    [ i
+                    [ i 
+                        [ class "fas fa-arrow-up"
+                        , onClick (PutUp element) ] 
+                        []
+                    , i 
+                        [ class "fas fa-arrow-down"
+                        , onClick (PutDown element) ]
+                        []
+                    , i
                         [ class "fas fa-cog"
                         , onClick (EditQuestion element)
                         ]

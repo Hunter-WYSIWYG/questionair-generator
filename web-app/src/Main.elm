@@ -1510,11 +1510,14 @@ getQuestionTable index element =
                         []
                     , i 
                         [ class "fas fa-arrow-down"
-                        , onClick (PutDownEl element) ]
+                        , onClick (PutDownEl element)
+                        , style "margin-left" "1em"
+                        , style "margin-right" "1em" ]
                         []
                     , i
                         [ class "fas fa-cog"
                         , onClick (EditNote element)
+                        , style "margin-right" "1em"
                         ]
                         []
                     , i
@@ -1538,12 +1541,14 @@ getQuestionTable index element =
                         []
                     , i 
                         [ class "fas fa-arrow-down"
-                        , onClick (PutDownEl element) ]
+                        , onClick (PutDownEl element) 
+                        , style "margin-left" "1em"
+                        , style "margin-right" "1em"]
                         []
                     , i
                         [ class "fas fa-cog"
                         , onClick (EditQuestion element)
-                        ]
+                        , style "margin-right" "1em"]
                         []
                     , i
                         [ class "fas fa-trash-alt"
@@ -1599,11 +1604,13 @@ getAnswerTable index answer =
                 []
             , i 
                 [ class "fas fa-arrow-down"
-                , onClick (PutDownAns answer) ]
+                , onClick (PutDownAns answer)
+                , style "margin-left" "1em"
+                , style "margin-right" "1em" ]
                 []
             , i
                 [ class "fas fa-cog"
-                , style "margin-right" "10px"
+                , style "margin-right" "1em"
                 , onClick (EditAnswer answer)
                 ]
                 []

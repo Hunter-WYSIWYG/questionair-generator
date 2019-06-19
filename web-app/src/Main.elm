@@ -573,6 +573,8 @@ update msg questionnaire =
             ( { questionnaire
                 | title = decodeTitle content
                 , elements = decodeElements content
+                , upload = False
+                , editQuestionnaire = True
               }
             , Cmd.none
             )

@@ -1243,6 +1243,7 @@ viewNewQuestionModal questionnaire =
                         [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
                         , br [] []
                         , button [ style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                        , br [] []
                         , showInputBipolarUnipolar questionnaire
                         , br [] []
                         , text "Fragetext: "
@@ -1347,19 +1348,33 @@ showInputBipolarUnipolar : Questionnaire -> Html Msg
 showInputBipolarUnipolar questionnaire =
     case questionnaire.newElement of
         Question record ->
-            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" then
-                input
-                    [ class "input"
-                    , type_ "text"
-                    , style "width" "100px"
-                    , style "margin-left" "10px"
-                    , style "margin-top" "2px"
-                    , placeholder "Anzahl answers"
-                    , onInput SetPolarAnswers
+            if record.typ == "Skaliert unipolar" then
+                div []
+                    [ text "Bitte Anzahl Antworten (insgesamt) eingeben"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetPolarAnswers
+                        ]
+                        []
                     ]
-                    []
-
-            else
+            else if record.typ == "Skaliert bipolar" then
+                div []
+                    [ text "Bitte Anzahl Antworten (pro Skalenrichtung) eingeben"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetPolarAnswers
+                        ]
+                        []
+                    ]
+            else 
                 div [] []
 
         Note record ->

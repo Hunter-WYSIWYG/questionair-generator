@@ -53,8 +53,10 @@ type
     | EditAnswer Answer
     | EditQuestionnaire
     --Change order of elements
-    | PutUp Q_element
-    | PutDown Q_element
+    | PutUpEl Q_element
+    | PutDownEl Q_element
+    | PutUpAns Answer
+    | PutDownAns Answer
     --Delete existing elements or answers
     | DeleteItem Q_element
     | DeleteAnswer Answer
@@ -113,10 +115,6 @@ type alias Questionnaire =
 
     -- a page to edit Questionnaires
     , editQuestionnaire : Bool
-
-    --Json export
-    , export : String
-    , tmp : List Int
     }
 
 
@@ -198,10 +196,6 @@ initQuestionnaire _ =
     , editMode = False
     , editQuestionnaire = True
     , upload = False
-
-    --Debug
-    , export = ""
-    , tmp = [1,2,3]
     }
     , Cmd.none)
 
@@ -498,14 +492,24 @@ update msg questionnaire =
             ( { questionnaire | upload = False, editQuestionnaire = True }, Cmd.none )
 
         --Change order of elements
-        PutDown element ->
+        PutDownEl element ->
             if (getID element) /= ((List.length questionnaire.elements) - 1) 
             then ({ questionnaire | elements = putElementDown questionnaire.elements element }, Cmd.none)
             else (questionnaire, Cmd.none)
 
-        PutUp element ->
+        PutUpEl element ->
             if (getID element) /= 0
             then ({ questionnaire | elements = putElementUp questionnaire.elements element }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutUpAns answer ->
+            if answer.id /= 0
+            then ({ questionnaire | newElement = putAnswerUp questionnaire.newElement answer }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutDownAns answer ->
+            if answer.id /= ((List.length (getAntworten questionnaire.newElement)) - 1)
+            then ({ questionnaire | newElement = putAnswerDown questionnaire.newElement answer }, Cmd.none)
             else (questionnaire, Cmd.none)
 
         --Delete existing elements or answers
@@ -590,6 +594,26 @@ putElementUp list element =
     swapAt (getID element) ((getID element) - 1) (List.map (updateID (getID element) ((getID element) - 1)) list)
 
 
+putAnswerUp : Q_element -> Answer -> Q_element
+putAnswerUp newElement answer =
+    case newElement of 
+        Note record ->
+            Note record
+
+        Question record ->
+            Question { record | answers = swapAt answer.id (answer.id - 1) (List.map (updateAnsID answer.id (answer.id - 1)) record.answers)}
+
+
+putAnswerDown : Q_element -> Answer -> Q_element
+putAnswerDown newElement answer =
+    case newElement of 
+        Note record ->
+            Note record
+
+        Question record ->
+            Question { record | answers = swapAt answer.id (answer.id + 1) (List.map (updateAnsID answer.id (answer.id + 1)) record.answers)}
+
+
 setNewID : Q_element -> Int -> Q_element
 setNewID element new =
     case element of 
@@ -605,6 +629,14 @@ updateID old new element =
     if (getID element) == old then (setNewID element new)
     else if (getID element) == new then (setNewID element old) 
     else element
+
+
+updateAnsID : Int -> Int -> Answer -> Answer
+updateAnsID old new answer =
+    if answer.id == old then { answer | id = new }
+    else if answer.id == new then { answer | id = old }
+    else answer
+
 
 getAntworten : Q_element -> List Answer                            
 getAntworten element =
@@ -983,7 +1015,6 @@ showEditQuestionnaire questionnaire =
         , viewNewNoteModal questionnaire
         , viewNewQuestionModal questionnaire
         , viewNewAnswerModal questionnaire
-        , text (Debug.toString questionnaire.elements)
         ]
 
 
@@ -1475,11 +1506,11 @@ getQuestionTable index element =
                 , td [style "width" "10%"]
                     [ i 
                         [ class "fas fa-arrow-up"
-                        , onClick (PutUp element) ]
+                        , onClick (PutUpEl element) ]
                         []
                     , i 
                         [ class "fas fa-arrow-down"
-                        , onClick (PutDown element) ]
+                        , onClick (PutDownEl element) ]
                         []
                     , i
                         [ class "fas fa-cog"
@@ -1503,11 +1534,11 @@ getQuestionTable index element =
                 , td [style "width" "10%"]
                     [ i 
                         [ class "fas fa-arrow-up"
-                        , onClick (PutUp element) ] 
+                        , onClick (PutUpEl element) ] 
                         []
                     , i 
                         [ class "fas fa-arrow-down"
-                        , onClick (PutDown element) ]
+                        , onClick (PutDownEl element) ]
                         []
                     , i
                         [ class "fas fa-cog"
@@ -1562,7 +1593,15 @@ getAnswerTable index answer =
         , td [] [ text answer.text ]
         , td [] [ text answer.typ ]
         , td []
-            [ i
+            [ i 
+                [ class "fas fa-arrow-up"
+                , onClick (PutUpAns answer) ] 
+                []
+            , i 
+                [ class "fas fa-arrow-down"
+                , onClick (PutDownAns answer) ]
+                []
+            , i
                 [ class "fas fa-cog"
                 , style "margin-right" "10px"
                 , onClick (EditAnswer answer)

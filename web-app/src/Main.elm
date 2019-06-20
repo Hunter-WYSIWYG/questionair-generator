@@ -42,6 +42,9 @@ type
     | ChangeQuestionNewAnswer Answer              
     --Modals
     | ViewOrClose ModalType
+    --Creates Condition
+    | AddCondition Int Int
+    | AddConditionAnswers (List Answer)
     --Save input to questionnaire
     | SetNote
     | SetQuestion
@@ -85,6 +88,7 @@ type alias Questionnaire =
     { title : String
     , elements : List Q_element
     , conditions : List Condition
+    , newCondition : Condition
 
     --times
     , viewingTimeBegin : String
@@ -158,14 +162,12 @@ type ValidationResult
     | ValidationOK
 
 
-
 -- SUBSCRIPTIONS
 
 
 subscriptions : Questionnaire -> Sub Msg
 subscriptions model =
     Sub.none
-
 
 
 --Init
@@ -176,6 +178,7 @@ initQuestionnaire _ =
     ({ title = "Titel eingeben"
     , elements = []
     , conditions = []
+    , newCondition = initCondition
 
     --times
     , viewingTimeBegin = ""
@@ -222,6 +225,13 @@ initAnswer =
     , text = ""
     --type can be "free" or "regular"
     , typ = ""
+    }
+
+initCondition : Condition
+initCondition = 
+    { parent_id = 0
+    , child_id = 0
+    , answers = []
     }
 
 --Update logic
@@ -406,6 +416,17 @@ update msg questionnaire =
 
                     else
                         (changedQuestionnaire, Cmd.none)
+
+        --Add Condition
+        AddCondition parent child ->
+            ({ questionnaire 
+                | newCondition = setParentChildInCondition parent child questionnaire.newCondition
+            }, Cmd.none)
+
+        AddConditionAnswers list ->
+            ({ questionnaire 
+                | newCondition = setAnswersInCondition list questionnaire.newCondition
+            }, Cmd.none)
 
         --Save input to questionnaire
         SetPolarAnswers string ->
@@ -718,6 +739,21 @@ deleteAnswerInCondition id condition =
 deleteCondAnswer : List Answer -> Int -> List Answer
 deleteCondAnswer list id =
     Tuple.first (List.partition (\answer -> answer.id /= id) list) 
+
+
+setParentChildInCondition : Int -> Int -> Condition -> Condition
+setParentChildInCondition parent child condition =
+    { condition
+        | parent_id = parent
+        , child_id = child 
+    }
+
+
+setAnswersInCondition : List Answer -> Condition -> Condition
+setAnswersInCondition list condition = 
+    { condition
+        | answers = list
+    }
 
 
 getAntworten : Q_element -> List Answer                            
@@ -1444,11 +1480,10 @@ viewNewQuestionModal questionnaire =
                         , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
                         , br [] []
-                        --, div [ class "select" ]
-                          --  [ select []
-                            --    [ option [] [ text "Das ist ein Text" ]
-                              --  ]
-                            --]
+                        , div [ class "select" ]
+                            [ select []
+                                (getQuestionOptions questionnaire.elements questionnaire.newElement)
+                            ]
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
@@ -1468,6 +1503,81 @@ viewNewQuestionModal questionnaire =
 
     else
         div [] []
+
+
+viewNewConditionModal : Questionnaire -> Html Msg
+viewNewConditionModal questionnaire =
+    if questionnaire.showNewQuestionModal then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "Neue Frage" ] ]
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
+                        , br [] []
+                        , button [ style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                        , br [] []
+                        , showInputBipolarUnipolar questionnaire
+                        , br [] []
+                        , text "Fragetext: "
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "100%"
+                            , value (getElementText questionnaire.newElement)
+                            , onInput ChangeQuestionOrNoteText
+                            ]
+                            []
+                        , br [] []
+                        , text "Hinweis: "
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "100%"
+                            , value (getQuestionHinweis questionnaire.newElement)
+                            , onInput ChangeQuestionNote
+                            ]
+                            []
+                        , br [] []
+                        , text ("Typ: " ++ getQuestionTyp questionnaire.newElement)
+                        , br [] []
+                        , radio "Single Choice" (ChangeQuestionType "Single Choice")
+                        , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
+                        , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
+                        , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
+                        , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                        , br [] []
+                        , div [ class "select" ]
+                            [ select []
+                                (getQuestionOptions questionnaire.elements questionnaire.newElement)
+                            ]
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button
+                        [ class "button is-success"
+                        , onClick SetQuestion
+                        ]
+                        [ text "Übernehmen" ]
+                    ]
+                ]
+            , button
+                [ class "modal-close is-large"
+                , onClick (ViewOrClose QuestionModal)
+                ]
+                []
+            ]
+
+    else
+        div [] []
+
+
+getQuestionOptions : List Q_element -> Q_element -> List (Html Msg)
+getQuestionOptions list newElement =
+    [ option [] [ text "Keine Bedingung" ] ]
+        ++ List.map (\e -> option [ onClick (AddCondition (getID newElement) (getID e)) ] [ text (getElementText e) ]) list
 
 
 viewNewAnswerModal : Questionnaire -> Html Msg
@@ -1735,7 +1845,6 @@ getAnswerTable index answer =
                 []
             ]
         ]
-
 
 
 --Error Message for viewTime and editTime modals

@@ -1480,79 +1480,22 @@ viewNewQuestionModal questionnaire =
                         , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
                         , br [] []
-                        , div [ class "select" ]
-                            [ select []
-                                (getQuestionOptions questionnaire.elements questionnaire.newElement)
-                            ]
-                        ]
-                    ]
-                , footer [ class "modal-card-foot" ]
-                    [ button
-                        [ class "button is-success"
-                        , onClick SetQuestion
-                        ]
-                        [ text "Übernehmen" ]
-                    ]
-                ]
-            , button
-                [ class "modal-close is-large"
-                , onClick (ViewOrClose QuestionModal)
-                ]
-                []
-            ]
-
-    else
-        div [] []
-
-
-viewNewConditionModal : Questionnaire -> Html Msg
-viewNewConditionModal questionnaire =
-    if questionnaire.showNewQuestionModal then
-        div [ class "modal is-active" ]
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-card" ]
-                [ header [ class "modal-card-head" ]
-                    [ p [ class "modal-card-title" ] [ text "Neue Frage" ] ]
-                , section [ class "modal-card-body" ]
-                    [ div []
-                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
-                        , br [] []
-                        , button [ style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
-                        , br [] []
-                        , showInputBipolarUnipolar questionnaire
-                        , br [] []
-                        , text "Fragetext: "
-                        , input
-                            [ class "input"
-                            , type_ "text"
-                            , style "width" "100%"
-                            , value (getElementText questionnaire.newElement)
-                            , onInput ChangeQuestionOrNoteText
-                            ]
-                            []
-                        , br [] []
-                        , text "Hinweis: "
-                        , input
-                            [ class "input"
-                            , type_ "text"
-                            , style "width" "100%"
-                            , value (getQuestionHinweis questionnaire.newElement)
-                            , onInput ChangeQuestionNote
-                            ]
-                            []
-                        , br [] []
-                        , text ("Typ: " ++ getQuestionTyp questionnaire.newElement)
-                        , br [] []
-                        , radio "Single Choice" (ChangeQuestionType "Single Choice")
-                        , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
-                        , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
-                        , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
-                        , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                        , text "Springe zu Frage: "
                         , br [] []
                         , div [ class "select" ]
                             [ select []
                                 (getQuestionOptions questionnaire.elements questionnaire.newElement)
                             ]
+                        , br [] []
+                        , text "Bei Beantwortung der Antworten mit den IDs: "
+                        , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
+                        , br [] []
+                        , input [ placeholder "Hier ID eingeben" ] []
+                        , button 
+                            [ class "button"
+                            , style "margin-left" "1em" 
+                            , style "margin-top" "0.25em" ] 
+                            [ text "Hinzufügen" ]
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
@@ -1576,7 +1519,7 @@ viewNewConditionModal questionnaire =
 
 getQuestionOptions : List Q_element -> Q_element -> List (Html Msg)
 getQuestionOptions list newElement =
-    [ option [] [ text "Keine Bedingung" ] ]
+    [ option [ onClick (AddCondition -1 -1) ] [ text "Keine" ] ]
         ++ List.map (\e -> option [ onClick (AddCondition (getID newElement) (getID e)) ] [ text (getElementText e) ]) list
 
 

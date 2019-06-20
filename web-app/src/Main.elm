@@ -44,7 +44,8 @@ type
     | ViewOrClose ModalType
     --Creates Condition
     | AddCondition Int Int
-    | AddConditionAnswers (List Answer)
+    | AddConditionAnswer
+    | AddAnswerToNewCondition String
     --Save input to questionnaire
     | SetNote
     | SetQuestion
@@ -89,6 +90,7 @@ type alias Questionnaire =
     , elements : List Q_element
     , conditions : List Condition
     , newCondition : Condition
+    , newAnswerID_Condition : String
 
     --times
     , viewingTimeBegin : String
@@ -179,6 +181,7 @@ initQuestionnaire _ =
     , elements = []
     , conditions = []
     , newCondition = initCondition
+    , newAnswerID_Condition = ""
 
     --times
     , viewingTimeBegin = ""
@@ -420,13 +423,20 @@ update msg questionnaire =
         --Add Condition
         AddCondition parent child ->
             ({ questionnaire 
-                | newCondition = setParentChildInCondition parent child questionnaire.newCondition
+                | newCondition = (Debug.log "Neue Condition" setParentChildInCondition parent child questionnaire.newCondition)
             }, Cmd.none)
 
-        AddConditionAnswers list ->
-            ({ questionnaire 
-                | newCondition = setAnswersInCondition list questionnaire.newCondition
-            }, Cmd.none)
+        AddConditionAnswer ->
+            case String.toInt (Debug.log "Uebeltaeter:" questionnaire.newAnswerID_Condition) of
+                Nothing ->
+                    Debug.log "Failure 1" (questionnaire, Cmd.none)
+                Just id ->
+                    Debug.log "OK" ({ questionnaire 
+                        | newCondition = addAnswerOfQuestionToCondition id questionnaire.newElement questionnaire.newCondition}
+                    , Cmd.none)
+
+        AddAnswerToNewCondition string ->
+            ({ questionnaire | newAnswerID_Condition = string }, Cmd.none)
 
         --Save input to questionnaire
         SetPolarAnswers string ->
@@ -754,6 +764,25 @@ setAnswersInCondition list condition =
     { condition
         | answers = list
     }
+
+
+addAnswerOfQuestionToCondition : Int -> Q_element -> Condition -> Condition
+addAnswerOfQuestionToCondition id newElement condition =
+    case getAnswerWithID id newElement of 
+        Just newAnswer ->
+            { condition | answers = condition.answers ++ [newAnswer]}
+        Nothing ->
+            condition
+
+
+getAnswerWithID : Int -> Q_element -> Maybe Answer
+getAnswerWithID id newElement = 
+    case newElement of 
+        Question record ->
+            List.head (Tuple.first (List.partition (\e -> e.id == id) record.answers))
+
+        Note record ->
+            Nothing
 
 
 getAntworten : Q_element -> List Answer                            
@@ -1490,11 +1519,15 @@ viewNewQuestionModal questionnaire =
                         , text "Bei Beantwortung der Antworten mit den IDs: "
                         , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
                         , br [] []
-                        , input [ placeholder "Hier ID eingeben" ] []
+                        , input 
+                            [ placeholder "Hier ID eingeben"
+                            , onInput AddAnswerToNewCondition ] 
+                            []
                         , button 
                             [ class "button"
                             , style "margin-left" "1em" 
-                            , style "margin-top" "0.25em" ] 
+                            , style "margin-top" "0.25em"
+                            , onClick AddConditionAnswer ] 
                             [ text "Hinzufügen" ]
                         ]
                     ]
@@ -1537,8 +1570,7 @@ viewNewAnswerModal questionnaire =
                         , input
                             [ class "input"
                             , type_ "text"
-                            , style "width" "100%"
-                            , value (getAnswerText questionnaire.newAnswer)             
+                            , style "width" "100%"         
                             , onInput ChangeAnswerText                                  
                             ]
                             []

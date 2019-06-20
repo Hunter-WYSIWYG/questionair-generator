@@ -43,7 +43,7 @@ type
     --Modals
     | ViewOrClose ModalType
     --Creates Condition
-    | AddCondition Int Int
+    | AddCondition String
     | AddConditionAnswer
     | AddAnswerToNewCondition String
     --Save input to questionnaire
@@ -122,6 +122,9 @@ type alias Questionnaire =
 
     -- a page to edit Questionnaires
     , editQuestionnaire : Bool
+
+    --Debug 
+    , tmp : String 
     }
 
 
@@ -208,6 +211,7 @@ initQuestionnaire _ =
     , editMode = False
     , editQuestionnaire = True
     , upload = False
+    , tmp = ""
     }
     , Cmd.none)
 
@@ -421,17 +425,25 @@ update msg questionnaire =
                         (changedQuestionnaire, Cmd.none)
 
         --Add Condition
-        AddCondition parent child ->
-            ({ questionnaire 
-                | newCondition = (Debug.log "Neue Condition" setParentChildInCondition parent child questionnaire.newCondition)
-            }, Cmd.none)
+        AddCondition string ->
+            let 
+                parent = getID questionnaire.newElement
+                child = getID (getElementWithText string questionnaire)
+            in 
+                if string == "Keine" 
+                then    ({ questionnaire 
+                            | newCondition = setParentChildInCondition -1 -1 questionnaire.newCondition
+                        }, Cmd.none)
+                else    ({ questionnaire 
+                            | newCondition = setParentChildInCondition parent child questionnaire.newCondition
+                        }, Cmd.none)
 
         AddConditionAnswer ->
-            case String.toInt (Debug.log "Uebeltaeter:" questionnaire.newAnswerID_Condition) of
+            case String.toInt (questionnaire.newAnswerID_Condition) of
                 Nothing ->
-                    Debug.log "Failure 1" (questionnaire, Cmd.none)
+                    (questionnaire, Cmd.none)
                 Just id ->
-                    Debug.log "OK" ({ questionnaire 
+                    ({ questionnaire 
                         | newCondition = addAnswerOfQuestionToCondition id questionnaire.newElement questionnaire.newCondition}
                     , Cmd.none)
 
@@ -471,8 +483,9 @@ update msg questionnaire =
 
         SetQuestion ->
             if questionnaire.editMode == False then
-                ( { questionnaire
+                Debug.log "Tmp" ( { questionnaire
                     | elements = append questionnaire.elements [ questionnaire.newElement ]
+                    , conditions = append questionnaire.conditions [ questionnaire.newCondition ]
                     , showNewQuestionModal = False
                   }
                 , Cmd.none
@@ -481,6 +494,7 @@ update msg questionnaire =
             else
                 ( { questionnaire
                     | elements = List.map (\e -> updateElement questionnaire.newElement e) questionnaire.elements
+                    , conditions = List.map (\e -> updateCondition questionnaire.newCondition e) questionnaire.conditions
                     , showNewQuestionModal = False
                     , editMode = False
                   }
@@ -510,6 +524,7 @@ update msg questionnaire =
         EditQuestion element ->
             ( { questionnaire
                 | newElement = element
+                , newCondition = getConditionWithParentID questionnaire.conditions (getID element)
                 , showNewQuestionModal = True
                 , editMode = True
               }
@@ -859,12 +874,22 @@ updateAnswerList answerToUpdate list =
     List.map (updateAnswer answerToUpdate) list
 
 
+updateElement : Q_element -> Q_element -> Q_element
 updateElement elementToUpdate element =
     if getID element == getID elementToUpdate then
         elementToUpdate
 
     else
         element
+
+
+updateCondition : Condition -> Condition -> Condition
+updateCondition conditionToUpdate condition =
+    if condition.parent_id == conditionToUpdate.parent_id then
+        conditionToUpdate
+
+    else
+        condition
 
 
 updateAnswer answerToUpdate answer =
@@ -884,6 +909,33 @@ getID element =
         Note record ->
             record.id
 
+
+getText : Q_element -> String
+getText element =
+    case element of
+        Question record ->
+            record.text
+
+        Note record ->
+            record.text
+
+
+getConditionWithParentID : List Condition -> Int -> Condition
+getConditionWithParentID list id = 
+    case List.head (Tuple.first (List.partition (\e -> e.parent_id == id) list)) of
+        Just condition ->
+            condition
+        Nothing ->
+            initCondition
+
+
+getElementWithText : String -> Questionnaire -> Q_element
+getElementWithText string questionnaire =
+    case List.head (Tuple.first (List.partition (\e -> getText e == string) questionnaire.elements)) of 
+        Just element ->
+            element
+        Nothing ->
+            initQuestion
 
 getAnswerID : Answer -> Int
 getAnswerID answer = answer.id
@@ -1512,7 +1564,7 @@ viewNewQuestionModal questionnaire =
                         , text "Springe zu Frage: "
                         , br [] []
                         , div [ class "select" ]
-                            [ select []
+                            [ select [ onInput AddCondition ]
                                 (getQuestionOptions questionnaire.elements questionnaire.newElement)
                             ]
                         , br [] []
@@ -1552,8 +1604,8 @@ viewNewQuestionModal questionnaire =
 
 getQuestionOptions : List Q_element -> Q_element -> List (Html Msg)
 getQuestionOptions list newElement =
-    [ option [ onClick (AddCondition -1 -1) ] [ text "Keine" ] ]
-        ++ List.map (\e -> option [ onClick (AddCondition (getID newElement) (getID e)) ] [ text (getElementText e) ]) list
+    [ option [] [ text "Keine" ] ]
+        ++ List.map (\e -> option [] [ text (getElementText e) ]) list
 
 
 viewNewAnswerModal : Questionnaire -> Html Msg

@@ -236,8 +236,8 @@ initAnswer =
 
 initCondition : Condition
 initCondition = 
-    { parent_id = 0
-    , child_id = 0
+    { parent_id = -1
+    , child_id = -1
     , answers = []
     }
 
@@ -486,6 +486,7 @@ update msg questionnaire =
                 Debug.log "Tmp" ( { questionnaire
                     | elements = append questionnaire.elements [ questionnaire.newElement ]
                     , conditions = append questionnaire.conditions [ questionnaire.newCondition ]
+                    , newCondition = initCondition
                     , showNewQuestionModal = False
                   }
                 , Cmd.none
@@ -1225,7 +1226,12 @@ showEditQuestionnaire questionnaire =
         , viewNewNoteModal questionnaire
         , viewNewQuestionModal questionnaire
         , viewNewAnswerModal questionnaire
+        , viewConditions questionnaire
         ]
+
+viewConditions : Questionnaire -> Html Msg
+viewConditions questionnaire = 
+    div[] (List.map (\c -> text ("("++String.fromInt c.parent_id++","++String.fromInt c.child_id++")")) questionnaire.conditions)
 
 
 showHeroQuestionnaireTitle : Questionnaire -> Html Msg

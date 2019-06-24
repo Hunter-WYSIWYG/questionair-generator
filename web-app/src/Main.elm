@@ -482,13 +482,20 @@ update msg questionnaire =
                 )
 
         SetQuestion ->
+            let 
+                checkConditionAndAdd condition qn = 
+                    if (isConditionValid condition) then 
+                    { qn | conditions = append qn.conditions [condition]}
+                    else questionnaire
+            in
             if questionnaire.editMode == False then
-                Debug.log "Tmp" ( { questionnaire
+                ( { questionnaire
                     | elements = append questionnaire.elements [ questionnaire.newElement ]
-                    , conditions = append questionnaire.conditions [ questionnaire.newCondition ]
+                    , conditions = if (isConditionValid questionnaire.newCondition) then (append questionnaire.conditions [ questionnaire.newCondition ]) else questionnaire.conditions
                     , newCondition = initCondition
                     , showNewQuestionModal = False
                   }
+                  
                 , Cmd.none
                 )
 
@@ -891,6 +898,11 @@ updateCondition conditionToUpdate condition =
 
     else
         condition
+
+isConditionValid : Condition -> Bool
+isConditionValid condition = 
+    if((condition.child_id == -1) || (condition.parent_id == -1)) then False
+    else True 
 
 
 updateAnswer answerToUpdate answer =

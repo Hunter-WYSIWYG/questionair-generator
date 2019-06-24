@@ -721,9 +721,9 @@ updateConditionWithIdTo list old new =
 
 updateConditionID : Int -> Int -> Condition -> Condition
 updateConditionID old new condition = 
-    { condition | child_id = getNewConditionID condition.parent_id old new
+    { condition | child_id = getNewConditionID condition.child_id old new
                 , parent_id = getNewConditionID condition.parent_id old new }
-    
+    -- das setzt child und parent ids auf den gleichen wert! TODO
     
 getNewConditionID : Int -> Int -> Int -> Int
 getNewConditionID cond_id old new =
@@ -1623,7 +1623,13 @@ viewNewQuestionModal questionnaire =
 getQuestionOptions : List Q_element -> Q_element -> List (Html Msg)
 getQuestionOptions list newElement =
     [ option [] [ text "Keine" ] ]
-        ++ List.map (\e -> option [] [ text (getElementText e) ]) list
+        ++ List.map (\e -> option [] [ text ((String.fromInt (getElementId e)) ++"."++" "++getElementText e) ]) list
+
+getElementId : Q_element -> Int
+getElementId elem = 
+    case elem of
+        Question a -> a.id
+        Note a -> a.id
 
 
 viewNewAnswerModal : Questionnaire -> Html Msg

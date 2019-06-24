@@ -337,8 +337,9 @@ update msg questionnaire =
                 Question record ->
                     ( { questionnaire
                         | newElement =
-                            Question
-                                { record | typ = string, answers = setPredefinedAnswers string }
+                            if string == "Single Choice" || string == "Multiple Choice"
+                            then Question { record | typ = string }
+                            else Question { record | typ = string, answers = setPredefinedAnswers string }
                       }
                     , Cmd.none
                     )

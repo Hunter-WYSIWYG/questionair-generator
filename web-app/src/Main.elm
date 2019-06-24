@@ -113,8 +113,9 @@ type alias Questionnaire =
     , newElement : Q_element
     , newAnswer : Answer
 
-    --editMode for EditQuestion and EditNote
-    , editMode : Bool
+    --editQElement for EditQuestion and EditNote
+    , editQElement : Bool
+    , editAnswer : Bool
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -207,8 +208,9 @@ initQuestionnaire _ =
     , newElement = initQuestion
     , newAnswer = initAnswer
 
-    --editMode
-    , editMode = False
+    --editQElement
+    , editQElement = False
+    , editAnswer = False
     , editQuestionnaire = True
     , upload = False
     , tmp = ""
@@ -464,7 +466,7 @@ update msg questionnaire =
                     ( questionnaire, Cmd.none )
 
         SetNote ->
-            if questionnaire.editMode == False then
+            if questionnaire.editQElement == False then
                 ( { questionnaire
                     | elements = append questionnaire.elements [ questionnaire.newElement ]
                     , showNewNoteModal = False
@@ -476,7 +478,7 @@ update msg questionnaire =
                 ( { questionnaire
                     | elements = List.map (\e -> updateElement questionnaire.newElement e) questionnaire.elements
                     , showNewNoteModal = False
-                    , editMode = False
+                    , editQElement = False
                   }
                 , Cmd.none
                 )
@@ -488,7 +490,7 @@ update msg questionnaire =
                     { qn | conditions = append qn.conditions [condition]}
                     else questionnaire
             in
-            if questionnaire.editMode == False then
+            if questionnaire.editQElement == False then
                 ( { questionnaire
                     | elements = append questionnaire.elements [ questionnaire.newElement ]
                     , conditions = if (isConditionValid questionnaire.newCondition) then (append questionnaire.conditions [ questionnaire.newCondition ]) else questionnaire.conditions
@@ -504,7 +506,7 @@ update msg questionnaire =
                     | elements = List.map (\e -> updateElement questionnaire.newElement e) questionnaire.elements
                     , conditions = List.map (\e -> updateCondition questionnaire.newCondition e) questionnaire.conditions
                     , showNewQuestionModal = False
-                    , editMode = False
+                    , editQElement = False
                   }
                 , Cmd.none
                 )
@@ -512,11 +514,19 @@ update msg questionnaire =
         SetAnswer ->                                                                    
             case questionnaire.newElement of
                 Question record ->
-                    ({ questionnaire
-                        | newElement =
-                            Question { record | answers = record.answers ++ [ questionnaire.newAnswer ] }
-                        , showNewAnswerModal = False
-                    }, Cmd.none)
+                    if questionnaire.editAnswer == False then
+                        ({ questionnaire
+                            | newElement =
+                                Question { record | answers = record.answers ++ [ questionnaire.newAnswer ] }
+                            , showNewAnswerModal = False
+                        }, Cmd.none)
+                    else
+                        ({ questionnaire
+                            | newElement =
+                                Question { record | answers =  List.map (\e -> updateAnswer questionnaire.newAnswer e) record.answers}
+                            , showNewAnswerModal = False
+                            , editAnswer = False
+                        }, Cmd.none)
 
                 Note record ->
                     (questionnaire, Cmd.none)    
@@ -527,6 +537,7 @@ update msg questionnaire =
             ({ questionnaire
                 | newAnswer = element
                 , showNewAnswerModal = True
+                , editAnswer = True
             }, Cmd.none)
 
         EditQuestion element ->
@@ -534,7 +545,7 @@ update msg questionnaire =
                 | newElement = element
                 , newCondition = getConditionWithParentID questionnaire.conditions (getID element)
                 , showNewQuestionModal = True
-                , editMode = True
+                , editQElement = True
               }
             , Cmd.none
             )
@@ -543,7 +554,7 @@ update msg questionnaire =
             ( { questionnaire
                 | newElement = element
                 , showNewNoteModal = True
-                , editMode = True
+                , editQElement = True
               }
             , Cmd.none
             ) 

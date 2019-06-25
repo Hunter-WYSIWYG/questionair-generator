@@ -5,7 +5,7 @@ import File exposing (File)
 import File.Download as Download
 import File.Select as Select
 import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, input, label, nav, option, p, section, select, table, tbody, thead, td, text, th, tr)
-import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, style, type_, value)
+import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Json.Encode as Encode exposing (encode, object)
@@ -136,7 +136,8 @@ type Q_element
 type alias Condition = 
     { parent_id : Int
     , child_id : Int
-    , answers : List Answer }
+    , answers : List Answer
+    , isValid : Bool }
 
 type alias NoteRecord =
     { id : Int
@@ -241,6 +242,7 @@ initCondition =
     { parent_id = -1
     , child_id = -1
     , answers = []
+    , isValid = False
     }
 
 --Update logic
@@ -435,8 +437,9 @@ update msg questionnaire =
                 child = getID (getElementWithText string questionnaire)
             in 
                 if string == "Keine" 
-                then    ({ questionnaire 
-                            | newCondition = setParentChildInCondition -1 -1 questionnaire.newCondition
+                then    Debug.log "Keine ausgewählt" ({ questionnaire 
+                            | newCondition = setValid questionnaire.newCondition False
+                            --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
                         }, Cmd.none)
                 else    ({ questionnaire 
                             | newCondition = setParentChildInCondition parent child questionnaire.newCondition
@@ -486,16 +489,12 @@ update msg questionnaire =
                 )
 
         SetQuestion ->
-            let 
-                checkConditionAndAdd condition qn = 
-                    if (isConditionValid condition) then 
-                    { qn | conditions = append qn.conditions [condition]}
-                    else questionnaire
-            in
             if questionnaire.editQElement == False then
                 ( { questionnaire
                     | elements = append questionnaire.elements [ questionnaire.newElement ]
-                    , conditions = if (isConditionValid questionnaire.newCondition) then (append questionnaire.conditions [ questionnaire.newCondition ]) else questionnaire.conditions
+                    , conditions =  if (questionnaire.newCondition.isValid) 
+                                    then Debug.log "true" (append questionnaire.conditions [ questionnaire.newCondition ]) 
+                                    else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
                     , newCondition = initCondition
                     , showNewQuestionModal = False
                   }
@@ -506,7 +505,9 @@ update msg questionnaire =
             else
                 ( { questionnaire
                     | elements = List.map (\e -> updateElement questionnaire.newElement e) questionnaire.elements
-                    , conditions = List.map (\e -> updateCondition questionnaire.newCondition e) questionnaire.conditions
+                    , conditions =  if (questionnaire.newCondition.isValid) 
+                                    then Debug.log "true" List.map (\e -> updateCondition questionnaire.newCondition e) questionnaire.conditions 
+                                    else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
                     , showNewQuestionModal = False
                     , editQElement = False
                   }
@@ -794,6 +795,7 @@ setParentChildInCondition parent child condition =
     { condition
         | parent_id = parent
         , child_id = child 
+        , isValid = True
     }
 
 
@@ -811,6 +813,11 @@ addAnswerOfQuestionToCondition id newElement condition =
             { condition | answers = condition.answers ++ [newAnswer]}
         Nothing ->
             condition
+
+
+removeConditionFromCondList : Condition -> List Condition -> List Condition
+removeConditionFromCondList condition list = 
+    Tuple.first (List.partition (\c -> c.parent_id /= condition.parent_id) list)
 
 
 getAnswerWithID : Int -> Q_element -> Maybe Answer
@@ -914,10 +921,9 @@ updateCondition conditionToUpdate condition =
     else
         condition
 
-isConditionValid : Condition -> Bool
-isConditionValid condition = 
-    if((condition.child_id == -1) || (condition.parent_id == -1)) then False
-    else True 
+setValid : Condition -> Bool -> Condition
+setValid condition value = 
+    { condition | isValid = value }
 
 
 updateAnswer answerToUpdate answer =
@@ -1598,7 +1604,7 @@ viewNewQuestionModal questionnaire =
                         , br [] []
                         , div [ class "select" ]
                             [ select [ onInput AddCondition ]
-                                (getQuestionOptions questionnaire.elements questionnaire.newElement)
+                                (getQuestionOptions questionnaire.elements questionnaire.newCondition)
                             ]
                         , br [] []
                         , text "Bei Beantwortung der Antworten mit den IDs: "
@@ -1635,10 +1641,11 @@ viewNewQuestionModal questionnaire =
         div [] []
 
 
-getQuestionOptions : List Q_element -> Q_element -> List (Html Msg)
-getQuestionOptions list newElement =
+getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
+getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
-        ++ List.map (\e -> option [] [ text ((String.fromInt (getElementId e)) ++"."++" "++getElementText e) ]) list
+        ++ List.map (\e -> option [ selected (getElementId e == newCondition.parent_id) ] [ text ((String.fromInt (getElementId e)) ++"."++" "++getElementText e) ]) list
+
 
 getElementId : Q_element -> Int
 getElementId elem = 

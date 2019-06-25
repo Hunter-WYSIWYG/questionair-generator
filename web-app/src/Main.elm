@@ -337,8 +337,9 @@ update msg questionnaire =
                 Question record ->
                     ( { questionnaire
                         | newElement =
-                            Question
-                                { record | typ = string, answers = setPredefinedAnswers string }
+                            if string == "Single Choice" || string == "Multiple Choice"
+                            then Question { record | typ = string }
+                            else Question { record | typ = string, answers = setPredefinedAnswers string }
                       }
                     , Cmd.none
                     )
@@ -423,8 +424,9 @@ update msg questionnaire =
                                     }
                         }, Cmd.none)
 
-                    else
+                    else 
                         (changedQuestionnaire, Cmd.none)
+
 
         --Add Condition
         AddCondition string ->
@@ -514,12 +516,14 @@ update msg questionnaire =
         SetAnswer ->                                                                    
             case questionnaire.newElement of
                 Question record ->
-                    if questionnaire.editAnswer == False then
+                    if questionnaire.editAnswer == False && questionnaire.newAnswer.typ /= "" then
                         ({ questionnaire
                             | newElement =
                                 Question { record | answers = record.answers ++ [ questionnaire.newAnswer ] }
                             , showNewAnswerModal = False
                         }, Cmd.none)
+                    else if questionnaire.newAnswer.typ == "" then
+                        (questionnaire, Cmd.none)
                     else
                         ({ questionnaire
                             | newElement =

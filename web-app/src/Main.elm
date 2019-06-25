@@ -571,7 +571,7 @@ update msg questionnaire =
             if (getID element) /= ((List.length questionnaire.elements) - 1) 
             then ({ questionnaire 
                     | elements = putElementDown questionnaire.elements element 
-                    , conditions = updateConditionWithIdTo questionnaire.conditions (getID element) ((getID element ) - 1)}
+                    , conditions = updateConditionWithIdTo questionnaire.conditions (getID element) ((getID element ) + 1)}
                 , Cmd.none)
             else (questionnaire, Cmd.none)
 
@@ -579,7 +579,7 @@ update msg questionnaire =
             if (getID element) /= 0
             then ({ questionnaire 
                     | elements = putElementUp questionnaire.elements element 
-                    , conditions = updateConditionWithIdTo questionnaire.conditions (getID element) ((getID element ) + 1)}
+                    , conditions = updateConditionWithIdTo questionnaire.conditions (getID element) ((getID element ) - 1)}
                 , Cmd.none)
             else (questionnaire, Cmd.none)
 

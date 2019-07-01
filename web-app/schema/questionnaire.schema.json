@@ -1,0 +1,153 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Questionnaire",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string",
+            "description": "Unique identifier for the questionnaire"
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/element"
+            },
+            "description": "An Array of questions and notes"
+        },
+        "viewingTimeBegin": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Point in time when the questionnaire begins to be viewable"
+        },
+        "viewingTimeEnd": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Point in time when the questionnaire stops to be viewable"
+        },
+        "editTime": {
+            "type": "string",
+            "format": "time",
+            "description": "Duration which determines the max. answering time"
+        },
+        "reminderTimes": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "date-time",
+                "description": "List of points in time where a reminder should be sent for the questionnaire"
+
+            }
+
+        },
+        "conditions": {
+            "type": "array",
+            "items": { 
+               "$ref": "#/definitions/condition"
+            }
+        }
+
+    },
+    "definitions": {
+        "element": {
+            "type": "object",
+            "required": [
+                "_type",
+                "id",
+                "text"
+            ],
+            "properties": {
+                "_type": {
+                    "type": "string",
+                    "description": "One of these values: Question, Note"
+                },
+                "id": {
+                    "type": "number",
+                    "description": "A unique identifier for this element"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "Title for the question"
+                },
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/answer"
+                    },
+                    "description": "An array of answers that correspond to the question."
+                },
+                "questionType": {
+                    "type": "string",
+                    "description": "One of these values: Single Choice, Multiple Choice, Yes-No, Scaled Unipolar, Scaled Bipolar"
+                },
+                "hint": {
+                    "type": "string",
+                    "description": "Hint for the Question"
+                },
+                "editTime": {
+                    "type": "string",
+                    "format": "time",
+                    "description": "Duration which determines the max. answering time"
+                }
+            }
+        },
+        "answer": {
+            "type": "object",
+            "required": [
+                "_type",
+                "id",
+                "text"
+            ],
+            "properties": {
+                "_type": {
+                    "type": "string",
+                    "description": "Type of the answer"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "Content of the answer"
+                },
+                "id": {
+                    "type": "integer",
+                    "description": "ID of the answer"
+                }
+            }
+        },
+        "condition": {
+            "type":"object",
+            "required": ["child_id", "connections"],
+            "properties": {
+                "child_id": {
+                    "type": "integer",
+                    "description": "Id of the question that is activated upon completing the condition"
+                },
+                "connections" : {
+                    "type":"array",
+                    "items": {
+                        "connection": {
+                            "type":"object",
+                            "required": ["connection_id", "parent_id", "answer_id"],
+                            "properties": {
+                                "connection_id": {
+                                    "type":"integer",
+                                    "description":"id of the connection, connections have the same id if they belong together (conditions means all connections need to be fulfilled)"
+
+                                },
+                                "parent_id" : {
+                                    "type":"integer",
+                                    "description":"id of the question that is being referenced"
+
+                                },
+                                "answer_id" : {
+                                    "type":"integer",
+                                    "description":"id of the answer from the parent-question that needs to be checked in oder for the connection to be fulfilled"
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}

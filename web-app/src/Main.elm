@@ -1288,7 +1288,7 @@ showHeroQuestionnaireTitle questionnaire =
 
 showQuestionList : Questionnaire -> Html Msg
 showQuestionList questionnaire =
-    div [ class "box container is-fluid", style "flex-basis" "80%", style "overflow-y" "auto", style "height" "60vh",style "margin-top" "2em", style "margin-bottom" "2em" ]
+    div [ class "box container is-fluid questionList", style "flex-basis" "80%", style "overflow-y" "auto", style "height" "60vh",style "margin-top" "2em", style "margin-bottom" "2em" ]
         [ table [ class "table is-striped" 
                 ] 
                 [ thead [
@@ -1326,17 +1326,21 @@ showTimes questionnaire =
 
 showCreateQuestionOrNoteButtons : Questionnaire -> Html Msg
 showCreateQuestionOrNoteButtons questionnaire =
-    div [ class "container is-fluid" ]
+    div [ class "container is-fluid divButtons" ]
         [ button
-            [ style "margin-right" "10px"
+            [ class "qnButton"
+            , style "margin-right" "10px"
             , onClick (ViewOrClose QuestionModal)
             ]
             [ text "Neue Frage" ]
-        , button [ onClick (ViewOrClose NewNoteModal) ]
+        , button 
+            [ class "qnButton"
+            , onClick (ViewOrClose NewNoteModal) 
+            ]
             [ text "Neue Anmerkung" ]
         , br [] []
         , br [] []
-        , button [ onClick DownloadQuestionnaire ] [ text "Download" ]
+        , button [class "qnButton", onClick DownloadQuestionnaire ] [ text "Download" ]
         ]
 
 

@@ -358,15 +358,18 @@ update msg questionnaire =
                     ( questionnaire, Cmd.none )
             
         ChangeQuestionTime newTime ->
-            let changedRecord rec =
-                    {rec | inputQuestionTime = newTime}
-            in
             case questionnaire.newElement of 
                 Question record ->
-                    ( { questionnaire | newElement = Question {record | validationResult = validateQuestion record.inputQuestionTime } }, Cmd.none) 
+                    ( { questionnaire 
+                            | newElement = Question { record 
+                                                        | validationResult = validateQuestion record.inputQuestionTime
+                                                        , inputQuestionTime = newTime 
+                                                        } 
+                    }, Cmd.none) 
+                    
                 Note record -> 
                     ( questionnaire, Cmd.none )
-            
+                                
         ChangeAnswerText string ->
             ({ questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }, Cmd.none)     
 

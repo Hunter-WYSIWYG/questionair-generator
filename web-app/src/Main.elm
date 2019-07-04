@@ -4,13 +4,14 @@ import Browser
 import File exposing (File)
 import File.Download as Download
 import File.Select as Select
-import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, input, label, nav, p, section, table, tbody, thead, td, text, th, tr)
-import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, style, type_, value)
+import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, input, label, nav, option, p, section, select, table, tbody, thead, td, text, th, tr)
+import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (required, optional, hardcoded)
 import Json.Encode as Encode exposing (encode, object)
 import List exposing (append)
+import List.Extra exposing (swapAt, updateAt)
 import Task
 
 
@@ -43,6 +44,10 @@ type
     | ChangeQuestionTime String           
     --Modals
     | ViewOrClose ModalType
+    --Creates Condition
+    | AddCondition String
+    | AddConditionAnswer
+    | AddAnswerToNewCondition String
     --Save input to questionnaire
     | SetNote
     | SetQuestion
@@ -53,6 +58,11 @@ type
     | EditNote Q_element
     | EditAnswer Answer
     | EditQuestionnaire
+    --Change order of elements
+    | PutUpEl Q_element
+    | PutDownEl Q_element
+    | PutUpAns Answer
+    | PutDownAns Answer
     --Delete existing elements or answers
     | DeleteItem Q_element
     | DeleteAnswer Answer
@@ -80,6 +90,9 @@ type ModalType
 type alias Questionnaire =
     { title : String
     , elements : List Q_element
+    , conditions : List Condition
+    , newCondition : Condition
+    , newAnswerID_Condition : String
 
     --times
     , viewingTimeBegin : String
@@ -102,8 +115,9 @@ type alias Questionnaire =
     , newElement : Q_element
     , newAnswer : Answer
 
-    --editMode for EditQuestion and EditNote
-    , editMode : Bool
+    --editQElement for EditQuestion and EditNote
+    , editQElement : Bool
+    , editAnswer : Bool
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -112,8 +126,8 @@ type alias Questionnaire =
     -- a page to edit Questionnaires
     , editQuestionnaire : Bool
 
-    --Json export
-    , export : String
+    --Debug 
+    , tmp : String 
     }
 
 
@@ -121,6 +135,11 @@ type Q_element
     = Note NoteRecord
     | Question QuestionRecord
 
+type alias Condition = 
+    { parent_id : Int
+    , child_id : Int
+    , answers : List Answer
+    , isValid : Bool }
 
 type alias NoteRecord =
     { id : Int
@@ -155,14 +174,12 @@ type ValidationResult
     | ValidationOK
 
 
-
 -- SUBSCRIPTIONS
 
 
 subscriptions : Questionnaire -> Sub Msg
 subscriptions model =
     Sub.none
-
 
 
 --Init
@@ -172,6 +189,9 @@ initQuestionnaire : () -> ( Questionnaire, Cmd Msg )
 initQuestionnaire _ =
     ({ title = "Titel eingeben"
     , elements = []
+    , conditions = []
+    , newCondition = initCondition
+    , newAnswerID_Condition = ""
 
     --times
     , viewingTimeBegin = ""
@@ -194,13 +214,12 @@ initQuestionnaire _ =
     , newElement = initQuestion
     , newAnswer = initAnswer
 
-    --editMode
-    , editMode = False
+    --editQElement
+    , editQElement = False
+    , editAnswer = False
     , editQuestionnaire = True
     , upload = False
-
-    --Debug
-    , export = ""
+    , tmp = ""
     }
     , Cmd.none)
 
@@ -224,6 +243,14 @@ initAnswer =
     , text = ""
     --type can be "free" or "regular"
     , typ = ""
+    }
+
+initCondition : Condition
+initCondition = 
+    { parent_id = -1
+    , child_id = -1
+    , answers = []
+    , isValid = False
     }
 
 --Update logic
@@ -320,8 +347,9 @@ update msg questionnaire =
                 Question record ->
                     ( { questionnaire
                         | newElement =
-                            Question
-                                { record | typ = string, answers = setPredefinedAnswers string }
+                            if string == "Single Choice" || string == "Multiple Choice"
+                            then Question { record | typ = string }
+                            else Question { record | typ = string, answers = setPredefinedAnswers string }
                       }
                     , Cmd.none
                     )
@@ -335,8 +363,7 @@ update msg questionnaire =
             in
             case questionnaire.newElement of 
                 Question record ->
-                    ( { questionnaire | newElement = Question {record | validationResult = validateQuestion record.inputQuestionTime } }, Cmd.none) --richtige inputQuestionTime ?
-
+                    ( { questionnaire | newElement = Question {record | validationResult = validateQuestion record.inputQuestionTime } }, Cmd.none) 
                 Note record -> 
                     ( questionnaire, Cmd.none )
             
@@ -420,8 +447,36 @@ update msg questionnaire =
                                     }
                         }, Cmd.none)
 
-                    else
+                    else 
                         (changedQuestionnaire, Cmd.none)
+
+
+        --Add Condition
+        AddCondition string ->
+            let 
+                parent = getID questionnaire.newElement
+                child = getID (getElementWithText string questionnaire)
+            in 
+                if string == "Keine" 
+                then    Debug.log "Keine ausgewählt" ({ questionnaire 
+                            | newCondition = setValid questionnaire.newCondition False
+                            --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
+                        }, Cmd.none)
+                else    ({ questionnaire 
+                            | newCondition = setParentChildInCondition parent child questionnaire.newCondition
+                        }, Cmd.none)
+
+        AddConditionAnswer ->
+            case String.toInt (questionnaire.newAnswerID_Condition) of
+                Nothing ->
+                    (questionnaire, Cmd.none)
+                Just id ->
+                    ({ questionnaire 
+                        | newCondition = addAnswerOfQuestionToCondition id questionnaire.newElement questionnaire.newCondition}
+                    , Cmd.none)
+
+        AddAnswerToNewCondition string ->
+            ({ questionnaire | newAnswerID_Condition = string }, Cmd.none)
 
         --Save input to questionnaire
         SetPolarAnswers string ->
@@ -437,7 +492,7 @@ update msg questionnaire =
                     ( questionnaire, Cmd.none )
 
         SetNote ->
-            if questionnaire.editMode == False then
+            if questionnaire.editQElement == False then
                 ( { questionnaire
                     | elements = append questionnaire.elements [ questionnaire.newElement ]
                     , showNewNoteModal = False
@@ -449,7 +504,7 @@ update msg questionnaire =
                 ( { questionnaire
                     | elements = List.map (\e -> updateElement questionnaire.newElement e) questionnaire.elements
                     , showNewNoteModal = False
-                    , editMode = False
+                    , editQElement = False
                   }
                 , Cmd.none
                 )
@@ -457,7 +512,7 @@ update msg questionnaire =
         SetQuestion ->
             if questionnaire.editQElement == False then
                 ( { questionnaire
-                    | elements = append questionnaire.elements [ (submitQuestion questionnaire.newElement) ]
+                    | elements = append questionnaire.elements [ questionnaire.newElement ]
                     , conditions =  if (questionnaire.newCondition.isValid) 
                                     then Debug.log "true" (append questionnaire.conditions [ questionnaire.newCondition ]) 
                                     else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
@@ -483,11 +538,21 @@ update msg questionnaire =
         SetAnswer ->                                                                    
             case questionnaire.newElement of
                 Question record ->
-                    ({ questionnaire
-                        | newElement =
-                            Question { record | answers = record.answers ++ [ questionnaire.newAnswer ] }
-                        , showNewAnswerModal = False
-                    }, Cmd.none)
+                    if questionnaire.editAnswer == False && questionnaire.newAnswer.typ /= "" then
+                        ({ questionnaire
+                            | newElement =
+                                Question { record | answers = record.answers ++ [ questionnaire.newAnswer ] }
+                            , showNewAnswerModal = False
+                        }, Cmd.none)
+                    else if questionnaire.newAnswer.typ == "" then
+                        (questionnaire, Cmd.none)
+                    else
+                        ({ questionnaire
+                            | newElement =
+                                Question { record | answers =  List.map (\e -> updateAnswer questionnaire.newAnswer e) record.answers}
+                            , showNewAnswerModal = False
+                            , editAnswer = False
+                        }, Cmd.none)
 
                 Note record ->
                     (questionnaire, Cmd.none)    
@@ -498,13 +563,15 @@ update msg questionnaire =
             ({ questionnaire
                 | newAnswer = element
                 , showNewAnswerModal = True
+                , editAnswer = True
             }, Cmd.none)
 
         EditQuestion element ->
             ( { questionnaire
                 | newElement = element
+                , newCondition = getConditionWithParentID questionnaire.conditions (getID element)
                 , showNewQuestionModal = True
-                , editMode = True
+                , editQElement = True
               }
             , Cmd.none
             )
@@ -513,7 +580,7 @@ update msg questionnaire =
             ( { questionnaire
                 | newElement = element
                 , showNewNoteModal = True
-                , editMode = True
+                , editQElement = True
               }
             , Cmd.none
             ) 
@@ -521,12 +588,47 @@ update msg questionnaire =
         EditQuestionnaire ->
             ( { questionnaire | upload = False, editQuestionnaire = True }, Cmd.none )
 
+        --Change order of elements
+        PutDownEl element ->
+            if (getID element) /= ((List.length questionnaire.elements) - 1) 
+            then ({ questionnaire 
+                    | elements = putElementDown questionnaire.elements element 
+                    , conditions = updateConditionWithIdTo questionnaire.conditions (getID element) ((getID element ) + 1)}
+                , Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutUpEl element ->
+            if (getID element) /= 0
+            then ({ questionnaire 
+                    | elements = putElementUp questionnaire.elements element 
+                    , conditions = updateConditionWithIdTo questionnaire.conditions (getID element) ((getID element ) - 1)}
+                , Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutUpAns answer ->
+            if answer.id /= 0
+            then ({ questionnaire 
+                    | newElement = putAnswerUp questionnaire.newElement answer
+                    , conditions = updateConditionAnswers questionnaire.conditions answer.id (answer.id - 1) }
+                , Cmd.none)
+            else (questionnaire, Cmd.none)
+
+        PutDownAns answer ->
+            if answer.id /= ((List.length (getAntworten questionnaire.newElement)) - 1)
+            then ({ questionnaire | newElement = putAnswerDown questionnaire.newElement answer }, Cmd.none)
+            else (questionnaire, Cmd.none)
+
         --Delete existing elements or answers
         DeleteItem element ->
-            ({ questionnaire | elements = deleteItemFrom element questionnaire.elements }, Cmd.none)
+            ({ questionnaire 
+                | elements = deleteItemFrom element questionnaire.elements
+                , conditions = deleteConditionWithElement questionnaire.conditions (getID element) }
+            , Cmd.none)
 
         DeleteAnswer answer ->
-            ({ questionnaire | newElement = deleteAnswerFromItem answer questionnaire.newElement }, Cmd.none)
+            ({ questionnaire 
+                | newElement = deleteAnswerFromItem answer questionnaire.newElement
+                , conditions = List.map (deleteAnswerInCondition answer.id) questionnaire.conditions }, Cmd.none)
 
         -- validate inputs on submit and then save changes
         Submit ->
@@ -582,6 +684,8 @@ update msg questionnaire =
             ( { questionnaire
                 | title = decodeTitle content
                 , elements = decodeElements content
+                , upload = False
+                , editQuestionnaire = True
               }
             , Cmd.none
             )
@@ -589,6 +693,162 @@ update msg questionnaire =
         --Everything releated to download
         DownloadQuestionnaire ->
             ( questionnaire, save questionnaire (encodeQuestionnaire questionnaire) )
+
+
+--helper for changing order of elements
+putElementDown : List Q_element -> Q_element -> List Q_element
+putElementDown list element = 
+    swapAt (getID element) ((getID element) + 1) (List.map (updateID (getID element) ((getID element) + 1)) list)
+    --List.map (updateID (getID element) ((getID element) + 1)) list
+
+
+putElementUp : List Q_element -> Q_element -> List Q_element
+putElementUp list element = 
+    swapAt (getID element) ((getID element) - 1) (List.map (updateID (getID element) ((getID element) - 1)) list)
+
+
+putAnswerUp : Q_element -> Answer -> Q_element
+putAnswerUp newElement answer =
+    case newElement of 
+        Note record ->
+            Note record
+
+        Question record ->
+            Question { record | answers = swapAt answer.id (answer.id - 1) (List.map (updateAnsID answer.id (answer.id - 1)) record.answers)}
+
+
+putAnswerDown : Q_element -> Answer -> Q_element
+putAnswerDown newElement answer =
+    case newElement of 
+        Note record ->
+            Note record
+
+        Question record ->
+            Question { record | answers = swapAt answer.id (answer.id + 1) (List.map (updateAnsID answer.id (answer.id + 1)) record.answers)}
+
+
+setNewID : Q_element -> Int -> Q_element
+setNewID element new =
+    case element of 
+        Note record ->
+            Note { record | id = new }
+
+        Question record -> 
+            Question { record | id = new }
+
+
+updateID : Int -> Int -> Q_element -> Q_element
+updateID old new element =   
+    if (getID element) == old then (setNewID element new)
+    else if (getID element) == new then (setNewID element old) 
+    else element
+
+
+updateAnsID : Int -> Int -> Answer -> Answer
+updateAnsID old new answer =
+    if answer.id == old then { answer | id = new }
+    else if answer.id == new then { answer | id = old }
+    else answer
+
+
+updateConditionWithIdTo : List Condition -> Int -> Int -> List Condition
+updateConditionWithIdTo list old new =
+    List.map (updateConditionID old new) list
+
+
+updateConditionID : Int -> Int -> Condition -> Condition
+updateConditionID old new condition = 
+    { condition | child_id = getNewConditionID condition.child_id old new
+                , parent_id = getNewConditionID condition.parent_id old new }
+    -- das setzt child und parent ids auf den gleichen wert! TODO
+    
+getNewConditionID : Int -> Int -> Int -> Int
+getNewConditionID cond_id old new =
+    if cond_id == old then new
+    else if cond_id == new then old
+    else cond_id
+
+
+updateConditionAnswers : List Condition -> Int -> Int -> List Condition
+updateConditionAnswers list old new = 
+    List.map (updateConditionWithAnswer old new) list
+
+
+updateConditionWithAnswer : Int -> Int -> Condition -> Condition 
+updateConditionWithAnswer old new condition = 
+    { condition | answers = List.map (updateConditionAnswer old new) condition.answers }
+
+
+updateConditionAnswer : Int -> Int -> Answer -> Answer
+updateConditionAnswer old new answer = 
+    if answer.id == old then { answer | id = new }
+    else if answer.id == new then { answer | id = old }
+    else answer
+
+
+deleteConditionWithElement : List Condition -> Int -> List Condition
+deleteConditionWithElement list id = 
+    deleteConditionWithParent (deleteConditionWithChild list id) id
+
+
+deleteConditionWithParent : List Condition -> Int -> List Condition
+deleteConditionWithParent list id = 
+    Tuple.first (List.partition (\e -> e.parent_id /= id) list)
+
+
+deleteConditionWithChild : List Condition -> Int -> List Condition
+deleteConditionWithChild list id = 
+    Tuple.first (List.partition (\e -> e.child_id /= id) list)
+
+
+deleteAnswerInCondition : Int -> Condition -> Condition
+deleteAnswerInCondition id condition =
+    { condition | answers = deleteCondAnswer condition.answers id }
+
+
+deleteCondAnswer : List Answer -> Int -> List Answer
+deleteCondAnswer list id =
+    Tuple.first (List.partition (\answer -> answer.id /= id) list) 
+
+
+setParentChildInCondition : Int -> Int -> Condition -> Condition
+setParentChildInCondition parent child condition =
+    { condition
+        | parent_id = parent
+        , child_id = child 
+        , isValid = True
+    }
+
+
+setAnswersInCondition : List Answer -> Condition -> Condition
+setAnswersInCondition list condition = 
+    { condition
+        | answers = list
+    }
+
+
+addAnswerOfQuestionToCondition : Int -> Q_element -> Condition -> Condition
+addAnswerOfQuestionToCondition id newElement condition =
+    case getAnswerWithID id newElement of 
+        Just newAnswer ->
+            { condition | answers = condition.answers ++ [newAnswer]}
+        Nothing ->
+            condition
+
+
+removeConditionFromCondList : Condition -> List Condition -> List Condition
+removeConditionFromCondList condition list = 
+    Tuple.first (List.partition (\c -> c.parent_id /= condition.parent_id) list)
+
+
+getAnswerWithID : Int -> Q_element -> Maybe Answer
+getAnswerWithID id newElement = 
+    case newElement of 
+        Question record ->
+            List.head (Tuple.first (List.partition (\e -> e.id == id) record.answers))
+
+        Note record ->
+            Nothing
 
 
 getAntworten : Q_element -> List Answer                            
@@ -665,12 +925,26 @@ updateAnswerList answerToUpdate list =
     List.map (updateAnswer answerToUpdate) list
 
 
+updateElement : Q_element -> Q_element -> Q_element
 updateElement elementToUpdate element =
     if getID element == getID elementToUpdate then
         elementToUpdate
 
     else
         element
+
+
+updateCondition : Condition -> Condition -> Condition
+updateCondition conditionToUpdate condition =
+    if condition.parent_id == conditionToUpdate.parent_id then
+        conditionToUpdate
+
+    else
+        condition
+
+setValid : Condition -> Bool -> Condition
+setValid condition value = 
+    { condition | isValid = value }
 
 
 updateAnswer answerToUpdate answer =
@@ -690,6 +964,33 @@ getID element =
         Note record ->
             record.id
 
+
+getText : Q_element -> String
+getText element =
+    case element of
+        Question record ->
+            record.text
+
+        Note record ->
+            record.text
+
+
+getConditionWithParentID : List Condition -> Int -> Condition
+getConditionWithParentID list id = 
+    case List.head (Tuple.first (List.partition (\e -> e.parent_id == id) list)) of
+        Just condition ->
+            condition
+        Nothing ->
+            initCondition
+
+
+getElementWithText : String -> Questionnaire -> Q_element
+getElementWithText string questionnaire =
+    case List.head (Tuple.first (List.partition (\e -> getText e == string) questionnaire.elements)) of 
+        Just element ->
+            element
+        Nothing ->
+            initQuestion
 
 getAnswerID : Answer -> Int
 getAnswerID answer = answer.id
@@ -749,10 +1050,10 @@ submitQuestion : Q_element -> Q_element
 submitQuestion element = 
            case element of 
                 Question record ->
-                    if (element.validationResult == ValidationOK) then 
-                        {element | questionTime = element.inputQuestionTime}
+                    if (record.validationResult == ValidationOK) then 
+                       Question {record | questionTime = record.inputQuestionTime}
                     else 
-                        {element | inputQuestionTime = "" }
+                       Question {record | inputQuestionTime = "" }
                 Note record -> 
                     element
 
@@ -892,6 +1193,7 @@ encodeQuestionnaire questionnaire =
         (object
             [ ( "title", Encode.string questionnaire.title )
             , ( "elements", Encode.list elementEncoder questionnaire.elements )
+            , ( "conditions", Encode.list conditionEncoder questionnaire.conditions)
             ]
         )
 
@@ -918,6 +1220,16 @@ elementEncoder element =
                 , ( "answers", Encode.list answerEncoder record.answers )
                 , ( "question_time", Encode.string record.questionTime )
                 ]
+
+
+--encodes conditions
+conditionEncoder : Condition -> Encode.Value
+conditionEncoder condition = 
+    object 
+        [ ( "parent_id", Encode.int condition.parent_id )
+        , ( "child_id", Encode.int condition.child_id )
+        , ( "answers", Encode.list answerEncoder condition.answers )
+        ]
 
 
 --Save to file system
@@ -1009,7 +1321,12 @@ showEditQuestionnaire questionnaire =
         , viewNewNoteModal questionnaire
         , viewNewQuestionModal questionnaire
         , viewNewAnswerModal questionnaire
+        , viewConditions questionnaire
         ]
+
+viewConditions : Questionnaire -> Html Msg
+viewConditions questionnaire = 
+    div[] (List.map (\c -> text ("("++String.fromInt c.parent_id++","++String.fromInt c.child_id++")")) questionnaire.conditions)
 
 
 showHeroQuestionnaireTitle : Questionnaire -> Html Msg
@@ -1314,6 +1631,7 @@ viewNewQuestionModal questionnaire =
                         [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
                         , br [] []
                         , button [ style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                        , br [] []
                         , showInputBipolarUnipolar questionnaire
                         , br [] []
                         , text "Fragetext: "
@@ -1337,6 +1655,7 @@ viewNewQuestionModal questionnaire =
                             []
                         , br [] []
                         , text "Zeit für Frage: "
+                        ,br [] []
                         , input
                             [ class "input"
                             , type_ "text"
@@ -1344,9 +1663,7 @@ viewNewQuestionModal questionnaire =
                             , placeholder "HH:MM:SS"
                             , maxlength 8
                             , minlength 8
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
+                            , style "width" "100%"
                             , onInput ChangeQuestionTime
                             ]
                             []
@@ -1359,6 +1676,27 @@ viewNewQuestionModal questionnaire =
                         , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
                         , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                        , br [] []
+                        , text "Springe zu Frage: "
+                        , br [] []
+                        , div [ class "select" ]
+                            [ select [ onInput AddCondition ]
+                                (getQuestionOptions questionnaire.elements questionnaire.newCondition)
+                            ]
+                        , br [] []
+                        , text "Bei Beantwortung der Antworten mit den IDs: "
+                        , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
+                        , br [] []
+                        , input 
+                            [ placeholder "Hier ID eingeben"
+                            , onInput AddAnswerToNewCondition ] 
+                            []
+                        , button 
+                            [ class "button"
+                            , style "margin-left" "1em" 
+                            , style "margin-top" "0.25em"
+                            , onClick AddConditionAnswer ] 
+                            [ text "Hinzufügen" ]
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
@@ -1380,6 +1718,19 @@ viewNewQuestionModal questionnaire =
         div [] []
 
 
+getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
+getQuestionOptions list newCondition =
+    [ option [] [ text "Keine" ] ]
+        ++ List.map (\e -> option [ selected (getElementId e == newCondition.parent_id) ] [ text ((String.fromInt (getElementId e)) ++"."++" "++getElementText e) ]) list
+
+
+getElementId : Q_element -> Int
+getElementId elem = 
+    case elem of
+        Question a -> a.id
+        Note a -> a.id
+
+
 viewNewAnswerModal : Questionnaire -> Html Msg
 viewNewAnswerModal questionnaire =
     if questionnaire.showNewAnswerModal then
@@ -1394,8 +1745,7 @@ viewNewAnswerModal questionnaire =
                         , input
                             [ class "input"
                             , type_ "text"
-                            , style "width" "100%"
-                            , value (getAnswerText questionnaire.newAnswer)             
+                            , style "width" "100%"         
                             , onInput ChangeAnswerText                                  
                             ]
                             []
@@ -1434,19 +1784,33 @@ showInputBipolarUnipolar : Questionnaire -> Html Msg
 showInputBipolarUnipolar questionnaire =
     case questionnaire.newElement of
         Question record ->
-            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" then
-                input
-                    [ class "input"
-                    , type_ "text"
-                    , style "width" "100px"
-                    , style "margin-left" "10px"
-                    , style "margin-top" "2px"
-                    , placeholder "Anzahl answers"
-                    , onInput SetPolarAnswers
+            if record.typ == "Skaliert unipolar" then
+                div []
+                    [ text "Bitte Anzahl Antworten (insgesamt) eingeben"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetPolarAnswers
+                        ]
+                        []
                     ]
-                    []
-
-            else
+            else if record.typ == "Skaliert bipolar" then
+                div []
+                    [ text "Bitte Anzahl Antworten (pro Skalenrichtung) eingeben"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetPolarAnswers
+                        ]
+                        []
+                    ]
+            else 
                 div [] []
 
         Note record ->
@@ -1492,7 +1856,7 @@ tableHead_questions =
              [ text "Fragetext"
              ]
         , th [style "width" "25%"]
-             [ text "hint"
+             [ text "Hinweis"
              ]
         , th [style "width" "20%"]
              [ text "Typ"
@@ -1514,9 +1878,20 @@ getQuestionTable index element =
                 , td [style "width" "25%"] []
                 , td [style "width" "20%"] []
                 , td [style "width" "10%"]
-                    [ i
+                    [ i 
+                        [ class "fas fa-arrow-up"
+                        , onClick (PutUpEl element) ]
+                        []
+                    , i 
+                        [ class "fas fa-arrow-down"
+                        , onClick (PutDownEl element)
+                        , style "margin-left" "1em"
+                        , style "margin-right" "1em" ]
+                        []
+                    , i
                         [ class "fas fa-cog"
                         , onClick (EditNote element)
+                        , style "margin-right" "1em"
                         ]
                         []
                     , i
@@ -1534,10 +1909,20 @@ getQuestionTable index element =
                 , td [style "width" "25%"] [ text f.hint ]
                 , td [style "width" "20%"] [ text f.typ ]
                 , td [style "width" "10%"]
-                    [ i
+                    [ i 
+                        [ class "fas fa-arrow-up"
+                        , onClick (PutUpEl element) ] 
+                        []
+                    , i 
+                        [ class "fas fa-arrow-down"
+                        , onClick (PutDownEl element) 
+                        , style "margin-left" "1em"
+                        , style "margin-right" "1em"]
+                        []
+                    , i
                         [ class "fas fa-cog"
                         , onClick (EditQuestion element)
-                        ]
+                        , style "margin-right" "1em"]
                         []
                     , i
                         [ class "fas fa-trash-alt"
@@ -1587,9 +1972,19 @@ getAnswerTable index answer =
         , td [] [ text answer.text ]
         , td [] [ text answer.typ ]
         , td []
-            [ i
+            [ i 
+                [ class "fas fa-arrow-up"
+                , onClick (PutUpAns answer) ] 
+                []
+            , i 
+                [ class "fas fa-arrow-down"
+                , onClick (PutDownAns answer)
+                , style "margin-left" "1em"
+                , style "margin-right" "1em" ]
+                []
+            , i
                 [ class "fas fa-cog"
-                , style "margin-right" "10px"
+                , style "margin-right" "1em"
                 , onClick (EditAnswer answer)
                 ]
                 []
@@ -1600,7 +1995,6 @@ getAnswerTable index answer =
                 []
             ]
         ]
-
 
 
 --Error Message for viewTime and editTime modals

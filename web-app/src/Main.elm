@@ -512,7 +512,7 @@ update msg questionnaire =
         SetQuestion ->
             if questionnaire.editQElement == False then
                 ( { questionnaire
-                    | elements = append questionnaire.elements [ questionnaire.newElement ]
+                    | elements = append questionnaire.elements [ submitQuestion questionnaire.newElement ]
                     , conditions =  if (questionnaire.newCondition.isValid) 
                                     then Debug.log "true" (append questionnaire.conditions [ questionnaire.newCondition ]) 
                                     else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions

@@ -340,7 +340,6 @@ update msg questionnaire =
                 Note record -> 
                     ( questionnaire, Cmd.none )
             
-
         ChangeAnswerText string ->
             ({ questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }, Cmd.none)     
 
@@ -349,10 +348,6 @@ update msg questionnaire =
                 | newAnswer =
                     Answer questionnaire.newAnswer.id questionnaire.newAnswer.text string
             }, Cmd.none)
-
-        
-
-
 
         --open or close modals
         ViewOrClose modalType ->
@@ -460,19 +455,27 @@ update msg questionnaire =
                 )
 
         SetQuestion ->
-            if questionnaire.editMode == False then
+            if questionnaire.editQElement == False then
                 ( { questionnaire
-                    | elements = append questionnaire.elements [ questionnaire.newElement ]
+                    | elements = append questionnaire.elements [ (submitQuestion questionnaire.newElement) ]
+                    , conditions =  if (questionnaire.newCondition.isValid) 
+                                    then Debug.log "true" (append questionnaire.conditions [ questionnaire.newCondition ]) 
+                                    else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
+                    , newCondition = initCondition
                     , showNewQuestionModal = False
                   }
+                  
                 , Cmd.none
                 )
 
             else
                 ( { questionnaire
                     | elements = List.map (\e -> updateElement questionnaire.newElement e) questionnaire.elements
+                    , conditions =  if (questionnaire.newCondition.isValid) 
+                                    then Debug.log "true" List.map (\e -> updateCondition questionnaire.newCondition e) questionnaire.conditions 
+                                    else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
                     , showNewQuestionModal = False
-                    , editMode = False
+                    , editQElement = False
                   }
                 , Cmd.none
                 )
@@ -547,9 +550,9 @@ update msg questionnaire =
                     , inputEditTime = ""
                   }
                 , Cmd.none
-                )      
+                )   
 
-        --Everything releated to upload
+         --Everything releated to upload
 
         EnterUpload ->
             ( { questionnaire
@@ -741,6 +744,18 @@ isValidQuestionTime : String -> Bool
 isValidQuestionTime questionTime = 
     not (String.length questionTime /= 8 && String.length questionTime /= 0)
 
+--helpfunction for setQuestion
+submitQuestion : Q_element -> Q_element 
+submitQuestion element = 
+           case element of 
+                Question record ->
+                    if (element.validationResult == ValidationOK) then 
+                        {element | questionTime = element.inputQuestionTime}
+                    else 
+                        {element | inputQuestionTime = "" }
+                Note record -> 
+                    element
+
 
 -- getters for input boxes
 
@@ -901,6 +916,7 @@ elementEncoder element =
                 , ( "hint", Encode.string record.hint )
                 , ( "question_type", Encode.string record.typ )
                 , ( "answers", Encode.list answerEncoder record.answers )
+                , ( "question_time", Encode.string record.questionTime )
                 ]
 
 

@@ -362,8 +362,8 @@ update msg questionnaire =
                 Question record ->
                     ( { questionnaire 
                             | newElement = Question { record 
-                                                        | validationResult = validateQuestion record.inputQuestionTime
-                                                        , inputQuestionTime = newTime 
+                                                        | inputQuestionTime = newTime 
+                                                        , validationResult = validateQuestion newTime
                                                         } 
                     }, Cmd.none) 
                     
@@ -1057,6 +1057,7 @@ submitQuestion element =
                        Question {record | questionTime = record.inputQuestionTime}
                     else 
                        Question {record | inputQuestionTime = "" }
+               
                 Note record -> 
                     element
 
@@ -1469,7 +1470,7 @@ viewViewingTimeModal questionnaire =
                             []
                         ]
                     , br [] []
-                    , viewQuestionValidation (getQuestionValidation questionnaire.newElement)
+                    , viewValidation questionnaire
                     ]
                 , footer [ class "modal-card-foot" ]
                     [ button
@@ -1662,7 +1663,7 @@ viewNewQuestionModal questionnaire =
                         , input
                             [ class "input"
                             , type_ "text"
-                            , value (getQuestionTime questionnaire.newElement )
+                            , value (getQuestionTime questionnaire.newElement)
                             , placeholder "HH:MM:SS"
                             , maxlength 8
                             , minlength 8
@@ -2019,7 +2020,7 @@ viewValidation questionnaire =
     in
     div [ style "color" color ] [ text message ]
 
-viewQuestionValidation : ValidationResult -> Html msq
+viewQuestionValidation : ValidationResult -> Html msg
 viewQuestionValidation result =
     let
         ( color, message ) =

@@ -83,6 +83,7 @@ type ModalType
     | QuestionModal
     | TitleModal
     | AnswerModal
+    | ConditionModal
 
 
 type alias Questionnaire =
@@ -104,6 +105,7 @@ type alias Questionnaire =
     , showNewNoteModal : Bool
     , showNewQuestionModal : Bool
     , showNewAnswerModal : Bool
+    , showNewConditionModal: Bool
 
     --newInputs
     , validationResult : ValidationResult
@@ -200,6 +202,7 @@ initQuestionnaire _ =
     , showNewNoteModal = False
     , showNewQuestionModal = False
     , showNewAnswerModal = False
+    , showNewConditionModal = False
 
     --new inputs
     , validationResult = NotDone
@@ -428,6 +431,9 @@ update msg questionnaire =
 
                     else 
                         (changedQuestionnaire, Cmd.none)
+
+                ConditionModal ->
+                    ( { questionnaire | showNewConditionModal = not questionnaire.showNewConditionModal }, Cmd.none )
 
 
         --Add Condition
@@ -1259,6 +1265,7 @@ showEditQuestionnaire questionnaire =
         , viewNewNoteModal questionnaire
         , viewNewQuestionModal questionnaire
         , viewNewAnswerModal questionnaire
+        , viewNewConditionModal questionnaire
         , viewConditions questionnaire
         ]
 
@@ -1600,27 +1607,7 @@ viewNewQuestionModal questionnaire =
                         , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
                         , br [] []
-                        , text "Springe zu Frage: "
-                        , br [] []
-                        , div [ class "select" ]
-                            [ select [ onInput AddCondition ]
-                                (getQuestionOptions questionnaire.elements questionnaire.newCondition)
-                            ]
-                        , br [] []
-                        , text "Bei Beantwortung der Antworten mit den IDs: "
-                        , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
-                        , br [] []
-                        , input 
-                            [ placeholder "Hier ID eingeben"
-                            , onInput AddAnswerToNewCondition ] 
-                            []
-                        , button 
-                            [ class "button"
-                            , style "margin-left" "1em" 
-                            , style "margin-top" "0.25em"
-                            , onClick AddConditionAnswer ] 
-                            [ text "Hinzufügen" ]
-                        ]
+                        ]                        
                     ]
                 , footer [ class "modal-card-foot" ]
                     [ button
@@ -1628,6 +1615,12 @@ viewNewQuestionModal questionnaire =
                         , onClick SetQuestion
                         ]
                         [ text "Übernehmen" ]
+
+                      , button 
+                        [ class "button is-link"
+                        , onClick (ViewOrClose ConditionModal)
+                        ]
+                        [ text "Bedingungen" ]  
                     ]
                 ]
             , button
@@ -1692,6 +1685,57 @@ viewNewAnswerModal questionnaire =
             , button
                 [ class "modal-close is-large"
                 , onClick (ViewOrClose AnswerModal)
+                ]
+                []
+            ]
+
+    else
+        div [] []
+
+
+viewNewConditionModal : Questionnaire -> Html Msg
+viewNewConditionModal questionnaire =
+    if questionnaire.showNewConditionModal then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "Bedingungen" ] ]
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [ text "Springe zu Frage: "
+                        , br [] []
+                        , div [ class "select" ]
+                            [ select [ onInput AddCondition ]
+                                (getQuestionOptions questionnaire.elements questionnaire.newCondition)
+                            ]
+                        , br [] []
+                        , text "Bei Beantwortung der Antworten mit den IDs: "
+                        , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
+                        , br [] []
+                        , input 
+                            [ placeholder "Hier ID eingeben"
+                            , onInput AddAnswerToNewCondition ] 
+                            []
+                        , button 
+                            [ class "button"
+                            , style "margin-left" "1em" 
+                            , style "margin-top" "0.25em"
+                            , onClick AddConditionAnswer ] 
+                            [ text "Hinzufügen" ]                    
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button
+                        [ class "button is-success"
+                        , onClick Submit
+                        ]
+                        [ text "Übernehmen" ]
+                    ]
+                ]
+            , button
+                [ class "modal-close is-large"
+                , onClick (ViewOrClose ConditionModal)
                 ]
                 []
             ]

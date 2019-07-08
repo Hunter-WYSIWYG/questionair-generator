@@ -16,7 +16,7 @@ import Task
 
 main =
     Browser.element
-        { init = initQuestionnaire
+        { init = initModel
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -85,17 +85,8 @@ type ModalType
     | AnswerModal
 
 
-type alias Questionnaire =
-    { title : String
-    , elements : List Q_element
-    , conditions : List Condition
-    , newCondition : Condition
-    , newAnswerID_Condition : String
-
-    --times
-    , viewingTimeBegin : String
-    , viewingTimeEnd : String
-    , editTime : String
+type alias Model =
+    { questionnaire : Questionnaire 
 
     --modals
     , showTitleModal : Bool
@@ -104,14 +95,6 @@ type alias Questionnaire =
     , showNewNoteModal : Bool
     , showNewQuestionModal : Bool
     , showNewAnswerModal : Bool
-
-    --newInputs
-    , validationResult : ValidationResult
-    , inputEditTime : String
-    , inputViewingTimeBegin : String
-    , inputViewingTimeEnd : String
-    , newElement : Q_element
-    , newAnswer : Answer
 
     --editQElement for EditQuestion and EditNote
     , editQElement : Bool
@@ -126,6 +109,28 @@ type alias Questionnaire =
 
     --Debug 
     , tmp : String 
+    }
+
+    
+type alias Questionnaire =
+    { title : String
+    , elements : List Q_element
+    , conditions : List Condition
+    , newCondition : Condition
+    , newAnswerID_Condition : String
+
+    --times
+    , viewingTimeBegin : String
+    , viewingTimeEnd : String
+    , editTime : String
+
+    --newInputs
+    , validationResult : ValidationResult
+    , inputEditTime : String
+    , inputViewingTimeBegin : String
+    , inputViewingTimeEnd : String
+    , newElement : Q_element
+    , newAnswer : Answer
     }
 
 
@@ -172,17 +177,42 @@ type ValidationResult
 -- SUBSCRIPTIONS
 
 
-subscriptions : Questionnaire -> Sub Msg
+subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
 
 --Init
+initModel : () -> ( Model, Cmd Msg )
+initModel _ = 
+    ({ questionnaire = initQuestionnaire
 
+    --modals
+    , showTitleModal = False
+    , showEditTimeModal = False
+    , showViewingTimeModal = False
+    , showNewNoteModal = False
+    , showNewQuestionModal = False
+    , showNewAnswerModal = False
 
-initQuestionnaire : () -> ( Questionnaire, Cmd Msg )
-initQuestionnaire _ =
-    ({ title = "Titel eingeben"
+    --editQElement for EditQuestion and EditNote
+    , editQElement = False
+    , editAnswer = False
+
+    --upload determines if the users wants to upload a questionnaire
+    --if upload is false show UI to create new questionnaire
+    , upload = False
+
+    -- a page to edit Questionnaires
+    , editQuestionnaire = True
+
+    --Debug 
+    , tmp = ""
+    }, Cmd.none)
+
+initQuestionnaire : Questionnaire
+initQuestionnaire =
+    { title = "Titel eingeben"
     , elements = []
     , conditions = []
     , newCondition = initCondition
@@ -193,30 +223,14 @@ initQuestionnaire _ =
     , viewingTimeEnd = ""
     , editTime = ""
 
-    --modals
-    , showTitleModal = False
-    , showViewingTimeModal = False
-    , showEditTimeModal = False
-    , showNewNoteModal = False
-    , showNewQuestionModal = False
-    , showNewAnswerModal = False
-
-    --new inputs
+    --newInputs
     , validationResult = NotDone
+    , inputEditTime = ""
     , inputViewingTimeBegin = ""
     , inputViewingTimeEnd = ""
-    , inputEditTime = ""
     , newElement = initQuestion
     , newAnswer = initAnswer
-
-    --editQElement
-    , editQElement = False
-    , editAnswer = False
-    , editQuestionnaire = True
-    , upload = False
-    , tmp = ""
     }
-    , Cmd.none)
 
 
 initQuestion : Q_element
@@ -248,63 +262,52 @@ initCondition =
 --Update logic
 
 
-update : Msg -> Questionnaire -> ( Questionnaire, Cmd Msg )
-update msg questionnaire =
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
     case msg of
         --changing properties of notes or questions or answers
         ChangeQuestionnaireTitle newTitle ->
-            ( { questionnaire | title = newTitle }, Cmd.none )
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = { oldQuestionnaire | title = newTitle }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         ChangeEditTime newTime ->
             let
-                changedQuestionnaire =
-                    { questionnaire
-                        | inputEditTime = newTime
-                    }
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = { oldQuestionnaire | inputEditTime = newTime }
+                validatedQuestionnaire = { changedQuestionnaire | validationResult = validate changedQuestionnaire }
             in
-            ( { changedQuestionnaire
-                | validationResult = validate changedQuestionnaire
-              }
-            , Cmd.none
-            )
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         ChangeViewingTimeBegin newTime ->
             let
-                changedQuestionnaire =
-                    { questionnaire
-                        | inputViewingTimeBegin = newTime
-                    }
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = { oldQuestionnaire | inputViewingTimeBegin = newTime}
+                validatedQuestionnaire = { changedQuestionnaire | validationResult = validate changedQuestionnaire }
             in
-            ( { changedQuestionnaire
-                | validationResult = validate changedQuestionnaire
-              }
-            , Cmd.none
-            )
+                ( { model | questionnaire = validatedQuestionnaire }, Cmd.none )
 
         ChangeViewingTimeEnd newTime ->
             let
-                changedQuestionnaire =
-                    { questionnaire
-                        | inputViewingTimeEnd = newTime
-                    }
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = { oldQuestionnaire | inputViewingTimeEnd = newTime }
+                validatedQuestionnaire = { changedQuestionnaire | validationResult = validate changedQuestionnaire }
             in
-            ( { changedQuestionnaire
-                | validationResult = validate changedQuestionnaire
-              }
-            , Cmd.none
-            )
+                ( { model | questionnaire = validatedQuestionnaire }, Cmd.none)
 
         ChangeQuestionOrNoteText string ->
             let
-                changedRecord rec =
-                    { rec | text = string }
-            in
-            case questionnaire.newElement of
-                Question record ->
-                    ( { questionnaire | newElement = Question (changedRecord record) }, Cmd.none )
+                changedRecord rec = { rec | text = string }
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = 
+                    case oldQuestionnaire.newElement of
+                        Question record -> { oldQuestionnaire | newElement = Question (changedRecord record) }
 
-                Note record ->
-                    ( { questionnaire | newElement = Note (changedRecord record) }, Cmd.none )
+                        Note record -> { oldQuestionnaire | newElement = Note (changedRecord record) }
+            in
+                ( { model | questionnaire = changedQuestionnaire}, Cmd.none )
 
         ChangeQuestionNewAnswer newAnswer ->
             case questionnaire.newElement of

@@ -138,9 +138,12 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(tvID, ConstraintSet.LEFT, bID, ConstraintSet.RIGHT, marginRight/16);
 							sv.requestLayout();
 							break;
+							
 						case EnterText:
 							b = new Button(this);
 							EditText et = new EditText(this);
+							
+							
 							final int etindex = i;
 							b.setOnClickListener(new View.OnClickListener() {
 								final int buttonInd = etindex;
@@ -168,7 +171,8 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(etbID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
 							b.requestLayout();
 							
-							et.setText("Hier eingeben");
+							// EditText - setHint and no setText
+							et.setHint("Hier eingeben");
 							int ettvID = (i == (amountOptions - 1)) ? "last".hashCode() : ("Text" + i + "View").hashCode();//generating a unique but knowable id
 							et.setId(ettvID);
 							constraintLayout.addView(et);
@@ -179,6 +183,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(ettvID, ConstraintSet.LEFT, etbID, ConstraintSet.RIGHT, etmarginRight/16);
 							et.requestLayout();
 							break;
+							
 						case Slider:
 							//TODO
 							//slider up to customer at later point
@@ -244,6 +249,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 						case EnterText:
 							b = new Button(this);
 							EditText et = new EditText(this);
+							
 							final int etindex = i;
 							b.setOnClickListener(new View.OnClickListener() {
 								final int buttonInd = etindex;
@@ -271,7 +277,9 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 							constraintSet.connect(etbID, ConstraintSet.LEFT, R.id.QuestionDisplayLayout, ConstraintSet.LEFT, 8);
 							b.requestLayout();
 							
-							et.setText("Hier eingeben");
+							// EditText - setHint and no setText
+							et.setHint("Hier eingeben");
+							
 							int ettvID = (i == (amountOptions - 1)) ? "last".hashCode() : ("Text" + i + "View").hashCode();//generating a unique but knowable id
 							et.setId(ettvID);
 							constraintLayout.addView(et);

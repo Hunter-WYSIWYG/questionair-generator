@@ -35,9 +35,10 @@
 	-webkit-border-radius:6px;
 	border-radius:6px;
 	border:1px solid #dcdcdc;
+    border-color:#209cee;
 	display:inline-block;
 	cursor:pointer;
-	color:#00D1B2;
+	color:#3273dc;
 	font-family:Arial;
 	font-size:15px;
 	font-weight:bold;
@@ -61,5 +62,17 @@
 }
 
 .symbol:hover{
-    
+  
+}
+
+.mediumlightblue{
+    background-color: #d7ecff;
+}
+
+.lightblue{
+    background-color: #F0F8FF;
+}
+
+.darkblue{
+    background-color: #3300CC;
 }

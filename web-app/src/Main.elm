@@ -1191,7 +1191,7 @@ answerEncoder answer =
 
 view : Questionnaire -> Html Msg
 view questionnaire =
-    div []
+    div [class "lightblue"]
         [ showNavbar
         , if questionnaire.upload then
             showUpload questionnaire
@@ -1221,7 +1221,7 @@ showHeroWith string =
 
 showNavbar : Html Msg
 showNavbar =
-    nav [ class "navbar is-link is-fixed-top" ]
+    nav [ class "navbar darkblue is-fixed-top" ]
         [ div [ class "navbar-brand" ]
             [ p [ class "navbar-item", style "padding-top" "0.5em" ] [ text "Fragebogengenerator" ] ]
         , div [ class "navbar-menu" ]
@@ -1269,7 +1269,7 @@ viewConditions questionnaire =
 
 showHeroQuestionnaireTitle : Questionnaire -> Html Msg
 showHeroQuestionnaireTitle questionnaire =
-    section [ class "hero is-primary" ]
+    section [ class "hero is-link" ]
         [ div [ class "hero-body" ]
             [ div [ class "container is-fluid" ]
                 [ h1 [ class "title" ]
@@ -1375,13 +1375,13 @@ viewViewingTimeModal questionnaire =
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
-                [ header [ class "modal-card-head" ]
+                [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title" ] [ text "Erscheinungszeit" ] ]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Von "
                         , input
-                            [ class "input"
+                            [ class "input is-medium"
                             , type_ "text"
                             , placeholder "DD:MM:YYYY:HH:MM"
                             , value questionnaire.inputViewingTimeBegin
@@ -1395,7 +1395,7 @@ viewViewingTimeModal questionnaire =
                             []
                         , text " Bis "
                         , input
-                            [ class "input"
+                            [ class "input is-medium"
                             , type_ "text"
                             , placeholder "DD:MM:YYYY:HH:MM"
                             , value questionnaire.inputViewingTimeEnd
@@ -1410,9 +1410,9 @@ viewViewingTimeModal questionnaire =
                     , br [] []
                     , viewValidation questionnaire
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-success"
+                        [ class "button is-info"
                         , onClick Submit
                         ]
                         [ text "Übernehmen" ]
@@ -1435,13 +1435,13 @@ viewEditTimeModal questionnaire =
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
-                [ header [ class "modal-card-head" ]
+                [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title" ] [ text "Bearbeitungszeit" ] ]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Zeit: "
                         , input
-                            [ class "input"
+                            [ class "input is-medium"
                             , type_ "text"
                             , placeholder "HH:MM"
                             , value questionnaire.inputEditTime
@@ -1457,9 +1457,9 @@ viewEditTimeModal questionnaire =
                         , viewValidation questionnaire
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-success"
+                        [ class "button is-info"
                         , onClick Submit
                         ]
                         [ text "Übernehmen" ]
@@ -1482,13 +1482,13 @@ viewTitleModal questionnaire =
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
-                [ header [ class "modal-card-head" ]
+                [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title" ] [ text "Titel ändern" ] ]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Text: "
                         , input
-                            [ class "input"
+                            [ class "input is-medium"
                             , type_ "text"
                             , style "width" "180px"
                             , style "margin-left" "10px"
@@ -1499,9 +1499,9 @@ viewTitleModal questionnaire =
                             []
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-success"
+                        [ class "button is-info"
                         , onClick (ViewOrClose TitleModal)
                         ]
                         [ text "Übernehmen" ]
@@ -1524,13 +1524,13 @@ viewNewNoteModal questionnaire =
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
-                [ header [ class "modal-card-head" ]
+                [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title" ] [ text "Neue Anmerkung" ] ]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Text: "
                         , input
-                            [ class "input"
+                            [ class "input is-medium"
                             , type_ "text"
                             , style "width" "180px"
                             , style "margin-left" "10px"
@@ -1541,9 +1541,9 @@ viewNewNoteModal questionnaire =
                             []
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-success"
+                        [ class "button is-info"
                         , onClick SetNote
                         ]
                         [ text "Übernehmen" ]
@@ -1566,36 +1566,36 @@ viewNewQuestionModal questionnaire =
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
-                [ header [ class "modal-card-head" ]
+                [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title" ] [ text "Neue Frage" ] ]
-                , section [ class "modal-card-body" ]
+                , section [ class "modal-card-body lightblue" ]
                     [ div []
                         [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
                         , br [] []
-                        , button [ style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                        , button [ class "qnButton", style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
                         , br [] []
                         , showInputBipolarUnipolar questionnaire
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text "Fragetext: "
                         , input
-                            [ class "input"
+                            [ class "input is-medium"
                             , type_ "text"
                             , style "width" "100%"
                             , value (getElementText questionnaire.newElement)
                             , onInput ChangeQuestionOrNoteText
                             ]
                             []
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text "Hinweis: "
                         , input
-                            [ class "input"
+                            [ class "input is-medium"
                             , type_ "text"
                             , style "width" "100%"
                             , value (getQuestionHinweis questionnaire.newElement)
                             , onInput ChangeQuestionNote
                             ]
                             []
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text ("Typ: " ++ getQuestionTyp questionnaire.newElement)
                         , br [] []
                         , radio "Single Choice" (ChangeQuestionType "Single Choice")
@@ -1610,7 +1610,7 @@ viewNewQuestionModal questionnaire =
                             [ select [ onInput AddCondition ]
                                 (getQuestionOptions questionnaire.elements questionnaire.newCondition)
                             ]
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text "Bei Beantwortung der Antworten mit den IDs: "
                         , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
                         , br [] []
@@ -1619,16 +1619,16 @@ viewNewQuestionModal questionnaire =
                             , onInput AddAnswerToNewCondition ] 
                             []
                         , button 
-                            [ class "button"
+                            [ class "button is-focused"
                             , style "margin-left" "1em" 
                             , style "margin-top" "0.25em"
                             , onClick AddConditionAnswer ] 
                             [ text "Hinzufügen" ]
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-success"
+                        [ class "button is-info"
                         , onClick SetQuestion
                         ]
                         [ text "Übernehmen" ]
@@ -1664,13 +1664,13 @@ viewNewAnswerModal questionnaire =
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
-                [ header [ class "modal-card-head" ]
+                [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title" ] [ text "Neue Antwort" ] ]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Antworttext: "
                         , input
-                            [ class "input"
+                            [ class "input is-medium"
                             , type_ "text"
                             , style "width" "100%"         
                             , onInput ChangeAnswerText                                  
@@ -1685,9 +1685,9 @@ viewNewAnswerModal questionnaire =
                         , radio "Freie Eingabe" (ChangeAnswerType "free")  
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-success"
+                        [ class "button is-info"
                         , onClick SetAnswer
                         ]
                         [ text "Übernehmen" ]
@@ -1715,7 +1715,7 @@ showInputBipolarUnipolar questionnaire =
                 div []
                     [ text "Bitte Anzahl Antworten (insgesamt) eingeben"
                     , input
-                        [ class "input"
+                        [ class "input is-medium"
                         , type_ "text"
                         , style "width" "100px"
                         , style "margin-left" "10px"
@@ -1728,7 +1728,7 @@ showInputBipolarUnipolar questionnaire =
                 div []
                     [ text "Bitte Anzahl Antworten (pro Skalenrichtung) eingeben"
                     , input
-                        [ class "input"
+                        [ class "input is-medium"
                         , type_ "text"
                         , style "width" "100px"
                         , style "margin-left" "10px"

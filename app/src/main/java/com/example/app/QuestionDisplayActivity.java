@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionDisplayActivity extends AppCompatActivity {
+	/*generate class wide parameters*/
 	private static final int HASH_MULTIPLIER_CONSTANT = 31;
 	private static final float BUTTON_HORIZONTAL_BIAS = 0.05f;
 	private static final int TEXT_MARGINS = 16;
@@ -31,10 +32,11 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	private static final int BUTTON_TOP_BOTTOM_MARGIN = 0;
 	private static final int CONTAINER_VERTICAL_MARGIN = 32;
 	private static final int CONTAINER_HORIZONTAL_MARGIN = 8;
-	private static final int NEXT_BUTTON_PIXEL_SIZE = 128;
+	private static final int NEXT_BUTTON_PIXEL_SIZE = 200;
 	private static final float OPTION_TEXT_SIZE = 20;
 	private static final int OPTION_TEXT_COLOR = Color.parseColor("#080808");
 	
+	/*initialize question data*/
 	private int current = -1;
 	private int size = -1;
 	private List<Question> qList = null;
@@ -42,6 +44,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	private ConstraintLayout constraintLayout = null;
 	private ConstraintSet constraintSet = null;
 	
+	/*initialize current question data*/
 	private Question currentQ = null;
 	private int amountOptions = -1;
 	private List<Integer> containerIDs = null;
@@ -111,7 +114,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		final int buttonPixelSize = Math.max(Math.min(screenHeight, screenWidth) >> 4, 32);
 		containerIDs = new ArrayList<>(amountOptions);
-		
+		/*give command for layout computing and add views*/
 		switch (currentQ.getType()) {
 			case SingleChoice:
 				questionTypeTV.setText(getString(R.string.QUESTION_TYPE_HINT_SINGLE_CHOICE));
@@ -179,7 +182,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		constraintSet.applyTo(constraintLayout);
 		//constraintLayout.setConstraintSet(constraintSet);
 	}
-	
+	/*distribute content generator and create basic layout data*/
 	private ConstraintLayout getButtonTextBoundingLayout(final int buttonPixelSize, final int buttonID, final Option option, final QuestionType qType) {
 		if (option == null || qType == null || optionButtons == null) {
 			throw new NullPointerException("tried to create container for button/text(/slider), but some argument was null, or optionButtons was null");
@@ -234,6 +237,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		return container;
 	}
 	
+	/*add a static text to multiple answer question*/
 	private void addContentsSingleStatic(final ConstraintLayout container, final String answerText, final int buttonOptionID, final int buttonPixelSize) {
 		assert container != null && answerText != null;
 		
@@ -250,6 +254,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				optionClickHandlerSingle(buttonInd);
 			}
 		});
+		/*set id's and add objects to list*/
 		optionButtons.add(button);
 		optionTexts.add(text);
 		final int buttonViewID = ("But" + buttonOptionID + "ton").hashCode();
@@ -259,7 +264,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		button.setText("");
 		setTextFont(text);
 		text.setText(answerText);
-		
+		/*set size parameters*/
 		button.setLayoutParams(new ConstraintLayout.LayoutParams(buttonPixelSize, buttonPixelSize));
 		button.setMaxHeight(buttonPixelSize);
 		button.setMaxWidth(buttonPixelSize);
@@ -275,6 +280,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		setConstraints(containerID, buttonViewID, textID, buttonPixelSize);
 	}
 	
+	/*set constraints and base layout automatically for a button/text combo */
 	private void setConstraints(final int containerID, final int buttonID, final int textID, final int buttonPixelSize) {
 		constraintSet.connect(buttonID, ConstraintSet.LEFT, containerID, ConstraintSet.LEFT, BUTTON_LEFT_RIGHT_MARGIN);
 		constraintSet.connect(buttonID, ConstraintSet.RIGHT, containerID, ConstraintSet.RIGHT, BUTTON_LEFT_RIGHT_MARGIN);
@@ -304,6 +310,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		constraintSet.setVisibility(textID, ConstraintSet.VISIBLE);
 	}
 	
+	/*change text fonts*/
 	private void setTextFont(final TextView text) {
 		assert text != null;
 		
@@ -311,12 +318,14 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		text.setTextColor(OPTION_TEXT_COLOR);
 	}
 	
+	/*color next button and handle clicks on single answers*/
 	void optionClickHandlerSingle(int pressedButton) {
 		for (int i = 0; i < amountOptions; i++) {
 			if (i == pressedButton) {
 				pressedButtons.set(i, true);
 				Checkable rButton = (Checkable) optionButtons.get(i);
 				rButton.setChecked(true);
+				constraintLayout.findViewById("nextButton".hashCode()).setBackgroundColor(Color.parseColor("#8b1212")); //TODO:make void function and generate nicer look
 			} else {
 				pressedButtons.set(i, false);
 				Checkable rButton = (Checkable) optionButtons.get(i);
@@ -324,7 +333,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			}
 		}
 	}
-	
+	/*add an entertext to single answer question*/
 	private void addContentsSingleEnter(final ConstraintLayout container, final String answerText, final int buttonOptionID, final int buttonPixelSize) {
 		assert container != null;
 		String hint = answerText;
@@ -345,7 +354,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				optionClickHandlerSingle(buttonInd);
 			}
 		});
-		
+		/*set id's and add objects to list*/
 		optionButtons.add(button);
 		optionTexts.add(text);
 		final int buttonViewID = ("But" + buttonOptionID + "ton").hashCode();
@@ -355,7 +364,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		button.setText("");
 		setTextFont(text);
 		text.setHint(hint);
-		
+		/*set size parameters*/
 		button.setLayoutParams(new ConstraintLayout.LayoutParams(buttonPixelSize, buttonPixelSize));
 		button.setMaxHeight(buttonPixelSize);
 		button.setMaxWidth(buttonPixelSize);
@@ -372,6 +381,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		setConstraints(containerID, buttonViewID, textID, buttonPixelSize);
 	}
 	
+	/*add a static text to multiple answer question*/
 	private void addContentsMultipleStatic(final ConstraintLayout container, final CharSequence answerText, final int buttonOptionID, final int buttonPixelSize) {
 		assert container != null && answerText != null;
 		
@@ -388,6 +398,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				optionClickHandlerMultiple(buttonInd);
 			}
 		});
+		/*set id's and add objects to list*/
 		optionButtons.add(button);
 		optionTexts.add(text);
 		final int buttonViewID = ("But" + buttonOptionID + "ton").hashCode();
@@ -398,6 +409,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		setTextFont(text);
 		text.setText(answerText);
 		
+		/*set size parameters*/
 		button.setLayoutParams(new ConstraintLayout.LayoutParams(buttonPixelSize, buttonPixelSize));
 		button.setMaxHeight(buttonPixelSize);
 		button.setMaxWidth(buttonPixelSize);
@@ -411,7 +423,9 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		setConstraints(containerID, buttonViewID, textID, buttonPixelSize);
 	}
 	
+	/*color next button and handle clicks on multiple answers*/
 	void optionClickHandlerMultiple(int pressedButton) {
+		constraintLayout.findViewById("nextButton".hashCode()).setBackgroundColor(Color.parseColor("#8b1212")); //TODO:make void function and generate nicer look
 		for (int i = 0; i < amountOptions; i++) {
 			if (i == pressedButton) {
 				pressedButtons.set(i, !pressedButtons.get(i));
@@ -419,6 +433,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 	}
 	
+	/*add an edittext to multiple answer question*/
 	private void addContentsMultipleEnter(final ConstraintLayout container, final String answerText, final int buttonOptionID, final int buttonPixelSize) {
 		assert container != null;
 		String hint = answerText;
@@ -439,6 +454,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				optionClickHandlerMultiple(buttonInd);
 			}
 		});
+		/*set id's and add objects to list*/
 		optionButtons.add(button);
 		optionTexts.add(text);
 		final int buttonViewID = ("But" + buttonOptionID + "ton").hashCode();
@@ -448,7 +464,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		button.setText("");
 		setTextFont(text);
 		text.setHint(hint);
-		
+		/*set size parameters*/
 		button.setLayoutParams(new ConstraintLayout.LayoutParams(buttonPixelSize, buttonPixelSize));
 		button.setMaxHeight(buttonPixelSize);
 		button.setMaxWidth(buttonPixelSize);
@@ -470,6 +486,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			return;
 		}
 		//TODO: move next question information stuff to utility class
+		/*calculate missing questions and options for next question activity*/
 		if (current < size - 1) {
 			Intent intent = new Intent(this, QuestionDisplayActivity.class);
 			intent.putExtra("size", size);
@@ -480,6 +497,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				intent.putExtra("a" + j, aList.get(j));
 			}
 			startActivity(intent);
+			/*calculate answer for save activity generate intent*/
 		} else {
 			Intent i = new Intent(this, SaveAnswersActivity.class);
 			i.putExtra("size", size);
@@ -494,6 +512,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 	}
 	
+	/*check for incomplete answer */
 	private boolean noneClicked() {
 		for (int i = 0; i < amountOptions; ++i) {
 			if (pressedButtons.get(i)) {
@@ -503,6 +522,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		return true;
 	}
 	
+	/*check for given answer in edittext */
 	private boolean selectedEditTextButNoText() {
 		for (int i = 0; i < amountOptions; i++) {
 			if (pressedButtons.get(i)) {
@@ -510,6 +530,8 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				if (text instanceof EditText) {
 					EditText eText = (EditText) text;
 					if (eText.getText().toString().trim().isEmpty()) {
+						Toast missingText = Toast.makeText(this, "Bitte eine Antwort eingeben!", Toast.LENGTH_SHORT);
+						missingText.show();
 						return true;
 					}
 				}
@@ -518,6 +540,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		return false;
 	}
 	
+	/* prepare answer for next activity */
 	private Answer calcAnswer() {
 		switch (currentQ.getType()) {
 			case SingleChoice:
@@ -554,7 +577,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	
 	/* disable back button bottom */
 	public void onBackPressed() {
-		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
+		Toast myToast = Toast.makeText(this, "Zurück gehen ist nicht erlaubt!", Toast.LENGTH_SHORT);
 		myToast.show();
 	}
 }

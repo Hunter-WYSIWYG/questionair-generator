@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 
 import java.io.BufferedWriter;
@@ -43,7 +44,7 @@ public class SaveAnswersActivity extends AppCompatActivity {
 				if (k == 0) {
 					answers.set(j, aList.get(j).getChosenValues().get(k).toString());
 				} else {
-					answers.set(j, answers.get(j) + "," + aList.get(j).getChosenValues().get(k).toString());
+					answers.set(j, answers.get(j) + "," + aList.get(j).getChosenValues().get(k));
 				}
 			}
 		}

@@ -35,16 +35,6 @@ public class Question implements Serializable {
 	private final QuestionType type;
 	
 	/**
-	 * default, error constructor
-	 */
-	private Question() {
-		id = null;
-		title = null;
-		optionList = null;
-		type = null;
-	}
-	
-	/**
 	 * constructor used for (probably) everything
 	 */
 	public Question(int id, String title, List<Option> optionList, QuestionType type) {

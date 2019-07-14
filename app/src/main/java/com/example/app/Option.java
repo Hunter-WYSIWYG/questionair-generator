@@ -1,10 +1,13 @@
 package com.example.app;
 
+import android.os.Build;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class Option implements Serializable {
 	
@@ -39,16 +42,6 @@ public class Option implements Serializable {
 	@SerializedName("sliderExtraText")
 	@Expose
 	private final List<String> extraText;
-	
-	/**
-	 * default constructor, better not used
-	 */
-	private Option() {
-		id = null;
-		answerText = null;
-		type = null;
-		extraText = null;
-	}
 	
 	/**
 	 * constructor for static or prose text options
@@ -90,5 +83,28 @@ public class Option implements Serializable {
 	
 	public List<String> getSliderExtraText() {
 		return extraText;
+	}
+	
+	@Override
+	public int hashCode() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			return Objects.hash(id, type, answerText, extraText);
+		}
+		//TODO
+		throw new IllegalStateException("insufficient api level");
+	}
+	
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		final Option option = (Option) o;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			return Objects.equals(id, option.id) && type == option.type && Objects.equals(answerText, option.answerText) && Objects.equals(extraText, option.extraText);
+		}
+		//TODO
+		throw new IllegalStateException("insufficient api level");
 	}
 }

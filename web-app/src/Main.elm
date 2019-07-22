@@ -1221,7 +1221,7 @@ showHeroWith string =
 
 showNavbar : Html Msg
 showNavbar =
-    nav [ class "navbar darkblue is-fixed-top" ]
+    nav [ class "navbar is-fixed-top is-link" ]
         [ div [ class "navbar-brand" ]
             [ p [ class "navbar-item", style "padding-top" "0.5em" ] [ text "Fragebogengenerator" ] ]
         , div [ class "navbar-menu" ]
@@ -1269,13 +1269,13 @@ viewConditions questionnaire =
 
 showHeroQuestionnaireTitle : Questionnaire -> Html Msg
 showHeroQuestionnaireTitle questionnaire =
-    section [ class "hero is-link" ]
+    section [ class "hero is-info" ]
         [ div [ class "hero-body" ]
             [ div [ class "container is-fluid" ]
                 [ h1 [ class "title" ]
                     [ text questionnaire.title
                     , i
-                        [ class "fas fa-cog"
+                        [ class "fas fa-cog symbol"
                         , style "margin-left" "10px"
                         , onClick (ViewOrClose TitleModal)
                         ]
@@ -1308,7 +1308,7 @@ showTimes questionnaire =
     div [ class "container is-fluid", style "margin-bottom" "10px" ]
         [ text ("Bearbeitungszeit: " ++ getViewingTime questionnaire)
         , i
-            [ class "fas fa-cog"
+            [ class "fas fa-cog symbol"
             , style "margin-left" "10px"
             , onClick (ViewOrClose EditTimeModal)
             ]
@@ -1316,7 +1316,7 @@ showTimes questionnaire =
         , br [] []
         , text ("Erscheinungszeit: " ++ getEditTime questionnaire)
         , i
-            [ class "fas fa-cog"
+            [ class "fas fa-cog symbol"
             , style "margin-left" "10px"
             , onClick (ViewOrClose ViewingTimeModal)
             ]
@@ -1412,7 +1412,7 @@ viewViewingTimeModal questionnaire =
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-info"
+                        [ class "qnButton"
                         , onClick Submit
                         ]
                         [ text "Übernehmen" ]
@@ -1459,7 +1459,7 @@ viewEditTimeModal questionnaire =
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-info"
+                        [ class "qnButton"
                         , onClick Submit
                         ]
                         [ text "Übernehmen" ]
@@ -1501,7 +1501,7 @@ viewTitleModal questionnaire =
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-info"
+                        [ class "qnButton"
                         , onClick (ViewOrClose TitleModal)
                         ]
                         [ text "Übernehmen" ]
@@ -1543,7 +1543,7 @@ viewNewNoteModal questionnaire =
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-info"
+                        [ class "qnButton"
                         , onClick SetNote
                         ]
                         [ text "Übernehmen" ]
@@ -1568,7 +1568,7 @@ viewNewQuestionModal questionnaire =
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title" ] [ text "Neue Frage" ] ]
-                , section [ class "modal-card-body lightblue" ]
+                , section [ class "modal-card-body" ]
                     [ div []
                         [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
                         , br [] []
@@ -1619,7 +1619,7 @@ viewNewQuestionModal questionnaire =
                             , onInput AddAnswerToNewCondition ] 
                             []
                         , button 
-                            [ class "button is-focused"
+                            [ class "qnButton"
                             , style "margin-left" "1em" 
                             , style "margin-top" "0.25em"
                             , onClick AddConditionAnswer ] 
@@ -1628,7 +1628,7 @@ viewNewQuestionModal questionnaire =
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-info"
+                        [ class "qnButton"
                         , onClick SetQuestion
                         ]
                         [ text "Übernehmen" ]
@@ -1687,7 +1687,7 @@ viewNewAnswerModal questionnaire =
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-info"
+                        [class "qnButton"
                         , onClick SetAnswer
                         ]
                         [ text "Übernehmen" ]

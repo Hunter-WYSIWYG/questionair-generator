@@ -2,8 +2,8 @@
 /* B9EF47*/
 
 .questionList{
-    border: 2px solid #F7F7F7 !important; 
-    box-shadow:10px 10px 10px #1D140E !important;
+    border: 1px solid #F7F7F7 !important; 
+    box-shadow:5px 5px 5px #1D140E !important;
 }
 /*00D1B2*/
 /*.divButtons {
@@ -61,18 +61,21 @@
 	top:1px;
 }
 
+.qnNavbar{
+    background-color: #3300CC;
+    color: white;
+}
+
 .symbol:hover{
-  
+    font-size: 150%;
 }
 
 .mediumlightblue{
     background-color: #d7ecff;
+    color: #fff;
 }
 
 .lightblue{
     background-color: #F0F8FF;
 }
 
-.darkblue{
-    background-color: #3300CC;
-}

@@ -8,6 +8,7 @@ import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, inp
 import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
+import Json.Decode.Pipeline exposing (required, optional, hardcoded)
 import Json.Encode as Encode exposing (encode, object)
 import List exposing (append)
 import List.Extra exposing (swapAt, updateAt)
@@ -39,7 +40,8 @@ type
     | ChangeQuestionNote String
     | ChangeQuestionType String
     | ChangeAnswerType String     
-    | ChangeQuestionNewAnswer Answer              
+    | ChangeQuestionNewAnswer Answer   
+    | ChangeQuestionTime String           
     --Modals
     | ViewOrClose ModalType
     --Creates Condition
@@ -151,6 +153,9 @@ type alias QuestionRecord =
     , answers : List Answer
     , hint : String
     , typ : String
+    , questionTime : String
+    , inputQuestionTime : String
+    , validationResult : ValidationResult
     }
 
 
@@ -227,6 +232,9 @@ initQuestion =
         , answers = []
         , hint = ""
         , typ = ""
+        , questionTime = ""
+        , inputQuestionTime = ""
+        , validationResult = NotDone
         }
 
 initAnswer : Answer
@@ -348,7 +356,20 @@ update msg questionnaire =
 
                 Note record ->
                     ( questionnaire, Cmd.none )
-
+            
+        ChangeQuestionTime newTime ->
+            case questionnaire.newElement of 
+                Question record ->
+                    ( { questionnaire 
+                            | newElement = Question { record 
+                                                        | inputQuestionTime = newTime 
+                                                        , validationResult = validateQuestion newTime
+                                                        } 
+                    }, Cmd.none) 
+                    
+                Note record -> 
+                    ( questionnaire, Cmd.none )
+                                
         ChangeAnswerText string ->
             ({ questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }, Cmd.none)     
 
@@ -403,6 +424,9 @@ update msg questionnaire =
                                     , answers = []
                                     , hint = ""
                                     , typ = ""
+                                    , questionTime = ""
+                                    , inputQuestionTime = ""
+                                    , validationResult = NotDone
                                     }
                           }
                         , Cmd.none
@@ -491,7 +515,7 @@ update msg questionnaire =
         SetQuestion ->
             if questionnaire.editQElement == False then
                 ( { questionnaire
-                    | elements = append questionnaire.elements [ questionnaire.newElement ]
+                    | elements = append questionnaire.elements [ submitQuestion questionnaire.newElement ]
                     , conditions =  if (questionnaire.newCondition.isValid) 
                                     then Debug.log "true" (append questionnaire.conditions [ questionnaire.newCondition ]) 
                                     else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
@@ -631,9 +655,9 @@ update msg questionnaire =
                     , inputEditTime = ""
                   }
                 , Cmd.none
-                )        
+                )   
 
-        --Everything releated to upload
+         --Everything releated to upload
 
         EnterUpload ->
             ( { questionnaire
@@ -1001,10 +1025,8 @@ validate questionnaire =
 
     else if not (isValidViewingTime questionnaire.inputViewingTimeEnd) then
         Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
-
     else
         ValidationOK
-
 
 isValidViewingTime : String -> Bool
 isValidViewingTime viewingTime =
@@ -1015,6 +1037,29 @@ isValidEditTime : String -> Bool
 isValidEditTime editTime =
     not (String.length editTime /= 5 && String.length editTime /= 0)
 
+validateQuestion : String -> ValidationResult
+validateQuestion questionTime =
+            if not (isValidQuestionTime questionTime) then
+                Error "Die Zeiten müssen das Format HH:MM:SS haben"
+            else
+                ValidationOK
+
+isValidQuestionTime : String -> Bool
+isValidQuestionTime questionTime = 
+    not (String.length questionTime /= 8 && String.length questionTime /= 0)
+
+--helpfunction for setQuestion
+submitQuestion : Q_element -> Q_element 
+submitQuestion element = 
+           case element of 
+                Question record ->
+                    if (record.validationResult == ValidationOK) then 
+                       Question {record | questionTime = record.inputQuestionTime}
+                    else 
+                       Question {record | inputQuestionTime = "" }
+               
+                Note record -> 
+                    element
 
 
 -- getters for input boxes
@@ -1042,7 +1087,6 @@ getQuestionHinweis element =
         Note record ->
             "None"
 
-
 getQuestionTyp : Q_element -> String
 getQuestionTyp element =
     case element of
@@ -1051,6 +1095,24 @@ getQuestionTyp element =
 
         Note record ->
             "None"
+
+getQuestionTime : Q_element -> String
+getQuestionTime element =
+    case element of 
+        Question record ->
+            record.inputQuestionTime
+        
+        Note record ->
+            "None"
+
+getQuestionValidation : Q_element -> ValidationResult
+getQuestionValidation element =
+    case element of 
+        Question record ->
+            record.validationResult
+        
+        Note record ->
+            NotDone
 
 getAnswerType : Answer -> String                                            
 getAnswerType answer = answer.typ
@@ -1103,12 +1165,15 @@ noteDecoder =
 --decodes a question
 questionDecoder : Decode.Decoder Q_element
 questionDecoder =
-    Decode.map5 QuestionRecord
-        (Decode.field "id" Decode.int)
-        (Decode.field "text" Decode.string)
-        (Decode.field "answers" (Decode.list answerDecoder))
-        (Decode.field "hint" Decode.string)
-        (Decode.field "question_type" Decode.string)
+    Decode.succeed QuestionRecord
+        |> required "id" Decode.int
+        |> required "text" Decode.string
+        |> required "answers" (Decode.list answerDecoder)
+        |> required "hint" Decode.string
+        |> required "question_type" Decode.string
+        |> required "question_time" Decode.string
+        |> hardcoded ""
+        |> hardcoded NotDone
         |> Decode.map Question
 
 
@@ -1157,6 +1222,7 @@ elementEncoder element =
                 , ( "hint", Encode.string record.hint )
                 , ( "question_type", Encode.string record.typ )
                 , ( "answers", Encode.list answerEncoder record.answers )
+                , ( "question_time", Encode.string record.questionTime )
                 ]
 
 
@@ -1592,6 +1658,21 @@ viewNewQuestionModal questionnaire =
                             ]
                             []
                         , br [] []
+                        , text "Zeit für Frage: "
+                        ,br [] []
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , value (getQuestionTime questionnaire.newElement)
+                            , placeholder "HH:MM:SS"
+                            , maxlength 8
+                            , minlength 8
+                            , style "width" "100%"
+                            , onInput ChangeQuestionTime
+                            ]
+                            []
+                        , br [] []
+                        , viewQuestionValidation (getQuestionValidation questionnaire.newElement)
                         , text ("Typ: " ++ getQuestionTyp questionnaire.newElement)
                         , br [] []
                         , radio "Single Choice" (ChangeQuestionType "Single Choice")
@@ -1928,6 +2009,22 @@ viewValidation questionnaire =
     let
         ( color, message ) =
             case questionnaire.validationResult of
+                NotDone ->
+                    ( "", "" )
+
+                Error msg ->
+                    ( "red", msg )
+
+                ValidationOK ->
+                    ( "green", "OK" )
+    in
+    div [ style "color" color ] [ text message ]
+
+viewQuestionValidation : ValidationResult -> Html msg
+viewQuestionValidation result =
+    let
+        ( color, message ) =
+            case result of
                 NotDone ->
                     ( "", "" )
 

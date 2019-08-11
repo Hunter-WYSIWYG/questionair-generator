@@ -380,10 +380,9 @@ update msg model =
                                                         | inputQuestionTime = newTime 
                                                         , validationResult = validateQuestion newTime
                                                         } 
-                    } 
-                    
-                Note record -> 
-                    oldQuestionnaire
+                            } 
+                        Note record -> 
+                            oldQuestionnaire
             in
                 ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
@@ -450,6 +449,9 @@ update msg model =
                                             , answers = []
                                             , hint = ""
                                             , typ = ""
+                                            , questionTime = ""
+                                            , inputQuestionTime = ""
+                                            , validationResult = NotDone
                                             }
                                 }
                             else

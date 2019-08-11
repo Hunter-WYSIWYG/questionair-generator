@@ -103,6 +103,15 @@ type alias Model =
     , editQElement : Bool
     , editAnswer : Bool
 
+    --new inputs
+    , inputTitle : String
+    , validationResult : ValidationResult
+    , inputEditTime : String
+    , inputViewingTimeBegin : String
+    , inputViewingTimeEnd : String
+    , inputQuestionTime : String
+    , questionValidationResult : ValidationResult
+
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
     , upload : Bool
@@ -128,11 +137,6 @@ type alias Questionnaire =
     , editTime : String
 
     --newInputs
-    , inputTitle : String
-    , validationResult : ValidationResult
-    , inputEditTime : String
-    , inputViewingTimeBegin : String
-    , inputViewingTimeEnd : String
     , newElement : Q_element
     , newAnswer : Answer
     }
@@ -161,8 +165,6 @@ type alias QuestionRecord =
     , hint : String
     , typ : String
     , questionTime : String
-    , inputQuestionTime : String
-    , validationResult : ValidationResult
     }
 
 
@@ -206,6 +208,16 @@ initModel _ =
     , editQElement = False
     , editAnswer = False
 
+    --new inputs
+    , inputTitle = ""
+    , validationResult = NotDone
+    , inputEditTime = ""
+    , inputViewingTimeBegin = ""
+    , inputViewingTimeEnd = ""
+    , inputQuestionTime = ""
+    , questionValidationResult = NotDone
+
+
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
     , upload = False
@@ -231,11 +243,6 @@ initQuestionnaire =
     , editTime = ""
 
     --newInputs
-    , inputTitle = ""
-    , validationResult = NotDone
-    , inputEditTime = ""
-    , inputViewingTimeBegin = ""
-    , inputViewingTimeEnd = ""
     , newElement = initQuestion
     , newAnswer = initAnswer
     }
@@ -250,8 +257,6 @@ initQuestion =
         , hint = ""
         , typ = ""
         , questionTime = ""
-        , inputQuestionTime = ""
-        , validationResult = NotDone
         }
 
 initAnswer : Answer
@@ -278,35 +283,28 @@ update msg model =
     case msg of
         --changing properties of notes or questions or answers
         ChangeInputQuestionnaireTitle newTitle ->
-            let 
-                oldQuestionnaire = model.questionnaire
-                changedQuestionnaire = { oldQuestionnaire | inputTitle = newTitle }
-            in
-                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+            ( { model | inputTitle = newTitle }, Cmd.none )
 
         ChangeEditTime newTime ->
             let
-                oldQuestionnaire = model.questionnaire
-                changedQuestionnaire = { oldQuestionnaire | inputEditTime = newTime }
-                validatedQuestionnaire = { changedQuestionnaire | validationResult = validate changedQuestionnaire }
+                changedModel = { model | inputEditTime = newTime }
+                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+                ( { model | inputEditTime = newTime, validationResult = validate changedModel }, Cmd.none )
 
         ChangeViewingTimeBegin newTime ->
             let
-                oldQuestionnaire = model.questionnaire
-                changedQuestionnaire = { oldQuestionnaire | inputViewingTimeBegin = newTime}
-                validatedQuestionnaire = { changedQuestionnaire | validationResult = validate changedQuestionnaire }
+                changedModel = { model | inputViewingTimeBegin = newTime}
+                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-                ( { model | questionnaire = validatedQuestionnaire }, Cmd.none )
+                ( { model | inputViewingTimeBegin = newTime, validationResult = validate changedModel }, Cmd.none)
 
         ChangeViewingTimeEnd newTime ->
             let
-                oldQuestionnaire = model.questionnaire
-                changedQuestionnaire = { oldQuestionnaire | inputViewingTimeEnd = newTime }
-                validatedQuestionnaire = { changedQuestionnaire | validationResult = validate changedQuestionnaire }
+                changedModel = { model | inputViewingTimeEnd = newTime }
+                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-                ( { model | questionnaire = validatedQuestionnaire }, Cmd.none)
+                ( { model | inputViewingTimeEnd = newTime, validationResult = validate changedModel }, Cmd.none)
 
         ChangeQuestionOrNoteText string ->
             let
@@ -373,22 +371,20 @@ update msg model =
                 ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
             
         ChangeQuestionTime newTime ->
-            let
-                oldQuestionnaire = model.questionnaire
-                changedQuestionnaire =
-                    case oldQuestionnaire.newElement of 
-                        Question record ->
-                            { oldQuestionnaire 
-                                | newElement = Question { record 
-                                                        | inputQuestionTime = newTime 
-                                                        , validationResult = validateQuestion newTime
-                                                        } 
-                            } 
-                        Note record -> 
-                            oldQuestionnaire
-            in
-                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
-
+            --let
+              --  oldQuestionnaire = model.questionnaire
+                --changedQuestionnaire =
+                  --  case oldQuestionnaire.newElement of 
+                    --    Question record ->
+                      --      { oldQuestionnaire 
+                        --        | newElement = Question { record| inputQuestionTime = newTime } 
+                          --  } 
+                        --Note record -> 
+                          --  oldQuestionnaire
+            --in
+              --  ( { model | questionnaire = changedQuestionnaire, questionValidationResult = validateQuestion newTime }, Cmd.none )*/
+            ( { model | inputQuestionTime = newTime, questionValidationResult = validateQuestion newTime }, Cmd.none )
+                
         ChangeAnswerText string ->
             let
                 oldQuestionnaire = model.questionnaire
@@ -453,14 +449,18 @@ update msg model =
                                             , hint = ""
                                             , typ = ""
                                             , questionTime = ""
-                                            , inputQuestionTime = ""
-                                            , validationResult = NotDone
                                             }
                                 }
                             else
                                 oldQuestionnaire
                     in
-                        ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = not model.showNewQuestionModal }, Cmd.none )
+                        ( { model 
+                            | questionnaire = changedQuestionnaire
+                            , showNewQuestionModal = not model.showNewQuestionModal
+                            , questionValidationResult = NotDone
+                            , inputQuestionTime = "" }
+                        , Cmd.none 
+                        )
 
                 AnswerModal ->
                     let
@@ -526,13 +526,9 @@ update msg model =
         SetQuestionnaireTitle ->
             let
               oldQuestionnaire = model.questionnaire
-              changedQuestionnaire =
-                { oldQuestionnaire
-                    | title = oldQuestionnaire.inputTitle
-                    , inputTitle = ""
-                }  
+              changedQuestionnaire = { oldQuestionnaire| title = model.inputTitle }  
             in
-                ( { model | questionnaire = changedQuestionnaire, showTitleModal = not model.showTitleModal }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showTitleModal = not model.showTitleModal, inputTitle = "" }, Cmd.none )
 
         SetPolarAnswers string ->
             let 
@@ -594,9 +590,9 @@ update msg model =
                         }
             in
                if model.editQElement == False then
-                   ( { model | questionnaire = changedQuestionnaire, showNewNoteModal = False }, Cmd.none ) 
+                   ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False }, Cmd.none ) 
                 else 
-                    ( { model | questionnaire = changedQuestionnaire, showNewNoteModal = False, editQElement = False }, Cmd.none )
+                    ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, editQElement = False }, Cmd.none )
                   
         SetAnswer ->  
             let
@@ -752,31 +748,28 @@ update msg model =
             let 
                 oldQuestionnaire = model.questionnaire
                 changedQuestionnaire =
-                    if validate oldQuestionnaire == ValidationOK then
                         { oldQuestionnaire
-                            | validationResult = ValidationOK
-                            --, showViewingTimeModal = False
-                            --, showEditTimeModal = False
-                            , editTime = oldQuestionnaire.inputEditTime
-                            , viewingTimeBegin = oldQuestionnaire.inputViewingTimeBegin
-                            , viewingTimeEnd = oldQuestionnaire.inputViewingTimeEnd
-                        }
-                    else
-                        { oldQuestionnaire
-                            | validationResult = validate oldQuestionnaire
-                            , inputViewingTimeBegin = ""
-                            , inputViewingTimeEnd = ""
-                            , inputEditTime = ""
+                            | editTime = model.inputEditTime
+                            , viewingTimeBegin = model.inputViewingTimeBegin
+                            , viewingTimeEnd = model.inputViewingTimeEnd
                         }
             in
-                if validate oldQuestionnaire == ValidationOK then
+                if validate model == ValidationOK then
                     ( { model 
                         | questionnaire = changedQuestionnaire
                         , showViewingTimeModal = False
-                        , showEditTimeModal = True }
+                        , showEditTimeModal = False
+                        , validationResult = ValidationOK
+                      }
                     , Cmd.none )  
                 else
-                    ( { model | questionnaire = changedQuestionnaire }, Cmd.none )          
+                    ( { model 
+                        | validationResult = validate model
+                        , inputViewingTimeBegin = ""
+                        , inputViewingTimeEnd = ""
+                        , inputEditTime = ""
+                      }
+                    , Cmd.none )          
 
          --Everything releated to upload
 
@@ -1132,15 +1125,15 @@ deleteAnswerFromItem answer element =
 -- Input Validation
 
 
-validate : Questionnaire -> ValidationResult
-validate questionnaire =
-    if not (isValidEditTime questionnaire.inputEditTime) then
+validate : Model -> ValidationResult
+validate model =
+    if not (isValidEditTime model.inputEditTime) then
         Error "Die Bearbeitungszeit muss das Format HH:MM haben"
 
-    else if not (isValidViewingTime questionnaire.inputViewingTimeBegin) then
+    else if not (isValidViewingTime model.inputViewingTimeBegin) then
         Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
 
-    else if not (isValidViewingTime questionnaire.inputViewingTimeEnd) then
+    else if not (isValidViewingTime model.inputViewingTimeEnd) then
         Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
     else
         ValidationOK
@@ -1166,17 +1159,20 @@ isValidQuestionTime questionTime =
     not (String.length questionTime /= 8 && String.length questionTime /= 0)
 
 --helpfunction for setQuestion
-submitQuestion : Q_element -> Q_element 
-submitQuestion element = 
-           case element of 
-                Question record ->
-                    if (record.validationResult == ValidationOK) then 
-                       Question {record | questionTime = record.inputQuestionTime}
-                    else 
-                       Question {record | inputQuestionTime = "" }
+--submitQuestion : Model -> Q_element 
+--submitQuestion model = 
+    --let 
+        --questionnaire = model.questionnaire
+
+           --case element of 
+                --Question record ->
+                    --if (model.questionValidationResult == ValidationOK) then 
+                      -- Question {record | questionTime = model.inputQuestionTime}
+                    --else 
+                       --element
                
-                Note record -> 
-                    element
+               -- Note record -> 
+                    --element
 
 
 -- getters for input boxes
@@ -1213,23 +1209,23 @@ getQuestionTyp element =
         Note record ->
             "None"
 
-getQuestionTime : Q_element -> String
-getQuestionTime element =
-    case element of 
-        Question record ->
-            record.inputQuestionTime
+--getQuestionTime : Q_element -> String
+--getQuestionTime element =
+    --case element of 
+        --Question record ->
+            --record.questionTime
         
-        Note record ->
-            "None"
+        --Note record ->
+            --"None"
 
-getQuestionValidation : Q_element -> ValidationResult
-getQuestionValidation element =
-    case element of 
-        Question record ->
-            record.validationResult
+--getQuestionValidation : Q_element -> ValidationResult
+--getQuestionValidation element =
+    --case element of 
+        --Question record ->
+            --model.validationResult
         
-        Note record ->
-            NotDone
+        --Note record ->
+            --NotDone
 
 getAnswerType : Answer -> String                                            
 getAnswerType answer = answer.typ
@@ -1289,8 +1285,6 @@ questionDecoder =
         |> required "hint" Decode.string
         |> required "question_type" Decode.string
         |> required "question_time" Decode.string
-        |> hardcoded ""
-        |> hardcoded NotDone
         |> Decode.map Question
 
 
@@ -1566,7 +1560,7 @@ viewViewingTimeModal model =
                                 [ class "input"
                                 , type_ "text"
                                 , placeholder "DD:MM:YYYY:HH:MM"
-                                , value questionnaire.inputViewingTimeBegin
+                                , value model.inputViewingTimeBegin
                                 , maxlength 16
                                 , minlength 16
                                 , style "width" "180px"
@@ -1580,7 +1574,7 @@ viewViewingTimeModal model =
                                 [ class "input"
                                 , type_ "text"
                                 , placeholder "DD:MM:YYYY:HH:MM"
-                                , value questionnaire.inputViewingTimeEnd
+                                , value model.inputViewingTimeEnd
                                 , maxlength 16
                                 , minlength 16
                                 , style "width" "180px"
@@ -1590,7 +1584,7 @@ viewViewingTimeModal model =
                                 []
                             ]
                         , br [] []
-                        , viewValidation questionnaire
+                        , viewValidation model
                         ]
                     , footer [ class "modal-card-foot" ]
                         [ button
@@ -1627,7 +1621,7 @@ viewEditTimeModal model =
                                 [ class "input"
                                 , type_ "text"
                                 , placeholder "HH:MM"
-                                , value questionnaire.inputEditTime
+                                , value model.inputEditTime
                                 , maxlength 5
                                 , minlength 5
                                 , style "width" "180px"
@@ -1637,7 +1631,7 @@ viewEditTimeModal model =
                                 ]
                                 []
                             , br [] []
-                            , viewValidation questionnaire
+                            , viewValidation model
                             ]
                         ]
                     , footer [ class "modal-card-foot" ]
@@ -1677,7 +1671,7 @@ viewTitleModal model =
                                 , style "width" "180px"
                                 , style "margin-left" "10px"
                                 , style "margin-right" "10px"
-                                , value questionnaire.inputTitle
+                                , value model.inputTitle
                                 , onInput ChangeInputQuestionnaireTitle
                                 ]
                                 []
@@ -1787,7 +1781,7 @@ viewNewQuestionModal model =
                             , input
                                 [ class "input"
                                 , type_ "text"
-                                , value (getQuestionTime questionnaire.newElement)
+                                , value (model.inputQuestionTime)
                                 , placeholder "HH:MM:SS"
                                 , maxlength 8
                                 , minlength 8
@@ -1796,7 +1790,7 @@ viewNewQuestionModal model =
                                 ]
                                 []
                             , br [] []
-                            , viewQuestionValidation (getQuestionValidation questionnaire.newElement)
+                            , viewQuestionValidation model.questionValidationResult
                             , text ("Typ: " ++ getQuestionTyp questionnaire.newElement)
                             , br [] []
                             , radio "Single Choice" (ChangeQuestionType "Single Choice")
@@ -2128,11 +2122,11 @@ getAnswerTable index answer =
 --Error Message for viewTime and editTime modals
 
 
-viewValidation : Questionnaire -> Html msg
-viewValidation questionnaire =
+viewValidation : Model -> Html msg
+viewValidation model =
     let
         ( color, message ) =
-            case questionnaire.validationResult of
+            case model.validationResult of
                 NotDone ->
                     ( "", "" )
 

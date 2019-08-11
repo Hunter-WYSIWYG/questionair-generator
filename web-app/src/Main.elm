@@ -43,13 +43,16 @@ type
     --Modals
     | ViewOrClose ModalType
     --Creates Condition
-    | AddCondition String
+    | AddCondition  
+    | ChangeInputParentId String
+    | ChangeInputChildId String
     | AddConditionAnswer
     | AddAnswerToNewCondition String
     --Save input to questionnaire
     | SetNote
     | SetQuestion
-    | SetAnswer                       
+    | SetAnswer
+    | SetConditions                       
     | SetPolarAnswers String
     --Edit existing elements or answers
     | EditQuestion Q_element
@@ -76,6 +79,7 @@ type
     | DownloadQuestionnaire
 
 
+
 type ModalType
     = ViewingTimeModal
     | EditTimeModal
@@ -83,7 +87,8 @@ type ModalType
     | QuestionModal
     | TitleModal
     | AnswerModal
-    | ConditionModal
+    | ConditionModal1
+    | ConditionModal2
 
 
 type alias Questionnaire =
@@ -105,7 +110,8 @@ type alias Questionnaire =
     , showNewNoteModal : Bool
     , showNewQuestionModal : Bool
     , showNewAnswerModal : Bool
-    , showNewConditionModal: Bool
+    , showNewConditionModal1: Bool
+    , showNewConditionModal2: Bool
 
     --newInputs
     , validationResult : ValidationResult
@@ -114,6 +120,9 @@ type alias Questionnaire =
     , inputViewingTimeEnd : String
     , newElement : Q_element
     , newAnswer : Answer
+    , inputParentId : Int
+    , inputChildId : Int
+
 
     --editQElement for EditQuestion and EditNote
     , editQElement : Bool
@@ -202,7 +211,8 @@ initQuestionnaire _ =
     , showNewNoteModal = False
     , showNewQuestionModal = False
     , showNewAnswerModal = False
-    , showNewConditionModal = False
+    , showNewConditionModal1 = False
+    , showNewConditionModal2 = False
 
     --new inputs
     , validationResult = NotDone
@@ -211,6 +221,8 @@ initQuestionnaire _ =
     , inputEditTime = ""
     , newElement = initQuestion
     , newAnswer = initAnswer
+    , inputParentId = -1
+    , inputChildId = -1
 
     --editQElement
     , editQElement = False
@@ -432,23 +444,39 @@ update msg questionnaire =
                     else 
                         (changedQuestionnaire, Cmd.none)
 
-                ConditionModal ->
-                    ( { questionnaire | showNewConditionModal = not questionnaire.showNewConditionModal }, Cmd.none )
+                ConditionModal1 ->
+                    ( { questionnaire | showNewConditionModal1 = not questionnaire.showNewConditionModal1 }, Cmd.none )
+
+                ConditionModal2 ->
+                    ( { questionnaire | showNewConditionModal2 = not questionnaire.showNewConditionModal2 }, Cmd.none )
 
 
         --Add Condition
-        AddCondition string ->
+
+        ChangeInputParentId parent_id ->
+            ({questionnaire | inputParentId = case (String.toInt parent_id) of
+                Just a -> a
+                Nothing -> -1}
+            , Cmd.none)
+
+        ChangeInputChildId child_id ->
+            ({questionnaire | inputChildId = case (String.toInt child_id) of
+                Just a -> a
+                Nothing -> -1}
+            , Cmd.none)
+
+        AddCondition ->
             let 
-                parent = getID questionnaire.newElement
-                child = getID (getElementWithText string questionnaire)
+                parent = questionnaire.inputParentId
+                child = questionnaire.inputChildId
             in 
-                if string == "Keine" 
-                then    Debug.log "Keine ausgewählt" ({ questionnaire 
+                if (parent /= -1 && child /= -1)
+                then    ({ questionnaire 
+                            | newCondition = setParentChildInCondition parent child questionnaire.newCondition
+                        }, Cmd.none)
+                else    Debug.log "Keine ausgewählt" ({ questionnaire 
                             | newCondition = setValid questionnaire.newCondition False
                             --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
-                        }, Cmd.none)
-                else    ({ questionnaire 
-                            | newCondition = setParentChildInCondition parent child questionnaire.newCondition
                         }, Cmd.none)
 
         AddConditionAnswer ->
@@ -540,7 +568,12 @@ update msg questionnaire =
                         }, Cmd.none)
 
                 Note record ->
-                    (questionnaire, Cmd.none)    
+                    (questionnaire, Cmd.none)  
+
+        SetConditions ->
+              ({questionnaire | conditions = append questionnaire.conditions [ questionnaire.newCondition ]
+              , showNewConditionModal2 = False}
+              , Cmd.none)
 
         --Edits already existing elements
 
@@ -1265,7 +1298,8 @@ showEditQuestionnaire questionnaire =
         , viewNewNoteModal questionnaire
         , viewNewQuestionModal questionnaire
         , viewNewAnswerModal questionnaire
-        , viewNewConditionModal questionnaire
+        , viewNewConditionModal1 questionnaire
+        , viewNewConditionModal2 questionnaire
         , viewConditions questionnaire
         ]
 
@@ -1341,6 +1375,9 @@ showCreateQuestionOrNoteButtons questionnaire =
             [ text "Neue Frage" ]
         , button [ onClick (ViewOrClose NewNoteModal) ]
             [ text "Neue Anmerkung" ]
+
+        , button [ onClick (ViewOrClose ConditionModal1)]
+            [ text "Bedingungen" ]  
         , br [] []
         , br [] []
         , button [ onClick DownloadQuestionnaire ] [ text "Download" ]
@@ -1615,12 +1652,6 @@ viewNewQuestionModal questionnaire =
                         , onClick SetQuestion
                         ]
                         [ text "Übernehmen" ]
-
-                      , button 
-                        [ class "button is-link"
-                        , onClick (ViewOrClose ConditionModal)
-                        ]
-                        [ text "Bedingungen" ]  
                     ]
                 ]
             , button
@@ -1632,6 +1663,8 @@ viewNewQuestionModal questionnaire =
 
     else
         div [] []
+
+
 
 
 getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
@@ -1693,9 +1726,9 @@ viewNewAnswerModal questionnaire =
         div [] []
 
 
-viewNewConditionModal : Questionnaire -> Html Msg
-viewNewConditionModal questionnaire =
-    if questionnaire.showNewConditionModal then
+viewNewConditionModal1 : Questionnaire -> Html Msg
+viewNewConditionModal1 questionnaire =
+    if questionnaire.showNewConditionModal1 then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
@@ -1703,39 +1736,79 @@ viewNewConditionModal questionnaire =
                     [ p [ class "modal-card-title" ] [ text "Bedingungen" ] ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ text "Springe zu Frage: "
-                        , br [] []
-                        , div [ class "select" ]
-                            [ select [ onInput AddCondition ]
-                                (getQuestionOptions questionnaire.elements questionnaire.newCondition)
-                            ]
-                        , br [] []
-                        , text "Bei Beantwortung der Antworten mit den IDs: "
-                        , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
-                        , br [] []
-                        , input 
-                            [ placeholder "Hier ID eingeben"
-                            , onInput AddAnswerToNewCondition ] 
-                            []
-                        , button 
-                            [ class "button"
-                            , style "margin-left" "1em" 
-                            , style "margin-top" "0.25em"
-                            , onClick AddConditionAnswer ] 
-                            [ text "Hinzufügen" ]                    
+                        [ table [ class "table is-striped", style "width" "100%" ] (conditionsTable questionnaire)
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
                     [ button
                         [ class "button is-success"
-                        , onClick Submit
+                        , onClick (ViewOrClose ConditionModal2)
+                        ]
+                        [ text "Neu" ]
+                    ]
+                ]
+
+            , button
+                [ class "modal-close is-large"
+                , onClick (ViewOrClose ConditionModal1)
+                ]
+                []
+            ]
+
+    else
+        div [] []
+
+viewNewConditionModal2 : Questionnaire -> Html Msg
+viewNewConditionModal2 questionnaire =
+    if questionnaire.showNewConditionModal2 then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "Bedingungen" ] ]
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [     text "von Frage: "
+                            , br [] []
+                            , div [ class "select" ]
+                                [ select [ onInput ChangeInputParentId ]
+                                (getQuestionOptions questionnaire.elements questionnaire.newCondition)
+                                ]
+                            , br [] []
+                            , text " zu Frage: "
+                            , br [] []
+                            , div [ class "select" ]
+                                [ select [ onInput ChangeInputChildId ]
+                                    (getQuestionOptions questionnaire.elements questionnaire.newCondition)
+                                ]
+                            , br [] []
+                            , text "Bei Beantwortung der Antworten mit den IDs: "
+                            , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
+                            , br [] []
+                            , input 
+                               [ placeholder "Hier ID eingeben"
+                                , onInput AddAnswerToNewCondition ] 
+                                []
+                            , button 
+                                [ class "button"
+                                , style "margin-left" "1em" 
+                                , style "margin-top" "0.25em"
+                                , onClick AddConditionAnswer ] 
+                                [ text "Hinzufügen" ]                    
+                            
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button
+                        [ class "button is-success"
+                        , onClick SetConditions
                         ]
                         [ text "Übernehmen" ]
                     ]
                 ]
             , button
                 [ class "modal-close is-large"
-                , onClick (ViewOrClose ConditionModal)
+                , onClick (ViewOrClose ConditionModal2)
                 ]
                 []
             ]
@@ -1963,6 +2036,44 @@ getAnswerTable index answer =
             ]
         ]
 
+
+conditionsTable : Questionnaire -> List (Html Msg)
+conditionsTable questionnaire =
+    case questionnaire.newElement of
+        Question record ->
+            append [ tableHead_conditions ] (List.indexedMap getConditionTable questionnaire.conditions) 
+
+        Note record ->
+            []
+
+tableHead_conditions : Html Msg
+tableHead_conditions =
+    tr []
+        [ th []
+            [ text "Von"
+            ]
+        , th []
+            [ text "Zu"
+            ]
+        , th []
+            [ text "Aktion"
+            ]
+        ]
+
+
+getConditionTable : Int -> Condition -> Html Msg
+getConditionTable index condition =
+    tr  [ id (String.fromInt index) ]
+        [ td [] [ text (String.fromInt index) ]
+        , td [] [ ]
+        , td []
+            [ i 
+                [ class "fas fa-trash-alt" 
+                --, onClick (DeleteAnswer answer)
+                ] 
+                []
+            ]
+        ]
 
 --Error Message for viewTime and editTime modals
 

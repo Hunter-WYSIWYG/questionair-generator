@@ -31,7 +31,7 @@ main =
 type
     Msg
     --Changing Input
-    = ChangeQuestionnaireTitle String
+    = ChangeInputQuestionnaireTitle String
     | ChangeEditTime String
     | ChangeViewingTimeBegin String
     | ChangeViewingTimeEnd String
@@ -49,6 +49,7 @@ type
     | AddConditionAnswer
     | AddAnswerToNewCondition String
     --Save input to questionnaire
+    | SetQuestionnaireTitle
     | SetNote
     | SetQuestion
     | SetAnswer                       
@@ -127,6 +128,7 @@ type alias Questionnaire =
     , editTime : String
 
     --newInputs
+    , inputTitle : String
     , validationResult : ValidationResult
     , inputEditTime : String
     , inputViewingTimeBegin : String
@@ -229,6 +231,7 @@ initQuestionnaire =
     , editTime = ""
 
     --newInputs
+    , inputTitle = ""
     , validationResult = NotDone
     , inputEditTime = ""
     , inputViewingTimeBegin = ""
@@ -274,10 +277,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         --changing properties of notes or questions or answers
-        ChangeQuestionnaireTitle newTitle ->
+        ChangeInputQuestionnaireTitle newTitle ->
             let 
                 oldQuestionnaire = model.questionnaire
-                changedQuestionnaire = { oldQuestionnaire | title = newTitle }
+                changedQuestionnaire = { oldQuestionnaire | inputTitle = newTitle }
             in
                 ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
@@ -520,6 +523,17 @@ update msg model =
                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         --Save input to questionnaire
+        SetQuestionnaireTitle ->
+            let
+              oldQuestionnaire = model.questionnaire
+              changedQuestionnaire =
+                { oldQuestionnaire
+                    | title = oldQuestionnaire.inputTitle
+                    , inputTitle = ""
+                }  
+            in
+                ( { model | questionnaire = changedQuestionnaire, showTitleModal = not model.showTitleModal }, Cmd.none )
+
         SetPolarAnswers string ->
             let 
                 oldQuestionnaire = model.questionnaire
@@ -1663,8 +1677,8 @@ viewTitleModal model =
                                 , style "width" "180px"
                                 , style "margin-left" "10px"
                                 , style "margin-right" "10px"
-                                , value questionnaire.title
-                                , onInput ChangeQuestionnaireTitle
+                                , value questionnaire.inputTitle
+                                , onInput ChangeInputQuestionnaireTitle
                                 ]
                                 []
                             ]
@@ -1672,7 +1686,7 @@ viewTitleModal model =
                     , footer [ class "modal-card-foot" ]
                         [ button
                             [ class "button is-success"
-                            , onClick (ViewOrClose TitleModal)
+                            , onClick SetQuestionnaireTitle
                             ]
                             [ text "Übernehmen" ]
                         ]

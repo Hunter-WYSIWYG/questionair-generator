@@ -510,7 +510,7 @@ update msg model =
                         oldQuestionnaire = model.questionnaire
                         changedQuestionnaire = oldQuestionnaire
                     in 
-                        ( { model | questionnaire = changedQuestionnaire, showNewConditionModal1 = not model.showNewConditionModal1 }, Cmd.none )
+                        ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = not model.showNewConditionModal2 }, Cmd.none )
                                 
 
         --Add Condition

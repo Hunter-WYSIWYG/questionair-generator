@@ -1,9 +1,9 @@
-module Questionnaire exposing (..)
+module Questionnaire exposing (Questionnaire, getEditTime, getElementWithText, getViewingTime, initQuestionnaire)
 
-import Answer exposing (Answer, initAnswer)
-import Condition exposing (Condition, initCondition)
-import List.Extra exposing (swapAt, updateAt)
-import QElement exposing (Q_element, initQuestion, getAnswerWithID, getText)
+import Answer exposing (Answer)
+import Condition exposing (Condition)
+import List.Extra as LExtra
+import QElement exposing (Q_element)
 
 
 type alias Questionnaire =
@@ -24,14 +24,16 @@ type alias Questionnaire =
     }
 
 
+
 --Inits
+
 
 initQuestionnaire : Questionnaire
 initQuestionnaire =
     { title = "Titel eingeben"
     , elements = []
     , conditions = []
-    , newCondition = initCondition
+    , newCondition = Condition.initCondition
     , newAnswerID_Condition = ""
 
     --times
@@ -40,18 +42,19 @@ initQuestionnaire =
     , editTime = ""
 
     --newInputs
-    , newElement = initQuestion
-    , newAnswer = initAnswer
+    , newElement = QElement.initQuestion
+    , newAnswer = Answer.initAnswer
     }
 
 
 getElementWithText : String -> Questionnaire -> Q_element
 getElementWithText string questionnaire =
-    case List.head (Tuple.first (List.partition (\e -> getText e == string) questionnaire.elements)) of 
+    case List.head (Tuple.first (List.partition (\e -> QElement.getText e == string) questionnaire.elements)) of
         Just element ->
             element
+
         Nothing ->
-            initQuestion
+            QElement.initQuestion
 
 
 getViewingTime : Questionnaire -> String
@@ -70,5 +73,3 @@ getEditTime questionnaire =
 
     else
         "Von " ++ questionnaire.viewingTimeBegin ++ " Bis " ++ questionnaire.viewingTimeEnd
-
-

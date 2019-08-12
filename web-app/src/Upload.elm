@@ -4,7 +4,7 @@ import Html exposing (Html, br, button, div, h1, section, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
-import Msg exposing (..)
+import Msg exposing (Msg(..))
 
 
 showUpload : Model -> Html Msg

@@ -1,9 +1,10 @@
-module Model exposing (..)
+module Model exposing (ModalType(..), Model, ValidationResult(..), isValidEditTime, isValidQuestionTime, isValidViewingTime, validate, validateQuestion)
 
-import Questionnaire exposing (..)
+import Questionnaire exposing (Questionnaire)
+
 
 type alias Model =
-    { questionnaire : Questionnaire 
+    { questionnaire : Questionnaire
 
     --modals
     , showTitleModal : Bool
@@ -33,9 +34,10 @@ type alias Model =
     -- a page to edit Questionnaires
     , editQuestionnaire : Bool
 
-    --Debug 
-    , tmp : String 
+    --Debug
+    , tmp : String
     }
+
 
 type ValidationResult
     = NotDone
@@ -52,6 +54,7 @@ type ModalType
     | AnswerModal
 
 
+
 -- Input Validation
 
 
@@ -65,8 +68,10 @@ validate model =
 
     else if not (isValidViewingTime model.inputViewingTimeEnd) then
         Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
+
     else
         ValidationOK
+
 
 isValidViewingTime : String -> Bool
 isValidViewingTime viewingTime =
@@ -77,13 +82,16 @@ isValidEditTime : String -> Bool
 isValidEditTime editTime =
     not (String.length editTime /= 5 && String.length editTime /= 0)
 
+
 validateQuestion : String -> ValidationResult
 validateQuestion questionTime =
-            if not (isValidQuestionTime questionTime) then
-                Error "Die Zeiten müssen das Format HH:MM:SS haben"
-            else
-                ValidationOK
+    if not (isValidQuestionTime questionTime) then
+        Error "Die Zeiten müssen das Format HH:MM:SS haben"
+
+    else
+        ValidationOK
+
 
 isValidQuestionTime : String -> Bool
-isValidQuestionTime questionTime = 
+isValidQuestionTime questionTime =
     not (String.length questionTime /= 8 && String.length questionTime /= 0)

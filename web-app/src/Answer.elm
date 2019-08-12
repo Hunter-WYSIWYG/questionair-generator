@@ -1,4 +1,5 @@
-module Answer exposing (..)
+module Answer exposing (Answer, freeAnswer, getAnswerID, getAnswerText, getAnswerType, getAnswersWithRange, getBipolarAnswers, getUnipolarAnswers, initAnswer, regularAnswer, setPredefinedAnswers, update, updateAnswerList)
+
 
 type alias Answer =
     { id : Int
@@ -13,6 +14,7 @@ initAnswer : Answer
 initAnswer =
     { id = 0
     , text = ""
+
     --type can be "free" or "regular"
     , typ = ""
     }
@@ -35,11 +37,11 @@ regularAnswer int string =
     }
 
 
-freeAnswer : Int -> String -> Answer                                        
-freeAnswer int string = 
+freeAnswer : Int -> String -> Answer
+freeAnswer int string =
     { id = int
     , text = string
-    , typ = "free" 
+    , typ = "free"
     }
 
 
@@ -74,10 +76,11 @@ getAnswersWithRange begin end index =
 
 updateAnswerList : Answer -> List Answer -> List Answer
 updateAnswerList answerToUpdate list =
-    List.map (updateAnswer answerToUpdate) list
+    List.map (update answerToUpdate) list
 
 
-updateAnswer answerToUpdate answer =
+update : Answer -> Answer -> Answer
+update answerToUpdate answer =
     if getAnswerID answer == getAnswerID answerToUpdate then
         answerToUpdate
 
@@ -86,14 +89,15 @@ updateAnswer answerToUpdate answer =
 
 
 getAnswerID : Answer -> Int
-getAnswerID answer = answer.id
+getAnswerID answer =
+    answer.id
 
 
-getAnswerText : Answer -> String                                           
-getAnswerText answer = answer.text
+getAnswerText : Answer -> String
+getAnswerText answer =
+    answer.text
 
 
-getAnswerType : Answer -> String                                            
-getAnswerType answer = answer.typ
-
-
+getAnswerType : Answer -> String
+getAnswerType answer =
+    answer.typ

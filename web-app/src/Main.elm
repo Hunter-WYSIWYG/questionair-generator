@@ -1,23 +1,23 @@
 module Main exposing (main, subscriptions, update, view)
 
-import Answer exposing (Answer, getBipolarAnswers, getUnipolarAnswers, setPredefinedAnswers, updateAnswer)
+import Answer exposing (Answer)
 import Browser
-import Condition exposing (addAnswerOfQuestionToCondition, deleteAnswerInCondition, deleteConditionWithElement, getConditionWithParentID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswers, updateConditionWithIdTo)
-import Decoder exposing (..)
-import Edit exposing (..)
-import Encoder exposing (..)
+import Condition
+import Decoder
+import Edit
+import Encoder
 import File exposing (File)
 import File.Select as Select
-import Html exposing (Html, a, br, button, div, h1, nav, p, section, text)
+import Html exposing (Html, a, br, div, nav, p, text)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
-import List exposing (append)
-import Model exposing (..)
-import Msg exposing (..)
-import QElement exposing (Q_element(..), deleteAnswerFromItem, deleteItemFrom, getAntworten, getID, putAnswerDown, putAnswerUp, putElementDown, putElementUp, updateElement)
-import Questionnaire exposing (..)
+import List
+import Model exposing (ModalType(..), Model, ValidationResult(..))
+import Msg exposing (Msg(..))
+import QElement exposing (Q_element(..))
+import Questionnaire
 import Task
-import Upload exposing (showUpload)
+import Upload
 
 
 main =
@@ -44,7 +44,7 @@ subscriptions model =
 
 initModel : () -> ( Model, Cmd Msg )
 initModel _ =
-    ( { questionnaire = initQuestionnaire
+    ( { questionnaire = Questionnaire.initQuestionnaire
 
       --modals
       , showTitleModal = False
@@ -96,28 +96,22 @@ update msg model =
             let
                 changedModel =
                     { model | inputEditTime = newTime }
-
-                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-            ( { model | inputEditTime = newTime, validationResult = validate changedModel }, Cmd.none )
+            ( { model | inputEditTime = newTime, validationResult = Model.validate changedModel }, Cmd.none )
 
         ChangeViewingTimeBegin newTime ->
             let
                 changedModel =
                     { model | inputViewingTimeBegin = newTime }
-
-                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-            ( { model | inputViewingTimeBegin = newTime, validationResult = validate changedModel }, Cmd.none )
+            ( { model | inputViewingTimeBegin = newTime, validationResult = Model.validate changedModel }, Cmd.none )
 
         ChangeViewingTimeEnd newTime ->
             let
                 changedModel =
                     { model | inputViewingTimeEnd = newTime }
-
-                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-            ( { model | inputViewingTimeEnd = newTime, validationResult = validate changedModel }, Cmd.none )
+            ( { model | inputViewingTimeEnd = newTime, validationResult = Model.validate changedModel }, Cmd.none )
 
         ChangeQuestionOrNoteText string ->
             let
@@ -189,7 +183,7 @@ update msg model =
                                         Question { record | typ = string }
 
                                     else
-                                        Question { record | typ = string, answers = setPredefinedAnswers string }
+                                        Question { record | typ = string, answers = Answer.setPredefinedAnswers string }
                             }
 
                         Note record ->
@@ -198,7 +192,7 @@ update msg model =
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         ChangeQuestionTime newTime ->
-            ( { model | inputQuestionTime = newTime, questionValidationResult = validateQuestion newTime }, Cmd.none )
+            ( { model | inputQuestionTime = newTime, questionValidationResult = Model.validateQuestion newTime }, Cmd.none )
 
         ChangeAnswerText string ->
             let
@@ -295,7 +289,7 @@ update msg model =
                             if not model.showNewAnswerModal == True then
                                 { oldQuestionnaire
                                     | newAnswer =
-                                        { id = List.length (getAntworten oldQuestionnaire.newElement)
+                                        { id = List.length (QElement.getAntworten oldQuestionnaire.newElement)
                                         , text = ""
 
                                         --type can be "free" or "regular"
@@ -315,23 +309,23 @@ update msg model =
                     model.questionnaire
 
                 parent =
-                    getID oldQuestionnaire.newElement
+                    QElement.getID oldQuestionnaire.newElement
 
                 child =
-                    getID (getElementWithText string oldQuestionnaire)
+                    QElement.getID (Questionnaire.getElementWithText string oldQuestionnaire)
 
                 changedQuestionnaire =
                     if string == "Keine" then
                         Debug.log "Keine ausgewählt"
                             { oldQuestionnaire
-                                | newCondition = setValid oldQuestionnaire.newCondition False
+                                | newCondition = Condition.setValid oldQuestionnaire.newCondition False
 
                                 --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
                             }
 
                     else
                         { oldQuestionnaire
-                            | newCondition = setParentChildInCondition parent child oldQuestionnaire.newCondition
+                            | newCondition = Condition.setParentChildInCondition parent child oldQuestionnaire.newCondition
                         }
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
@@ -348,7 +342,7 @@ update msg model =
 
                         Just id ->
                             { oldQuestionnaire
-                                | newCondition = addAnswerOfQuestionToCondition id oldQuestionnaire.newElement oldQuestionnaire.newCondition
+                                | newCondition = Condition.addAnswerOfQuestionToCondition id oldQuestionnaire.newElement oldQuestionnaire.newCondition
                             }
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
@@ -383,10 +377,10 @@ update msg model =
                     case oldQuestionnaire.newElement of
                         Question record ->
                             if record.typ == "Skaliert unipolar" then
-                                { oldQuestionnaire | newElement = Question { record | answers = getUnipolarAnswers string } }
+                                { oldQuestionnaire | newElement = Question { record | answers = Answer.getUnipolarAnswers string } }
 
                             else
-                                { oldQuestionnaire | newElement = Question { record | answers = getBipolarAnswers string } }
+                                { oldQuestionnaire | newElement = Question { record | answers = Answer.getBipolarAnswers string } }
 
                         Note record ->
                             oldQuestionnaire
@@ -401,14 +395,14 @@ update msg model =
                 changedQuestionnaire =
                     if model.editQElement == False then
                         { oldQuestionnaire
-                            | elements = append oldQuestionnaire.elements [ oldQuestionnaire.newElement ]
+                            | elements = List.append oldQuestionnaire.elements [ oldQuestionnaire.newElement ]
 
                             --, showNewNoteModal = False
                         }
 
                     else
                         { oldQuestionnaire
-                            | elements = List.map (\e -> updateElement oldQuestionnaire.newElement e) oldQuestionnaire.elements
+                            | elements = List.map (\e -> QElement.updateElement oldQuestionnaire.newElement e) oldQuestionnaire.elements
 
                             --, showNewNoteModal = False
                             --, editQElement = False
@@ -428,27 +422,27 @@ update msg model =
                 changedQuestionnaire =
                     if model.editQElement == False then
                         { oldQuestionnaire
-                            | elements = append oldQuestionnaire.elements [ oldQuestionnaire.newElement ]
+                            | elements = List.append oldQuestionnaire.elements [ oldQuestionnaire.newElement ]
                             , conditions =
                                 if oldQuestionnaire.newCondition.isValid then
-                                    Debug.log "true" (append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ])
+                                    Debug.log "true" (List.append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ])
 
                                 else
-                                    Debug.log "false" removeConditionFromCondList oldQuestionnaire.newCondition oldQuestionnaire.conditions
-                            , newCondition = initCondition
+                                    Debug.log "false" Condition.removeConditionFromCondList oldQuestionnaire.newCondition oldQuestionnaire.conditions
+                            , newCondition = Condition.initCondition
 
                             --, showNewQuestionModal = False
                         }
 
                     else
                         { oldQuestionnaire
-                            | elements = List.map (\e -> updateElement oldQuestionnaire.newElement e) oldQuestionnaire.elements
+                            | elements = List.map (\e -> QElement.updateElement oldQuestionnaire.newElement e) oldQuestionnaire.elements
                             , conditions =
                                 if oldQuestionnaire.newCondition.isValid then
-                                    Debug.log "true" List.map (\e -> updateCondition oldQuestionnaire.newCondition e) oldQuestionnaire.conditions
+                                    Debug.log "true" List.map (\e -> Condition.updateCondition oldQuestionnaire.newCondition e) oldQuestionnaire.conditions
 
                                 else
-                                    Debug.log "false" removeConditionFromCondList oldQuestionnaire.newCondition oldQuestionnaire.conditions
+                                    Debug.log "false" Condition.removeConditionFromCondList oldQuestionnaire.newCondition oldQuestionnaire.conditions
 
                             --, showNewQuestionModal = False
                             --, editQElement = False
@@ -482,7 +476,7 @@ update msg model =
                             else
                                 { oldQuestionnaire
                                     | newElement =
-                                        Question { record | answers = List.map (\e -> updateAnswer oldQuestionnaire.newAnswer e) record.answers }
+                                        Question { record | answers = List.map (\e -> Answer.update oldQuestionnaire.newAnswer e) record.answers }
 
                                     --, showNewAnswerModal = False
                                     --, editAnswer = False
@@ -524,7 +518,7 @@ update msg model =
                 changedQuestionnaire =
                     { oldQuestionnaire
                         | newElement = element
-                        , newCondition = getConditionWithParentID oldQuestionnaire.conditions (getID element)
+                        , newCondition = Condition.getConditionWithParentID oldQuestionnaire.conditions (QElement.getID element)
 
                         --, showNewQuestionModal = True
                         --, editQElement = True
@@ -557,10 +551,10 @@ update msg model =
                     model.questionnaire
 
                 changedQuestionnaire =
-                    if getID element /= (List.length oldQuestionnaire.elements - 1) then
+                    if QElement.getID element /= (List.length oldQuestionnaire.elements - 1) then
                         { oldQuestionnaire
-                            | elements = putElementDown oldQuestionnaire.elements element
-                            , conditions = updateConditionWithIdTo oldQuestionnaire.conditions (getID element) (getID element + 1)
+                            | elements = QElement.putElementDown oldQuestionnaire.elements element
+                            , conditions = Condition.updateConditionWithIdTo oldQuestionnaire.conditions (QElement.getID element) (QElement.getID element + 1)
                         }
 
                     else
@@ -574,10 +568,10 @@ update msg model =
                     model.questionnaire
 
                 changedQuestionnaire =
-                    if getID element /= 0 then
+                    if QElement.getID element /= 0 then
                         { oldQuestionnaire
-                            | elements = putElementUp oldQuestionnaire.elements element
-                            , conditions = updateConditionWithIdTo oldQuestionnaire.conditions (getID element) (getID element - 1)
+                            | elements = QElement.putElementUp oldQuestionnaire.elements element
+                            , conditions = Condition.updateConditionWithIdTo oldQuestionnaire.conditions (QElement.getID element) (QElement.getID element - 1)
                         }
 
                     else
@@ -593,8 +587,8 @@ update msg model =
                 changedQuestionnaire =
                     if answer.id /= 0 then
                         { oldQuestionnaire
-                            | newElement = putAnswerUp oldQuestionnaire.newElement answer
-                            , conditions = updateConditionAnswers oldQuestionnaire.conditions answer.id (answer.id - 1)
+                            | newElement = QElement.putAnswerUp oldQuestionnaire.newElement answer
+                            , conditions = Condition.updateConditionAnswers oldQuestionnaire.conditions answer.id (answer.id - 1)
                         }
 
                     else
@@ -608,8 +602,8 @@ update msg model =
                     model.questionnaire
 
                 changedQuestionnaire =
-                    if answer.id /= (List.length (getAntworten oldQuestionnaire.newElement) - 1) then
-                        { oldQuestionnaire | newElement = putAnswerDown oldQuestionnaire.newElement answer }
+                    if answer.id /= (List.length (QElement.getAntworten oldQuestionnaire.newElement) - 1) then
+                        { oldQuestionnaire | newElement = QElement.putAnswerDown oldQuestionnaire.newElement answer }
 
                     else
                         oldQuestionnaire
@@ -624,8 +618,8 @@ update msg model =
 
                 changedQuestionnaire =
                     { oldQuestionnaire
-                        | elements = deleteItemFrom element oldQuestionnaire.elements
-                        , conditions = deleteConditionWithElement oldQuestionnaire.conditions (getID element)
+                        | elements = QElement.deleteItemFrom element oldQuestionnaire.elements
+                        , conditions = Condition.deleteConditionWithElement oldQuestionnaire.conditions (QElement.getID element)
                     }
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
@@ -637,8 +631,8 @@ update msg model =
 
                 changedQuestionnaire =
                     { oldQuestionnaire
-                        | newElement = deleteAnswerFromItem answer oldQuestionnaire.newElement
-                        , conditions = List.map (deleteAnswerInCondition answer.id) oldQuestionnaire.conditions
+                        | newElement = QElement.deleteAnswerFromItem answer oldQuestionnaire.newElement
+                        , conditions = List.map (Condition.deleteAnswerInCondition answer.id) oldQuestionnaire.conditions
                     }
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
@@ -656,7 +650,7 @@ update msg model =
                         , viewingTimeEnd = model.inputViewingTimeEnd
                     }
             in
-            if validate model == ValidationOK then
+            if Model.validate model == ValidationOK then
                 ( { model
                     | questionnaire = changedQuestionnaire
                     , showViewingTimeModal = False
@@ -668,7 +662,7 @@ update msg model =
 
             else
                 ( { model
-                    | validationResult = validate model
+                    | validationResult = Model.validate model
                     , inputViewingTimeBegin = ""
                     , inputViewingTimeEnd = ""
                     , inputEditTime = ""
@@ -700,18 +694,15 @@ update msg model =
 
                 changedQuestionnaire =
                     { oldQuestionnaire
-                        | title = decodeTitle content
-                        , elements = decodeElements content
-
-                        --, upload = False
-                        --, editQuestionnaire = True
+                        | title = Decoder.decodeTitle content
+                        , elements = Decoder.decodeElements content
                     }
             in
             ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }, Cmd.none )
 
         --Everything releated to download
         DownloadQuestionnaire ->
-            ( model, save model.questionnaire (encodeQuestionnaire model.questionnaire) )
+            ( model, Encoder.save model.questionnaire (Encoder.encodeQuestionnaire model.questionnaire) )
 
 
 
@@ -723,10 +714,10 @@ view model =
     div []
         [ showNavbar
         , if model.upload then
-            showUpload model
+            Upload.showUpload model
 
           else
-            showEditQuestionnaire model
+            Edit.showEditQuestionnaire model
         ]
 
 

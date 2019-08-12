@@ -1210,7 +1210,7 @@ view questionnaire =
 
 showHeroWith : String -> Html Msg
 showHeroWith string =
-    section [ class "hero is-primary" ]
+    section [ class "hero is-info" ]
         [ div [ class "hero-body" ]
             [ div [ class "container is-fluid" ]
                 [ h1 [ class "title" ] [ text string ]
@@ -1376,7 +1376,8 @@ viewViewingTimeModal questionnaire =
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title" ] [ text "Erscheinungszeit" ] ]
+                    [ h1 [ class "modal-card-title" ] [ text "Erscheinungszeit" ]
+                      , button[class "is-large delete", onClick(ViewOrClose ViewingTimeModal)][] ]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Von "
@@ -1418,11 +1419,6 @@ viewViewingTimeModal questionnaire =
                         [ text "Übernehmen" ]
                     ]
                 ]
-            , button
-                [ class "modal-close is-large"
-                , onClick (ViewOrClose ViewingTimeModal)
-                ]
-                []
             ]
 
     else
@@ -1436,7 +1432,8 @@ viewEditTimeModal questionnaire =
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title" ] [ text "Bearbeitungszeit" ] ]
+                    [ p [ class "modal-card-title" ] [ text "Bearbeitungszeit" ] 
+                      , button[class "is-large delete", onClick(ViewOrClose EditTimeModal)][]]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Zeit: "
@@ -1465,11 +1462,6 @@ viewEditTimeModal questionnaire =
                         [ text "Übernehmen" ]
                     ]
                 ]
-            , button
-                [ class "modal-close is-large"
-                , onClick (ViewOrClose EditTimeModal)
-                ]
-                []
             ]
 
     else
@@ -1483,7 +1475,8 @@ viewTitleModal questionnaire =
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title" ] [ text "Titel ändern" ] ]
+                    [ p [ class "modal-card-title" ] [ text "Titel ändern" ]
+                      , button[class "is-large delete", onClick(ViewOrClose TitleModal)][] ]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Text: "
@@ -1507,11 +1500,6 @@ viewTitleModal questionnaire =
                         [ text "Übernehmen" ]
                     ]
                 ]
-            , button
-                [ class "modal-close is-large"
-                , onClick (ViewOrClose TitleModal)
-                ]
-                []
             ]
 
     else
@@ -1525,7 +1513,8 @@ viewNewNoteModal questionnaire =
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title" ] [ text "Neue Anmerkung" ] ]
+                    [ p [ class "modal-card-title" ] [ text "Neue Anmerkung"] 
+                      , button[class "is-large delete", onClick(ViewOrClose NewNoteModal)][]]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Text: "
@@ -1548,12 +1537,7 @@ viewNewNoteModal questionnaire =
                         ]
                         [ text "Übernehmen" ]
                     ]
-                ]
-            , button
-                [ class "modal-close is-large"
-                , onClick (ViewOrClose NewNoteModal)
-                ]
-                []
+                ] 
             ]
 
     else
@@ -1567,7 +1551,8 @@ viewNewQuestionModal questionnaire =
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title" ] [ text "Neue Frage" ] ]
+                    [ p [ class "modal-card-title"] [ text "Neue Frage" ] 
+                      , button[class "is-large delete", onClick(ViewOrClose QuestionModal)][]]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
@@ -1634,11 +1619,6 @@ viewNewQuestionModal questionnaire =
                         [ text "Übernehmen" ]
                     ]
                 ]
-            , button
-                [ class "modal-close is-large"
-                , onClick (ViewOrClose QuestionModal)
-                ]
-                []
             ]
 
     else
@@ -1665,7 +1645,8 @@ viewNewAnswerModal questionnaire =
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title" ] [ text "Neue Antwort" ] ]
+                    [ p [ class "modal-card-title" ] [ text "Neue Antwort" ]
+                      , button[class "is-large delete", onClick(ViewOrClose AnswerModal)][] ]
                 , section [ class "modal-card-body" ]
                     [ div []
                         [ text "Antworttext: "
@@ -1693,11 +1674,6 @@ viewNewAnswerModal questionnaire =
                         [ text "Übernehmen" ]
                     ]
                 ]
-            , button
-                [ class "modal-close is-large"
-                , onClick (ViewOrClose AnswerModal)
-                ]
-                []
             ]
 
     else

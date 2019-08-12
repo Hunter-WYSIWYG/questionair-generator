@@ -1,10 +1,11 @@
-module QEncoder exposing (..)
+module Encoder exposing (encodeQuestionnaire, save)
 
+import Answer exposing (Answer)
+import Condition exposing (Condition)
 import File.Download as Download
 import Json.Encode as Encode exposing (encode, object)
+import QElement exposing (Q_element(..))
 import Questionnaire exposing (..)
-
---ENCODER
 
 
 --encodes questionnaire as a json
@@ -17,7 +18,6 @@ encodeQuestionnaire questionnaire =
             , ( "conditions", Encode.list conditionEncoder questionnaire.conditions)
             ]
         )
-
 
 
 --encodes Q_element

@@ -1,7 +1,9 @@
-module QDecoder exposing (..)
+module Decoder exposing (..)
 
+import Answer exposing (Answer)
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (required, optional, hardcoded)
+import QElement exposing (Q_element(..), NoteRecord, QuestionRecord)
 import Questionnaire exposing (..)
 
 --DECODER

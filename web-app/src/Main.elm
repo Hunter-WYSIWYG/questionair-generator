@@ -8,6 +8,7 @@ import Html exposing (Html, a, br, button, div, footer, form, h1, header, i, inp
 import Html.Attributes exposing (class, href, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
+import Json.Decode.Pipeline exposing (required, optional, hardcoded)
 import Json.Encode as Encode exposing (encode, object)
 import List exposing (append)
 import List.Extra exposing (swapAt, updateAt)
@@ -16,7 +17,7 @@ import Task
 
 main =
     Browser.element
-        { init = initQuestionnaire
+        { init = initModel
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -30,7 +31,7 @@ main =
 type
     Msg
     --Changing Input
-    = ChangeQuestionnaireTitle String
+    = ChangeInputQuestionnaireTitle String
     | ChangeEditTime String
     | ChangeViewingTimeBegin String
     | ChangeViewingTimeEnd String
@@ -39,7 +40,8 @@ type
     | ChangeQuestionNote String
     | ChangeQuestionType String
     | ChangeAnswerType String     
-    | ChangeQuestionNewAnswer Answer              
+    | ChangeQuestionNewAnswer Answer   
+    | ChangeQuestionTime String           
     --Modals
     | ViewOrClose ModalType
     --Creates Condition
@@ -47,6 +49,7 @@ type
     | AddConditionAnswer
     | AddAnswerToNewCondition String
     --Save input to questionnaire
+    | SetQuestionnaireTitle
     | SetNote
     | SetQuestion
     | SetAnswer                       
@@ -85,6 +88,42 @@ type ModalType
     | AnswerModal
 
 
+type alias Model =
+    { questionnaire : Questionnaire 
+
+    --modals
+    , showTitleModal : Bool
+    , showEditTimeModal : Bool
+    , showViewingTimeModal : Bool
+    , showNewNoteModal : Bool
+    , showNewQuestionModal : Bool
+    , showNewAnswerModal : Bool
+
+    --editQElement for EditQuestion and EditNote
+    , editQElement : Bool
+    , editAnswer : Bool
+
+    --new inputs
+    , inputTitle : String
+    , validationResult : ValidationResult
+    , inputEditTime : String
+    , inputViewingTimeBegin : String
+    , inputViewingTimeEnd : String
+    , inputQuestionTime : String
+    , questionValidationResult : ValidationResult
+
+    --upload determines if the users wants to upload a questionnaire
+    --if upload is false show UI to create new questionnaire
+    , upload : Bool
+
+    -- a page to edit Questionnaires
+    , editQuestionnaire : Bool
+
+    --Debug 
+    , tmp : String 
+    }
+
+    
 type alias Questionnaire =
     { title : String
     , elements : List Q_element
@@ -97,35 +136,9 @@ type alias Questionnaire =
     , viewingTimeEnd : String
     , editTime : String
 
-    --modals
-    , showTitleModal : Bool
-    , showEditTimeModal : Bool
-    , showViewingTimeModal : Bool
-    , showNewNoteModal : Bool
-    , showNewQuestionModal : Bool
-    , showNewAnswerModal : Bool
-
     --newInputs
-    , validationResult : ValidationResult
-    , inputEditTime : String
-    , inputViewingTimeBegin : String
-    , inputViewingTimeEnd : String
     , newElement : Q_element
     , newAnswer : Answer
-
-    --editQElement for EditQuestion and EditNote
-    , editQElement : Bool
-    , editAnswer : Bool
-
-    --upload determines if the users wants to upload a questionnaire
-    --if upload is false show UI to create new questionnaire
-    , upload : Bool
-
-    -- a page to edit Questionnaires
-    , editQuestionnaire : Bool
-
-    --Debug 
-    , tmp : String 
     }
 
 
@@ -151,6 +164,7 @@ type alias QuestionRecord =
     , answers : List Answer
     , hint : String
     , typ : String
+    , questionTime : String
     }
 
 
@@ -172,17 +186,52 @@ type ValidationResult
 -- SUBSCRIPTIONS
 
 
-subscriptions : Questionnaire -> Sub Msg
+subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
 
 --Init
+initModel : () -> ( Model, Cmd Msg )
+initModel _ = 
+    ({ questionnaire = initQuestionnaire
+
+    --modals
+    , showTitleModal = False
+    , showEditTimeModal = False
+    , showViewingTimeModal = False
+    , showNewNoteModal = False
+    , showNewQuestionModal = False
+    , showNewAnswerModal = False
+
+    --editQElement for EditQuestion and EditNote
+    , editQElement = False
+    , editAnswer = False
+
+    --new inputs
+    , inputTitle = ""
+    , validationResult = NotDone
+    , inputEditTime = ""
+    , inputViewingTimeBegin = ""
+    , inputViewingTimeEnd = ""
+    , inputQuestionTime = ""
+    , questionValidationResult = NotDone
 
 
-initQuestionnaire : () -> ( Questionnaire, Cmd Msg )
-initQuestionnaire _ =
-    ({ title = "Titel eingeben"
+    --upload determines if the users wants to upload a questionnaire
+    --if upload is false show UI to create new questionnaire
+    , upload = False
+
+    -- a page to edit Questionnaires
+    , editQuestionnaire = True
+
+    --Debug 
+    , tmp = ""
+    }, Cmd.none)
+
+initQuestionnaire : Questionnaire
+initQuestionnaire =
+    { title = "Titel eingeben"
     , elements = []
     , conditions = []
     , newCondition = initCondition
@@ -193,30 +242,10 @@ initQuestionnaire _ =
     , viewingTimeEnd = ""
     , editTime = ""
 
-    --modals
-    , showTitleModal = False
-    , showViewingTimeModal = False
-    , showEditTimeModal = False
-    , showNewNoteModal = False
-    , showNewQuestionModal = False
-    , showNewAnswerModal = False
-
-    --new inputs
-    , validationResult = NotDone
-    , inputViewingTimeBegin = ""
-    , inputViewingTimeEnd = ""
-    , inputEditTime = ""
+    --newInputs
     , newElement = initQuestion
     , newAnswer = initAnswer
-
-    --editQElement
-    , editQElement = False
-    , editAnswer = False
-    , editQuestionnaire = True
-    , upload = False
-    , tmp = ""
     }
-    , Cmd.none)
 
 
 initQuestion : Q_element
@@ -227,6 +256,7 @@ initQuestion =
         , answers = []
         , hint = ""
         , typ = ""
+        , questionTime = ""
         }
 
 initAnswer : Answer
@@ -248,430 +278,534 @@ initCondition =
 --Update logic
 
 
-update : Msg -> Questionnaire -> ( Questionnaire, Cmd Msg )
-update msg questionnaire =
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
     case msg of
         --changing properties of notes or questions or answers
-        ChangeQuestionnaireTitle newTitle ->
-            ( { questionnaire | title = newTitle }, Cmd.none )
+        ChangeInputQuestionnaireTitle newTitle ->
+            ( { model | inputTitle = newTitle }, Cmd.none )
 
         ChangeEditTime newTime ->
             let
-                changedQuestionnaire =
-                    { questionnaire
-                        | inputEditTime = newTime
-                    }
+                changedModel = { model | inputEditTime = newTime }
+                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-            ( { changedQuestionnaire
-                | validationResult = validate changedQuestionnaire
-              }
-            , Cmd.none
-            )
+                ( { model | inputEditTime = newTime, validationResult = validate changedModel }, Cmd.none )
 
         ChangeViewingTimeBegin newTime ->
             let
-                changedQuestionnaire =
-                    { questionnaire
-                        | inputViewingTimeBegin = newTime
-                    }
+                changedModel = { model | inputViewingTimeBegin = newTime}
+                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-            ( { changedQuestionnaire
-                | validationResult = validate changedQuestionnaire
-              }
-            , Cmd.none
-            )
+                ( { model | inputViewingTimeBegin = newTime, validationResult = validate changedModel }, Cmd.none)
 
         ChangeViewingTimeEnd newTime ->
             let
-                changedQuestionnaire =
-                    { questionnaire
-                        | inputViewingTimeEnd = newTime
-                    }
+                changedModel = { model | inputViewingTimeEnd = newTime }
+                --validatedModel = { changedModel | validationResult = validate changedModel }
             in
-            ( { changedQuestionnaire
-                | validationResult = validate changedQuestionnaire
-              }
-            , Cmd.none
-            )
+                ( { model | inputViewingTimeEnd = newTime, validationResult = validate changedModel }, Cmd.none)
 
         ChangeQuestionOrNoteText string ->
             let
-                changedRecord rec =
-                    { rec | text = string }
-            in
-            case questionnaire.newElement of
-                Question record ->
-                    ( { questionnaire | newElement = Question (changedRecord record) }, Cmd.none )
+                changedRecord rec = { rec | text = string }
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = 
+                    case oldQuestionnaire.newElement of
+                        Question record -> { oldQuestionnaire | newElement = Question (changedRecord record) }
 
-                Note record ->
-                    ( { questionnaire | newElement = Note (changedRecord record) }, Cmd.none )
+                        Note record -> { oldQuestionnaire | newElement = Note (changedRecord record) }
+            in
+                ( { model | questionnaire = changedQuestionnaire}, Cmd.none )
 
         ChangeQuestionNewAnswer newAnswer ->
-            case questionnaire.newElement of
-                Question record ->
-                    ( { questionnaire
-                        | newElement =
-                            Question
-                                { record | answers = record.answers ++ [ newAnswer ] }
-                      }
-                    , Cmd.none
-                    )
-
-                Note record ->
-                    ( questionnaire, Cmd.none )
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of
+                        Question record ->
+                            { oldQuestionnaire
+                                | newElement =
+                                    Question
+                                        { record | answers = record.answers ++ [ newAnswer ] }
+                            }
+                    
+                        Note record ->
+                            oldQuestionnaire
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         ChangeQuestionNote string ->
-            case questionnaire.newElement of
-                Question record ->
-                    ( { questionnaire
-                        | newElement =
-                            Question
-                                { record | hint = string }
-                      }
-                    , Cmd.none
-                    )
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of
+                        Question record ->
+                            { oldQuestionnaire
+                                | newElement =
+                                    Question
+                                        { record | hint = string }
+                            }
 
-                Note record ->
-                    ( questionnaire, Cmd.none )
-
+                        Note record ->
+                            oldQuestionnaire
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+        
         ChangeQuestionType string ->
-            case questionnaire.newElement of
-                Question record ->
-                    ( { questionnaire
-                        | newElement =
-                            if string == "Single Choice" || string == "Multiple Choice"
-                            then Question { record | typ = string }
-                            else Question { record | typ = string, answers = setPredefinedAnswers string }
-                      }
-                    , Cmd.none
-                    )
-
-                Note record ->
-                    ( questionnaire, Cmd.none )
-
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of
+                            Question record ->
+                                { oldQuestionnaire
+                                    | newElement =
+                                        if string == "Single Choice" || string == "Multiple Choice" then
+                                            Question { record | typ = string }
+                                        else 
+                                            Question { record | typ = string, answers = setPredefinedAnswers string }
+                                }
+                            Note record ->
+                                oldQuestionnaire
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+            
+        ChangeQuestionTime newTime ->
+            --let
+              --  oldQuestionnaire = model.questionnaire
+                --changedQuestionnaire =
+                  --  case oldQuestionnaire.newElement of 
+                    --    Question record ->
+                      --      { oldQuestionnaire 
+                        --        | newElement = Question { record| inputQuestionTime = newTime } 
+                          --  } 
+                        --Note record -> 
+                          --  oldQuestionnaire
+            --in
+              --  ( { model | questionnaire = changedQuestionnaire, questionValidationResult = validateQuestion newTime }, Cmd.none )*/
+            ( { model | inputQuestionTime = newTime, questionValidationResult = validateQuestion newTime }, Cmd.none )
+                
         ChangeAnswerText string ->
-            ({ questionnaire | newAnswer = Answer questionnaire.newAnswer.id string questionnaire.newAnswer.typ }, Cmd.none)     
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    { oldQuestionnaire | newAnswer = Answer oldQuestionnaire.newAnswer.id string oldQuestionnaire.newAnswer.typ }     
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         ChangeAnswerType string ->
-            ({ questionnaire
-                | newAnswer =
-                    Answer questionnaire.newAnswer.id questionnaire.newAnswer.text string
-            }, Cmd.none)
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    { oldQuestionnaire
+                        | newAnswer =
+                            Answer oldQuestionnaire.newAnswer.id oldQuestionnaire.newAnswer.text string
+                    }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+
+       
 
         --open or close modals
         ViewOrClose modalType ->
             case modalType of
                 TitleModal ->
-                    ( { questionnaire | showTitleModal = not questionnaire.showTitleModal }, Cmd.none )
+                    ( { model | showTitleModal = not model.showTitleModal }, Cmd.none )
 
                 ViewingTimeModal ->
-                    ( { questionnaire | showViewingTimeModal = not questionnaire.showViewingTimeModal }, Cmd.none )
+                    ( { model | showViewingTimeModal = not model.showViewingTimeModal }, Cmd.none )
 
                 EditTimeModal ->
-                    ( { questionnaire | showEditTimeModal = not questionnaire.showEditTimeModal }, Cmd.none )
+                    ( { model | showEditTimeModal = not model.showEditTimeModal }, Cmd.none )
 
                 NewNoteModal ->
                     let
+                        oldQuestionnaire = model.questionnaire
                         changedQuestionnaire =
-                            { questionnaire | showNewNoteModal = not questionnaire.showNewNoteModal }
+                            if not model.showNewNoteModal == True then 
+                                { oldQuestionnaire 
+                                    |newElement = 
+                                        Note 
+                                            { id = List.length oldQuestionnaire.elements
+                                            , text = ""
+                                            }
+                                }
+                            else 
+                                oldQuestionnaire
                     in
-                    if changedQuestionnaire.showNewNoteModal == True then
-                        ( { changedQuestionnaire
-                            | newElement =
-                                Note
-                                    { id = List.length questionnaire.elements
-                                    , text = ""
-                                    }
-                          }
-                        , Cmd.none
-                        )
-
-                    else
-                        ( changedQuestionnaire, Cmd.none )
-
+                        ( { model | questionnaire = changedQuestionnaire, showNewNoteModal = not model.showNewNoteModal }, Cmd.none )
+                    
                 QuestionModal ->
                     let
+                        oldQuestionnaire = model.questionnaire
                         changedQuestionnaire =
-                            { questionnaire | showNewQuestionModal = not questionnaire.showNewQuestionModal }
+                            if not model.showNewQuestionModal == True then
+                                { oldQuestionnaire
+                                    | newElement =
+                                        Question
+                                            { id = List.length oldQuestionnaire.elements
+                                            , text = ""
+                                            , answers = []
+                                            , hint = ""
+                                            , typ = ""
+                                            , questionTime = ""
+                                            }
+                                }
+                            else
+                                oldQuestionnaire
                     in
-                    if changedQuestionnaire.showNewQuestionModal == True then
-                        ( { changedQuestionnaire
-                            | newElement =
-                                Question
-                                    { id = List.length questionnaire.elements
-                                    , text = ""
-                                    , answers = []
-                                    , hint = ""
-                                    , typ = ""
-                                    }
-                          }
-                        , Cmd.none
+                        ( { model 
+                            | questionnaire = changedQuestionnaire
+                            , showNewQuestionModal = not model.showNewQuestionModal
+                            , questionValidationResult = NotDone
+                            , inputQuestionTime = "" }
+                        , Cmd.none 
                         )
-
-                    else
-                        ( changedQuestionnaire, Cmd.none )
 
                 AnswerModal ->
                     let
+                        oldQuestionnaire = model.questionnaire
                         changedQuestionnaire =
-                            { questionnaire | showNewAnswerModal = not questionnaire.showNewAnswerModal }
+                            if not model.showNewAnswerModal == True then
+                                { oldQuestionnaire
+                                    | newAnswer =
+                                        { id = (List.length (getAntworten oldQuestionnaire.newElement))
+                                        , text = ""
+                                        --type can be "free" or "regular"
+                                        , typ = ""
+                                        }
+                                }
+                            else 
+                                oldQuestionnaire
                     in
-                    if changedQuestionnaire.showNewAnswerModal == True then
-                        ({ changedQuestionnaire
-                            | newAnswer =
-                                    { id = (List.length (getAntworten questionnaire.newElement))
-                                    , text = ""
-                                    --type can be "free" or "regular"
-                                    , typ = ""
-                                    }
-                        }, Cmd.none)
+                       ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = not model.showNewAnswerModal }, Cmd.none ) 
 
-                    else 
-                        (changedQuestionnaire, Cmd.none)
-
-
-        --Add Condition
+         --Add Condition
         AddCondition string ->
             let 
-                parent = getID questionnaire.newElement
-                child = getID (getElementWithText string questionnaire)
-            in 
-                if string == "Keine" 
-                then    Debug.log "Keine ausgewählt" ({ questionnaire 
-                            | newCondition = setValid questionnaire.newCondition False
+                oldQuestionnaire = model.questionnaire
+                parent = getID oldQuestionnaire.newElement
+                child = getID (getElementWithText string oldQuestionnaire)
+                changedQuestionnaire =
+                    if string == "Keine" then  
+                        Debug.log "Keine ausgewählt" { oldQuestionnaire 
+                            | newCondition = setValid oldQuestionnaire.newCondition False
                             --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
-                        }, Cmd.none)
-                else    ({ questionnaire 
-                            | newCondition = setParentChildInCondition parent child questionnaire.newCondition
-                        }, Cmd.none)
+                        }
+                    else   
+                        { oldQuestionnaire 
+                                    | newCondition = setParentChildInCondition parent child oldQuestionnaire.newCondition
+                        }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none ) 
 
+            
         AddConditionAnswer ->
-            case String.toInt (questionnaire.newAnswerID_Condition) of
-                Nothing ->
-                    (questionnaire, Cmd.none)
-                Just id ->
-                    ({ questionnaire 
-                        | newCondition = addAnswerOfQuestionToCondition id questionnaire.newElement questionnaire.newCondition}
-                    , Cmd.none)
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = 
+                    case String.toInt (oldQuestionnaire.newAnswerID_Condition) of
+                        Nothing ->
+                            oldQuestionnaire
+                        Just id ->
+                            { oldQuestionnaire 
+                                | newCondition = addAnswerOfQuestionToCondition id oldQuestionnaire.newElement oldQuestionnaire.newCondition }
+            in
+              ( { model | questionnaire = changedQuestionnaire }, Cmd.none )   
+                            
 
         AddAnswerToNewCondition string ->
-            ({ questionnaire | newAnswerID_Condition = string }, Cmd.none)
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = { oldQuestionnaire | newAnswerID_Condition = string }
+                    
+            in
+               ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         --Save input to questionnaire
+        SetQuestionnaireTitle ->
+            let
+              oldQuestionnaire = model.questionnaire
+              changedQuestionnaire = { oldQuestionnaire| title = model.inputTitle }  
+            in
+                ( { model | questionnaire = changedQuestionnaire, showTitleModal = not model.showTitleModal, inputTitle = "" }, Cmd.none )
+
         SetPolarAnswers string ->
-            case questionnaire.newElement of
-                Question record ->
-                    if record.typ == "Skaliert unipolar" then
-                        ( { questionnaire | newElement = Question { record | answers = getUnipolarAnswers string } }, Cmd.none )
-
-                    else
-                        ( { questionnaire | newElement = Question { record | answers = getBipolarAnswers string } }, Cmd.none )
-
-                Note record ->
-                    ( questionnaire, Cmd.none )
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of
+                        Question record ->
+                            if record.typ == "Skaliert unipolar" then
+                                { oldQuestionnaire | newElement = Question { record | answers = getUnipolarAnswers string } }
+                            else
+                                { oldQuestionnaire | newElement = Question { record | answers = getBipolarAnswers string } }
+                        Note record ->
+                            oldQuestionnaire
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         SetNote ->
-            if questionnaire.editQElement == False then
-                ( { questionnaire
-                    | elements = append questionnaire.elements [ questionnaire.newElement ]
-                    , showNewNoteModal = False
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    if model.editQElement == False then
+                        { oldQuestionnaire
+                            | elements = append oldQuestionnaire.elements [ oldQuestionnaire.newElement ]
+                        --, showNewNoteModal = False
+                        }
+                    else
+                        { oldQuestionnaire
+                            | elements = List.map (\e -> updateElement oldQuestionnaire.newElement e) oldQuestionnaire.elements
+                            --, showNewNoteModal = False
+                            --, editQElement = False
                   }
-                , Cmd.none
-                )
-
-            else
-                ( { questionnaire
-                    | elements = List.map (\e -> updateElement questionnaire.newElement e) questionnaire.elements
-                    , showNewNoteModal = False
-                    , editQElement = False
-                  }
-                , Cmd.none
-                )
+            in
+                if model.editQElement == False then
+                   ( { model | questionnaire = changedQuestionnaire, showNewNoteModal = False }, Cmd.none ) 
+                else 
+                    ( { model | questionnaire = changedQuestionnaire, showNewNoteModal = False, editQElement = False }, Cmd.none )
 
         SetQuestion ->
-            if questionnaire.editQElement == False then
-                ( { questionnaire
-                    | elements = append questionnaire.elements [ questionnaire.newElement ]
-                    , conditions =  if (questionnaire.newCondition.isValid) 
-                                    then Debug.log "true" (append questionnaire.conditions [ questionnaire.newCondition ]) 
-                                    else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
-                    , newCondition = initCondition
-                    , showNewQuestionModal = False
-                  }
-                  
-                , Cmd.none
-                )
-
-            else
-                ( { questionnaire
-                    | elements = List.map (\e -> updateElement questionnaire.newElement e) questionnaire.elements
-                    , conditions =  if (questionnaire.newCondition.isValid) 
-                                    then Debug.log "true" List.map (\e -> updateCondition questionnaire.newCondition e) questionnaire.conditions 
-                                    else Debug.log "false" removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
-                    , showNewQuestionModal = False
-                    , editQElement = False
-                  }
-                , Cmd.none
-                )
-
-        SetAnswer ->                                                                    
-            case questionnaire.newElement of
-                Question record ->
-                    if questionnaire.editAnswer == False && questionnaire.newAnswer.typ /= "" then
-                        ({ questionnaire
-                            | newElement =
-                                Question { record | answers = record.answers ++ [ questionnaire.newAnswer ] }
-                            , showNewAnswerModal = False
-                        }, Cmd.none)
-                    else if questionnaire.newAnswer.typ == "" then
-                        (questionnaire, Cmd.none)
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    if model.editQElement == False then
+                        { oldQuestionnaire
+                            | elements = append oldQuestionnaire.elements [ oldQuestionnaire.newElement ]
+                            , conditions =  if (oldQuestionnaire.newCondition.isValid) 
+                                    then Debug.log "true" (append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ]) 
+                                    else Debug.log "false" removeConditionFromCondList oldQuestionnaire.newCondition oldQuestionnaire.conditions
+                            , newCondition = initCondition
+                            --, showNewQuestionModal = False
+                        }
                     else
-                        ({ questionnaire
-                            | newElement =
-                                Question { record | answers =  List.map (\e -> updateAnswer questionnaire.newAnswer e) record.answers}
-                            , showNewAnswerModal = False
-                            , editAnswer = False
-                        }, Cmd.none)
+                        { oldQuestionnaire
+                            | elements = List.map (\e -> updateElement oldQuestionnaire.newElement e) oldQuestionnaire.elements
+                            , conditions =  if (oldQuestionnaire.newCondition.isValid) 
+                                    then Debug.log "true" List.map (\e -> updateCondition oldQuestionnaire.newCondition e) oldQuestionnaire.conditions 
+                                    else Debug.log "false" removeConditionFromCondList oldQuestionnaire.newCondition oldQuestionnaire.conditions
+                            --, showNewQuestionModal = False
+                            --, editQElement = False
+                        }
+            in
+               if model.editQElement == False then
+                   ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False }, Cmd.none ) 
+                else 
+                    ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, editQElement = False }, Cmd.none )
+                  
+        SetAnswer ->  
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =                                                                   
+                    case oldQuestionnaire.newElement of
+                        Question record ->
+                            if model.editAnswer == False && oldQuestionnaire.newAnswer.typ /= "" then
+                                { oldQuestionnaire
+                                    | newElement =
+                                        Question { record | answers = record.answers ++ [ oldQuestionnaire.newAnswer ] }
+                                    --, showNewAnswerModal = False
+                                }
+                            else if oldQuestionnaire.newAnswer.typ == "" then
+                                oldQuestionnaire
+                            else
+                                { oldQuestionnaire
+                                    | newElement =
+                                        Question { record | answers =  List.map (\e -> updateAnswer oldQuestionnaire.newAnswer e) record.answers}
+                                    --, showNewAnswerModal = False
+                                    --, editAnswer = False
+                                }
 
-                Note record ->
-                    (questionnaire, Cmd.none)    
-
+                        Note record ->
+                            oldQuestionnaire  
+                in 
+                    if model.editAnswer == False && oldQuestionnaire.newAnswer.typ /= "" then
+                        ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = False }, Cmd.none )
+                    else if oldQuestionnaire.newAnswer.typ == "" then
+                        ( { model | questionnaire = changedQuestionnaire }, Cmd.none ) 
+                    else 
+                       ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = False, editAnswer = False }, Cmd.none ) 
         --Edits already existing elements
 
         EditAnswer element ->
-            ({ questionnaire
-                | newAnswer = element
-                , showNewAnswerModal = True
-                , editAnswer = True
-            }, Cmd.none)
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    { oldQuestionnaire
+                        | newAnswer = element
+                        --, showNewAnswerModal = True
+                        --, editAnswer = True
+                    }
+            in
+                ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = True, editAnswer = True }, Cmd.none )
 
         EditQuestion element ->
-            ( { questionnaire
-                | newElement = element
-                , newCondition = getConditionWithParentID questionnaire.conditions (getID element)
-                , showNewQuestionModal = True
-                , editQElement = True
-              }
-            , Cmd.none
-            )
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    { oldQuestionnaire
+                        | newElement = element
+                        , newCondition = getConditionWithParentID oldQuestionnaire.conditions (getID element)
+                        --, showNewQuestionModal = True
+                        --, editQElement = True
+                    }
+            in
+                ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = True, editQElement = True }, Cmd.none )
 
         EditNote element ->
-            ( { questionnaire
-                | newElement = element
-                , showNewNoteModal = True
-                , editQElement = True
-              }
-            , Cmd.none
-            ) 
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    { oldQuestionnaire
+                    | newElement = element
+                    --, showNewNoteModal = True
+                    --, editQElement = True
+                    }
+            in
+               ( { model | questionnaire = changedQuestionnaire, showNewNoteModal = True, editQElement = True }, Cmd.none )  
 
         EditQuestionnaire ->
-            ( { questionnaire | upload = False, editQuestionnaire = True }, Cmd.none )
+            ( { model | upload = False, editQuestionnaire = True }, Cmd.none )
 
         --Change order of elements
         PutDownEl element ->
-            if (getID element) /= ((List.length questionnaire.elements) - 1) 
-            then ({ questionnaire 
-                    | elements = putElementDown questionnaire.elements element 
-                    , conditions = updateConditionWithIdTo questionnaire.conditions (getID element) ((getID element ) + 1)}
-                , Cmd.none)
-            else (questionnaire, Cmd.none)
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    if (getID element) /= ((List.length oldQuestionnaire.elements) - 1) then
+                        { oldQuestionnaire 
+                            | elements = putElementDown oldQuestionnaire.elements element 
+                            , conditions = updateConditionWithIdTo oldQuestionnaire.conditions (getID element) ((getID element ) + 1)}
+                    else 
+                        oldQuestionnaire
+            in
+                 ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         PutUpEl element ->
-            if (getID element) /= 0
-            then ({ questionnaire 
-                    | elements = putElementUp questionnaire.elements element 
-                    , conditions = updateConditionWithIdTo questionnaire.conditions (getID element) ((getID element ) - 1)}
-                , Cmd.none)
-            else (questionnaire, Cmd.none)
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    if (getID element) /= 0 then
+                        { oldQuestionnaire 
+                        | elements = putElementUp oldQuestionnaire.elements element 
+                        , conditions = updateConditionWithIdTo oldQuestionnaire.conditions (getID element) ((getID element ) - 1)
+                        }
+                    else 
+                        oldQuestionnaire
+            in
+                 ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         PutUpAns answer ->
-            if answer.id /= 0
-            then ({ questionnaire 
-                    | newElement = putAnswerUp questionnaire.newElement answer
-                    , conditions = updateConditionAnswers questionnaire.conditions answer.id (answer.id - 1) }
-                , Cmd.none)
-            else (questionnaire, Cmd.none)
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    if answer.id /= 0 then
+                        { oldQuestionnaire 
+                            | newElement = putAnswerUp oldQuestionnaire.newElement answer
+                            , conditions = updateConditionAnswers oldQuestionnaire.conditions answer.id (answer.id - 1)
+                        }
+                    else 
+                        oldQuestionnaire
+            in
+                 ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         PutDownAns answer ->
-            if answer.id /= ((List.length (getAntworten questionnaire.newElement)) - 1)
-            then ({ questionnaire | newElement = putAnswerDown questionnaire.newElement answer }, Cmd.none)
-            else (questionnaire, Cmd.none)
+            let
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    if answer.id /= ((List.length (getAntworten oldQuestionnaire.newElement)) - 1) then
+                        { oldQuestionnaire | newElement = putAnswerDown oldQuestionnaire.newElement answer }
+                    else 
+                        oldQuestionnaire
+            in
+                 ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         --Delete existing elements or answers
         DeleteItem element ->
-            ({ questionnaire 
-                | elements = deleteItemFrom element questionnaire.elements
-                , conditions = deleteConditionWithElement questionnaire.conditions (getID element) }
-            , Cmd.none)
+            let
+                oldQuestionnaire = model.questionnaire 
+                changedQuestionnaire = 
+                    { oldQuestionnaire 
+                        | elements = deleteItemFrom element oldQuestionnaire.elements
+                        , conditions = deleteConditionWithElement oldQuestionnaire.conditions (getID element)
+                    }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         DeleteAnswer answer ->
-            ({ questionnaire 
-                | newElement = deleteAnswerFromItem answer questionnaire.newElement
-                , conditions = List.map (deleteAnswerInCondition answer.id) questionnaire.conditions }, Cmd.none)
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    { oldQuestionnaire 
+                        | newElement = deleteAnswerFromItem answer oldQuestionnaire.newElement
+                        , conditions = List.map (deleteAnswerInCondition answer.id) oldQuestionnaire.conditions
+                    }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
         -- validate inputs on submit and then save changes
         Submit ->
-            if validate questionnaire == ValidationOK then
-                ( { questionnaire
-                    | validationResult = ValidationOK
-                    , showViewingTimeModal = False
-                    , showEditTimeModal = False
-                    , editTime = questionnaire.inputEditTime
-                    , viewingTimeBegin = questionnaire.inputViewingTimeBegin
-                    , viewingTimeEnd = questionnaire.inputViewingTimeEnd
-                  }
-                , Cmd.none
-                )
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                        { oldQuestionnaire
+                            | editTime = model.inputEditTime
+                            , viewingTimeBegin = model.inputViewingTimeBegin
+                            , viewingTimeEnd = model.inputViewingTimeEnd
+                        }
+            in
+                if validate model == ValidationOK then
+                    ( { model 
+                        | questionnaire = changedQuestionnaire
+                        , showViewingTimeModal = False
+                        , showEditTimeModal = False
+                        , validationResult = ValidationOK
+                      }
+                    , Cmd.none )  
+                else
+                    ( { model 
+                        | validationResult = validate model
+                        , inputViewingTimeBegin = ""
+                        , inputViewingTimeEnd = ""
+                        , inputEditTime = ""
+                      }
+                    , Cmd.none )          
 
-            else
-                ( { questionnaire
-                    | validationResult = validate questionnaire
-                    , inputViewingTimeBegin = ""
-                    , inputViewingTimeEnd = ""
-                    , inputEditTime = ""
-                  }
-                , Cmd.none
-                )        
-
-        --Everything releated to upload
+         --Everything releated to upload
 
         EnterUpload ->
-            ( { questionnaire
-                | upload = True
-              }
-            , Cmd.none
-            )
+            ( { model | upload = True }, Cmd.none )
 
         LeaveOrEnterUpload ->
-            ( { questionnaire
-                | upload = not questionnaire.upload
-              }
-            , Cmd.none
-            )
+                ( { model | upload = not model.upload }, Cmd.none )
+            
 
         JsonRequested ->
-            ( questionnaire
+            ( model
             , Select.file [ "text/json" ] JsonSelected
             )
 
         JsonSelected file ->
-            ( questionnaire
+            ( model
             , Task.perform JsonLoaded (File.toString file)
             )
 
         JsonLoaded content ->
-            ( { questionnaire
-                | title = decodeTitle content
-                , elements = decodeElements content
-                , upload = False
-                , editQuestionnaire = True
-              }
-            , Cmd.none
-            )
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire =
+                    { oldQuestionnaire
+                        | title = decodeTitle content
+                        , elements = decodeElements content
+                        --, upload = False
+                        --, editQuestionnaire = True
+                    }
+            in
+                ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }, Cmd.none )
 
         --Everything releated to download
         DownloadQuestionnaire ->
-            ( questionnaire, save questionnaire (encodeQuestionnaire questionnaire) )
+            ( model, save model.questionnaire (encodeQuestionnaire model.questionnaire) )
 
 
 --helper for changing order of elements
@@ -991,20 +1125,18 @@ deleteAnswerFromItem answer element =
 -- Input Validation
 
 
-validate : Questionnaire -> ValidationResult
-validate questionnaire =
-    if not (isValidEditTime questionnaire.inputEditTime) then
+validate : Model -> ValidationResult
+validate model =
+    if not (isValidEditTime model.inputEditTime) then
         Error "Die Bearbeitungszeit muss das Format HH:MM haben"
 
-    else if not (isValidViewingTime questionnaire.inputViewingTimeBegin) then
+    else if not (isValidViewingTime model.inputViewingTimeBegin) then
         Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
 
-    else if not (isValidViewingTime questionnaire.inputViewingTimeEnd) then
+    else if not (isValidViewingTime model.inputViewingTimeEnd) then
         Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
-
     else
         ValidationOK
-
 
 isValidViewingTime : String -> Bool
 isValidViewingTime viewingTime =
@@ -1015,6 +1147,32 @@ isValidEditTime : String -> Bool
 isValidEditTime editTime =
     not (String.length editTime /= 5 && String.length editTime /= 0)
 
+validateQuestion : String -> ValidationResult
+validateQuestion questionTime =
+            if not (isValidQuestionTime questionTime) then
+                Error "Die Zeiten müssen das Format HH:MM:SS haben"
+            else
+                ValidationOK
+
+isValidQuestionTime : String -> Bool
+isValidQuestionTime questionTime = 
+    not (String.length questionTime /= 8 && String.length questionTime /= 0)
+
+--helpfunction for setQuestion
+--submitQuestion : Model -> Q_element 
+--submitQuestion model = 
+    --let 
+        --questionnaire = model.questionnaire
+
+           --case element of 
+                --Question record ->
+                    --if (model.questionValidationResult == ValidationOK) then 
+                      -- Question {record | questionTime = model.inputQuestionTime}
+                    --else 
+                       --element
+               
+               -- Note record -> 
+                    --element
 
 
 -- getters for input boxes
@@ -1042,7 +1200,6 @@ getQuestionHinweis element =
         Note record ->
             "None"
 
-
 getQuestionTyp : Q_element -> String
 getQuestionTyp element =
     case element of
@@ -1051,6 +1208,24 @@ getQuestionTyp element =
 
         Note record ->
             "None"
+
+--getQuestionTime : Q_element -> String
+--getQuestionTime element =
+    --case element of 
+        --Question record ->
+            --record.questionTime
+        
+        --Note record ->
+            --"None"
+
+--getQuestionValidation : Q_element -> ValidationResult
+--getQuestionValidation element =
+    --case element of 
+        --Question record ->
+            --model.validationResult
+        
+        --Note record ->
+            --NotDone
 
 getAnswerType : Answer -> String                                            
 getAnswerType answer = answer.typ
@@ -1103,12 +1278,13 @@ noteDecoder =
 --decodes a question
 questionDecoder : Decode.Decoder Q_element
 questionDecoder =
-    Decode.map5 QuestionRecord
-        (Decode.field "id" Decode.int)
-        (Decode.field "text" Decode.string)
-        (Decode.field "answers" (Decode.list answerDecoder))
-        (Decode.field "hint" Decode.string)
-        (Decode.field "question_type" Decode.string)
+    Decode.succeed QuestionRecord
+        |> required "id" Decode.int
+        |> required "text" Decode.string
+        |> required "answers" (Decode.list answerDecoder)
+        |> required "hint" Decode.string
+        |> required "question_type" Decode.string
+        |> required "question_time" Decode.string
         |> Decode.map Question
 
 
@@ -1157,6 +1333,7 @@ elementEncoder element =
                 , ( "hint", Encode.string record.hint )
                 , ( "question_type", Encode.string record.typ )
                 , ( "answers", Encode.list answerEncoder record.answers )
+                , ( "question_time", Encode.string record.questionTime )
                 ]
 
 
@@ -1189,18 +1366,18 @@ answerEncoder answer =
 --View
 
 
-view : Questionnaire -> Html Msg
-view questionnaire =
+view : Model -> Html Msg
+view model =
     div [class "lightblue"]
         [ showNavbar
-        , if questionnaire.upload then
-            showUpload questionnaire
+        , if model.upload then
+            showUpload model
 
-          else if questionnaire.editQuestionnaire then
-            showEditQuestionnaire questionnaire
+          else if model.editQuestionnaire then
+            showEditQuestionnaire model
 
           else
-            showEditQuestionnaire questionnaire
+            showEditQuestionnaire model
         ]
 
 
@@ -1233,8 +1410,8 @@ showNavbar =
         ]
 
 
-showUpload : Questionnaire -> Html Msg
-showUpload questionnaire =
+showUpload : Model -> Html Msg
+showUpload model =
     div []
         [ showHeroWith "Upload"
         , br [] []
@@ -1246,20 +1423,20 @@ showUpload questionnaire =
         ]
 
 
-showEditQuestionnaire : Questionnaire -> Html Msg
-showEditQuestionnaire questionnaire =
+showEditQuestionnaire : Model -> Html Msg
+showEditQuestionnaire model =
     div []
-        [ showHeroQuestionnaireTitle questionnaire
-        , showQuestionList questionnaire
-        , showTimes questionnaire
-        , showCreateQuestionOrNoteButtons questionnaire
-        , viewTitleModal questionnaire
-        , viewEditTimeModal questionnaire
-        , viewViewingTimeModal questionnaire
-        , viewNewNoteModal questionnaire
-        , viewNewQuestionModal questionnaire
-        , viewNewAnswerModal questionnaire
-        , viewConditions questionnaire
+        [ showHeroQuestionnaireTitle model.questionnaire
+        , showQuestionList model.questionnaire
+        , showTimes model.questionnaire
+        , showCreateQuestionOrNoteButtons model.questionnaire
+        , viewTitleModal model
+        , viewEditTimeModal model
+        , viewViewingTimeModal model
+        , viewNewNoteModal model
+        , viewNewQuestionModal model
+        , viewNewAnswerModal model
+        , viewConditions model.questionnaire
         ]
 
 viewConditions : Questionnaire -> Html Msg
@@ -1369,261 +1546,291 @@ getEditTime questionnaire =
 --MODALS
 
 
-viewViewingTimeModal : Questionnaire -> Html Msg
-viewViewingTimeModal questionnaire =
-    if questionnaire.showViewingTimeModal then
-        div [ class "modal is-active" ]
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-card" ]
-                [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Erscheinungszeit" ]
-                      , button[class "is-large delete", onClick(ViewOrClose ViewingTimeModal)][] ]
-                , section [ class "modal-card-body" ]
-                    [ div []
-                        [ text "Von "
-                        , input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , placeholder "DD:MM:YYYY:HH:MM"
-                            , value questionnaire.inputViewingTimeBegin
-                            , maxlength 16
-                            , minlength 16
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
-                            , onInput ChangeViewingTimeBegin
+viewViewingTimeModal : Model -> Html Msg
+viewViewingTimeModal model =
+    let
+        questionnaire = model.questionnaire
+    in
+        if model.showViewingTimeModal then
+            div [ class "modal is-active" ]
+                [ div [ class "modal-background" ] []
+                , div [ class "modal-card" ]
+                    [ header [ class "modal-card-head mediumlightblue" ]
+                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Erscheinungszeit" ]
+                        , button[class "is-large delete", onClick(ViewOrClose ViewingTimeModal)][] ]
+                    , section [ class "modal-card-body" ]
+                        [ div []
+                            [ text "Von "
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , placeholder "DD:MM:YYYY:HH:MM"
+                                , value model.inputViewingTimeBegin
+                                , maxlength 16
+                                , minlength 16
+                                , style "width" "180px"
+                                , style "margin-left" "10px"
+                                , style "margin-right" "10px"
+                                , onInput ChangeViewingTimeBegin
+                                ]
+                                []
+                            , text " Bis "
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , placeholder "DD:MM:YYYY:HH:MM"
+                                , value model.inputViewingTimeEnd
+                                , maxlength 16
+                                , minlength 16
+                                , style "width" "180px"
+                                , style "margin-left" "10px"
+                                , onInput ChangeViewingTimeEnd
+                                ]
+                                []
                             ]
-                            []
-                        , text " Bis "
-                        , input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , placeholder "DD:MM:YYYY:HH:MM"
-                            , value questionnaire.inputViewingTimeEnd
-                            , maxlength 16
-                            , minlength 16
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , onInput ChangeViewingTimeEnd
-                            ]
-                            []
-                        ]
-                    , br [] []
-                    , viewValidation questionnaire
-                    ]
-                , footer [ class "modal-card-foot mediumlightblue" ]
-                    [ button
-                        [ class "qnButton"
-                        , onClick Submit
-                        ]
-                        [ text "Übernehmen" ]
-                    ]
-                ]
-            ]
-
-    else
-        div [] []
-
-
-viewEditTimeModal : Questionnaire -> Html Msg
-viewEditTimeModal questionnaire =
-    if questionnaire.showEditTimeModal then
-        div [ class "modal is-active" ]
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-card" ]
-                [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bearbeitungszeit" ] 
-                      , button[class "is-large delete", onClick(ViewOrClose EditTimeModal)][]]
-                , section [ class "modal-card-body" ]
-                    [ div []
-                        [ text "Zeit: "
-                        , input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , placeholder "HH:MM"
-                            , value questionnaire.inputEditTime
-                            , maxlength 5
-                            , minlength 5
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
-                            , onInput ChangeEditTime
-                            ]
-                            []
                         , br [] []
-                        , viewValidation questionnaire
+                        , viewValidation model
                         ]
-                    ]
-                , footer [ class "modal-card-foot mediumlightblue" ]
-                    [ button
-                        [ class "qnButton"
-                        , onClick Submit
-                        ]
-                        [ text "Übernehmen" ]
-                    ]
-                ]
-            ]
-
-    else
-        div [] []
-
-
-viewTitleModal : Questionnaire -> Html Msg
-viewTitleModal questionnaire =
-    if questionnaire.showTitleModal then
-        div [ class "modal is-active" ]
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-card" ]
-                [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Titel ändern" ]
-                      , button[class "is-large delete", onClick(ViewOrClose TitleModal)][] ]
-                , section [ class "modal-card-body" ]
-                    [ div []
-                        [ text "Text: "
-                        , input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
-                            , value questionnaire.title
-                            , onInput ChangeQuestionnaireTitle
-                            ]
-                            []
-                        ]
-                    ]
-                , footer [ class "modal-card-foot mediumlightblue" ]
-                    [ button
-                        [ class "qnButton"
-                        , onClick (ViewOrClose TitleModal)
-                        ]
-                        [ text "Übernehmen" ]
-                    ]
-                ]
-            ]
-
-    else
-        div [] []
-
-
-viewNewNoteModal : Questionnaire -> Html Msg
-viewNewNoteModal questionnaire =
-    if questionnaire.showNewNoteModal then
-        div [ class "modal is-active" ]
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-card" ]
-                [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Anmerkung"] 
-                      , button[class "is-large delete", onClick(ViewOrClose NewNoteModal)][]]
-                , section [ class "modal-card-body" ]
-                    [ div []
-                        [ text "Text: "
-                        , input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
-                            , value (getElementText questionnaire.newElement)
-                            , onInput ChangeQuestionOrNoteText
-                            ]
-                            []
-                        ]
-                    ]
-                , footer [ class "modal-card-foot mediumlightblue" ]
-                    [ button
-                        [ class "qnButton"
-                        , onClick SetNote
-                        ]
-                        [ text "Übernehmen" ]
-                    ]
-                ] 
-            ]
-
-    else
-        div [] []
-
-
-viewNewQuestionModal : Questionnaire -> Html Msg
-viewNewQuestionModal questionnaire =
-    if questionnaire.showNewQuestionModal then
-        div [ class "modal is-active" ]
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-card" ]
-                [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title is-size-3 has-text-centered is-italic"] [ text "Neue Frage" ] 
-                      , button[class "is-large delete", onClick(ViewOrClose QuestionModal)][]]
-                , section [ class "modal-card-body" ]
-                    [ div []
-                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
-                        , br [] []
-                        , button [ class "qnButton", style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
-                        , br [] []
-                        , showInputBipolarUnipolar questionnaire
-                        , br [style "margin-top" "20px"] []
-                        , text "Fragetext: "
-                        , input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , style "width" "100%"
-                            , value (getElementText questionnaire.newElement)
-                            , onInput ChangeQuestionOrNoteText
-                            ]
-                            []
-                        , br [style "margin-top" "20px"] []
-                        , text "Hinweis: "
-                        , input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , style "width" "100%"
-                            , value (getQuestionHinweis questionnaire.newElement)
-                            , onInput ChangeQuestionNote
-                            ]
-                            []
-                        , br [style "margin-top" "20px"] []
-                        , text ("Typ: " ++ getQuestionTyp questionnaire.newElement)
-                        , br [] []
-                        , radio "Single Choice" (ChangeQuestionType "Single Choice")
-                        , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
-                        , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
-                        , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
-                        , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
-                        , br [] []
-                        , text "Springe zu Frage: "
-                        , br [] []
-                        , div [ class "select" ]
-                            [ select [ onInput AddCondition ]
-                                (getQuestionOptions questionnaire.elements questionnaire.newCondition)
-                            ]
-                        , br [style "margin-top" "20px"] []
-                        , text "Bei Beantwortung der Antworten mit den IDs: "
-                        , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
-                        , br [] []
-                        , input 
-                            [ placeholder "Hier ID eingeben"
-                            , onInput AddAnswerToNewCondition ] 
-                            []
-                        , button 
+                    , footer [ class "modal-card-foot mediumlightblue" ]
+                        [ button
                             [ class "qnButton"
-                            , style "margin-left" "1em" 
-                            , style "margin-top" "0.25em"
-                            , onClick AddConditionAnswer ] 
-                            [ text "Hinzufügen" ]
+                            , onClick Submit
+                            ]
+                            [ text "Übernehmen" ]
                         ]
-                    ]
-                , footer [ class "modal-card-foot mediumlightblue" ]
-                    [ button
-                        [ class "qnButton"
-                        , onClick SetQuestion
-                        ]
-                        [ text "Übernehmen" ]
                     ]
                 ]
-            ]
+        else
+            div [] []
 
-    else
-        div [] []
+viewEditTimeModal : Model-> Html Msg
+viewEditTimeModal model =
+    let
+        questionnaire = model.questionnaire
+    in
+        if model.showEditTimeModal then
+            div [ class "modal is-active" ]
+                [ div [ class "modal-background" ] []
+                , div [ class "modal-card" ]
+                    [ header [ class "modal-card-head mediumlightblue" ]
+                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bearbeitungszeit" ]
+                        , button[class "is-large delete", onClick(ViewOrClose EditTimeModal)][] ]
+                    , section [ class "modal-card-body" ]
+                        [ div []
+                            [ text "Zeit: "
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , placeholder "HH:MM"
+                                , value model.inputEditTime
+                                , maxlength 5
+                                , minlength 5
+                                , style "width" "180px"
+                                , style "margin-left" "10px"
+                                , style "margin-right" "10px"
+                                , onInput ChangeEditTime
+                                ]
+                                []
+                            , br [] []
+                            , viewValidation model
+                            ]
+                        ]
+                    , footer [ class "modal-card-foot mediumlightblue" ]
+                        [ button
+                            [ class "qnButton"
+                            , onClick Submit
+                            ]
+                            [ text "Übernehmen" ]
+                        ]
+                    ]
+                , button
+                    [ class "modal-close is-large"
+                    , onClick (ViewOrClose EditTimeModal)
+                    ]
+                    []
+                ]
+        else
+            div [] []
 
+viewTitleModal : Model -> Html Msg
+viewTitleModal model =
+    let
+        questionnaire = model.questionnaire
+    in
+        if model.showTitleModal then
+            div [ class "modal is-active" ]
+                [ div [ class "modal-background" ] []
+                , div [ class "modal-card" ]
+                    [ header [ class "modal-card-head mediumlightblue" ]
+                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Titel ändern" ]
+                        , button[class "is-large delete", onClick(ViewOrClose TitleModal)][] ]
+                    , section [ class "modal-card-body" ]
+                        [ div []
+                            [ text "Text: "
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , style "width" "180px"
+                                , style "margin-left" "10px"
+                                , style "margin-right" "10px"
+                                , value model.inputTitle
+                                , onInput ChangeInputQuestionnaireTitle
+                                ]
+                                []
+                            ]
+                        ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
+                        [ button
+                            [ class "qnButton"
+                            , onClick SetQuestionnaireTitle
+                            ]
+                            [ text "Übernehmen" ]
+                        ]
+                    ]
+                ]
+        else
+            div [] []
+
+viewNewNoteModal : Model -> Html Msg
+viewNewNoteModal model =
+    let 
+        questionnaire = model.questionnaire
+    in
+        if model.showNewNoteModal then
+            div [ class "modal is-active" ]
+                [ div [ class "modal-background" ] []
+                , div [ class "modal-card" ]
+                    [ header [ class "modal-card-head mediumlightblue" ]
+                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Anmerkung" ]
+                        , button[class "is-large delete", onClick(ViewOrClose NewNoteModal)][] ]
+                    , section [ class "modal-card-body" ]
+                        [ div []
+                            [ text "Text: "
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , style "width" "180px"
+                                , style "margin-left" "10px"
+                                , style "margin-right" "10px"
+                                , value (getElementText questionnaire.newElement)
+                                , onInput ChangeQuestionOrNoteText
+                                ]
+                                []
+                            ]
+                        ]
+                    , footer [ class "modal-card-foot mediumlightblue" ]
+                        [ button
+                            [ class "qnButton"
+                            , onClick SetNote
+                            ]
+                            [ text "Übernehmen" ]
+                        ]
+                    ]
+                , button
+                    [ class "modal-close is-large"
+                    , onClick (ViewOrClose NewNoteModal)
+                    ]
+                    []
+                ]
+        else
+            div [] []
+
+viewNewQuestionModal : Model -> Html Msg
+viewNewQuestionModal model =
+    let 
+        questionnaire = model.questionnaire 
+    in
+        if model.showNewQuestionModal then
+            div [ class "modal is-active" ]
+                [ div [ class "modal-background" ] []
+                , div [ class "modal-card" ]
+                    [ header [ class "modal-card-head mediumlightblue" ]
+                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Frage" ]
+                        , button[class "is-large delete", onClick(ViewOrClose QuestionModal)][] ]
+                    , section [ class "modal-card-body" ]
+                        [ div []
+                            [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
+                            , br [] []
+                            , button [class "qnButton", style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                            , br [] []
+                            , showInputBipolarUnipolar questionnaire
+                            , br [style "margin-top" "20px"] []
+                            , text "Fragetext: "
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , style "width" "100%"
+                                , value (getElementText questionnaire.newElement)
+                                , onInput ChangeQuestionOrNoteText
+                                ]
+                                []
+                            , br [style "margin-top" "20px"] []
+                            , text "Hinweis: "
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , style "width" "100%"
+                                , value (getQuestionHinweis questionnaire.newElement)
+                                , onInput ChangeQuestionNote
+                                ]
+                                []
+                            , br [style "margin-top" "20px"] []
+                            , text "Zeit für Frage: "
+                            ,br [] []
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , value (model.inputQuestionTime)
+                                , placeholder "HH:MM:SS"
+                                , maxlength 8
+                                , minlength 8
+                                , style "width" "100%"
+                                , onInput ChangeQuestionTime
+                                ]
+                                []
+                            , br [] []
+                            , viewQuestionValidation model.questionValidationResult
+                            , text ("Typ: " ++ getQuestionTyp questionnaire.newElement)
+                            , br [] []
+                            , radio "Single Choice" (ChangeQuestionType "Single Choice")
+                            , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
+                            , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
+                            , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
+                            , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                            , br [] []
+                            , text "Springe zu Frage: "
+                            , br [] []
+                            , div [ class "select" ]
+                                [ select [ onInput AddCondition ]
+                                    (getQuestionOptions questionnaire.elements questionnaire.newCondition)
+                                ]
+                            , br [] []
+                            , text "Bei Beantwortung der Antworten mit den IDs: "
+                            , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
+                            , br [] []
+                            , input 
+                                [ placeholder "Hier ID eingeben"
+                                , onInput AddAnswerToNewCondition ] 
+                                []
+                            , button 
+                                [ class "qnButton"
+                                , style "margin-left" "1em" 
+                                , style "margin-top" "0.25em"
+                                , onClick AddConditionAnswer ] 
+                                [ text "Hinzufügen" ]
+                            ]
+                        ]
+                    , footer [ class "modal-card-foot mediumlightblue" ]
+                        [ button
+                            [ class "qnButton"
+                            , onClick SetQuestion
+                            ]
+                            [ text "Übernehmen" ]
+                        ]
+                    ]
+                ]
+        else
+            div [] []
 
 getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
@@ -1638,46 +1845,46 @@ getElementId elem =
         Note a -> a.id
 
 
-viewNewAnswerModal : Questionnaire -> Html Msg
-viewNewAnswerModal questionnaire =
-    if questionnaire.showNewAnswerModal then
-        div [ class "modal is-active" ]
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-card" ]
-                [ header [ class "modal-card-head mediumlightblue" ]
-                    [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Antwort" ]
-                      , button[class "is-large delete", onClick(ViewOrClose AnswerModal)][] ]
-                , section [ class "modal-card-body" ]
-                    [ div []
-                        [ text "Antworttext: "
-                        , input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , style "width" "100%"         
-                            , onInput ChangeAnswerText                                  
+viewNewAnswerModal : Model-> Html Msg
+viewNewAnswerModal model =
+    let 
+        questionnaire = model.questionnaire
+    in
+        if model.showNewAnswerModal then
+            div [ class "modal is-active" ]
+                [ div [ class "modal-background" ] []
+                , div [ class "modal-card" ]
+                    [ header [ class "modal-card-head mediumlightblue" ]
+                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Antwort" ] ]
+                    , section [ class "modal-card-body" ]
+                        [ div []
+                            [ text "Antworttext: "
+                            , input
+                                [ class "input is-medium"
+                                , type_ "text"
+                                , style "width" "100%"         
+                                , onInput ChangeAnswerText                                  
+                                ]
+                                []
                             ]
-                            []
-                        ]
-                    , br [] []
-                    , div []
-                        [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)                       
                         , br [] []
-                        , radio "Fester Wert" (ChangeAnswerType "regular")      
-                        , radio "Freie Eingabe" (ChangeAnswerType "free")  
+                        , div []
+                            [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)                       
+                            , br [] []
+                            , radio "Fester Wert" (ChangeAnswerType "regular")      
+                            , radio "Freie Eingabe" (ChangeAnswerType "free")  
+                            ]
                         ]
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [class "qnButton"
                         , onClick SetAnswer
-                        ]
-                        [ text "Übernehmen" ]
+                        ] []
                     ]
                 ]
-            ]
-
-    else
-        div [] []
+        else
+            div [] []
 
 
 -- Show input for bipolar and unipolar Question
@@ -1903,11 +2110,27 @@ getAnswerTable index answer =
 --Error Message for viewTime and editTime modals
 
 
-viewValidation : Questionnaire -> Html msg
-viewValidation questionnaire =
+viewValidation : Model -> Html msg
+viewValidation model =
     let
         ( color, message ) =
-            case questionnaire.validationResult of
+            case model.validationResult of
+                NotDone ->
+                    ( "", "" )
+
+                Error msg ->
+                    ( "red", msg )
+
+                ValidationOK ->
+                    ( "green", "OK" )
+    in
+    div [ style "color" color ] [ text message ]
+
+viewQuestionValidation : ValidationResult -> Html msg
+viewQuestionValidation result =
+    let
+        ( color, message ) =
+            case result of
                 NotDone ->
                     ( "", "" )
 

@@ -45,14 +45,17 @@ type
     --Modals
     | ViewOrClose ModalType
     --Creates Condition
-    | AddCondition String
+    | AddCondition  
+    | ChangeInputParentId String
+    | ChangeInputChildId String
     | AddConditionAnswer
     | AddAnswerToNewCondition String
     --Save input to questionnaire
     | SetQuestionnaireTitle
     | SetNote
     | SetQuestion
-    | SetAnswer                       
+    | SetAnswer
+    | SetConditions                       
     | SetPolarAnswers String
     --Edit existing elements or answers
     | EditQuestion Q_element
@@ -79,6 +82,7 @@ type
     | DownloadQuestionnaire
 
 
+
 type ModalType
     = ViewingTimeModal
     | EditTimeModal
@@ -86,6 +90,8 @@ type ModalType
     | QuestionModal
     | TitleModal
     | AnswerModal
+    | ConditionModal1
+    | ConditionModal2
 
 
 type alias Model =
@@ -98,6 +104,8 @@ type alias Model =
     , showNewNoteModal : Bool
     , showNewQuestionModal : Bool
     , showNewAnswerModal : Bool
+    , showNewConditionModal1: Bool
+    , showNewConditionModal2: Bool
 
     --editQElement for EditQuestion and EditNote
     , editQElement : Bool
@@ -111,6 +119,10 @@ type alias Model =
     , inputViewingTimeEnd : String
     , inputQuestionTime : String
     , questionValidationResult : ValidationResult
+    , inputParentId : Int
+    , inputChildId : Int
+    , newAnswerID_Condition : String
+    , newCondition : Condition
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -203,6 +215,8 @@ initModel _ =
     , showNewNoteModal = False
     , showNewQuestionModal = False
     , showNewAnswerModal = False
+    , showNewConditionModal1 = False
+    , showNewConditionModal2 = False
 
     --editQElement for EditQuestion and EditNote
     , editQElement = False
@@ -216,6 +230,10 @@ initModel _ =
     , inputViewingTimeEnd = ""
     , inputQuestionTime = ""
     , questionValidationResult = NotDone
+    , inputParentId = -1
+    , inputChildId = -1
+    , newCondition = initCondition
+    , newAnswerID_Condition = ""
 
 
     --upload determines if the users wants to upload a questionnaire
@@ -477,27 +495,51 @@ update msg model =
                                 }
                             else 
                                 oldQuestionnaire
-                    in
-                       ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = not model.showNewAnswerModal }, Cmd.none ) 
+                    in 
+                        ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = not model.showNewAnswerModal }, Cmd.none )
 
-         --Add Condition
-        AddCondition string ->
+                ConditionModal1 ->
+                    let 
+                        oldQuestionnaire = model.questionnaire
+                        changedQuestionnaire = oldQuestionnaire
+                    in 
+                        ( { model | questionnaire = changedQuestionnaire, showNewConditionModal1 = not model.showNewConditionModal1 }, Cmd.none )
+
+                ConditionModal2 ->
+                    let 
+                        oldQuestionnaire = model.questionnaire
+                        changedQuestionnaire = oldQuestionnaire
+                    in 
+                        ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = not model.showNewConditionModal2 }, Cmd.none )
+                                
+
+        --Add Condition
+
+        ChangeInputParentId parent_id ->
+            ({model | inputParentId = case (String.toInt parent_id) of
+                Just a -> a
+                Nothing -> -1}
+            , Cmd.none)
+
+        ChangeInputChildId child_id ->
+            ({model | inputChildId = case (String.toInt child_id) of
+                Just a -> a
+                Nothing -> -1}
+            , Cmd.none)
+
+        AddCondition ->
             let 
-                oldQuestionnaire = model.questionnaire
-                parent = getID oldQuestionnaire.newElement
-                child = getID (getElementWithText string oldQuestionnaire)
-                changedQuestionnaire =
-                    if string == "Keine" then  
-                        Debug.log "Keine ausgewählt" { oldQuestionnaire 
-                            | newCondition = setValid oldQuestionnaire.newCondition False
+                parent = model.inputParentId
+                child = model.inputChildId
+            in 
+                if (parent /= -1 && child /= -1)
+                then    ({ model 
+                            | newCondition = setParentChildInCondition parent child model.newCondition
+                        }, Cmd.none)
+                else    Debug.log "Keine ausgewählt" ({ model 
+                            | newCondition = setValid model.newCondition False
                             --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
-                        }
-                    else   
-                        { oldQuestionnaire 
-                                    | newCondition = setParentChildInCondition parent child oldQuestionnaire.newCondition
-                        }
-            in
-                ( { model | questionnaire = changedQuestionnaire }, Cmd.none ) 
+                        }, Cmd.none)
 
             
         AddConditionAnswer ->
@@ -594,6 +636,13 @@ update msg model =
                 else 
                     ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, editQElement = False }, Cmd.none )
                   
+        SetConditions ->
+            let 
+                oldQuestionnaire = model.questionnaire
+                changedQuestionnaire = { oldQuestionnaire | conditions = append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ] }
+            in 
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False}, Cmd.none )
+
         SetAnswer ->  
             let
                 oldQuestionnaire = model.questionnaire
@@ -1417,7 +1466,7 @@ showUpload model =
         , br [] []
         , div [ class "columns has-text-centered" ]
             [ div [ class "column" ]
-                [ button [ onClick JsonRequested ] [ text "Datei auswählen" ]
+                [ button [class "qnButton", onClick JsonRequested ] [ text "Datei auswählen" ]
                 ]
             ]
         ]
@@ -1437,6 +1486,8 @@ showEditQuestionnaire model =
         , viewNewQuestionModal model
         , viewNewAnswerModal model
         , viewConditions model.questionnaire
+        , viewNewConditionModal1 model
+        , viewNewConditionModal2 model
         ]
 
 viewConditions : Questionnaire -> Html Msg
@@ -1512,9 +1563,13 @@ showCreateQuestionOrNoteButtons questionnaire =
             [ text "Neue Frage" ]
         , button 
             [ class "qnButton"
+            , style "margin-right" "10px"
             , onClick (ViewOrClose NewNoteModal) 
             ]
             [ text "Neue Anmerkung" ]
+
+        , button [class "qnButton", onClick (ViewOrClose ConditionModal1)]
+            [ text "Bedingungen" ]  
         , br [] []
         , br [] []
         , button [class "qnButton", onClick DownloadQuestionnaire ] [ text "Download" ]
@@ -1737,100 +1792,64 @@ viewNewNoteModal model =
 
 viewNewQuestionModal : Model -> Html Msg
 viewNewQuestionModal model =
-    let 
-        questionnaire = model.questionnaire 
-    in
-        if model.showNewQuestionModal then
-            div [ class "modal is-active" ]
-                [ div [ class "modal-background" ] []
-                , div [ class "modal-card" ]
-                    [ header [ class "modal-card-head mediumlightblue" ]
-                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Frage" ]
-                        , button[class "is-large delete", onClick(ViewOrClose QuestionModal)][] ]
-                    , section [ class "modal-card-body" ]
-                        [ div []
-                            [ table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
-                            , br [] []
-                            , button [class "qnButton", style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
-                            , br [] []
-                            , showInputBipolarUnipolar questionnaire
-                            , br [style "margin-top" "20px"] []
-                            , text "Fragetext: "
-                            , input
-                                [ class "input is-medium"
-                                , type_ "text"
-                                , style "width" "100%"
-                                , value (getElementText questionnaire.newElement)
-                                , onInput ChangeQuestionOrNoteText
-                                ]
-                                []
-                            , br [style "margin-top" "20px"] []
-                            , text "Hinweis: "
-                            , input
-                                [ class "input is-medium"
-                                , type_ "text"
-                                , style "width" "100%"
-                                , value (getQuestionHinweis questionnaire.newElement)
-                                , onInput ChangeQuestionNote
-                                ]
-                                []
-                            , br [style "margin-top" "20px"] []
-                            , text "Zeit für Frage: "
-                            ,br [] []
-                            , input
-                                [ class "input is-medium"
-                                , type_ "text"
-                                , value (model.inputQuestionTime)
-                                , placeholder "HH:MM:SS"
-                                , maxlength 8
-                                , minlength 8
-                                , style "width" "100%"
-                                , onInput ChangeQuestionTime
-                                ]
-                                []
-                            , br [] []
-                            , viewQuestionValidation model.questionValidationResult
-                            , text ("Typ: " ++ getQuestionTyp questionnaire.newElement)
-                            , br [] []
-                            , radio "Single Choice" (ChangeQuestionType "Single Choice")
-                            , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
-                            , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
-                            , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
-                            , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
-                            , br [] []
-                            , text "Springe zu Frage: "
-                            , br [] []
-                            , div [ class "select" ]
-                                [ select [ onInput AddCondition ]
-                                    (getQuestionOptions questionnaire.elements questionnaire.newCondition)
-                                ]
-                            , br [] []
-                            , text "Bei Beantwortung der Antworten mit den IDs: "
-                            , text (Debug.toString (List.map getAnswerID questionnaire.newCondition.answers)) 
-                            , br [] []
-                            , input 
-                                [ placeholder "Hier ID eingeben"
-                                , onInput AddAnswerToNewCondition ] 
-                                []
-                            , button 
-                                [ class "qnButton"
-                                , style "margin-left" "1em" 
-                                , style "margin-top" "0.25em"
-                                , onClick AddConditionAnswer ] 
-                                [ text "Hinzufügen" ]
-                            ]
-                        ]
-                    , footer [ class "modal-card-foot mediumlightblue" ]
-                        [ button
-                            [ class "qnButton"
-                            , onClick SetQuestion
-                            ]
-                            [ text "Übernehmen" ]
-                        ]
-                    ]
-                ]
-        else
-            div [] []
+   if model.showNewQuestionModal then
+       div [ class "modal is-active" ]
+           [ div [ class "modal-background" ] []
+           , div [ class "modal-card" ]
+               [ header [ class "modal-card-head mediumlightblue" ]
+                   [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Frage" ]
+                   , button[class "is-large delete", onClick(ViewOrClose QuestionModal)][] ]
+               , section [ class "modal-card-body" ]
+                   [ div []
+                       [ table [ class "table is-striped", style "width" "100%" ] (answersTable model.questionnaire)
+                       , br [] []
+                       , button [class "qnButton", style "margin-bottom" "10px" , onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                       , br [] []
+                       , showInputBipolarUnipolar model.questionnaire
+                       , br [style "margin-top" "20px"] []
+                       , text "Fragetext: "
+                       , input
+                           [ class "input is-medium"
+                           , type_ "text"
+                           , style "width" "100%"
+                           , value (getElementText model.questionnaire.newElement)
+                           , onInput ChangeQuestionOrNoteText
+                           ]
+                           []
+                       , br [style "margin-top" "20px"] []
+                       , text "Hinweis: "
+                       , input
+                           [ class "input is-medium"
+                           , type_ "text"
+                           , style "width" "100%"
+                           , value (getQuestionHinweis model.questionnaire.newElement)
+                           , onInput ChangeQuestionNote
+                           ]
+                           []
+                       , br [] []
+                       , text ("Typ: " ++ getQuestionTyp model.questionnaire.newElement)
+                       , br [] []
+                       , radio "Single Choice" (ChangeQuestionType "Single Choice")
+                       , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
+                       , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
+                       , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
+                       , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                       , br [] []
+                       ]
+                   ]
+               , footer [ class "modal-card-foot mediumlightblue" ]
+                   [ button
+                       [ class "qnButton"
+                       , onClick SetQuestion
+                       ]
+                       [ text "Übernehmen" ]
+                   ]
+               ]
+           ]
+
+   else
+       div [] []
+
 
 getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
@@ -1855,7 +1874,8 @@ viewNewAnswerModal model =
                 [ div [ class "modal-background" ] []
                 , div [ class "modal-card" ]
                     [ header [ class "modal-card-head mediumlightblue" ]
-                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Antwort" ] ]
+                        [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Neue Antwort" ]
+                        , button[class "is-large delete", onClick(ViewOrClose AnswerModal)][] ]
                     , section [ class "modal-card-body" ]
                         [ div []
                             [ text "Antworttext: "
@@ -1875,16 +1895,100 @@ viewNewAnswerModal model =
                             , radio "Freie Eingabe" (ChangeAnswerType "free")  
                             ]
                         ]
-                    ]
+                    
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [class "qnButton"
                         , onClick SetAnswer
-                        ] []
+                        ] [ text "Übernehmen" ]
                     ]
                 ]
+            ]
         else
             div [] []
+
+
+viewNewConditionModal1 : Model -> Html Msg
+viewNewConditionModal1 model =
+    if model.showNewConditionModal1 then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head mediumlightblue" ]
+                    [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bedingungen" ]
+                    , button[class "is-large delete", onClick(ViewOrClose ConditionModal1)][] ]
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [ table [ class "table is-striped", style "width" "100%" ] (conditionsTable model.questionnaire)
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button
+                        [ class "qnButton"
+                        , onClick (ViewOrClose ConditionModal2)
+                        ]
+                        [ text "Neu" ]
+                    ]
+                ]
+            ]
+
+    else
+        div [] []
+
+viewNewConditionModal2 : Model -> Html Msg
+viewNewConditionModal2 model =
+    if model.showNewConditionModal2 then
+        div [ class "modal is-active" ]
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-card" ]
+                [ header [ class "modal-card-head mediumlightblue" ]
+                    [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bedingungen" ]
+                    , button[class "is-large delete", onClick(ViewOrClose ConditionModal2)][] ]
+
+                , section [ class "modal-card-body" ]
+                    [ div []
+                        [     text "von Frage: "
+                            , br [] []
+                            , div [ class "select" ]
+                                [ select [ onInput ChangeInputParentId ] 
+                                (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
+                                ]
+                            , br [] []
+                            , text " zu Frage: "
+                            , br [] []
+                            , div [ class "select" ]
+                                [ select [ onInput ChangeInputChildId ] 
+                                    (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
+                                ]
+                            , br [] []
+                            , text "Bei Beantwortung der Antworten mit den IDs: "
+                            , text (Debug.toString (List.map getAnswerID model.questionnaire.newCondition.answers)) 
+                            , br [] []
+                            , input 
+                               [ placeholder "Hier ID eingeben"
+                                , onInput AddAnswerToNewCondition ] 
+                                []
+                            , button 
+                                [ class "button"
+                                , style "margin-left" "1em" 
+                                , style "margin-top" "0.25em"
+                                , onClick AddConditionAnswer ] 
+                                [ text "Hinzufügen" ]                    
+                            
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button
+                        [ class "qnButton"
+                        , onClick SetConditions
+                        ]
+                        [ text "Übernehmen" ]
+                    ]
+                ]
+            ]
+
+    else
+        div [] []
 
 
 -- Show input for bipolar and unipolar Question
@@ -2106,6 +2210,44 @@ getAnswerTable index answer =
             ]
         ]
 
+
+conditionsTable : Questionnaire -> List (Html Msg)
+conditionsTable questionnaire =
+    case questionnaire.newElement of
+        Question record ->
+            append [ tableHead_conditions ] (List.indexedMap getConditionTable questionnaire.conditions) 
+
+        Note record ->
+            []
+
+tableHead_conditions : Html Msg
+tableHead_conditions =
+    tr []
+        [ th []
+            [ text "Von"
+            ]
+        , th []
+            [ text "Zu"
+            ]
+        , th []
+            [ text "Aktion"
+            ]
+        ]
+
+
+getConditionTable : Int -> Condition -> Html Msg
+getConditionTable index condition =
+    tr  [ id (String.fromInt index) ]
+        [ td [] [ text (String.fromInt index) ]
+        , td [] [ ]
+        , td []
+            [ i 
+                [ class "fas fa-trash-alt" 
+                --, onClick (DeleteAnswer answer)
+                ] 
+                []
+            ]
+        ]
 
 --Error Message for viewTime and editTime modals
 

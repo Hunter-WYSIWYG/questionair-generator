@@ -12,10 +12,12 @@ import Json.Decode.Pipeline exposing (required, optional, hardcoded)
 import Json.Encode as Encode exposing (encode, object)
 import List exposing (append)
 import List.Extra exposing (swapAt, updateAt)
+import Model exposing (..)
 import Task
 import QEncoder exposing (..)
 import QDecoder exposing (..)
 import Questionnaire exposing (..)
+import Validation exposing (..)
 
 
 main =
@@ -89,48 +91,6 @@ type ModalType
     | QuestionModal
     | TitleModal
     | AnswerModal
-
-
-type alias Model =
-    { questionnaire : Questionnaire 
-
-    --modals
-    , showTitleModal : Bool
-    , showEditTimeModal : Bool
-    , showViewingTimeModal : Bool
-    , showNewNoteModal : Bool
-    , showNewQuestionModal : Bool
-    , showNewAnswerModal : Bool
-
-    --editQElement for EditQuestion and EditNote
-    , editQElement : Bool
-    , editAnswer : Bool
-
-    --new inputs
-    , inputTitle : String
-    , validationResult : ValidationResult
-    , inputEditTime : String
-    , inputViewingTimeBegin : String
-    , inputViewingTimeEnd : String
-    , inputQuestionTime : String
-    , questionValidationResult : ValidationResult
-
-    --upload determines if the users wants to upload a questionnaire
-    --if upload is false show UI to create new questionnaire
-    , upload : Bool
-
-    -- a page to edit Questionnaires
-    , editQuestionnaire : Bool
-
-    --Debug 
-    , tmp : String 
-    }
-
-
-type ValidationResult
-    = NotDone
-    | Error String
-    | ValidationOK
 
 
 -- SUBSCRIPTIONS
@@ -699,43 +659,6 @@ update msg model =
         --Everything releated to download
         DownloadQuestionnaire ->
             ( model, save model.questionnaire (encodeQuestionnaire model.questionnaire) )
-
-
--- Input Validation
-
-
-validate : Model -> ValidationResult
-validate model =
-    if not (isValidEditTime model.inputEditTime) then
-        Error "Die Bearbeitungszeit muss das Format HH:MM haben"
-
-    else if not (isValidViewingTime model.inputViewingTimeBegin) then
-        Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
-
-    else if not (isValidViewingTime model.inputViewingTimeEnd) then
-        Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
-    else
-        ValidationOK
-
-isValidViewingTime : String -> Bool
-isValidViewingTime viewingTime =
-    not (String.length viewingTime /= 16 && String.length viewingTime /= 0)
-
-
-isValidEditTime : String -> Bool
-isValidEditTime editTime =
-    not (String.length editTime /= 5 && String.length editTime /= 0)
-
-validateQuestion : String -> ValidationResult
-validateQuestion questionTime =
-            if not (isValidQuestionTime questionTime) then
-                Error "Die Zeiten müssen das Format HH:MM:SS haben"
-            else
-                ValidationOK
-
-isValidQuestionTime : String -> Bool
-isValidQuestionTime questionTime = 
-    not (String.length questionTime /= 8 && String.length questionTime /= 0)
     
 
 --View
@@ -747,9 +670,6 @@ view model =
         [ showNavbar
         , if model.upload then
             showUpload model
-
-          else if model.editQuestionnaire then
-            showEditQuestionnaire model
 
           else
             showEditQuestionnaire model
@@ -795,23 +715,6 @@ showUpload model =
                 [ button [ onClick JsonRequested ] [ text "Datei auswählen" ]
                 ]
             ]
-        ]
-
-
-showEditQuestionnaire : Model -> Html Msg
-showEditQuestionnaire model =
-    div []
-        [ showHeroQuestionnaireTitle model.questionnaire
-        , showQuestionList model.questionnaire
-        , showTimes model.questionnaire
-        , showCreateQuestionOrNoteButtons model.questionnaire
-        , viewTitleModal model
-        , viewEditTimeModal model
-        , viewViewingTimeModal model
-        , viewNewNoteModal model
-        , viewNewQuestionModal model
-        , viewNewAnswerModal model
-        , viewConditions model.questionnaire
         ]
 
 viewConditions : Questionnaire -> Html Msg

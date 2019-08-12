@@ -24,14 +24,17 @@ type
       --Modals
     | ViewOrClose ModalType
       --Creates Condition
-    | AddCondition String
+    | AddCondition
     | AddConditionAnswer
     | AddAnswerToNewCondition String
+    | ChangeInputParentId String
+    | ChangeInputChildId String
       --Save input to questionnaire
     | SetQuestionnaireTitle
     | SetNote
     | SetQuestion
     | SetAnswer
+    | SetConditions
     | SetPolarAnswers String
       --Edit existing elements or answers
     | EditQuestion Q_element

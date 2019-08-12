@@ -12,8 +12,7 @@ import Html exposing (Html, a, br, div, nav, p, text)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import List
-import Model exposing (ModalType(..), Model, ValidationResult(..))
-import Msg exposing (Msg(..))
+import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
 import Questionnaire
 import Task
@@ -22,7 +21,7 @@ import Upload
 
 main =
     Browser.element
-        { init = initModel
+        { init = Model.initModel
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -36,49 +35,6 @@ main =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
-
-
-
---Init
-
-
-initModel : () -> ( Model, Cmd Msg )
-initModel _ =
-    ( { questionnaire = Questionnaire.initQuestionnaire
-
-      --modals
-      , showTitleModal = False
-      , showEditTimeModal = False
-      , showViewingTimeModal = False
-      , showNewNoteModal = False
-      , showNewQuestionModal = False
-      , showNewAnswerModal = False
-
-      --editQElement for EditQuestion and EditNote
-      , editQElement = False
-      , editAnswer = False
-
-      --new inputs
-      , inputTitle = ""
-      , validationResult = NotDone
-      , inputEditTime = ""
-      , inputViewingTimeBegin = ""
-      , inputViewingTimeEnd = ""
-      , inputQuestionTime = ""
-      , questionValidationResult = NotDone
-
-      --upload determines if the users wants to upload a questionnaire
-      --if upload is false show UI to create new questionnaire
-      , upload = False
-
-      -- a page to edit Questionnaires
-      , editQuestionnaire = True
-
-      --Debug
-      , tmp = ""
-      }
-    , Cmd.none
-    )
 
 
 
@@ -302,33 +258,77 @@ update msg model =
                     in
                     ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = not model.showNewAnswerModal }, Cmd.none )
 
-        --Add Condition
-        AddCondition string ->
-            let
-                oldQuestionnaire =
-                    model.questionnaire
+                ConditionModal1 ->
+                    let
+                        oldQuestionnaire =
+                            model.questionnaire
 
+                        changedQuestionnaire =
+                            oldQuestionnaire
+                    in
+                    ( { model | questionnaire = changedQuestionnaire, showNewConditionModal1 = not model.showNewConditionModal1 }, Cmd.none )
+
+                ConditionModal2 ->
+                    let
+                        oldQuestionnaire =
+                            model.questionnaire
+
+                        changedQuestionnaire =
+                            oldQuestionnaire
+                    in
+                    ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = not model.showNewConditionModal2 }, Cmd.none )
+
+        --Add Condition
+        ChangeInputParentId parent_id ->
+            ( { model
+                | inputParentId =
+                    case String.toInt parent_id of
+                        Just a ->
+                            a
+
+                        Nothing ->
+                            -1
+              }
+            , Cmd.none
+            )
+
+        ChangeInputChildId child_id ->
+            ( { model
+                | inputChildId =
+                    case String.toInt child_id of
+                        Just a ->
+                            a
+
+                        Nothing ->
+                            -1
+              }
+            , Cmd.none
+            )
+
+        AddCondition ->
+            let
                 parent =
-                    QElement.getID oldQuestionnaire.newElement
+                    model.inputParentId
 
                 child =
-                    QElement.getID (Questionnaire.getElementWithText string oldQuestionnaire)
-
-                changedQuestionnaire =
-                    if string == "Keine" then
-                        Debug.log "Keine ausgewählt"
-                            { oldQuestionnaire
-                                | newCondition = Condition.setValid oldQuestionnaire.newCondition False
-
-                                --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
-                            }
-
-                    else
-                        { oldQuestionnaire
-                            | newCondition = Condition.setParentChildInCondition parent child oldQuestionnaire.newCondition
-                        }
+                    model.inputChildId
             in
-            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+            if parent /= -1 && child /= -1 then
+                ( { model
+                    | newCondition = Condition.setParentChildInCondition parent child model.newCondition
+                  }
+                , Cmd.none
+                )
+
+            else
+                Debug.log "Keine ausgewählt"
+                    ( { model
+                        | newCondition = Condition.setValid model.newCondition False
+
+                        --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
+                      }
+                    , Cmd.none
+                    )
 
         AddConditionAnswer ->
             let
@@ -453,6 +453,16 @@ update msg model =
 
             else
                 ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, editQElement = False }, Cmd.none )
+
+        SetConditions ->
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire | conditions = List.append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ] }
+            in
+            ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False }, Cmd.none )
 
         SetAnswer ->
             let
@@ -711,7 +721,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "lightblue" ]
         [ showNavbar
         , if model.upload then
             Upload.showUpload model
@@ -727,7 +737,7 @@ view model =
 
 showNavbar : Html Msg
 showNavbar =
-    nav [ class "navbar is-link is-fixed-top" ]
+    nav [ class "navbar is-fixed-top is-link" ]
         [ div [ class "navbar-brand" ]
             [ p [ class "navbar-item", style "padding-top" "0.5em" ] [ text "Fragebogengenerator" ] ]
         , div [ class "navbar-menu" ]

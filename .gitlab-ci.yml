@@ -1,0 +1,29 @@
+image: node:latest
+
+stages:
+  - before_script
+  - build
+  - deploy
+  - after_script
+
+before_script:
+  - apt-get update -qq && apt-get install -y -qq sshpass
+
+deploy:
+  type: deploy
+  environment:
+    name: staging
+  script:
+    - npm install -g elm --unsafe-perm=true
+    - mkdir web-app/src/build/
+    - cd web-app/src/
+    - cp index.html build/
+    - cp stylesheet.css build/
+    - elm make Main.elm --output=build/Main.js
+    - export SSHPASS=$USER_PASS 
+    - cd build/
+    - sshpass -e scp -o stricthostkeychecking=no -r ./* anfvg@anubis.informatik.uni-halle.de:/home/anfvg/public_html
+  only:
+    - website-master
+
+

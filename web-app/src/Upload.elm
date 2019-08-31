@@ -1,11 +1,22 @@
 module Upload exposing (showUpload)
 
+{-| Enthält die View für das Hochladen von Fragebögen.
+
+
+# Öffentliche Funktionen
+
+@docs showUpload
+
+-}
+
 import Html exposing (Html, br, button, div, h1, section, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Model exposing (Model, Msg(..))
 
 
+{-| Zeigt die Oberfläche bzw. die View für das Bearbeiten von Fragebögen an.
+-}
 showUpload : Model -> Html Msg
 showUpload model =
     div []
@@ -19,6 +30,8 @@ showUpload model =
         ]
 
 
+{-| Zeigt den Titel der Seite in einem Hero an (siehe Bulma.io).
+-}
 showHeroWith : String -> Html Msg
 showHeroWith string =
     section [ class "hero is-info" ]

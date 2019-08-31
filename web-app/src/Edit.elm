@@ -1,6 +1,15 @@
 module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
 
-import Answer exposing (Answer, getAnswerID, getAnswerType)
+{-| Enthält die View für das Bearbeiten von Fragebögen.
+
+
+# Öffentliche Funktionen
+
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+
+-}
+
+import Answer exposing (Answer)
 import Condition exposing (Condition)
 import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, option, p, section, select, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
@@ -11,6 +20,8 @@ import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
 
 
+{-| Zeigt die Oberfläche bzw. die View für das Bearbeiten von Fragebögen an.
+-}
 showEditQuestionnaire : Model -> Html Msg
 showEditQuestionnaire model =
     div []
@@ -30,6 +41,8 @@ showEditQuestionnaire model =
         ]
 
 
+{-| Zeigt den Titel des Fragebogens in einem Hero (s. Bulma.io) an.
+-}
 showHeroQuestionnaireTitle : Questionnaire -> Html Msg
 showHeroQuestionnaireTitle questionnaire =
     section [ class "hero is-info" ]
@@ -49,6 +62,8 @@ showHeroQuestionnaireTitle questionnaire =
         ]
 
 
+{-| Zeigt eine Tabelle mit den Fragen und Anmerkungen des Fragebogens an.
+-}
 showQuestionList : Questionnaire -> Html Msg
 showQuestionList questionnaire =
     div [ class "box container is-fluid questionList", style "flex-basis" "80%", style "overflow-y" "auto", style "height" "60vh", style "margin-top" "2em", style "margin-bottom" "2em" ]
@@ -66,6 +81,8 @@ showQuestionList questionnaire =
         ]
 
 
+{-| Zeigt die Zeiten (Bearbeitungszeiten, Erscheinungszeiten, usw.) an.
+-}
 showTimes : Questionnaire -> Html Msg
 showTimes questionnaire =
     div [ class "container is-fluid", style "margin-bottom" "10px" ]
@@ -87,6 +104,8 @@ showTimes questionnaire =
         ]
 
 
+{-| Zeigt die Buttons für das Erstellen von neuen Elementen (Fragen, Anmerkungen) für den Fragebogen an.
+-}
 showCreateQuestionOrNoteButtons : Questionnaire -> Html Msg
 showCreateQuestionOrNoteButtons questionnaire =
     div [ class "container is-fluid divButtons" ]
@@ -110,10 +129,8 @@ showCreateQuestionOrNoteButtons questionnaire =
         ]
 
 
-
---MODALS
-
-
+{-| Zeigt das Modal zum Bearbeiten der Erscheinungszeiten an.
+-}
 viewViewingTimeModal : Model -> Html Msg
 viewViewingTimeModal model =
     let
@@ -175,6 +192,8 @@ viewViewingTimeModal model =
         div [] []
 
 
+{-| Zeigt das Modal für das Bearbeiten der Bearbeitungszeit des Fragebogens an.
+-}
 viewEditTimeModal : Model -> Html Msg
 viewEditTimeModal model =
     let
@@ -228,6 +247,8 @@ viewEditTimeModal model =
         div [] []
 
 
+{-| Zeigt das Modal für das Bearbeiten des Fragebogentitels an.
+-}
 viewTitleModal : Model -> Html Msg
 viewTitleModal model =
     let
@@ -271,6 +292,8 @@ viewTitleModal model =
         div [] []
 
 
+{-| Zeigt das Modal für das Erstellen einer Anmerkung an.
+-}
 viewNewNoteModal : Model -> Html Msg
 viewNewNoteModal model =
     let
@@ -319,6 +342,8 @@ viewNewNoteModal model =
         div [] []
 
 
+{-| Zeigt das Modal für das Erstellen einer neuen Frage an.
+-}
 viewNewQuestionModal : Model -> Html Msg
 viewNewQuestionModal model =
     if model.showNewQuestionModal then
@@ -381,17 +406,25 @@ viewNewQuestionModal model =
         div [] []
 
 
+{-| TODO: !!!NUR FÜR DEBUG ZWECKE!!!
+Zeigt eine Liste von Bedingungen an.
+-}
 viewConditions : Questionnaire -> Html Msg
 viewConditions questionnaire =
     div [] (List.map (\c -> text ("(" ++ String.fromInt c.parent_id ++ "," ++ String.fromInt c.child_id ++ ")")) questionnaire.conditions)
 
 
+{-| Zeigt eine Liste von Fragen an, die zur Bedingung als "Elternfrage" oder "Kindfrage" hinzugefügt werden können.
+Siehe viewConditionModal
+-}
 getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
         ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
 
 
+{-| Zeigt ein Modal zum Erstellen neuer Antworten an.
+-}
 viewNewAnswerModal : Model -> Html Msg
 viewNewAnswerModal model =
     let
@@ -419,7 +452,7 @@ viewNewAnswerModal model =
                         ]
                     , br [] []
                     , div []
-                        [ text ("Typ: " ++ getAnswerType questionnaire.newAnswer)
+                        [ text ("Typ: " ++ questionnaire.newAnswer.typ)
                         , br [] []
                         , radio "Fester Wert" (ChangeAnswerType "regular")
                         , radio "Freie Eingabe" (ChangeAnswerType "free")
@@ -439,6 +472,9 @@ viewNewAnswerModal model =
         div [] []
 
 
+{-| TODO: AUSSAGEKRÄFTIGERE NAMEN!
+Zeigt ein Modal mit einer Tabelle mit vorhandenen Bedingungen an.
+-}
 viewNewConditionModal1 : Model -> Html Msg
 viewNewConditionModal1 model =
     if model.showNewConditionModal1 then
@@ -468,6 +504,9 @@ viewNewConditionModal1 model =
         div [] []
 
 
+{-| TODO: AUSSAGEKRÄFTIGERE NAMEN!
+Zeigt ein Modal zur Erstellung von Bedingungen an.
+-}
 viewNewConditionModal2 : Model -> Html Msg
 viewNewConditionModal2 model =
     if model.showNewConditionModal2 then
@@ -495,7 +534,8 @@ viewNewConditionModal2 model =
                             ]
                         , br [] []
                         , text "Bei Beantwortung der Antworten mit den IDs: "
-                        , text (Debug.toString (List.map getAnswerID model.questionnaire.newCondition.answers))
+
+                        --, text (Debug.toString (List.map getID model.questionnaire.newCondition.answers))
                         , br [] []
                         , input
                             [ placeholder "Hier ID eingeben"
@@ -525,17 +565,15 @@ viewNewConditionModal2 model =
         div [] []
 
 
-
---Table of Questions
-
-
+{-| Zeigt eine Tabelle mit vorhandenen Fragen an.
+-}
 questionsTable : Questionnaire -> List (Html Msg)
 questionsTable questionnaire =
-    {--[ tableHead_questions ]
-        ++--}
     List.indexedMap getQuestionTable questionnaire.elements
 
 
+{-| Der Tabellenkopf der Tabelle mit den vorhandenen Fragen.
+-}
 tableHead_questions : Html Msg
 tableHead_questions =
     tr []
@@ -557,6 +595,8 @@ tableHead_questions =
         ]
 
 
+{-| Die Darstellung eines Elements des Fragebogens in der Tabelle.
+-}
 getQuestionTable : Int -> Q_element -> Html Msg
 getQuestionTable index element =
     case element of
@@ -627,6 +667,8 @@ getQuestionTable index element =
                 ]
 
 
+{-| Zeigt die Tabelle mit den Antworten der "Inputfrage" (newElement) an.
+-}
 answersTable : Questionnaire -> List (Html Msg)
 answersTable questionnaire =
     case questionnaire.newElement of
@@ -637,6 +679,8 @@ answersTable questionnaire =
             []
 
 
+{-| Der Tabellenkopf der Tabelle von Antworten.
+-}
 tableHead_answers : Html Msg
 tableHead_answers =
     tr []
@@ -655,6 +699,8 @@ tableHead_answers =
         ]
 
 
+{-| Darstellung einer Frage in einer Tabelle.
+-}
 getAnswerTable : Int -> Answer -> Html Msg
 getAnswerTable index answer =
     tr [ id (String.fromInt index) ]
@@ -689,6 +735,8 @@ getAnswerTable index answer =
         ]
 
 
+{-| Tabelle von Bedingungen der "Input-Frage" (newElement).
+-}
 conditionsTable : Questionnaire -> List (Html Msg)
 conditionsTable questionnaire =
     case questionnaire.newElement of
@@ -699,6 +747,8 @@ conditionsTable questionnaire =
             []
 
 
+{-| Tabellenkopf der Tabelle für Bedingungen.
+-}
 tableHead_conditions : Html Msg
 tableHead_conditions =
     tr []
@@ -714,6 +764,8 @@ tableHead_conditions =
         ]
 
 
+{-| Tabellendarstellung einer Condition.
+-}
 getConditionTable : Int -> Condition -> Html Msg
 getConditionTable index condition =
     tr [ id (String.fromInt index) ]
@@ -722,14 +774,14 @@ getConditionTable index condition =
         , td []
             [ i
                 [ class "fas fa-trash-alt"
-
-                --, onClick (DeleteAnswer answer)
                 ]
                 []
             ]
         ]
 
 
+{-| Ausgabe, ob die Eingaben gültig sind.
+-}
 viewValidation : Model -> Html msg
 viewValidation model =
     let
@@ -747,6 +799,9 @@ viewValidation model =
     div [ style "color" color ] [ text message ]
 
 
+{-| TODO: KOMMENTAR RICHTIG SO? WIESO NICHT MIT viewValidation LÖSEN?
+Ausgabe, ob die Eingabefrage gültig ist.
+-}
 viewQuestionValidation : ValidationResult -> Html msg
 viewQuestionValidation result =
     let
@@ -764,6 +819,8 @@ viewQuestionValidation result =
     div [ style "color" color ] [ text message ]
 
 
+{-| Eingabeoberfläche, wie viele Antworten für uni-/bipolare Fragen erstellt werden sollen.
+-}
 showInputBipolarUnipolar : Questionnaire -> Html Msg
 showInputBipolarUnipolar questionnaire =
     case questionnaire.newElement of
@@ -803,6 +860,8 @@ showInputBipolarUnipolar questionnaire =
             div [] []
 
 
+{-| Radiobutton.
+-}
 radio : String -> msg -> Html msg
 radio value msg =
     label

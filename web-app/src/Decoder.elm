@@ -1,16 +1,22 @@
 module Decoder exposing (answerDecoder, decodeElements, decodeTitle, elementDecoder, noteDecoder, questionDecoder)
 
+{-| Enthält die Decoder für Questionnaire, QElement, Answer (usw.).
+
+
+# Öffentliche Funktionen
+
+@docs answerDecoder, decodeElements, decodeTitle, elementDecoder, noteDecoder, questionDecoder
+
+-}
+
 import Answer exposing (Answer)
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import QElement exposing (Q_element(..))
 
 
-
---DECODER
--- extracts the title of the questionnaire
-
-
+{-| Decodiert den Titel des Questionnaires, kann aber auch auf andere Typen angewendet werden.
+-}
 decodeTitle : String -> String
 decodeTitle content =
     case Decode.decodeString (Decode.field "title" Decode.string) content of
@@ -21,10 +27,8 @@ decodeTitle content =
             ""
 
 
-
---extracts the elements (notes, questions) of the questionnaire
-
-
+{-| Decodiert eine Liste von Fragebogenelementen (Fragen, Anmerkunden).
+-}
 decodeElements : String -> List Q_element
 decodeElements content =
     case Decode.decodeString (Decode.at [ "elements" ] (Decode.list elementDecoder)) content of
@@ -35,19 +39,15 @@ decodeElements content =
             []
 
 
-
---decodes the elements either to a note, or to a question
-
-
+{-| Decodiert ein einzelnes Fragebogenelement (Frage, Anmerkung).
+-}
 elementDecoder : Decode.Decoder Q_element
 elementDecoder =
     Decode.oneOf [ questionDecoder, noteDecoder ]
 
 
-
---decodes a note
-
-
+{-| Decodiert eine Anmerkung.
+-}
 noteDecoder : Decode.Decoder Q_element
 noteDecoder =
     Decode.map2 QElement.NoteRecord
@@ -56,10 +56,8 @@ noteDecoder =
         |> Decode.map Note
 
 
-
---decodes a question
-
-
+{-| Decodiert eine Frage.
+-}
 questionDecoder : Decode.Decoder Q_element
 questionDecoder =
     Decode.succeed QElement.QuestionRecord
@@ -72,10 +70,8 @@ questionDecoder =
         |> Decode.map Question
 
 
-
---decodes a answer
-
-
+{-| Decodiert eine Antwort.
+-}
 answerDecoder : Decode.Decoder Answer
 answerDecoder =
     Decode.map3 Answer

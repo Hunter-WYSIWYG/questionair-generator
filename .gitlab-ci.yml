@@ -15,11 +15,11 @@ deploy:
     name: staging
   script:
     - npm install -g elm --unsafe-perm=true
-    - mkdir web-app/src/build/
-    - cd web-app/src/
-    - cp index.html build/
-    - cp stylesheet.css build/
-    - elm make Main.elm --output=build/Main.js
+    - cd web-app/
+    - mkdir build/
+    - cp src/index.html build/
+    - cp src/stylesheet.css build/
+    - elm make src/Main.elm --output=build/Main.js
     - export SSHPASS=$USER_PASS 
     - cd build/
     - sshpass -e scp -o stricthostkeychecking=no -r ./* anfvg@anubis.informatik.uni-halle.de:/home/anfvg/public_html

@@ -1,4 +1,13 @@
-module Main exposing (main, subscriptions, update, view)
+module Main exposing (subscriptions, main, update, view)
+
+{-| Main enthält die Hauptfunktionen der WebApp.
+
+
+# Funktionen
+
+@docs subscriptions, main, update, view
+
+-}
 
 import Answer exposing (Answer)
 import Browser
@@ -19,6 +28,9 @@ import Task
 import Upload
 
 
+{-| Main-Funktion.
+-}
+main : Program () Model Msg
 main =
     Browser.element
         { init = Model.initModel
@@ -28,19 +40,15 @@ main =
         }
 
 
-
--- SUBSCRIPTIONS
-
-
+{-| Subscriptions-Funktion
+-}
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
 
-
---Update logic
-
-
+{-| Update-Funktion mit Logik der WebApp.
+-}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -139,7 +147,7 @@ update msg model =
                                         Question { record | typ = string }
 
                                     else
-                                        Question { record | typ = string, answers = Answer.setPredefinedAnswers string }
+                                        Question { record | typ = string, answers = Answer.getYesNoAnswers string }
                             }
 
                         Note record ->
@@ -324,8 +332,6 @@ update msg model =
                 Debug.log "Keine ausgewählt"
                     ( { model
                         | newCondition = Condition.setValid model.newCondition False
-
-                        --, conditions = removeConditionFromCondList questionnaire.newCondition questionnaire.conditions
                       }
                     , Cmd.none
                     )
@@ -396,16 +402,11 @@ update msg model =
                     if model.editQElement == False then
                         { oldQuestionnaire
                             | elements = List.append oldQuestionnaire.elements [ oldQuestionnaire.newElement ]
-
-                            --, showNewNoteModal = False
                         }
 
                     else
                         { oldQuestionnaire
                             | elements = List.map (\e -> QElement.updateElement oldQuestionnaire.newElement e) oldQuestionnaire.elements
-
-                            --, showNewNoteModal = False
-                            --, editQElement = False
                         }
             in
             if model.editQElement == False then
@@ -430,8 +431,6 @@ update msg model =
                                 else
                                     Debug.log "false" Condition.removeConditionFromCondList oldQuestionnaire.newCondition oldQuestionnaire.conditions
                             , newCondition = Condition.initCondition
-
-                            --, showNewQuestionModal = False
                         }
 
                     else
@@ -443,9 +442,6 @@ update msg model =
 
                                 else
                                     Debug.log "false" Condition.removeConditionFromCondList oldQuestionnaire.newCondition oldQuestionnaire.conditions
-
-                            --, showNewQuestionModal = False
-                            --, editQElement = False
                         }
             in
             if model.editQElement == False then
@@ -476,8 +472,6 @@ update msg model =
                                 { oldQuestionnaire
                                     | newElement =
                                         Question { record | answers = record.answers ++ [ oldQuestionnaire.newAnswer ] }
-
-                                    --, showNewAnswerModal = False
                                 }
 
                             else if oldQuestionnaire.newAnswer.typ == "" then
@@ -487,9 +481,6 @@ update msg model =
                                 { oldQuestionnaire
                                     | newElement =
                                         Question { record | answers = List.map (\e -> Answer.update oldQuestionnaire.newAnswer e) record.answers }
-
-                                    --, showNewAnswerModal = False
-                                    --, editAnswer = False
                                 }
 
                         Note record ->
@@ -513,9 +504,6 @@ update msg model =
                 changedQuestionnaire =
                     { oldQuestionnaire
                         | newAnswer = element
-
-                        --, showNewAnswerModal = True
-                        --, editAnswer = True
                     }
             in
             ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = True, editAnswer = True }, Cmd.none )
@@ -529,9 +517,6 @@ update msg model =
                     { oldQuestionnaire
                         | newElement = element
                         , newCondition = Condition.getConditionWithParentID oldQuestionnaire.conditions (QElement.getID element)
-
-                        --, showNewQuestionModal = True
-                        --, editQElement = True
                     }
             in
             ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = True, editQElement = True }, Cmd.none )
@@ -544,9 +529,6 @@ update msg model =
                 changedQuestionnaire =
                     { oldQuestionnaire
                         | newElement = element
-
-                        --, showNewNoteModal = True
-                        --, editQElement = True
                     }
             in
             ( { model | questionnaire = changedQuestionnaire, showNewNoteModal = True, editQElement = True }, Cmd.none )
@@ -564,7 +546,7 @@ update msg model =
                     if QElement.getID element /= (List.length oldQuestionnaire.elements - 1) then
                         { oldQuestionnaire
                             | elements = QElement.putElementDown oldQuestionnaire.elements element
-                            , conditions = Condition.updateConditionWithIdTo oldQuestionnaire.conditions (QElement.getID element) (QElement.getID element + 1)
+                            , conditions = Condition.updateIDsInCondition oldQuestionnaire.conditions (QElement.getID element) (QElement.getID element + 1)
                         }
 
                     else
@@ -581,7 +563,7 @@ update msg model =
                     if QElement.getID element /= 0 then
                         { oldQuestionnaire
                             | elements = QElement.putElementUp oldQuestionnaire.elements element
-                            , conditions = Condition.updateConditionWithIdTo oldQuestionnaire.conditions (QElement.getID element) (QElement.getID element - 1)
+                            , conditions = Condition.updateIDsInCondition oldQuestionnaire.conditions (QElement.getID element) (QElement.getID element - 1)
                         }
 
                     else
@@ -715,10 +697,8 @@ update msg model =
             ( model, Encoder.save model.questionnaire (Encoder.encodeQuestionnaire model.questionnaire) )
 
 
-
---View
-
-
+{-| Anzeige der Views für das Editieren und Uploaden von Fragebögen.
+-}
 view : Model -> Html Msg
 view model =
     div [ class "lightblue" ]
@@ -731,10 +711,8 @@ view model =
         ]
 
 
-
--- view helper functions
-
-
+{-| Anzeige einer Navbar mit Optionen, um zischen den Views für das Bearbeiten und Uploaden von Fragebögen zu wechseln.
+-}
 showNavbar : Html Msg
 showNavbar =
     nav [ class "navbar is-fixed-top is-link" ]

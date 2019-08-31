@@ -1,4 +1,21 @@
-module Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..), initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validate, validateQuestion)
+module Model exposing
+    ( Model, ModalType(..), Msg(..), ValidationResult(..)
+    , initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validate, validateQuestion
+    )
+
+{-| Enthält die Typen für das Model, die Modale, die Messages und das ValidationResult. Enthällt außerdem den Anfangszustand des Models.
+
+
+# Definition
+
+@docs Model, ModalType, Msg, ValidationResult
+
+
+# Öffentliche Funktionen
+
+@docs initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validate, validateQuestion
+
+-}
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
@@ -7,6 +24,8 @@ import QElement exposing (Q_element)
 import Questionnaire exposing (Questionnaire)
 
 
+{-| Das Model für die Webanwendung.
+-}
 type alias Model =
     { questionnaire : Questionnaire
 
@@ -49,12 +68,16 @@ type alias Model =
     }
 
 
+{-| Das Ergebnis der Validierung des Models.
+-}
 type ValidationResult
     = NotDone
     | Error String
     | ValidationOK
 
 
+{-| Die Modaltypen, die geöffnet werden können.
+-}
 type ModalType
     = ViewingTimeModal
     | EditTimeModal
@@ -66,6 +89,8 @@ type ModalType
     | ConditionModal2
 
 
+{-| Die Messages der Webanwendung.
+-}
 type
     Msg
     --Changing Input
@@ -120,6 +145,8 @@ type
     | DownloadQuestionnaire
 
 
+{-| Der Anfangszustand des Models.
+-}
 initModel : () -> ( Model, Cmd Msg )
 initModel _ =
     ( { questionnaire = Questionnaire.initQuestionnaire
@@ -165,10 +192,8 @@ initModel _ =
     )
 
 
-
--- Input Validation
-
-
+{-| Methode zur Validierung des Models, speziell der Zeitformate.
+-}
 validate : Model -> ValidationResult
 validate model =
     if not (isValidEditTime model.inputEditTime) then
@@ -184,16 +209,22 @@ validate model =
         ValidationOK
 
 
+{-| Methode zur Validierung der Länge der Erscheindungszeit.
+-}
 isValidViewingTime : String -> Bool
 isValidViewingTime viewingTime =
     not (String.length viewingTime /= 16 && String.length viewingTime /= 0)
 
 
+{-| Methode zur Validierung der Länge der Bearbeitungszeit.
+-}
 isValidEditTime : String -> Bool
 isValidEditTime editTime =
     not (String.length editTime /= 5 && String.length editTime /= 0)
 
 
+{-| Methode zur Validierung des Fragenzeitformats.
+-}
 validateQuestion : String -> ValidationResult
 validateQuestion questionTime =
     if not (isValidQuestionTime questionTime) then
@@ -203,6 +234,8 @@ validateQuestion questionTime =
         ValidationOK
 
 
+{-| Methode zur Validierung der Länge der Fragenzeit.
+-}
 isValidQuestionTime : String -> Bool
 isValidQuestionTime questionTime =
     not (String.length questionTime /= 8 && String.length questionTime /= 0)

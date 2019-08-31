@@ -1,5 +1,14 @@
 module Encoder exposing (encodeQuestionnaire, save)
 
+{-| Enthält die Decoder für Questionnaire, QElement, Answer (usw.).
+
+
+# Öffentliche Funktionen
+
+@docs encodeQuestionnaire, save
+
+-}
+
 import Answer exposing (Answer)
 import Condition exposing (Condition)
 import File.Download as Download
@@ -8,10 +17,8 @@ import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
 
 
-
---encodes questionnaire as a json
-
-
+{-| Encodiert einen Fragebogen als JSON.
+-}
 encodeQuestionnaire : Questionnaire -> String
 encodeQuestionnaire questionnaire =
     encode 4
@@ -23,10 +30,8 @@ encodeQuestionnaire questionnaire =
         )
 
 
-
---encodes Q_element
-
-
+{-| Encodiert ein Fragebogenelement (Frage, Anmerkung).
+-}
 elementEncoder : Q_element -> Encode.Value
 elementEncoder element =
     case element of
@@ -49,10 +54,8 @@ elementEncoder element =
                 ]
 
 
-
---encodes conditions
-
-
+{-| Encodiert eine Bedingung.
+-}
 conditionEncoder : Condition -> Encode.Value
 conditionEncoder condition =
     object
@@ -62,19 +65,8 @@ conditionEncoder condition =
         ]
 
 
-
---Save to file system
-
-
-save : Questionnaire -> String -> Cmd msg
-save questionnaire export =
-    Download.string (questionnaire.title ++ ".json") "application/json" export
-
-
-
---encodes answers
-
-
+{-| Encodiert Antworten.
+-}
 answerEncoder : Answer -> Encode.Value
 answerEncoder answer =
     object
@@ -82,3 +74,10 @@ answerEncoder answer =
         , ( "text", Encode.string answer.text )
         , ( "_type", Encode.string answer.typ )
         ]
+
+
+{-| Ermöglicht das Speichern von erstellten Fragebögen im Dateisystem des Nutzers (Downloadfunktion).
+-}
+save : Questionnaire -> String -> Cmd msg
+save questionnaire export =
+    Download.string (questionnaire.title ++ ".json") "application/json" export

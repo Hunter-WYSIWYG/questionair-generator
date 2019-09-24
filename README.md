@@ -1,6 +1,10 @@
 # Fragebogengenerator
 
-* Elm installieren:
+## CI/CD verwenden
+
+Nach jedem Commit auf den website-master-Branch wird ein Build von der WebApp erstellt und auf der Seite users.informatik.uni-halle.de/~anfvg hochgeladen.
+
+## Elm installieren:
 	https://guide.elm-lang.org/install.html
 
 * Ggf. Editor einrichten
@@ -23,8 +27,8 @@ Dann auf localhost:8000/index.html aufrufen.
 
 ----------------------------------------------------------------
 
-* Link zur Referenz für Elm-Sprache:
+## Link zur Referenz für Elm-Sprache:
 	https://package.elm-lang.org/
 
-* Link zu Bulma:
+## Link zu Bulma:
 	bulma.io

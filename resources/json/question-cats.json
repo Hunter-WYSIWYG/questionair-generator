@@ -1,0 +1,14 @@
+{
+    "questionID" : "2",
+    "questionTitle" : "Mögen Sie Katzen?",
+    "answers" : [
+        {
+            "answerID" : "1",
+            "answerText" : "Ja"
+        },
+        {
+            "answerID" : "2",
+            "answerText" : "Nein"
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "questionID" : 2,
+    "questionTitle" : "Mögen Sie Katzen?",
+    "type" : 0,
+    "answers" : [
+        {
+            "answerID" : 1,
+            "answerText" : "Ja",
+            "answerType" : 0
+        },
+        {
+            "answerID" : 2,
+            "answerText" : "Nein",
+            "answerType" : 0
+        }
+    ]
+}

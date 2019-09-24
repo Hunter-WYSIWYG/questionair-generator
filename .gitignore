@@ -1,3 +1,4 @@
+--App
 *.iml
 .gradle
 /local.properties
@@ -9,5 +10,12 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+src/build
 /captures
 .externalNativeBuild
+
+--WebApp
+-- exclude all generated content
+web-app/elm-stuff
+web-app/Main.js
+web-app/src/Main.js

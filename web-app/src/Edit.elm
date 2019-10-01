@@ -18,6 +18,8 @@ import List
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
+import DateTimePicker exposing (..)
+
 
 
 {-| Zeigt die Oberfläche bzw. die View für das Bearbeiten von Fragebögen an.
@@ -224,6 +226,13 @@ viewEditTimeModal model =
                             , onInput ChangeEditTime
                             ]
                             []
+                            , div []
+                                [ DateTimePicker.timePicker
+                                    TimeChange
+                                    [ class "my-timepicker" ]
+                                    model.state
+                                    model.value
+                                ]
                         , br [] []
                         , viewValidation model
                         ]

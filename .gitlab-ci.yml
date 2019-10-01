@@ -24,6 +24,6 @@ deploy:
     - cd build/
     - sshpass -e scp -o stricthostkeychecking=no -r ./* anfvg@anubis.informatik.uni-halle.de:/home/anfvg/public_html
   only:
-    - website-master
+    - master
 
 

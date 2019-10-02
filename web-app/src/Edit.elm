@@ -19,6 +19,8 @@ import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
 import DateTimePicker exposing (..)
+import Html.Styled
+import Html.Styled.Attributes
 
 
 
@@ -226,13 +228,11 @@ viewEditTimeModal model =
                             , onInput ChangeEditTime
                             ]
                             []
-                            , div []
-                                [ DateTimePicker.timePicker
-                                    TimeChange
-                                    [ class "my-timepicker" ]
-                                    model.state
-                                    model.value
-                                ]
+                            , Html.Styled.toUnstyled (DateTimePicker.timePicker
+                                TimeChange
+                                [ Html.Styled.Attributes.class "my-timepicker" ]
+                                model.state
+                                model.value)
                         , br [] []
                         , viewValidation model
                         ]

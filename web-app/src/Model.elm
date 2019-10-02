@@ -109,7 +109,7 @@ type
     | ChangeAnswerType String
     | ChangeQuestionNewAnswer Answer
     | ChangeQuestionTime String
-    | TimeChange DateTimePicker.State (Maybe DateTimePicker.DateTime)
+    | DateTimePickerChanged DateTimePicker.State (Maybe DateTimePicker.DateTime)
       --Modals
     | ViewOrClose ModalType
       --Creates Condition

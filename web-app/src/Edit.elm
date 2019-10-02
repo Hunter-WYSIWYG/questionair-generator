@@ -165,6 +165,11 @@ viewViewingTimeModal model =
                             , onInput ChangeViewingTimeBegin
                             ]
                             []
+                            , Html.Styled.toUnstyled (DateTimePicker.dateTimePicker
+                                DateTimePickerChanged
+                                [ Html.Styled.Attributes.class "my-datetimepicker" ]
+                                model.state
+                                model.value)
                         , text " Bis "
                         , input
                             [ class "input is-medium"
@@ -178,6 +183,11 @@ viewViewingTimeModal model =
                             , onInput ChangeViewingTimeEnd
                             ]
                             []
+                            , Html.Styled.toUnstyled (DateTimePicker.dateTimePicker
+                                DateTimePickerChanged
+                                [ Html.Styled.Attributes.class "my-datetimepicker" ]
+                                model.state
+                                model.value)
                         ]
                     , br [] []
                     , viewValidation model
@@ -229,7 +239,7 @@ viewEditTimeModal model =
                             ]
                             []
                             , Html.Styled.toUnstyled (DateTimePicker.timePicker
-                                TimeChange
+                                DateTimePickerChanged
                                 [ Html.Styled.Attributes.class "my-timepicker" ]
                                 model.state
                                 model.value)

@@ -181,9 +181,8 @@ update msg model =
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
-        TimeChange newState newValue ->
+        DateTimePickerChanged newState newValue ->
             ( { model | value = newValue, state = newState }, Cmd.none )
-                
 
         --open or close modals
         ViewOrClose modalType ->

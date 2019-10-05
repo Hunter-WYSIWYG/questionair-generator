@@ -195,3 +195,7 @@ getConditionWithParentID list id =
 
         Nothing ->
             initCondition
+
+deleteCondition: Condition -> List Condition -> List Condition
+deleteCondition condition list =
+    Tuple.first (List.partition (\e -> e /= condition) list)

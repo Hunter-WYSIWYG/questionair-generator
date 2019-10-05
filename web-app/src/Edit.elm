@@ -11,7 +11,7 @@ module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuest
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, option, p, section, select, table, tbody, td, text, th, thead, tr)
+import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, option, p, section, select, table, tbody, td, text, th, thead, tr, li)
 import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import List
@@ -753,10 +753,16 @@ tableHead_conditions : Html Msg
 tableHead_conditions =
     tr []
         [ th []
+            [ text "ID"
+            ]
+        , th []
             [ text "Von"
             ]
         , th []
             [ text "Zu"
+            ]
+        , th []
+            [ text "Mit der Antwort/en"
             ]
         , th []
             [ text "Aktion"
@@ -770,10 +776,13 @@ getConditionTable : Int -> Condition -> Html Msg
 getConditionTable index condition =
     tr [ id (String.fromInt index) ]
         [ td [] [ text (String.fromInt index) ]
-        , td [] []
+        , td [] [ text (String.fromInt condition.parent_id) ]
+        , td [] [ text (String.fromInt condition.child_id) ]
+        , td [] [ (List.map (\l -> li [] [ condition.answers l ]) condition.answers) ]
         , td []
             [ i
                 [ class "fas fa-trash-alt"
+                , onClick ()
                 ]
                 []
             ]

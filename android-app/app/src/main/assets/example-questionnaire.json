@@ -1,0 +1,104 @@
+{
+  "questionnaireName" : "Example Questionnaire:\nTag im Rueckblick",
+  "questions" : [
+    {
+      "questionID" : 1,
+      "questionTitle" : "Wie war Ihr Tag?",
+      "type" : 0,
+      "answers" : [
+        {
+          "answerID" : 1,
+          "answerText" : "Gut",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 2,
+          "answerText" : "Sehr gut",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 3,
+          "answerText" : "Schlecht",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 4,
+          "answerText" : "Sehr schlecht",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 5,
+          "answerText" : "War mal besser",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 6,
+          "answerText" : "War mal schlechter",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 7,
+          "answerText" : "Mensa hatte Schnitzel",
+          "answerType" : 0
+        }
+      ]
+    },
+    {
+      "questionID" : 2,
+      "questionTitle" : "Hatten Sie genug Schlaf?",
+      "type" : 0,
+      "answers" : [
+        {
+          "answerID" : 1,
+          "answerText" : "Ja",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 2,
+          "answerText" : "Nein",
+          "answerType" : 1
+        }
+      ]
+    },
+    {
+      "questionID" : 3,
+      "questionTitle" : "Hatten Sie genug sozialen Kontakt?",
+      "type" : 0,
+      "answers" : [
+        {
+          "answerID" : 1,
+          "answerText" : "Ja, alles war gut",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 2,
+          "answerText" : "Nein, folgendes:",
+          "answerType" : 1
+        }
+      ]
+    },
+    {
+      "questionID" : 4,
+      "questionTitle" : "Welche Gefühle haben Sie heute verspürt?",
+      "type" : 1,
+      "answers" : [
+        {
+          "answerID" : 1,
+          "answerText" : "Trauer",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 2,
+          "answerText" : "Freude",
+          "answerType" : 0
+        },
+        {
+          "answerID" : 3,
+          "answerText" : "Andere:",
+          "answerType" : 1
+        }
+      ]
+    }
+  ]
+
+}

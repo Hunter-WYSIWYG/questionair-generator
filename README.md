@@ -1,8 +1,12 @@
 # Fragebogengenerator
 
+## Android Studio Projekt verwenden
+
+Ihr müsst das Android Studio Projekt neu öffnen, da sich die Ordnerstruktur verändert hat. Öffnet dazu in Android Studio das Projekt bzw. den Ordner "android-app", _nicht das Projekt "app"!_. 
+
 ## CI/CD verwenden
 
-Nach jedem Commit auf den website-master-Branch wird ein Build von der WebApp erstellt und auf der Seite users.informatik.uni-halle.de/~anfvg hochgeladen.
+Nach jedem Commit auf den master-Branch wird ein Build von der WebApp erstellt und auf der Seite users.informatik.uni-halle.de/~anfvg hochgeladen.
 
 ## Elm installieren:
 	https://guide.elm-lang.org/install.html

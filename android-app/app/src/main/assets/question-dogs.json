@@ -1,0 +1,14 @@
+{
+    "questionID" : "1",
+    "questionTitle" : "Mögen Sie Hunde?",
+    "answers" : [
+        {
+            "answerID" : "1",
+            "answerText" : "Ja"
+        },
+        {
+            "answerID" : "2",
+            "answerText" : "Nein"
+        }
+    ]
+}

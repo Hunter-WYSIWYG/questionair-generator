@@ -1,0 +1,21 @@
+--App
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+src/build
+/captures
+.externalNativeBuild
+
+--WebApp
+-- exclude all generated content
+web-app/elm-stuff
+web-app/Main.js
+web-app/src/Main.js

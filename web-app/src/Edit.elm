@@ -150,9 +150,9 @@ viewViewingTimeModal model =
                     , button [ class "is-large delete", onClick (ViewOrClose ViewingTimeModal) ] []
                     ]
                 , section [ class "modal-card-body" ]
-                    [ div []
+                    [ div [style "margin-bottom" "280px"]
                         [ text "Von "
-                        , input
+                        {-, input
                             [ class "input is-medium"
                             , type_ "text"
                             , placeholder "DD:MM:YYYY:HH:MM"
@@ -164,14 +164,14 @@ viewViewingTimeModal model =
                             , style "margin-right" "10px"
                             , onInput ChangeViewingTimeBegin
                             ]
-                            []
+                            [] -}
                             , Html.Styled.toUnstyled (DateTimePicker.dateTimePicker
                                 DateTimePickerChanged
                                 [ Html.Styled.Attributes.class "my-datetimepicker" ]
                                 model.state
                                 model.value)
                         , text " Bis "
-                        , input
+                        {-, input
                             [ class "input is-medium"
                             , type_ "text"
                             , placeholder "DD:MM:YYYY:HH:MM"
@@ -182,15 +182,15 @@ viewViewingTimeModal model =
                             , style "margin-left" "10px"
                             , onInput ChangeViewingTimeEnd
                             ]
-                            []
+                            []-}
                             , Html.Styled.toUnstyled (DateTimePicker.dateTimePicker
                                 DateTimePickerChanged
                                 [ Html.Styled.Attributes.class "my-datetimepicker" ]
                                 model.state
                                 model.value)
+                        , br [style "margin-bottom" "20px"] []
+                        , viewValidation model
                         ]
-                    , br [] []
-                    , viewValidation model
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
@@ -222,10 +222,10 @@ viewEditTimeModal model =
                     [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bearbeitungszeit" ]
                     , button [ class "is-large delete", onClick (ViewOrClose EditTimeModal) ] []
                     ]
-                , section [ class "modal-card-body" ]
-                    [ div []
+                , section [ class "modal-card-body"]
+                    [ div [style "margin-bottom" "270px"]
                         [ text "Zeit: "
-                        , input
+                        {-, input                                                           --später zu löschender Input aber aktuell noch Referenz
                             [ class "input is-medium"
                             , type_ "text"
                             , placeholder "HH:MM"
@@ -237,13 +237,13 @@ viewEditTimeModal model =
                             , style "margin-right" "10px"
                             , onInput ChangeEditTime
                             ]
-                            []
+                            []-}
                             , Html.Styled.toUnstyled (DateTimePicker.timePicker
                                 DateTimePickerChanged
-                                [ Html.Styled.Attributes.class "my-timepicker" ]
+                                [ Html.Styled.Attributes.class "my-timepicker"]
                                 model.state
                                 model.value)
-                        , br [] []
+                        , br [style "margin-bottom" "20px"] []
                         , viewValidation model
                         ]
                     ]

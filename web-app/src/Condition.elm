@@ -36,8 +36,8 @@ type alias Condition =
 -}
 initCondition : Condition
 initCondition =
-    { parent_id = -1
-    , child_id = -1
+    { parent_id = 5
+    , child_id = 5
     , answers = []
     , isValid = False
     }
@@ -196,6 +196,7 @@ getConditionWithParentID list id =
         Nothing ->
             initCondition
 
-deleteCondition: Condition -> List Condition -> List Condition
+
+deleteCondition : Condition -> List Condition -> List Condition
 deleteCondition condition list =
     Tuple.first (List.partition (\e -> e /= condition) list)

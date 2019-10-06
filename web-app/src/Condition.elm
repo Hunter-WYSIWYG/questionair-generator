@@ -198,4 +198,4 @@ getConditionWithParentID list id =
 
 deleteConditionFrom : Condition -> List Condition -> List Condition
 deleteConditionFrom condition list =
-    Tuple.first (List.partition (\e -> e.parent_id /= condition.parent_id) list)
+    Tuple.first (List.partition (\e -> e /= condition) list)

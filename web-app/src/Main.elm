@@ -465,10 +465,14 @@ update msg model =
                     else
                         { oldQuestionnaire
                                     | conditions =
-                                         List.append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ]
+                                         List.map (\e -> Condition.updateCondition oldQuestionnaire.newCondition e) oldQuestionnaire.conditions 
                         }
             in
-            ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False }, Cmd.none )
+            if model.editCondition == False then
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False }, Cmd.none )
+
+            else 
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, editCondition = False }, Cmd.none )
 
         SetAnswer ->
             let

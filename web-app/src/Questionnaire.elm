@@ -30,7 +30,6 @@ type alias Questionnaire =
     { title : String
     , elements : List Q_element
     , conditions : List Condition
-    , newCondition : Condition
     , newAnswerID_Condition : String
 
     --times
@@ -41,6 +40,7 @@ type alias Questionnaire =
     --newInputs
     , newElement : Q_element
     , newAnswer : Answer
+    , newCondition : Condition
     }
 
 

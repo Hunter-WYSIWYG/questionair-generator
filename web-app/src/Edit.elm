@@ -420,7 +420,14 @@ Siehe viewConditionModal
 getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
-        ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
+        ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] 
+            [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
+
+--getAnswerOptions : List Answer -> Condition -> List (Html Msg)
+--getAnswerOptions list newCondition =
+--    [ option [] [ text "Keine" ] ]
+--        ++ List.map (\e -> option --[ selected (QElement.getElementId e == newCondition.parent_id) ] 
+--            [ text (String.fromInt(QElement.getAnswerWithID e)) ]) list
 
 
 {-| Zeigt ein Modal zum Erstellen neuer Antworten an.
@@ -536,6 +543,11 @@ viewNewConditionModal2 model =
                         , text "Bei Beantwortung der Antworten mit den IDs: "
 
                         --, text (Debug.toString (List.map getID model.questionnaire.newCondition.answers))
+                        , br [] []
+                        , div [ class "select" ]
+                            [ select [ onInput ChangeInputChildId ]
+                                (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
+                            ]
                         , br [] []
                         , input
                             [ placeholder "Hier ID eingeben"
@@ -772,7 +784,7 @@ tableHead_conditions =
 
 {-| Tabellendarstellung einer Condition.
 -}
-getConditionTable : Int -> Condition -> Html msg
+getConditionTable : Int -> Condition -> Html Msg
 getConditionTable index condition =
     tr [ id (String.fromInt index) ]
         [ td [] [ text (String.fromInt index) ]
@@ -781,6 +793,12 @@ getConditionTable index condition =
         , td [] [ text "(", text (String.concat (List.map (\answer -> (++) (String.fromInt answer.id) ", ") condition.answers)), text ")" ]
         , td []
             [ i
+                [ class "fas fa-cog"
+                , style "margin-right" "1em"
+                , onClick (EditCondition condition)
+                ]
+                []
+            , i
                 [ class "fas fa-trash-alt"
                 ]
                 []

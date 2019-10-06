@@ -456,7 +456,17 @@ update msg model =
                     model.questionnaire
 
                 changedQuestionnaire =
-                    { oldQuestionnaire | conditions = List.append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ] }
+                    if model.editCondition == False then
+                        { oldQuestionnaire 
+                            | conditions = 
+                                List.append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ] 
+                        }
+
+                    else
+                        { oldQuestionnaire
+                                    | conditions =
+                                         List.append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ]
+                        }
             in
             ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False }, Cmd.none )
 
@@ -507,6 +517,18 @@ update msg model =
                     }
             in
             ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = True, editAnswer = True }, Cmd.none )
+
+        EditCondition condition ->
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire
+                        | newCondition = condition
+                    }
+            in
+            ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = True, editAnswer = True }, Cmd.none )
 
         EditQuestion element ->
             let

@@ -42,6 +42,7 @@ type alias Model =
     --editQElement for EditQuestion and EditNote
     , editQElement : Bool
     , editAnswer : Bool
+    , editCondition : Bool
 
     --new inputs
     , inputTitle : String
@@ -124,6 +125,7 @@ type
     | EditQuestion Q_element
     | EditNote Q_element
     | EditAnswer Answer
+    | EditCondition Condition
     | EditQuestionnaire
       --Change order of elements
     | PutUpEl Q_element
@@ -164,6 +166,7 @@ initModel _ =
       --editQElement for EditQuestion and EditNote
       , editQElement = False
       , editAnswer = False
+      , editCondition = False
 
       --new inputs
       , inputTitle = ""

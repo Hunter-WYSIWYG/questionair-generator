@@ -1,6 +1,6 @@
 module Condition exposing
     ( Condition
-    , addAnswerOfQuestionToCondition, deleteAnswerInCondition, deleteCondAnswer, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
+    , addAnswerOfQuestionToCondition, deleteAnswerInCondition, deleteConditionFrom, deleteCondAnswer, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
     )
 
 {-| Enthält den Typ Condition für Bedingungen.
@@ -196,7 +196,6 @@ getConditionWithParentID list id =
         Nothing ->
             initCondition
 
-
-deleteCondition : Condition -> List Condition -> List Condition
-deleteCondition condition list =
-    Tuple.first (List.partition (\e -> e /= condition) list)
+deleteConditionFrom : Condition -> List Condition -> List Condition
+deleteConditionFrom condition list =
+    Tuple.first (List.partition (\e -> e.parent_id /= condition.parent_id) list)

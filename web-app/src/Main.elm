@@ -638,6 +638,17 @@ update msg model =
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
+        DeleteCondition condition ->
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire | conditions = Condition.deleteConditionFrom condition oldQuestionnaire.conditions
+                    }
+            in
+            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+
         DeleteAnswer answer ->
             let
                 oldQuestionnaire =

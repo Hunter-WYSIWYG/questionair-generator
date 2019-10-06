@@ -425,9 +425,9 @@ getQuestionOptions list newCondition =
 
 --getAnswerOptions : List Answer -> Condition -> List (Html Msg)
 --getAnswerOptions list newCondition =
---    [ option [] [ text "Keine" ] ]
---        ++ List.map (\e -> option --[ selected (QElement.getElementId e == newCondition.parent_id) ] 
---            [ text (String.fromInt(QElement.getAnswerWithID e)) ]) list
+  --  [ option [] [ text "Keine" ] ]
+    --    ++ List.map (\e -> option --[ selected (QElement.getElementId e == newCondition.parent_id) ] 
+      --      [ text (String.fromInt(QElement.getAnswerWithID e)) ]) list
 
 
 {-| Zeigt ein Modal zum Erstellen neuer Antworten an.
@@ -532,6 +532,7 @@ viewNewConditionModal2 model =
                             [ select [ onInput ChangeInputParentId ]
                                 (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
                             ]
+                        , text (Debug.toString model.questionnaire.newCondition.child_id)
                         , br [] []
                         , text " zu Frage: "
                         , br [] []
@@ -541,8 +542,6 @@ viewNewConditionModal2 model =
                             ]
                         , br [] []
                         , text "Bei Beantwortung der Antworten mit den IDs: "
-
-                        --, text (Debug.toString (List.map getID model.questionnaire.newCondition.answers))
                         , br [] []
                         , div [ class "select" ]
                             [ select [ onInput ChangeInputChildId ]
@@ -800,6 +799,7 @@ getConditionTable index condition =
                 []
             , i
                 [ class "fas fa-trash-alt"
+                , onClick (DeleteCondition condition)
                 ]
                 []
             ]

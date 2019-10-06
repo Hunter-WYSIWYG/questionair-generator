@@ -135,6 +135,7 @@ type
       --Delete existing elements or answers
     | DeleteItem Q_element
     | DeleteAnswer Answer
+    | DeleteCondition Condition
       --Validation of times
     | Submit
       --Everything releated to upload

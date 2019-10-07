@@ -300,18 +300,17 @@ update msg model =
             , Cmd.none
             )
 
+        --LOOK HERE
         ChangeInputChildId child_id ->
-            ( { model
-                | inputChildId =
-                    case String.toInt child_id of
-                        Just a ->
-                            a
-
-                        Nothing ->
-                            -1
-              }
-            , Cmd.none
-            )
+            let 
+                oldQuestionnaire = model.questionnaire
+                oldCondition = oldQuestionnaire.newCondition
+                newCondition2 = {oldCondition | child_id = strToInt child_id }
+                newQuestionnaire = {oldQuestionnaire | newCondition = newCondition2 }
+            in
+                ( { model | questionnaire = newQuestionnaire }
+                , Cmd.none
+                )
 
         AddCondition ->
             let
@@ -762,3 +761,44 @@ showNavbar =
                 ]
             ]
         ]
+
+--LOOK HERE
+
+extractID : String -> String
+extractID id = 
+    case List.head (String.split "." id) of 
+        Just realID ->
+            realID
+        Nothing -> 
+            "-2"
+
+--HIER NOCH WAS HINZUFÜGEN
+strToInt id = 
+    case String.toInt (extractID id) of
+        Just a ->
+            a
+
+        Nothing ->
+            -2
+
+get : Int -> List a -> Maybe a
+get nth list =
+    list
+        |> List.drop (nth - 1)
+        |> List.head
+
+let 
+    parent_frage = checkFrage (get (model.questionnaire.newCondition.parent_id) model.questionnaire.elements)
+    parent_antworten = parent_frage.answers
+in
+    (Der Teil von der View mit der DropDownListe)
+
+checkFrage frage =
+    case frage of 
+        Question ->
+            frage
+
+        Note -> 
+            QElement.initQuestion
+
+model.questionnaire.newCondition.parent_id 

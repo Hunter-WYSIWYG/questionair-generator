@@ -532,7 +532,7 @@ viewNewConditionModal2 model =
                             [ select [ onInput ChangeInputParentId ]
                                 (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
                             ]
-                        , text (Debug.toString model.questionnaire.newCondition.child_id)
+                        , text (Debug.log "foo" (Debug.toString model.inputChildId))
                         , br [] []
                         , text " zu Frage: "
                         , br [] []

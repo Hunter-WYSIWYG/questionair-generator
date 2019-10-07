@@ -22,6 +22,8 @@ import Condition exposing (Condition)
 import File exposing (File)
 import QElement exposing (Q_element)
 import Questionnaire exposing (Questionnaire)
+import DateTimePicker exposing (..)
+import Time exposing (..)
 
 
 {-| Das Model für die Webanwendung.
@@ -55,6 +57,8 @@ type alias Model =
     , inputChildId : Int
     , newAnswerID_Condition : String
     , newCondition : Condition
+    , value : Maybe DateTimePicker.DateTime
+    , state : DateTimePicker.State
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -105,6 +109,7 @@ type
     | ChangeAnswerType String
     | ChangeQuestionNewAnswer Answer
     | ChangeQuestionTime String
+    | DateTimePickerChanged DateTimePicker.State (Maybe DateTimePicker.DateTime)
       --Modals
     | ViewOrClose ModalType
       --Creates Condition
@@ -177,6 +182,8 @@ initModel _ =
       , inputChildId = -1
       , newCondition = Condition.initCondition
       , newAnswerID_Condition = ""
+      , value = Nothing
+      , state = initialStateWithToday (dateTime 1 (toMonth utc (millisToPosix 0)) 1 1 1)
 
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire

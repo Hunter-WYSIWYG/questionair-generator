@@ -36,8 +36,8 @@ type alias Condition =
 -}
 initCondition : Condition
 initCondition =
-    { parent_id = 5
-    , child_id = 5
+    { parent_id = -1
+    , child_id = -1
     , answers = []
     , isValid = False
     }

@@ -288,17 +288,15 @@ update msg model =
 
         --Add Condition
         ChangeInputParentId parent_id ->
-            ( { model
-                | inputParentId =
-                    case String.toInt parent_id of
-                        Just a ->
-                            a
-
-                        Nothing ->
-                            -1
-              }
-            , Cmd.none
-            )
+            let 
+                oldQuestionnaire = model.questionnaire
+                oldCondition = oldQuestionnaire.newCondition
+                newCondition2 = {oldCondition | parent_id = strToInt parent_id }
+                newQuestionnaire = {oldQuestionnaire | newCondition = newCondition2 }
+            in
+                ( { model | questionnaire = newQuestionnaire }
+                , Cmd.none
+                )
 
         --LOOK HERE
         ChangeInputChildId child_id ->
@@ -770,7 +768,7 @@ extractID id =
         Just realID ->
             realID
         Nothing -> 
-            "-2"
+            "-1"
 
 --HIER NOCH WAS HINZUFÜGEN
 strToInt id = 
@@ -787,18 +785,18 @@ get nth list =
         |> List.drop (nth - 1)
         |> List.head
 
-let 
-    parent_frage = checkFrage (get (model.questionnaire.newCondition.parent_id) model.questionnaire.elements)
-    parent_antworten = parent_frage.answers
-in
-    (Der Teil von der View mit der DropDownListe)
+--let 
+--    parent_frage = checkFrage (get (model.questionnaire.newCondition.parent_id) model.questionnaire.elements)
+--    parent_antworten = parent_frage.answers
+--in
+--    (Der Teil von der View mit der DropDownListe)
 
-checkFrage frage =
-    case frage of 
-        Question ->
-            frage
+--checkFrage frage =
+--    case frage of 
+ --       Question frage ->
+ --           frage
+--
+   --     Note frage -> 
+   --         QElement.initQuestion
 
-        Note -> 
-            QElement.initQuestion
-
-model.questionnaire.newCondition.parent_id 
+--model.questionnaire.newCondition.parent_id 

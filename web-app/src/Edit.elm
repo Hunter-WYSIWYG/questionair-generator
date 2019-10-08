@@ -19,6 +19,7 @@ import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
 import DateTimePicker exposing (..)
+import DateTimePicker.Config exposing (..)
 import Html.Styled
 import Html.Styled.Attributes
 
@@ -225,24 +226,20 @@ viewEditTimeModal model =
                 , section [ class "modal-card-body"]
                     [ div [style "margin-bottom" "270px"]
                         [ text "Zeit: "
-                        {-, input                                                           --später zu löschender Input aber aktuell noch Referenz
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , placeholder "HH:MM"
-                            , value model.inputEditTime
-                            , maxlength 5
-                            , minlength 5
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
-                            , onInput ChangeEditTime
+                        , Html.Styled.toUnstyled (DateTimePicker.timePickerWithConfig
+                            customTimePicker
+                            [ Html.Styled.Attributes.class "my-timepicker"
+                            {-, Html.Styled.Attributes.fromUnstyled (placeholder "HH:MM")
+                            , Html.Styled.Attributes.fromUnstyled (value model.inputEditTime)
+                            , Html.Styled.Attributes.fromUnstyled (maxlength 5)
+                            , Html.Styled.Attributes.fromUnstyled (minlength 5)
+                            , Html.Styled.Attributes.fromUnstyled (style "width" "180px")
+                            , Html.Styled.Attributes.fromUnstyled (style "margin-left" "10px")
+                            , Html.Styled.Attributes.fromUnstyled (style "margin-right" "10px")
+                            , Html.Styled.Attributes.fromUnstyled (onInput ChangeEditTime)-}
                             ]
-                            []-}
-                            , Html.Styled.toUnstyled (DateTimePicker.timePicker
-                                DateTimePickerChanged
-                                [ Html.Styled.Attributes.class "my-timepicker"]
-                                model.state
-                                model.value)
+                            model.state
+                            model.value)
                         , br [style "margin-bottom" "20px"] []
                         , viewValidation model
                         ]
@@ -265,6 +262,12 @@ viewEditTimeModal model =
     else
         div [] []
 
+customTimePicker =
+    let
+        default =
+            defaultTimePickerConfig DateTimePickerChanged
+    in
+        { default | autoClose = True }
 
 {-| Zeigt das Modal für das Bearbeiten des Fragebogentitels an.
 -}

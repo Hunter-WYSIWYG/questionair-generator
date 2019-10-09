@@ -22,6 +22,7 @@ import DateTimePicker exposing (..)
 import DateTimePicker.Config exposing (..)
 import Html.Styled
 import Html.Styled.Attributes
+import Time exposing (..)
 
 
 
@@ -264,10 +265,19 @@ viewEditTimeModal model =
 
 customTimePicker =
     let
-        default =
-            defaultTimePickerConfig DateTimePickerChanged
+        default = defaultTimePickerConfig DateTimePickerChanged
     in
-        { default | autoClose = True }
+        { default | autoClose = True, toInput = convTime }
+
+convTime : DateTime -> String
+convTime time =
+    if      (time.minute < 10) && (time.hour < 10)
+    then    "0" ++ String.fromInt time.hour ++ ":" ++ "0" ++ String.fromInt time.minute
+    else    if      time.hour < 10
+            then    "0" ++ String.fromInt time.hour ++ ":" ++ String.fromInt time.minute
+            else    if      time.minute < 10
+                    then    String.fromInt time.hour ++ ":" ++ "0" ++ String.fromInt time.minute
+                    else    String.fromInt time.hour ++ ":" ++ String.fromInt time.minute
 
 {-| Zeigt das Modal für das Bearbeiten des Fragebogentitels an.
 -}

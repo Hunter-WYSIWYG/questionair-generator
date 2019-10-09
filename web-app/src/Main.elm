@@ -184,6 +184,12 @@ update msg model =
         DateTimePickerChanged newState newValue ->
             ( { model | value = newValue, state = newState }, Cmd.none )
 
+        ChangeViewingTimeBeginPicker newState newValue ->
+            ( { model | viewingTimeBeginPickerValue = newValue, viewingTimeBeginPickerState = newState }, Cmd.none )
+        
+        ChangeViewingTimeEndPicker newState newValue ->
+            ( { model | viewingTimeEndPickerValue = newValue, viewingTimeEndPickerState = newState }, Cmd.none )
+
         --open or close modals
         ViewOrClose modalType ->
             case modalType of

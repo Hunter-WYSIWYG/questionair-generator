@@ -167,11 +167,11 @@ viewViewingTimeModal model =
                             , onInput ChangeViewingTimeBegin
                             ]
                             [] -}
-                            , Html.Styled.toUnstyled (DateTimePicker.dateTimePicker
-                                DateTimePickerChanged
-                                [ Html.Styled.Attributes.class "my-datetimepicker" ]
-                                model.state
-                                model.value)
+                        , Html.Styled.toUnstyled (DateTimePicker.dateTimePickerWithConfig
+                            customViewingTimeBeginPicker
+                            [ Html.Styled.Attributes.class "my-timepicker" ]
+                            model.viewingTimeBeginPickerState
+                            model.viewingTimeBeginPickerValue)
                         , text " Bis "
                         {-, input
                             [ class "input is-medium"
@@ -185,11 +185,11 @@ viewViewingTimeModal model =
                             , onInput ChangeViewingTimeEnd
                             ]
                             []-}
-                            , Html.Styled.toUnstyled (DateTimePicker.dateTimePicker
-                                DateTimePickerChanged
-                                [ Html.Styled.Attributes.class "my-datetimepicker" ]
-                                model.state
-                                model.value)
+                        , Html.Styled.toUnstyled (DateTimePicker.dateTimePickerWithConfig
+                            customViewingTimeEndPicker
+                            [ Html.Styled.Attributes.class "my-timepicker" ]
+                            model.viewingTimeEndPickerState
+                            model.viewingTimeEndPickerValue)
                         , br [style "margin-bottom" "20px"] []
                         , viewValidation model
                         ]
@@ -206,6 +206,60 @@ viewViewingTimeModal model =
 
     else
         div [] []
+
+customViewingTimeBeginPicker =
+    let
+        default = defaultDateTimePickerConfig ChangeViewingTimeBeginPicker
+    in
+        { default | toInput = convDateTime }-- onChange = changePickerDateTime }
+
+customViewingTimeEndPicker =
+    let
+        default = defaultDateTimePickerConfig ChangeViewingTimeEndPicker
+    in
+        { default | toInput = convDateTime }-- onChange = changePickerDateTime }
+
+convDateTime : DateTime -> String
+convDateTime dateTime =
+    toDayString dateTime.day ++ "." ++ toMonthString dateTime.month ++ "." ++ toYearString dateTime.year ++ " " ++ toTimeString dateTime.hour ++ ":" ++  toTimeString dateTime.minute
+
+toMonthString : Month -> String
+toMonthString month =
+    case month of
+        Jan -> "01"
+        Feb -> "02"
+        Mar -> "03"
+        Apr -> "04"
+        May -> "05"
+        Jun -> "06"
+        Jul -> "07"
+        Aug -> "08"
+        Sep -> "09"
+        Oct -> "10"
+        Nov -> "11"
+        Dec -> "12"
+
+toDayString : Int -> String
+toDayString day =
+    if day < 10 then "0" ++ String.fromInt day
+    else String.fromInt day
+
+toYearString : Int -> String
+toYearString year =
+    if year < 10 then "200" ++ String.fromInt year
+    else if year < 100 then "20" ++ String.fromInt year
+    else "2" ++ String.fromInt year
+
+toTimeString : Int -> String
+toTimeString time =
+    if time < 10 then "0" ++ String.fromInt time
+    else String.fromInt time
+
+{-changePickerDateTime : State -> Maybe DateTime -> Msg
+changePickerDateTime state time =
+    case time of
+        Nothing -> ChangeEditTime "12:13"
+        Just val -> ChangeEditTime (convTime val)-}
 
 
 {-| Zeigt das Modal für das Bearbeiten der Bearbeitungszeit des Fragebogens an.
@@ -267,7 +321,7 @@ customTimePicker =
     let
         default = defaultTimePickerConfig DateTimePickerChanged
     in
-        { default | autoClose = True, toInput = convTime }
+        { default | toInput = convTime, onChange = changePickerTime }
 
 convTime : DateTime -> String
 convTime time =
@@ -278,6 +332,12 @@ convTime time =
             else    if      time.minute < 10
                     then    String.fromInt time.hour ++ ":" ++ "0" ++ String.fromInt time.minute
                     else    String.fromInt time.hour ++ ":" ++ String.fromInt time.minute
+
+changePickerTime : State -> Maybe DateTime -> Msg
+changePickerTime state time =
+    case time of
+        Nothing -> ChangeEditTime "12:13"
+        Just val -> ChangeEditTime (convTime val)
 
 {-| Zeigt das Modal für das Bearbeiten des Fragebogentitels an.
 -}

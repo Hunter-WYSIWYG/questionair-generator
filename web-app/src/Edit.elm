@@ -154,40 +154,19 @@ viewViewingTimeModal model =
                 , section [ class "modal-card-body" ]
                     [ div [style "margin-bottom" "280px"]
                         [ text "Von "
-                        {-, input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , placeholder "DD:MM:YYYY:HH:MM"
-                            , value model.inputViewingTimeBegin
-                            , maxlength 16
-                            , minlength 16
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , style "margin-right" "10px"
-                            , onInput ChangeViewingTimeBegin
-                            ]
-                            [] -}
                         , Html.Styled.toUnstyled (DateTimePicker.dateTimePickerWithConfig
-                            customViewingTimeBeginPicker
-                            [ Html.Styled.Attributes.class "my-timepicker" ]
+                            (defaultDateTimePickerConfig ChangeViewingTimeBeginPicker)
+                            [ Html.Styled.Attributes.class "my-timepicker"
+                            , Html.Styled.Attributes.placeholder "DD:MM:YYYY:HH:MM"
+                            ]
                             model.viewingTimeBeginPickerState
                             model.viewingTimeBeginPickerValue)
                         , text " Bis "
-                        {-, input
-                            [ class "input is-medium"
-                            , type_ "text"
-                            , placeholder "DD:MM:YYYY:HH:MM"
-                            , value model.inputViewingTimeEnd
-                            , maxlength 16
-                            , minlength 16
-                            , style "width" "180px"
-                            , style "margin-left" "10px"
-                            , onInput ChangeViewingTimeEnd
-                            ]
-                            []-}
                         , Html.Styled.toUnstyled (DateTimePicker.dateTimePickerWithConfig
-                            customViewingTimeEndPicker
-                            [ Html.Styled.Attributes.class "my-timepicker" ]
+                            (defaultDateTimePickerConfig ChangeViewingTimeEndPicker)
+                            [ Html.Styled.Attributes.class "my-timepicker"
+                            , Html.Styled.Attributes.placeholder "DD:MM:YYYY:HH:MM"
+                            ]
                             model.viewingTimeEndPickerState
                             model.viewingTimeEndPickerValue)
                         , br [style "margin-bottom" "20px"] []
@@ -207,60 +186,6 @@ viewViewingTimeModal model =
     else
         div [] []
 
-customViewingTimeBeginPicker =
-    let
-        default = defaultDateTimePickerConfig ChangeViewingTimeBeginPicker
-    in
-        { default | toInput = convDateTime }-- onChange = changePickerDateTime }
-
-customViewingTimeEndPicker =
-    let
-        default = defaultDateTimePickerConfig ChangeViewingTimeEndPicker
-    in
-        { default | toInput = convDateTime }-- onChange = changePickerDateTime }
-
-convDateTime : DateTime -> String
-convDateTime dateTime =
-    toDayString dateTime.day ++ "." ++ toMonthString dateTime.month ++ "." ++ toYearString dateTime.year ++ " " ++ toTimeString dateTime.hour ++ ":" ++  toTimeString dateTime.minute
-
-toMonthString : Month -> String
-toMonthString month =
-    case month of
-        Jan -> "01"
-        Feb -> "02"
-        Mar -> "03"
-        Apr -> "04"
-        May -> "05"
-        Jun -> "06"
-        Jul -> "07"
-        Aug -> "08"
-        Sep -> "09"
-        Oct -> "10"
-        Nov -> "11"
-        Dec -> "12"
-
-toDayString : Int -> String
-toDayString day =
-    if day < 10 then "0" ++ String.fromInt day
-    else String.fromInt day
-
-toYearString : Int -> String
-toYearString year =
-    if year < 10 then "200" ++ String.fromInt year
-    else if year < 100 then "20" ++ String.fromInt year
-    else "2" ++ String.fromInt year
-
-toTimeString : Int -> String
-toTimeString time =
-    if time < 10 then "0" ++ String.fromInt time
-    else String.fromInt time
-
-{-changePickerDateTime : State -> Maybe DateTime -> Msg
-changePickerDateTime state time =
-    case time of
-        Nothing -> ChangeEditTime "12:13"
-        Just val -> ChangeEditTime (convTime val)-}
-
 
 {-| Zeigt das Modal für das Bearbeiten der Bearbeitungszeit des Fragebogens an.
 -}
@@ -279,23 +204,22 @@ viewEditTimeModal model =
                     , button [ class "is-large delete", onClick (ViewOrClose EditTimeModal) ] []
                     ]
                 , section [ class "modal-card-body"]
-                    [ div [style "margin-bottom" "270px"]
+                    [ div []
                         [ text "Zeit: "
-                        , Html.Styled.toUnstyled (DateTimePicker.timePickerWithConfig
-                            customTimePicker
-                            [ Html.Styled.Attributes.class "my-timepicker"
-                            {-, Html.Styled.Attributes.fromUnstyled (placeholder "HH:MM")
-                            , Html.Styled.Attributes.fromUnstyled (value model.inputEditTime)
-                            , Html.Styled.Attributes.fromUnstyled (maxlength 5)
-                            , Html.Styled.Attributes.fromUnstyled (minlength 5)
-                            , Html.Styled.Attributes.fromUnstyled (style "width" "180px")
-                            , Html.Styled.Attributes.fromUnstyled (style "margin-left" "10px")
-                            , Html.Styled.Attributes.fromUnstyled (style "margin-right" "10px")
-                            , Html.Styled.Attributes.fromUnstyled (onInput ChangeEditTime)-}
+                        , input
+                            [ class "input is-medium"
+                            , type_ "text"
+                            , placeholder "HH:MM"
+                            , value model.inputEditTime
+                            , maxlength 5
+                            , minlength 5
+                            , style "width" "180px"
+                            , style "margin-left" "10px"
+                            , style "margin-right" "10px"
+                            , onInput ChangeEditTime
                             ]
-                            model.state
-                            model.value)
-                        , br [style "margin-bottom" "20px"] []
+                            []
+                        , br [] []
                         , viewValidation model
                         ]
                     ]
@@ -316,28 +240,6 @@ viewEditTimeModal model =
 
     else
         div [] []
-
-customTimePicker =
-    let
-        default = defaultTimePickerConfig DateTimePickerChanged
-    in
-        { default | toInput = convTime, onChange = changePickerTime }
-
-convTime : DateTime -> String
-convTime time =
-    if      (time.minute < 10) && (time.hour < 10)
-    then    "0" ++ String.fromInt time.hour ++ ":" ++ "0" ++ String.fromInt time.minute
-    else    if      time.hour < 10
-            then    "0" ++ String.fromInt time.hour ++ ":" ++ String.fromInt time.minute
-            else    if      time.minute < 10
-                    then    String.fromInt time.hour ++ ":" ++ "0" ++ String.fromInt time.minute
-                    else    String.fromInt time.hour ++ ":" ++ String.fromInt time.minute
-
-changePickerTime : State -> Maybe DateTime -> Msg
-changePickerTime state time =
-    case time of
-        Nothing -> ChangeEditTime "12:13"
-        Just val -> ChangeEditTime (convTime val)
 
 {-| Zeigt das Modal für das Bearbeiten des Fragebogentitels an.
 -}

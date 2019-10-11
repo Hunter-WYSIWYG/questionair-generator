@@ -57,8 +57,6 @@ type alias Model =
     , inputChildId : Int
     , newAnswerID_Condition : String
     , newCondition : Condition
-    , value : Maybe DateTimePicker.DateTime
-    , state : DateTimePicker.State
     , viewingTimeBeginPickerState : DateTimePicker.State
     , viewingTimeBeginPickerValue : Maybe DateTimePicker.DateTime
     , viewingTimeEndPickerState : DateTimePicker.State
@@ -104,8 +102,6 @@ type
     --Changing Input
     = ChangeInputQuestionnaireTitle String
     | ChangeEditTime String
-    | ChangeViewingTimeBegin String
-    | ChangeViewingTimeEnd String
     | ChangeQuestionOrNoteText String
     | ChangeAnswerText String
     | ChangeQuestionNote String
@@ -113,7 +109,6 @@ type
     | ChangeAnswerType String
     | ChangeQuestionNewAnswer Answer
     | ChangeQuestionTime String
-    | DateTimePickerChanged DateTimePicker.State (Maybe DateTimePicker.DateTime)
     | ChangeViewingTimeBeginPicker DateTimePicker.State (Maybe DateTimePicker.DateTime)
     | ChangeViewingTimeEndPicker DateTimePicker.State (Maybe DateTimePicker.DateTime)
       --Modals
@@ -192,8 +187,6 @@ initModel _ =
       , viewingTimeBeginPickerValue = Nothing
       , viewingTimeEndPickerState = initialStateWithToday (dateTime 1 (toMonth utc (millisToPosix 0)) 1 1 1)
       , viewingTimeEndPickerValue = Nothing
-      , value = Nothing
-      , state = initialStateWithToday (dateTime 1 (toMonth utc (millisToPosix 0)) 1 1 1)
 
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire

@@ -26,6 +26,8 @@ import QElement exposing (Q_element(..))
 import Questionnaire
 import Task
 import Upload
+import DateTimePicker exposing (..)
+import Time exposing (..)
 
 
 {-| Main-Funktion.
@@ -62,20 +64,6 @@ update msg model =
                     { model | inputEditTime = newTime }
             in
             ( { model | inputEditTime = newTime, validationResult = Model.validate changedModel }, Cmd.none )
-
-        ChangeViewingTimeBegin newTime ->
-            let
-                changedModel =
-                    { model | inputViewingTimeBegin = newTime }
-            in
-            ( { model | inputViewingTimeBegin = newTime, validationResult = Model.validate changedModel }, Cmd.none )
-
-        ChangeViewingTimeEnd newTime ->
-            let
-                changedModel =
-                    { model | inputViewingTimeEnd = newTime }
-            in
-            ( { model | inputViewingTimeEnd = newTime, validationResult = Model.validate changedModel }, Cmd.none )
 
         ChangeQuestionOrNoteText string ->
             let
@@ -181,14 +169,19 @@ update msg model =
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
-        DateTimePickerChanged newState newValue ->
-            ( { model | value = newValue, state = newState }, Cmd.none )
-
         ChangeViewingTimeBeginPicker newState newValue ->
-            ( { model | viewingTimeBeginPickerValue = newValue, viewingTimeBeginPickerState = newState }, Cmd.none )
-        
+            let
+                changedModel =
+                    { model | inputViewingTimeBegin = convDateTime newValue }
+            in
+            ( { model | inputViewingTimeBegin = convDateTime newValue, validationResult = Model.validate changedModel, viewingTimeBeginPickerValue = newValue, viewingTimeBeginPickerState = newState }, Cmd.none )
+
         ChangeViewingTimeEndPicker newState newValue ->
-            ( { model | viewingTimeEndPickerValue = newValue, viewingTimeEndPickerState = newState }, Cmd.none )
+            let
+                changedModel =
+                    { model | inputViewingTimeEnd = convDateTime newValue }
+            in
+            ( { model | inputViewingTimeEnd = convDateTime newValue, validationResult = Model.validate changedModel, viewingTimeEndPickerValue = newValue, viewingTimeEndPickerState = newState }, Cmd.none )
 
         --open or close modals
         ViewOrClose modalType ->
@@ -734,3 +727,42 @@ showNavbar =
                 ]
             ]
         ]
+
+--testhalber
+convDateTime : Maybe DateTime -> String
+convDateTime dateTime =
+    case dateTime of
+        Nothing -> ""
+        Just val -> toDayString val.day ++ "." ++ toMonthString val.month ++ "." ++ toYearString val.year ++ " " ++ toTimeString val.hour ++ ":" ++  toTimeString val.minute
+
+toMonthString : Month -> String
+toMonthString month =
+    case month of
+        Jan -> "01"
+        Feb -> "02"
+        Mar -> "03"
+        Apr -> "04"
+        May -> "05"
+        Jun -> "06"
+        Jul -> "07"
+        Aug -> "08"
+        Sep -> "09"
+        Oct -> "10"
+        Nov -> "11"
+        Dec -> "12"
+
+toDayString : Int -> String
+toDayString day =
+    if day < 10 then "0" ++ String.fromInt day
+    else String.fromInt day
+
+toYearString : Int -> String
+toYearString year =
+    if year < 10 then "200" ++ String.fromInt year
+    else if year < 100 then "20" ++ String.fromInt year
+    else "2" ++ String.fromInt year
+
+toTimeString : Int -> String
+toTimeString time =
+    if time < 10 then "0" ++ String.fromInt time
+    else String.fromInt time

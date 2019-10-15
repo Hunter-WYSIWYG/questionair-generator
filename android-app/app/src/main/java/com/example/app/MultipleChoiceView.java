@@ -1,29 +1,62 @@
 package com.example.app;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.support.v7.app.AppCompatActivity;
+import android.text.TextPaint;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Checkable;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestionDisplayActivity extends AppCompatActivity {
+
+public class MultipleChoiceView extends QuestionDisplayView {
+	
+	public MultipleChoiceView(Context context, Intent intent) {
+		super(context, intent);
+		this.init();
+	}
+	
+	public MultipleChoiceView(Context context, AttributeSet attrs, Intent intent) {
+		super(context, attrs, intent);
+		this.init();
+	}
+	
+	public MultipleChoiceView(Context context, AttributeSet attrs, int defStyle, Intent intent) {
+		super(context, attrs, defStyle, intent);
+		this.init();
+	}
+	
+	private void init() {
+		this.addView(View.inflate(this.getContext(), R.layout.multiple_choice_view, null));
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		
+	}
+	
+	
+	
+	// copy paste of former QuestionDisplayActivity
+	
+	
+	
 	
 	/*generate class wide parameters*/
 	private static final int HASH_MULTIPLIER_CONSTANT = 31;
@@ -53,19 +86,8 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	private List<Boolean> pressedButtons = null;
 	private List<TextView> optionTexts = null;
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_question_display);
-		
-		
-		/* get screen dimensions */
-		
-		Point sSize = new Point();
-		getWindowManager().getDefaultDisplay().getSize(sSize);
-		final int screenWidth = sSize.x;
-		final int screenHeight = sSize.y;
-		
+	
+	private void onCreate(Bundle savedInstanceState) {
 		
 		/* create Layout */
 		
@@ -88,12 +110,6 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 		
 		
-		/* show Status (DEBUG) */
-		
-		Toast toast = Toast.makeText(this, "result: " + current + ", " + qList.size() + ", " + qList.get(current).getType(), Toast.LENGTH_SHORT);
-		toast.show();
-		
-		
 		/* process next Question */
 		
 		currentQ = qList.get(current);
@@ -113,7 +129,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		optionTexts = new ArrayList<>(amountOptions);
 		TextView questionTypeTV = findViewById(R.id.MultipleChoiceQuestionTypeText);
 		
-		final int buttonPixelSize = Math.max(Math.min(screenHeight, screenWidth) >> 4, 32);
+		final int buttonPixelSize = 32;
 		containerIDs = new ArrayList<>(amountOptions);
 		/*give command for layout computing and add views*/
 		switch (currentQ.getType()) {
@@ -582,3 +598,4 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		myToast.show();
 	}
 }
+

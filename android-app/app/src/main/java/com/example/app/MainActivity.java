@@ -20,15 +20,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-	private Questionnaire q = null;
+	private Questionnaire questionnaire = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		q = importQuestions();
+		questionnaire = importQuestions();
 		TextView tv = findViewById(R.id.dynamicQname);
-		tv.setText(q.getName());
+		tv.setText(questionnaire.getName());
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
 	}
 	
 	public void startButtonClick(View view) {
-		if (q == null) {
-			Toast toast = Toast.makeText(this, "q was null", Toast.LENGTH_SHORT);
+		if (questionnaire == null) {
+			Toast toast = Toast.makeText(this, "questionnaire was null", Toast.LENGTH_SHORT);
 			toast.show();
 			return;
 		}
-		List<Question> list = q.getQuestionList();
+		List<Question> list = questionnaire.getQuestionList();
 		if (list == null) {
 			Toast toast = Toast.makeText(this, "list was null", Toast.LENGTH_SHORT);
 			toast.show();
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 		i.putExtra("size", list.size());
 		i.putExtra("current", 0);
 		for (int j = 0; j < list.size(); j++) {
-			i.putExtra("q" + j, list.get(j));
+			i.putExtra("questionnaire" + j, list.get(j));
 			i.putExtra("a" + j, (String) null);
 		}
 		startActivity(i);

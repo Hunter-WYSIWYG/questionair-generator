@@ -183,9 +183,9 @@ initModel _ =
       , inputChildId = -1
       , newCondition = Condition.initCondition
       , newAnswerID_Condition = ""
-      , viewingTimeBeginPickerState = initialStateWithToday (dateTime 1 (toMonth utc (millisToPosix 0)) 1 1 1)
+      , viewingTimeBeginPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
       , viewingTimeBeginPickerValue = Nothing
-      , viewingTimeEndPickerState = initialStateWithToday (dateTime 1 (toMonth utc (millisToPosix 0)) 1 1 1)
+      , viewingTimeEndPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
       , viewingTimeEndPickerValue = Nothing
 
       --upload determines if the users wants to upload a questionnaire

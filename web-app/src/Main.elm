@@ -13,7 +13,7 @@ import Answer exposing (Answer)
 import Browser
 import Condition
 import Decoder
-import Edit
+import Edit exposing (convMaybeDateTime)
 import Encoder
 import File exposing (File)
 import File.Select as Select
@@ -172,16 +172,16 @@ update msg model =
         ChangeViewingTimeBeginPicker newState newValue ->
             let
                 changedModel =
-                    { model | inputViewingTimeBegin = convDateTime newValue }
+                    { model | inputViewingTimeBegin = convMaybeDateTime newValue }
             in
-            ( { model | inputViewingTimeBegin = convDateTime newValue, validationResult = Model.validate changedModel, viewingTimeBeginPickerValue = newValue, viewingTimeBeginPickerState = newState }, Cmd.none )
+            ( { model | inputViewingTimeBegin = convMaybeDateTime newValue, validationResult = Model.validate changedModel, viewingTimeBeginPickerValue = newValue, viewingTimeBeginPickerState = newState }, Cmd.none )
 
         ChangeViewingTimeEndPicker newState newValue ->
             let
                 changedModel =
-                    { model | inputViewingTimeEnd = convDateTime newValue }
+                    { model | inputViewingTimeEnd = convMaybeDateTime newValue }
             in
-            ( { model | inputViewingTimeEnd = convDateTime newValue, validationResult = Model.validate changedModel, viewingTimeEndPickerValue = newValue, viewingTimeEndPickerState = newState }, Cmd.none )
+            ( { model | inputViewingTimeEnd = convMaybeDateTime newValue, validationResult = Model.validate changedModel, viewingTimeEndPickerValue = newValue, viewingTimeEndPickerState = newState }, Cmd.none )
 
         --open or close modals
         ViewOrClose modalType ->
@@ -727,42 +727,3 @@ showNavbar =
                 ]
             ]
         ]
-
---testhalber
-convDateTime : Maybe DateTime -> String
-convDateTime dateTime =
-    case dateTime of
-        Nothing -> ""
-        Just val -> toDayString val.day ++ "." ++ toMonthString val.month ++ "." ++ toYearString val.year ++ " " ++ toTimeString val.hour ++ ":" ++  toTimeString val.minute
-
-toMonthString : Month -> String
-toMonthString month =
-    case month of
-        Jan -> "01"
-        Feb -> "02"
-        Mar -> "03"
-        Apr -> "04"
-        May -> "05"
-        Jun -> "06"
-        Jul -> "07"
-        Aug -> "08"
-        Sep -> "09"
-        Oct -> "10"
-        Nov -> "11"
-        Dec -> "12"
-
-toDayString : Int -> String
-toDayString day =
-    if day < 10 then "0" ++ String.fromInt day
-    else String.fromInt day
-
-toYearString : Int -> String
-toYearString year =
-    if year < 10 then "200" ++ String.fromInt year
-    else if year < 100 then "20" ++ String.fromInt year
-    else "2" ++ String.fromInt year
-
-toTimeString : Int -> String
-toTimeString time =
-    if time < 10 then "0" ++ String.fromInt time
-    else String.fromInt time

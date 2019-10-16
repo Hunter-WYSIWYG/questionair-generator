@@ -2,6 +2,7 @@
 *.iml
 .gradle
 /local.properties
+.idea/
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -19,3 +20,4 @@ src/build
 web-app/elm-stuff
 web-app/Main.js
 web-app/src/Main.js
+web-app/src/elm-stuff

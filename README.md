@@ -15,10 +15,10 @@ Nach jedem Commit auf den master-Branch wird ein Build von der WebApp erstellt u
 
 * Eigenen Branch anlegen
 
-* Anschließend mit Terminal in fragebogengenerator/web-app/src/ wechseln
-  
-* Zum Kompilieren:
+* Zum Kompilieren in den Ordner fragebogengenerator/web-app/src/ 
+wechseln und elm make ausführen:
 ```
+  cd web-app/src
   elm make Main.elm --output Main.js
 ```
 * Um eine Vorschau zu sehen: 

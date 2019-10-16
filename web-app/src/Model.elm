@@ -57,8 +57,10 @@ type alias Model =
     , inputChildId : Int
     , newAnswerID_Condition : String
     , newCondition : Condition
-    , value : Maybe DateTimePicker.DateTime
-    , state : DateTimePicker.State
+    , viewingTimeBeginPickerState : DateTimePicker.State
+    , viewingTimeBeginPickerValue : Maybe DateTimePicker.DateTime
+    , viewingTimeEndPickerState : DateTimePicker.State
+    , viewingTimeEndPickerValue : Maybe DateTimePicker.DateTime
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -100,8 +102,6 @@ type
     --Changing Input
     = ChangeInputQuestionnaireTitle String
     | ChangeEditTime String
-    | ChangeViewingTimeBegin String
-    | ChangeViewingTimeEnd String
     | ChangeQuestionOrNoteText String
     | ChangeAnswerText String
     | ChangeQuestionNote String
@@ -109,7 +109,8 @@ type
     | ChangeAnswerType String
     | ChangeQuestionNewAnswer Answer
     | ChangeQuestionTime String
-    | DateTimePickerChanged DateTimePicker.State (Maybe DateTimePicker.DateTime)
+    | ChangeViewingTimeBeginPicker DateTimePicker.State (Maybe DateTimePicker.DateTime)
+    | ChangeViewingTimeEndPicker DateTimePicker.State (Maybe DateTimePicker.DateTime)
       --Modals
     | ViewOrClose ModalType
       --Creates Condition
@@ -182,8 +183,10 @@ initModel _ =
       , inputChildId = -1
       , newCondition = Condition.initCondition
       , newAnswerID_Condition = ""
-      , value = Nothing
-      , state = initialStateWithToday (dateTime 1 (toMonth utc (millisToPosix 0)) 1 1 1)
+      , viewingTimeBeginPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
+      , viewingTimeBeginPickerValue = Nothing
+      , viewingTimeEndPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
+      , viewingTimeEndPickerValue = Nothing
 
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire

@@ -13,7 +13,7 @@ import Answer exposing (Answer)
 import Browser
 import Condition
 import Decoder
-import Edit
+import Edit exposing (convMaybeDateTime)
 import Encoder
 import File exposing (File)
 import File.Select as Select
@@ -26,6 +26,8 @@ import QElement exposing (Q_element(..))
 import Questionnaire
 import Task
 import Upload
+import DateTimePicker exposing (..)
+import Time exposing (..)
 
 
 {-| Main-Funktion.
@@ -62,20 +64,6 @@ update msg model =
                     { model | inputEditTime = newTime }
             in
             ( { model | inputEditTime = newTime, validationResult = Model.validate changedModel }, Cmd.none )
-
-        ChangeViewingTimeBegin newTime ->
-            let
-                changedModel =
-                    { model | inputViewingTimeBegin = newTime }
-            in
-            ( { model | inputViewingTimeBegin = newTime, validationResult = Model.validate changedModel }, Cmd.none )
-
-        ChangeViewingTimeEnd newTime ->
-            let
-                changedModel =
-                    { model | inputViewingTimeEnd = newTime }
-            in
-            ( { model | inputViewingTimeEnd = newTime, validationResult = Model.validate changedModel }, Cmd.none )
 
         ChangeQuestionOrNoteText string ->
             let
@@ -181,8 +169,19 @@ update msg model =
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
-        DateTimePickerChanged newState newValue ->
-            ( { model | value = newValue, state = newState }, Cmd.none )
+        ChangeViewingTimeBeginPicker newState newValue ->
+            let
+                changedModel =
+                    { model | inputViewingTimeBegin = convMaybeDateTime newValue }
+            in
+            ( { model | inputViewingTimeBegin = convMaybeDateTime newValue, validationResult = Model.validate changedModel, viewingTimeBeginPickerValue = newValue, viewingTimeBeginPickerState = newState }, Cmd.none )
+
+        ChangeViewingTimeEndPicker newState newValue ->
+            let
+                changedModel =
+                    { model | inputViewingTimeEnd = convMaybeDateTime newValue }
+            in
+            ( { model | inputViewingTimeEnd = convMaybeDateTime newValue, validationResult = Model.validate changedModel, viewingTimeEndPickerValue = newValue, viewingTimeEndPickerState = newState }, Cmd.none )
 
         --open or close modals
         ViewOrClose modalType ->

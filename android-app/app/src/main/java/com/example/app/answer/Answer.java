@@ -1,4 +1,6 @@
-package com.example.app;
+package com.example.app.answer;
+
+import com.example.app.question.QuestionType;
 
 import java.io.Serializable;
 import java.util.ArrayList;

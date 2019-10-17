@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.app.question.Question;
+import com.example.app.question.Questionnaire;
 import com.google.gson.Gson;
 
 import java.io.IOException;

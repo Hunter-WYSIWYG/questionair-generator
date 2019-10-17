@@ -1,24 +1,27 @@
-package com.example.app;
+package com.example.app.view;
 
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.example.app.QuestionDisplayActivity;
+import com.example.app.R;
+import com.example.app.SaveAnswersActivity;
+import com.example.app.answer.Answer;
+import com.example.app.question.ChoiceQuestion;
+import com.example.app.question.Option;
+import com.example.app.question.Question;
+import com.example.app.question.QuestionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,30 +29,28 @@ import java.util.List;
 
 public class MultipleChoiceView extends QuestionDisplayView {
 	
-	public MultipleChoiceView(Context context, Intent intent) {
-		super(context, intent);
-		this.init();
-	}
+	// the corresponding question
+	private final ChoiceQuestion question;
 	
-	public MultipleChoiceView(Context context, AttributeSet attrs, Intent intent) {
-		super(context, attrs, intent);
+	// constructor
+	public MultipleChoiceView(QuestionDisplayActivity activity, ChoiceQuestion question) {
+		super(activity);
+		this.question = question;
 		this.init();
 	}
-	
-	public MultipleChoiceView(Context context, AttributeSet attrs, int defStyle, Intent intent) {
-		super(context, attrs, defStyle, intent);
-		this.init();
-	}
+
 	
 	private void init() {
 		this.addView(View.inflate(this.getContext(), R.layout.multiple_choice_view, null));
 	}
 	
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		
-	}
+
+	
+	
+	
+	
+	
+	
 	
 	
 	

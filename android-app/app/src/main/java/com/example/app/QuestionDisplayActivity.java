@@ -1,6 +1,7 @@
 package com.example.app;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -12,18 +13,109 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Checkable;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+import com.example.app.answer.Answer;
+import com.example.app.question.Option;
+import com.example.app.question.Question;
+import com.example.app.question.QuestionType;
+import com.example.app.view.QuestionDisplayView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionDisplayActivity extends AppCompatActivity {
+	
+	// xml is divided into the questionViewContainer, the questionView inside the container and the "next" button
+	private LinearLayout questionViewContainer;
+	private QuestionDisplayView questionView;
+	private Button nextButton;
+
+	private QuestionnaireState state;
+	
+	// getter
+	public QuestionnaireState getState () {
+		return this.state;
+	}
+	
+	// displays the current question of the questionnaire state
+	public static void displayCurrentQuestion (QuestionnaireState questionnaireState, Activity activity) {
+		Intent intent = new Intent(activity, QuestionDisplayActivity.class);
+		intent.putExtra("state", questionnaireState);
+		activity.startActivity(intent); // starting our own activity (onCreate) with questionnaire state so we can save it
+		activity.finish(); // prevent the back button
+		// TODO: if back button pressed -> popup with "sind sie sicher dass sie den fragebogen abbrechen wollen?"
+	}
+	
+	// is called when this activity is started
+	@Override
+	protected void onCreate (Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		this.setContentView(R.layout.activity_question_display);
+		
+		this.state = (QuestionnaireState) this.getIntent().getSerializableExtra("state");
+		this.questionViewContainer = this.findViewById(R.id.questionDisplayContent);
+		this.nextButton = this.findViewById(R.id.questionDisplayNextButton);
+		
+		this.nextButton.setOnClickListener(v -> this.nextButtonClicked());
+	}
+	
+	
+	// set next button to enabled or disabled
+	public void setNextButtonEnabled (boolean enabled) {
+		this.nextButton.setEnabled(enabled);
+		// TODO: (?) change colour of next button depending on enabled value
+	}
+	// next button is clicked, update questionnaire state and go to next question
+	private void nextButtonClicked () {
+		Answer answer = this.questionView.getCurrentAnswer();
+		this.state.currentQuestionAnswered(answer);
+		displayCurrentQuestion(this.state, this);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/*generate class wide parameters*/
 	private static final int HASH_MULTIPLIER_CONSTANT = 31;
@@ -54,7 +146,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	private List<TextView> optionTexts = null;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreateOld(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_question_display);
 		

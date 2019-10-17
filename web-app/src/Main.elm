@@ -529,7 +529,7 @@ update msg model =
                         | newCondition = condition
                     }
             in
-            ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = True, editAnswer = True }, Cmd.none )
+            ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = True, editCondition = True }, Cmd.none )
 
         EditQuestion element ->
             let
@@ -777,26 +777,6 @@ strToInt id =
             a
 
         Nothing ->
-            -2
-
-get : Int -> List a -> Maybe a
-get nth list =
-    list
-        |> List.drop (nth - 1)
-        |> List.head
-
---let 
---    parent_frage = checkFrage (get (model.questionnaire.newCondition.parent_id) model.questionnaire.elements)
---    parent_antworten = parent_frage.answers
---in
---    (Der Teil von der View mit der DropDownListe)
-
---checkFrage frage =
---    case frage of 
- --       Question frage ->
- --           frage
---
-   --     Note frage -> 
-   --         QElement.initQuestion
+            -1
 
 --model.questionnaire.newCondition.parent_id 

@@ -14,9 +14,9 @@ import Condition exposing (Condition)
 import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
-import List
+import List exposing (member, map)
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
-import QElement exposing (Q_element(..))
+import QElement exposing (Q_element(..), NoteRecord, QuestionRecord)
 import Questionnaire exposing (Questionnaire)
 
 
@@ -423,11 +423,16 @@ getQuestionOptions list newCondition =
         ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] 
             [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
 
---getAnswerOptions : List Answer -> Condition -> List (Html Msg)
---getAnswerOptions list newCondition =
-  --  [ option [] [ text "Keine" ] ]
-    --    ++ List.map (\e -> option --[ selected (QElement.getElementId e == newCondition.parent_id) ] 
-      --      [ text (String.fromInt(QElement.getAnswerWithID e)) ]) list
+getAnswerOptions : Model -> Condition -> List (Html Msg)
+getAnswerOptions model newCondition =
+    let 
+        parent_frage = checkFrage (get model.questionnaire.newCondition.parent_id model.questionnaire.elements)
+        parent_antworten = (parent_frage.answers)
+        list = parent_antworten
+    in
+        [ option [] [ text "Keine" ] ]
+            ++ List.map (\e -> option [ selected (member (Answer.getAnswerId e) (getAnswersId(newCondition.answers))) ] 
+                [ text (String.fromInt(Answer.getAnswerId e)) ]) list
 
 
 {-| Zeigt ein Modal zum Erstellen neuer Antworten an.
@@ -900,3 +905,29 @@ radio value msg =
             []
         , text value
         ]
+
+get : Int -> List a -> Maybe a
+get nth list =
+    list
+        |> List.drop (nth - 1)
+        |> List.head
+
+checkFrage : Maybe Q_element -> QuestionRecord
+checkFrage frage =
+     case frage of 
+        Just (Question f) ->
+            f
+
+        _ -> 
+            { id = 0
+            , text = "Beispielfrage"
+            , answers = []
+            , hint = ""
+            , typ = ""
+            , questionTime = ""
+            }
+
+getAnswersId : List Answer -> List Int
+getAnswersId list = 
+    map Answer.getAnswerId list
+

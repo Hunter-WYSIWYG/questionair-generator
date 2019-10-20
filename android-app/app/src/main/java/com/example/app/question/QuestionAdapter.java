@@ -10,7 +10,7 @@ class QuestionAdapter implements JsonSerializer<Question>, JsonDeserializer<Ques
 	public JsonElement serialize (Question question, Type typeOfQuestion, JsonSerializationContext context) {
 		return context.serialize (question);
 	}
-	
+
 	// convert from Question to JSON
 	@Override
 	public Question deserialize (JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -23,6 +23,6 @@ class QuestionAdapter implements JsonSerializer<Question>, JsonDeserializer<Ques
 		else if (type == QuestionType.Slider)
 			return context.deserialize (json, SliderQuestion.class);
 		else
-			throw new JsonParseException("unknown question type: " + type);
+			throw new JsonParseException ("unknown question type: " + type);
 	}
 }

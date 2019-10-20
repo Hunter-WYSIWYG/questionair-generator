@@ -1,104 +1,111 @@
 {
-  "questionnaireName" : "Example Questionnaire:\nTag im Rueckblick",
-  "questions" : [
+  "questionnaireName": "Example Questionnaire:\nTag im Rueckblick",
+  "questions": [
     {
-      "questionID" : 1,
-      "questionTitle" : "Wie war Ihr Tag?",
-      "type" : 0,
-      "answers" : [
+      "questionID": 1,
+      "questionText": "Wie war Ihr Tag?",
+      "type": "singleChoice",
+      "options": [
         {
-          "answerID" : 1,
-          "answerText" : "Gut",
-          "answerType" : 0
+          "optionID": 1,
+          "optionText": "Gut",
+          "optionType": "text"
         },
         {
-          "answerID" : 2,
-          "answerText" : "Sehr gut",
-          "answerType" : 0
+          "optionID": 2,
+          "optionText": "Sehr gut",
+          "optionType": "text"
         },
         {
-          "answerID" : 3,
-          "answerText" : "Schlecht",
-          "answerType" : 0
+          "optionID": 3,
+          "optionText": "Schlecht",
+          "optionType": "text"
         },
         {
-          "answerID" : 4,
-          "answerText" : "Sehr schlecht",
-          "answerType" : 0
+          "optionID": 4,
+          "optionText": "Sehr schlecht",
+          "optionType": "text"
         },
         {
-          "answerID" : 5,
-          "answerText" : "War mal besser",
-          "answerType" : 0
+          "optionID": 5,
+          "optionText": "War mal besser",
+          "optionType": "text"
         },
         {
-          "answerID" : 6,
-          "answerText" : "War mal schlechter",
-          "answerType" : 0
+          "optionID": 6,
+          "optionText": "War mal schlechter, dies ist ein sehr langer Text hashgsdfhkjdfskjfshkjefsjkhsefjhksefugksfegsfejgkfekgjsefkgjefsgk",
+          "optionType": "text"
         },
         {
-          "answerID" : 7,
-          "answerText" : "Mensa hatte Schnitzel",
-          "answerType" : 0
+          "optionID": 7,
+          "optionText": "Mensa hatte Schnitzel",
+          "optionType": "text"
         }
       ]
     },
     {
-      "questionID" : 2,
-      "questionTitle" : "Hatten Sie genug Schlaf?",
-      "type" : 0,
-      "answers" : [
+      "questionID": 2,
+      "questionText": "Hatten Sie genug Schlaf?",
+      "type": "singleChoice",
+      "options": [
         {
-          "answerID" : 1,
-          "answerText" : "Ja",
-          "answerType" : 0
+          "optionID": 1,
+          "optionText": "Ja",
+          "optionType": "text"
         },
         {
-          "answerID" : 2,
-          "answerText" : "Nein",
-          "answerType" : 1
+          "optionID": 2,
+          "optionText": "Nein",
+          "optionType": "textbox"
         }
       ]
     },
     {
-      "questionID" : 3,
-      "questionTitle" : "Hatten Sie genug sozialen Kontakt?",
-      "type" : 0,
-      "answers" : [
+      "questionID": 3,
+      "questionText": "Hatten Sie genug sozialen Kontakt?",
+      "type": "singleChoice",
+      "options": [
         {
-          "answerID" : 1,
-          "answerText" : "Ja, alles war gut",
-          "answerType" : 0
+          "optionID": 1,
+          "optionText": "Ja, alles war gut",
+          "optionType": "text"
         },
         {
-          "answerID" : 2,
-          "answerText" : "Nein, folgendes:",
-          "answerType" : 1
+          "optionID": 2,
+          "optionText": "Nein, folgendes:",
+          "optionType": "textbox"
         }
       ]
     },
     {
-      "questionID" : 4,
-      "questionTitle" : "Welche Gefühle haben Sie heute verspürt?",
-      "type" : 1,
-      "answers" : [
+      "questionID": 4,
+      "questionText": "Welche Gefühle haben Sie heute verspürt?",
+      "type": "multipleChoice",
+      "options": [
         {
-          "answerID" : 1,
-          "answerText" : "Trauer",
-          "answerType" : 0
+          "optionID": 1,
+          "optionText": "Trauer",
+          "optionType": "text"
         },
         {
-          "answerID" : 2,
-          "answerText" : "Freude",
-          "answerType" : 0
+          "optionID": 2,
+          "optionText": "Freude",
+          "optionType": "text"
         },
         {
-          "answerID" : 3,
-          "answerText" : "Andere:",
-          "answerType" : 1
+          "optionID": 3,
+          "optionText": "Andere:",
+          "optionType": "textbox"
         }
       ]
+    },
+    {
+      "questionID": 5,
+      "questionText": "Slider slider slider",
+      "type": "slider",
+      "minValue": 0.0,
+      "maxValue": 5.0,
+      "stepSize": 1.0
     }
   ]
-
 }

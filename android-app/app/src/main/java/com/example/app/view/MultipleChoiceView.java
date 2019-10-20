@@ -1,602 +1,272 @@
 package com.example.app.view;
 
-import android.app.ActionBar;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.util.AttributeSet;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
-import com.example.app.SaveAnswersActivity;
 import com.example.app.answer.Answer;
-import com.example.app.question.ChoiceQuestion;
-import com.example.app.question.Option;
-import com.example.app.question.Question;
-import com.example.app.question.QuestionType;
+import com.example.app.question.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: allow clicking on the text next to the radio button or checkbox
+// OptionView is the view of one option (button + text)
+abstract class OptionView {
+	// rootView of button, textView, ...
+	private final LinearLayout container;
+	// view of optionText
+	private final TextView optionTextView;
+	// option
+	private final Option option;
+	// edit text is null if there is no edit text
+	private final EditText editText;
+
+	// constructor
+	protected OptionView (Context context, Option option) {
+		this.container = (LinearLayout) View.inflate (context, R.layout.multiple_choice_option_view, null);
+		this.optionTextView = new TextView (context);
+		this.optionTextView.setText (option.getOptionText ());
+		this.optionTextView.setTextSize (TypedValue.COMPLEX_UNIT_SP, 24);
+		this.option = option;
+		this.editText = this.createEditText (context);
+	}
+
+	private EditText createEditText (Context context) {
+		if (this.option.getType () == OptionType.EnterText) {
+			EditText editText = new EditText (context);
+			editText.setHint ("Hier eingeben...");
+			return editText;
+		}
+		else if (this.option.getType () == OptionType.StaticText)
+			return null;
+		else
+			throw new IllegalArgumentException ();
+	}
+
+	// getter
+	public LinearLayout getContainer () {
+		return this.container;
+	}
+
+	public Option getOption () {
+		return this.option;
+	}
+
+	public EditText getEditText () {
+		return this.editText;
+	}
+
+	// add button and everything else in the right order to the rootView
+	protected void addButton (Button button) {
+		this.container.addView (button);
+		this.container.addView (this.optionTextView);
+		if (this.editText != null)
+			this.container.addView (this.editText);
+	}
+
+	// true if button is checked
+	public abstract boolean isChecked ();
+	public abstract void setChecked (boolean checked);
+
+	// creates new option view depending on the question type
+	public static OptionView create (Context context, Option option, Question question, View.OnClickListener onClickListener) {
+		if (question.type == QuestionType.SingleChoice)
+			return new SingleChoiceOptionView (context, option, onClickListener);
+		else if (question.type == QuestionType.MultipleChoice)
+			return new MultipleChoiceOptionView (context, option, onClickListener);
+		else
+			throw new IllegalArgumentException ();
+	}
+}
+
+// view of one single choice option
+class SingleChoiceOptionView extends OptionView {
+
+	private final RadioButton radioButton;
+
+
+	// constructor
+	public SingleChoiceOptionView (Context context, Option option, View.OnClickListener onClickListener) {
+		super (context, option);
+		this.radioButton = new RadioButton (context);
+		this.radioButton.setOnClickListener (onClickListener);
+		this.addButton (this.radioButton);
+	}
+
+	@Override
+	public boolean isChecked () {
+		return this.radioButton.isChecked ();
+	}
+	@Override
+	public void setChecked (boolean checked) {
+		this.radioButton.setChecked (checked);
+	}
+}
+
+// view of one multiple choice option
+class MultipleChoiceOptionView extends OptionView {
+
+	private final CheckBox checkBox;
+
+	// constructor
+	public MultipleChoiceOptionView (Context context, Option option, View.OnClickListener onClickListener) {
+		super (context, option);
+		this.checkBox = new CheckBox (context);
+		this.checkBox.setOnClickListener (onClickListener);
+		this.addButton (this.checkBox);
+	}
+
+	@Override
+	public boolean isChecked () {
+		return this.checkBox.isChecked ();
+	}
+	@Override
+	public void setChecked (boolean checked) {
+		this.checkBox.setChecked (checked);
+	}
+}
+
+// TODO: surpress virtual keyboard if displaying an edit text
+// TODO: select button by clicking on option text or text box and not just the button
+
 
 public class MultipleChoiceView extends QuestionDisplayView {
-	
+
 	// the corresponding question
 	private final ChoiceQuestion question;
-	
+	// root node of the multiple choice view
+	private ConstraintLayout rootView;
+	// view containing the option views
+	private LinearLayout optionContainer;
+	// list of all button views
+	private List<OptionView> optionViews = new ArrayList<> ();
+
 	// constructor
-	public MultipleChoiceView(QuestionDisplayActivity activity, ChoiceQuestion question) {
-		super(activity);
+	public MultipleChoiceView (QuestionDisplayActivity activity, ChoiceQuestion question) {
+		super (activity);
 		this.question = question;
-		this.init();
+		this.init ();
 	}
 
-	
-	private void init() {
-		this.addView(View.inflate(this.getContext(), R.layout.multiple_choice_view, null));
-	}
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// copy paste of former QuestionDisplayActivity
-	
-	
-	
-	
-	/*generate class wide parameters*/
-	private static final int HASH_MULTIPLIER_CONSTANT = 31;
-	private static final float BUTTON_HORIZONTAL_BIAS = 0.05f;
-	private static final int TEXT_MARGINS = 16;
-	private static final int BUTTON_LEFT_RIGHT_MARGIN = 8;
-	private static final int BUTTON_TOP_BOTTOM_MARGIN = 0;
-	private static final int CONTAINER_VERTICAL_MARGIN = 32;
-	private static final int CONTAINER_HORIZONTAL_MARGIN = 8;
-	private static final int NEXT_BUTTON_PIXEL_SIZE = 200;
-	private static final float OPTION_TEXT_SIZE = 20;
-	private static final int OPTION_TEXT_COLOR = Color.parseColor("#080808");
-	
-	/*initialize question data*/
-	private int current = -1;
-	private int size = -1;
-	private List<Question> qList = null;
-	private List<Answer> aList = null;
-	private ConstraintLayout constraintLayout = null;
-	private ConstraintSet constraintSet = null;
-	
-	/*initialize current question data*/
-	private Question currentQ = null;
-	private int amountOptions = -1;
-	private List<Integer> containerIDs = null;
-	private List<Button> optionButtons = null;
-	private List<Boolean> pressedButtons = null;
-	private List<TextView> optionTexts = null;
-	
-	
-	private void onCreate(Bundle savedInstanceState) {
-		
-		/* create Layout */
-		
-		constraintLayout = findViewById(R.id.MultipleChoiceLayout);
-		constraintSet = new ConstraintSet();
-		constraintSet.clone(constraintSet);
-		
-		
-		/* get question definition */
-		
-		Bundle extras = getIntent().getExtras();
-		assert extras != null;
-		current = extras.getInt("current", -1);
-		size = extras.getInt("size", 0);
-		qList = new ArrayList<>(size);
-		aList = new ArrayList<>(size);
-		for (int i = 0; i < size; i++) {
-			qList.add((Question) extras.getSerializable("q" + i));
-			aList.add((Answer) extras.getSerializable("a" + i));
-		}
-		
-		
-		/* process next Question */
-		
-		currentQ = qList.get(current);
-		/* set Layout */
-		TextView qt = findViewById(R.id.MultipleChoiceQuestionText);
-		qt.setText(currentQ.getTitle());
-		qt.requestLayout();//redraw with new text
-		/* process Answers */
-		
-		List<Option> options = currentQ.getOptionList();
-		amountOptions = options.size();
-		optionButtons = new ArrayList<>(amountOptions);//all Buttons
-		pressedButtons = new ArrayList<>(amountOptions);//Boolean if pressed
-		for (int i = 0; i < amountOptions; i++) {
-			pressedButtons.add(false);
-		}
-		optionTexts = new ArrayList<>(amountOptions);
-		TextView questionTypeTV = findViewById(R.id.MultipleChoiceQuestionTypeText);
-		
-		final int buttonPixelSize = 32;
-		containerIDs = new ArrayList<>(amountOptions);
-		/*give command for layout computing and add views*/
-		switch (currentQ.getType()) {
-			case SingleChoice:
-				questionTypeTV.setText(getString(R.string.QUESTION_TYPE_HINT_SINGLE_CHOICE));
-				for (int i = 0; i < amountOptions; i++) {
-					
-					final ConstraintLayout container = getButtonTextBoundingLayout(buttonPixelSize, i, options.get(i), QuestionType.SingleChoice);
-					final int containerID = container.getId();
-					
-					if (i == 0) {
-						constraintSet.connect(containerID, ConstraintSet.TOP, R.id.MultipleChoiceDividingLine, ConstraintSet.BOTTOM, CONTAINER_VERTICAL_MARGIN);
-					} else {
-						constraintSet.connect(containerID, ConstraintSet.TOP, containerIDs.get(i - 1), ConstraintSet.BOTTOM, CONTAINER_VERTICAL_MARGIN);
+	private void init () {
+		this.rootView = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.multiple_choice_view, null);
+		this.optionContainer = this.rootView.findViewById (R.id.MultipleChoiceOptionContainer);
+
+		// set questionTypeText
+		TextView questionTypeTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionTypeText);
+		questionTypeTextView.setText (this.question.type.name ());
+
+		// set questionText
+		TextView questionTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionText);
+		questionTextView.setText (this.question.questionText);
+
+		// find dividingLine
+		View dividingLine = this.rootView.findViewById (R.id.MultipleChoiceDividingLine);
+
+		// create buttons
+		this.createOptions ();
+	}
+
+	// create option views
+	private void createOptions () {
+		for (int i = 0; i < this.question.options.size (); ++i) {
+			// space between options
+			if (i >= 0) {
+				Space space = new Space (this.getActivity ());
+				space.setLayoutParams (new ViewGroup.LayoutParams (0, 30));
+				this.optionContainer.addView (space);
+			}
+
+			Option option = this.question.options.get (i);
+			final int finalI = i;
+			OptionView view = OptionView.create (this.getActivity (), option, this.question, v -> this.buttonClicked (this.optionViews.get (finalI)));
+			this.optionContainer.addView (view.getContainer ());
+			this.optionViews.add (view);
+			
+			// check if option is edit text and add listener
+			if (view.getEditText () != null) {
+				view.getEditText ().addTextChangedListener (new TextWatcher () {
+					@Override
+					public void beforeTextChanged (final CharSequence s, final int start, final int count, final int after) {
 					}
-					containerIDs.add(containerID);
-					constraintSet.connect(containerID, ConstraintSet.LEFT, R.id.MultipleChoiceLayout, ConstraintSet.LEFT, CONTAINER_HORIZONTAL_MARGIN);
-					constraintSet.connect(containerID, ConstraintSet.RIGHT, R.id.MultipleChoiceLayout, ConstraintSet.RIGHT, CONTAINER_HORIZONTAL_MARGIN);
-					
-					constraintLayout.addView(container);
-				}
-				break;
-			case MultipleChoice:
-				questionTypeTV.setText(getString(R.string.QUESTION_TYPE_HINT_MULTIPLE_CHOICE));
-				for (int i = 0; i < amountOptions; i++) {
-					
-					final ConstraintLayout container = getButtonTextBoundingLayout(buttonPixelSize, i, options.get(i), QuestionType.MultipleChoice);
-					final int containerID = container.getId();
-					
-					if (i == 0) {
-						constraintSet.connect(containerID, ConstraintSet.TOP, R.id.MultipleChoiceDividingLine, ConstraintSet.BOTTOM, CONTAINER_VERTICAL_MARGIN);
-					} else {
-						constraintSet.connect(containerID, ConstraintSet.TOP, containerIDs.get(i - 1), ConstraintSet.BOTTOM, CONTAINER_VERTICAL_MARGIN);
+					@Override
+					public void onTextChanged (final CharSequence s, final int start, final int before, final int count) {
 					}
-					containerIDs.add(containerID);
-					constraintSet.connect(containerID, ConstraintSet.LEFT, R.id.MultipleChoiceLayout, ConstraintSet.LEFT, CONTAINER_HORIZONTAL_MARGIN);
-					constraintSet.connect(containerID, ConstraintSet.RIGHT, R.id.MultipleChoiceLayout, ConstraintSet.RIGHT, CONTAINER_HORIZONTAL_MARGIN);
-					
-					constraintLayout.addView(container);
-				}
-				break;
-			case Slider:
-				//TODO
-				break;
-		}
-		
-		/* create 'next' Button */
-		
-		Button nextButton = new Button(this);
-		nextButton.setText(getString(R.string.next_button_text));
-		int nbID = "nextButton".hashCode();
-		nextButton.setId(nbID);
-		nextButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(final View v) {
-				nextClick();
-			}
-		});
-		constraintLayout.addView(nextButton);
-		constraintSet.connect(nbID, ConstraintSet.TOP, containerIDs.get(containerIDs.size() - 1), ConstraintSet.BOTTOM, 8);
-		constraintSet.connect(nbID, ConstraintSet.RIGHT, R.id.MultipleChoiceLayout, ConstraintSet.RIGHT, 8);
-		constraintSet.connect(nbID, ConstraintSet.BOTTOM, R.id.MultipleChoiceLayout, ConstraintSet.BOTTOM, 8);
-		constraintSet.connect(nbID, ConstraintSet.LEFT, R.id.MultipleChoiceLayout, ConstraintSet.LEFT, screenWidth >> 1);
-		constraintSet.constrainHeight(nbID, NEXT_BUTTON_PIXEL_SIZE);
-		constraintSet.constrainWidth(nbID, NEXT_BUTTON_PIXEL_SIZE);
-		
-		constraintSet.applyTo(constraintLayout);
-		//constraintLayout.setConstraintSet(constraintSet);
-	}
-	/*distribute content generator and create basic layout data*/
-	private ConstraintLayout getButtonTextBoundingLayout(final int buttonPixelSize, final int buttonID, final Option option, final QuestionType qType) {
-		if (option == null || qType == null || optionButtons == null) {
-			throw new NullPointerException("tried to create container for button/text(/slider), but some argument was null, or optionButtons was null");
-		}
-		final String optionAnswerText = option.getAnswerText();
-		
-		final ConstraintLayout container = new ConstraintLayout(this);
-		final int containerID = HASH_MULTIPLIER_CONSTANT * option.hashCode() + buttonID;
-		container.setId(containerID);
-		
-		switch (qType) {
-			case SingleChoice:
-				switch (option.getType()) {
-					case StaticText:
-						addContentsSingleStatic(container, optionAnswerText, buttonID, buttonPixelSize);
-						break;
-					case EnterText:
-						addContentsSingleEnter(container, optionAnswerText, buttonID, buttonPixelSize);
-						break;
-					case Slider:
-						//TODO: slider
-						throw new IllegalStateException("was slider");
-				}
-				break;
-			case MultipleChoice:
-				switch (option.getType()) {
-					case StaticText:
-						addContentsMultipleStatic(container, optionAnswerText, buttonID, buttonPixelSize);
-						break;
-					case EnterText:
-						addContentsMultipleEnter(container, optionAnswerText, buttonID, buttonPixelSize);
-						break;
-					case Slider:
-						//TODO: slider
-						throw new IllegalStateException("was slider");
-				}
-				break;
-			case Slider:
-				//TODO:
-				throw new IllegalStateException("was slider");
-		}
-		
-		container.setLayoutParams(new ConstraintLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
-		constraintSet.constrainMinHeight(containerID, ConstraintSet.WRAP_CONTENT);
-		constraintSet.constrainHeight(containerID, ConstraintSet.WRAP_CONTENT);
-		constraintSet.constrainMaxHeight(containerID, ConstraintSet.WRAP_CONTENT);
-		constraintSet.constrainMinWidth(containerID, ConstraintSet.MATCH_CONSTRAINT);
-		constraintSet.constrainWidth(containerID, ConstraintSet.MATCH_CONSTRAINT);
-		constraintSet.constrainMaxWidth(containerID, ConstraintSet.MATCH_CONSTRAINT);
-		constraintSet.applyTo(container);
-		
-		return container;
-	}
-	
-	/*add a static text to multiple answer question*/
-	private void addContentsSingleStatic(final ConstraintLayout container, final String answerText, final int buttonOptionID, final int buttonPixelSize) {
-		assert container != null && answerText != null;
-		
-		final int containerID = container.getId();
-		final RadioButton button = new RadioButton(this);
-		button.setChecked(false);
-		final TextView text = new TextView(this);
-		
-		button.setOnClickListener(new View.OnClickListener() {
-			final int buttonInd = buttonOptionID;
-			
-			@Override
-			public void onClick(final View v) {
-				optionClickHandlerSingle(buttonInd);
-			}
-		});
-		/*set id's and add objects to list*/
-		optionButtons.add(button);
-		optionTexts.add(text);
-		final int buttonViewID = ("But" + buttonOptionID + "ton").hashCode();
-		button.setId(buttonViewID);
-		final int textID = ("Text" + buttonOptionID + "View").hashCode();
-		text.setId(textID);
-		button.setText("");
-		setTextFont(text);
-		text.setText(answerText);
-		/*set size parameters*/
-		button.setLayoutParams(new ConstraintLayout.LayoutParams(buttonPixelSize, buttonPixelSize));
-		button.setMaxHeight(buttonPixelSize);
-		button.setMaxWidth(buttonPixelSize);
-		button.setMinHeight(buttonPixelSize);
-		button.setMinWidth(buttonPixelSize);
-		text.setLayoutParams(new ConstraintLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
-		button.requestLayout();
-		text.requestLayout();
-		
-		container.addView(button);
-		container.addView(text);
-		
-		setConstraints(containerID, buttonViewID, textID, buttonPixelSize);
-	}
-	
-	/*set constraints and base layout automatically for a button/text combo */
-	private void setConstraints(final int containerID, final int buttonID, final int textID, final int buttonPixelSize) {
-		constraintSet.connect(buttonID, ConstraintSet.LEFT, containerID, ConstraintSet.LEFT, BUTTON_LEFT_RIGHT_MARGIN);
-		constraintSet.connect(buttonID, ConstraintSet.RIGHT, containerID, ConstraintSet.RIGHT, BUTTON_LEFT_RIGHT_MARGIN);
-		constraintSet.connect(buttonID, ConstraintSet.TOP, textID, ConstraintSet.TOP, BUTTON_TOP_BOTTOM_MARGIN);
-		constraintSet.connect(buttonID, ConstraintSet.BOTTOM, textID, ConstraintSet.BOTTOM, BUTTON_TOP_BOTTOM_MARGIN);
-		constraintSet.setHorizontalBias(buttonID, BUTTON_HORIZONTAL_BIAS);
-		constraintSet.constrainMinHeight(buttonID, buttonID);
-		//noinspection PointlessArithmeticExpression
-		constraintSet.constrainHeight(buttonID, buttonPixelSize + 2 * BUTTON_TOP_BOTTOM_MARGIN);
-		//noinspection PointlessArithmeticExpression
-		constraintSet.constrainMaxHeight(buttonID, buttonPixelSize + 2 * BUTTON_TOP_BOTTOM_MARGIN);
-		constraintSet.constrainMinWidth(buttonID, buttonPixelSize);
-		constraintSet.constrainWidth(buttonID, buttonPixelSize + 2 * BUTTON_LEFT_RIGHT_MARGIN);
-		constraintSet.constrainMaxWidth(buttonID, buttonPixelSize + 2 * BUTTON_LEFT_RIGHT_MARGIN);
-		constraintSet.setVisibility(buttonID, ConstraintSet.VISIBLE);
-		
-		constraintSet.connect(textID, ConstraintSet.LEFT, buttonID, ConstraintSet.RIGHT, TEXT_MARGINS);
-		constraintSet.connect(textID, ConstraintSet.RIGHT, containerID, ConstraintSet.RIGHT, TEXT_MARGINS);
-		constraintSet.connect(textID, ConstraintSet.TOP, containerID, ConstraintSet.TOP, TEXT_MARGINS);
-		constraintSet.connect(textID, ConstraintSet.BOTTOM, containerID, ConstraintSet.BOTTOM, TEXT_MARGINS);
-		constraintSet.constrainMinHeight(textID, ConstraintSet.WRAP_CONTENT);
-		constraintSet.constrainHeight(textID, ConstraintSet.WRAP_CONTENT);
-		constraintSet.constrainMaxHeight(textID, ConstraintSet.WRAP_CONTENT);
-		constraintSet.constrainMinWidth(textID, ConstraintSet.MATCH_CONSTRAINT);
-		constraintSet.constrainWidth(textID, ConstraintSet.MATCH_CONSTRAINT);
-		constraintSet.constrainMaxWidth(textID, ConstraintSet.MATCH_CONSTRAINT);
-		constraintSet.setVisibility(textID, ConstraintSet.VISIBLE);
-	}
-	
-	/*change text fonts*/
-	private void setTextFont(final TextView text) {
-		assert text != null;
-		
-		text.setTextSize(TypedValue.COMPLEX_UNIT_SP, OPTION_TEXT_SIZE);
-		text.setTextColor(OPTION_TEXT_COLOR);
-	}
-	
-	/*color next button and handle clicks on single answers*/
-	void optionClickHandlerSingle(int pressedButton) {
-		for (int i = 0; i < amountOptions; i++) {
-			if (i == pressedButton) {
-				pressedButtons.set(i, true);
-				Checkable rButton = (Checkable) optionButtons.get(i);
-				rButton.setChecked(true);
-				constraintLayout.findViewById("nextButton".hashCode()).setBackgroundColor(Color.parseColor("#8b1212")); //TODO:make void function and generate nicer look
-			} else {
-				pressedButtons.set(i, false);
-				Checkable rButton = (Checkable) optionButtons.get(i);
-				rButton.setChecked(false);
-			}
-		}
-	}
-	/*add an entertext to single answer question*/
-	private void addContentsSingleEnter(final ConstraintLayout container, final String answerText, final int buttonOptionID, final int buttonPixelSize) {
-		assert container != null;
-		String hint = answerText;
-		if (answerText == null) {
-			hint = getString(R.string.DEFAULT_ENTER_TEXT_HINT);
-		}
-		
-		final int containerID = container.getId();
-		final RadioButton button = new RadioButton(this);
-		button.setChecked(false);
-		final EditText text = new EditText(this);
-		
-		button.setOnClickListener(new View.OnClickListener() {
-			final int buttonInd = buttonOptionID;
-			
-			@Override
-			public void onClick(final View v) {
-				optionClickHandlerSingle(buttonInd);
-			}
-		});
-		/*set id's and add objects to list*/
-		optionButtons.add(button);
-		optionTexts.add(text);
-		final int buttonViewID = ("But" + buttonOptionID + "ton").hashCode();
-		button.setId(buttonViewID);
-		final int textID = ("Text" + buttonOptionID + "View").hashCode();
-		text.setId(textID);
-		button.setText("");
-		setTextFont(text);
-		text.setHint(hint);
-		/*set size parameters*/
-		button.setLayoutParams(new ConstraintLayout.LayoutParams(buttonPixelSize, buttonPixelSize));
-		button.setMaxHeight(buttonPixelSize);
-		button.setMaxWidth(buttonPixelSize);
-		button.setMinHeight(buttonPixelSize);
-		button.setMinWidth(buttonPixelSize);
-		text.setMinLines(1);
-		text.setLayoutParams(new ConstraintLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
-		button.requestLayout();
-		text.requestLayout();
-		
-		container.addView(button);
-		container.addView(text);
-		
-		setConstraints(containerID, buttonViewID, textID, buttonPixelSize);
-	}
-	
-	/*add a static text to multiple answer question*/
-	private void addContentsMultipleStatic(final ConstraintLayout container, final CharSequence answerText, final int buttonOptionID, final int buttonPixelSize) {
-		assert container != null && answerText != null;
-		
-		final int containerID = container.getId();
-		final CheckBox button = new CheckBox(this);
-		button.setChecked(false);
-		final TextView text = new TextView(this);
-		
-		button.setOnClickListener(new View.OnClickListener() {
-			final int buttonInd = buttonOptionID;
-			
-			@Override
-			public void onClick(final View v) {
-				optionClickHandlerMultiple(buttonInd);
-			}
-		});
-		/*set id's and add objects to list*/
-		optionButtons.add(button);
-		optionTexts.add(text);
-		final int buttonViewID = ("But" + buttonOptionID + "ton").hashCode();
-		button.setId(buttonViewID);
-		final int textID = ("Text" + buttonOptionID + "View").hashCode();
-		text.setId(textID);
-		button.setText("");
-		setTextFont(text);
-		text.setText(answerText);
-		
-		/*set size parameters*/
-		button.setLayoutParams(new ConstraintLayout.LayoutParams(buttonPixelSize, buttonPixelSize));
-		button.setMaxHeight(buttonPixelSize);
-		button.setMaxWidth(buttonPixelSize);
-		button.setMinHeight(buttonPixelSize);
-		button.setMinWidth(buttonPixelSize);
-		text.setLayoutParams(new ConstraintLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
-		
-		container.addView(button);
-		container.addView(text);
-		
-		setConstraints(containerID, buttonViewID, textID, buttonPixelSize);
-	}
-	
-	/*color next button and handle clicks on multiple answers*/
-	void optionClickHandlerMultiple(int pressedButton) {
-		constraintLayout.findViewById("nextButton".hashCode()).setBackgroundColor(Color.parseColor("#8b1212")); //TODO:make void function and generate nicer look
-		for (int i = 0; i < amountOptions; i++) {
-			if (i == pressedButton) {
-				pressedButtons.set(i, !pressedButtons.get(i));
-			}
-		}
-	}
-	
-	/*add an edittext to multiple answer question*/
-	private void addContentsMultipleEnter(final ConstraintLayout container, final String answerText, final int buttonOptionID, final int buttonPixelSize) {
-		assert container != null;
-		String hint = answerText;
-		if (answerText == null) {
-			hint = getString(R.string.DEFAULT_ENTER_TEXT_HINT);
-		}
-		
-		final int containerID = container.getId();
-		final CheckBox button = new CheckBox(this);
-		button.setChecked(false);
-		final EditText text = new EditText(this);
-		
-		button.setOnClickListener(new View.OnClickListener() {
-			final int buttonInd = buttonOptionID;
-			
-			@Override
-			public void onClick(final View v) {
-				optionClickHandlerMultiple(buttonInd);
-			}
-		});
-		/*set id's and add objects to list*/
-		optionButtons.add(button);
-		optionTexts.add(text);
-		final int buttonViewID = ("But" + buttonOptionID + "ton").hashCode();
-		button.setId(buttonViewID);
-		final int textID = ("Text" + buttonOptionID + "View").hashCode();
-		text.setId(textID);
-		button.setText("");
-		setTextFont(text);
-		text.setHint(hint);
-		/*set size parameters*/
-		button.setLayoutParams(new ConstraintLayout.LayoutParams(buttonPixelSize, buttonPixelSize));
-		button.setMaxHeight(buttonPixelSize);
-		button.setMaxWidth(buttonPixelSize);
-		button.setMinHeight(buttonPixelSize);
-		button.setMinWidth(buttonPixelSize);
-		text.setMinLines(1);
-		text.setLayoutParams(new ConstraintLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
-		
-		container.addView(button);
-		container.addView(text);
-		
-		setConstraints(containerID, buttonViewID, textID, buttonPixelSize);
-	}
-	
-	/* handle next click */
-	public void nextClick() {
-		if (noneClicked() || selectedEditTextButNoText()) {
-			//no option was selected, or empty edit field selected, cannot go to next question
-			return;
-		}
-		//TODO: move next question information stuff to utility class
-		/*calculate missing questions and options for next question activity*/
-		if (current < size - 1) {
-			Intent intent = new Intent(this, QuestionDisplayActivity.class);
-			intent.putExtra("size", size);
-			intent.putExtra("current", current + 1);
-			aList.set(current, calcAnswer());
-			for (int j = 0; j < size; j++) {
-				intent.putExtra("q" + j, qList.get(j));
-				intent.putExtra("a" + j, aList.get(j));
-			}
-			startActivity(intent);
-			/*calculate answer for save activity generate intent*/
-		} else {
-			Intent i = new Intent(this, SaveAnswersActivity.class);
-			i.putExtra("size", size);
-			for (int j = 0; j < size; j++) {
-				if (j == current) {
-					i.putExtra("a" + j, calcAnswer());
-				} else {
-					i.putExtra("a" + j, aList.get(j));
-				}
-			}
-			startActivity(i);
-		}
-	}
-	
-	/*check for incomplete answer */
-	private boolean noneClicked() {
-		for (int i = 0; i < amountOptions; ++i) {
-			if (pressedButtons.get(i)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	/*check for given answer in edittext */
-	private boolean selectedEditTextButNoText() {
-		for (int i = 0; i < amountOptions; i++) {
-			if (pressedButtons.get(i)) {
-				TextView text = optionTexts.get(i);
-				if (text instanceof EditText) {
-					EditText eText = (EditText) text;
-					if (eText.getText().toString().trim().isEmpty()) {
-						Toast missingText = Toast.makeText(this, "Bitte eine Antwort eingeben!", Toast.LENGTH_SHORT);
-						missingText.show();
-						return true;
+					@Override
+					public void afterTextChanged (final Editable s) {
+						MultipleChoiceView.this.updateNextButtonEnabled ();
 					}
-				}
+				});
+			}
+			
+		}
+	}
+
+	// enable or disable 'next' button depending on whether any button is checked
+	// also disable other radio buttons if this is that kind of question
+	private void buttonClicked (OptionView view) {
+		if (this.question.isSingleChoice ()) {
+			for (OptionView otherView : this.optionViews)
+				if (otherView != view)
+					otherView.setChecked (false);
+		}
+		this.updateNextButtonEnabled ();
+	}
+	// enable or disable 'next' button depending on whether any button is checked
+	private void updateNextButtonEnabled () {
+		boolean enabled = this.nextButtonAllowed ();
+		this.getActivity ().setNextButtonEnabled (enabled);
+	}
+
+	// true if next button should be enabled
+	private boolean nextButtonAllowed () {
+		return this.areAllCheckedValid () && this.isAnyButtonChecked ();
+	}
+
+	// true if any button is checked
+	private boolean isAnyButtonChecked () {
+		for (OptionView optionView : this.optionViews) {
+			if (optionView.isChecked ()) {
+				return true;
 			}
 		}
 		return false;
 	}
-	
-	/* prepare answer for next activity */
-	private Answer calcAnswer() {
-		switch (currentQ.getType()) {
-			case SingleChoice:
-				for (int i = 0; i < amountOptions; i++) {
-					if (pressedButtons.get(i)) {
-						return new Answer(QuestionType.SingleChoice, i);
-					}
+
+	// true if all checked edit texts are not empty
+	private boolean areAllCheckedValid () {
+		for (OptionView optionView : this.optionViews) {
+			if (optionView.isChecked ()) {
+				if (optionView.getOption ().getType () == OptionType.EnterText) {
+					Editable debug1 = optionView.getEditText ().getText ();
+					String debug2 = debug1.toString ();
+					
+					if (optionView.getEditText ().getText ().toString ().equals (""))
+						return false;
 				}
-			case MultipleChoice:
-				Answer multipleChoiceAnswer = new Answer(QuestionType.MultipleChoice, -1);
-				for (int i = 0; i < amountOptions; i++) {
-					if (pressedButtons.get(i)) {
-						multipleChoiceAnswer.AddAnswer(i);
-					}
-				}
-				return multipleChoiceAnswer;
-			case Slider:
-				throw new IllegalStateException("Slider is not yet supported!");
-			default:
-				throw new IllegalStateException("current question did not have a valid type");
-		}
-	}
-	
-	/* remove back button action bar */
-	public boolean onCreateOptionsMenu(Menu menu) {
-		ActionBar actionBar = getActionBar();
-		if (actionBar != null) {
-			actionBar.setHomeButtonEnabled(false);      // Disable the button
-			actionBar.setDisplayHomeAsUpEnabled(false); // Remove the left caret
-			actionBar.setDisplayShowHomeEnabled(false); // Remove the icon
+			}
 		}
 		return true;
 	}
-	
-	/* disable back button bottom */
-	public void onBackPressed() {
-		Toast myToast = Toast.makeText(this, "Zurück gehen ist nicht erlaubt!", Toast.LENGTH_SHORT);
-		myToast.show();
+
+	// implementation of abstract method from QuestionDisplayView
+	@Override
+	public View getView () {
+		return this.rootView;
 	}
+	@Override
+	public Answer getCurrentAnswer () {
+		return null;
+	}
+
 }
 

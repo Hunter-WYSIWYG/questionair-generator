@@ -3,109 +3,104 @@
   "questions": [
     {
       "questionID": 1,
-      "questionText": "Wie war Ihr Tag?",
+      "questionText": "Gab es seit der letzten Befragung ein negatives Ereignis?",
       "type": "singleChoice",
       "options": [
         {
           "optionID": 1,
-          "optionText": "Gut",
+          "optionText": "Nein",
           "optionType": "text"
         },
         {
           "optionID": 2,
-          "optionText": "Sehr gut",
-          "optionType": "text"
-        },
-        {
-          "optionID": 3,
-          "optionText": "Schlecht",
-          "optionType": "text"
-        },
-        {
-          "optionID": 4,
-          "optionText": "Sehr schlecht",
-          "optionType": "text"
-        },
-        {
-          "optionID": 5,
-          "optionText": "War mal besser",
-          "optionType": "text"
-        },
-        {
-          "optionID": 6,
-          "optionText": "War mal schlechter, dies ist ein sehr langer Text hashgsdfhkjdfskjfshkjefsjkhsefjhksefugksfegsfejgkfekgjsefkgjefsgk",
-          "optionType": "text"
-        },
-        {
-          "optionID": 7,
-          "optionText": "Mensa hatte Schnitzel",
+          "optionText": "Ja",
           "optionType": "text"
         }
       ]
     },
     {
       "questionID": 2,
-      "questionText": "Hatten Sie genug Schlaf?",
-      "type": "singleChoice",
+      "questionText": "Mit wem sind Sie gerade zusammen?",
+      "type": "multipleChoice",
       "options": [
         {
           "optionID": 1,
-          "optionText": "Ja",
+          "optionText": "Allein",
           "optionType": "text"
         },
         {
           "optionID": 2,
-          "optionText": "Nein",
-          "optionType": "textbox"
+          "optionText": "Mit Freunden",
+          "optionType": "text"
+        },         {
+          "optionID": 3,
+          "optionText": "Familie",
+          "optionType": "text"
+        },
+        {
+          "optionID": 4,
+          "optionText": "Andere Bekannte",
+          "optionType": "text"
+        },
+        {
+          "optionID": 5,
+          "optionText": "Fremde Personen",
+          "optionType": "text"
         }
       ]
     },
     {
       "questionID": 3,
-      "questionText": "Hatten Sie genug sozialen Kontakt?",
-      "type": "singleChoice",
+      "questionText": "Wo sind Sie gerade?",
+      "type": "multipleChoice",
       "options": [
         {
           "optionID": 1,
-          "optionText": "Ja, alles war gut",
+          "optionText": "auf Arbeit",
           "optionType": "text"
         },
         {
           "optionID": 2,
-          "optionText": "Nein, folgendes:",
+          "optionText": "Zuhause",
+          "optionType": "text"
+        },
+        {
+          "optionID": 3,
+          "optionText": "Dienstlich unterwegs",
+          "optionType": "text"
+        },
+        {
+          "optionID": 4,
+          "optionText": "Privat unterwegs",
+          "optionType": "text"
+        },
+        {
+          "optionID": 5,
+          "optionText": "Bei Freunden",
+          "optionType": "text"
+        },
+        {
+          "optionID": 6,
+          "optionText": "woanders:  ",
           "optionType": "textbox"
         }
       ]
     },
     {
       "questionID": 4,
-      "questionText": "Welche Gefühle haben Sie heute verspürt?",
-      "type": "multipleChoice",
-      "options": [
-        {
-          "optionID": 1,
-          "optionText": "Trauer",
-          "optionType": "text"
-        },
-        {
-          "optionID": 2,
-          "optionText": "Freude",
-          "optionType": "text"
-        },
-        {
-          "optionID": 3,
-          "optionText": "Andere:",
-          "optionType": "textbox"
-        }
-      ]
-    },
-    {
-      "questionID": 5,
-      "questionText": "Slider slider slider",
+      "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
       "type": "slider",
       "minValue": 0.0,
       "maxValue": 5.0,
       "stepSize": 1.0
+    },
+    {
+      "questionID": 5,
+      "questionText": "Glauben Sie die momentane Situation im Griff zu haben? (-5 - gar nicht, 5 - völlig)",
+      "type": "slider",
+      "minValue": -5.0,
+      "maxValue": 5.0,
+      "stepSize": 2.0
     }
   ]
 }

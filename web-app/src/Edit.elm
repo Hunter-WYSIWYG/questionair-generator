@@ -432,7 +432,7 @@ getAnswerOptions model newCondition =
     in
         [ option [] [ text "Keine" ] ]
             ++ List.map (\e -> option [ selected (member (Answer.getAnswerId e) (getAnswersId(newCondition.answers))) ] 
-                [ text (String.fromInt(Answer.getAnswerId e)) ]) list
+                [ text (String.fromInt(Answer.getAnswerId e) ++ "." ++ " " ++ Answer.getAnswerText e) ]) list
 
 
 {-| Zeigt ein Modal zum Erstellen neuer Antworten an.
@@ -537,7 +537,6 @@ viewNewConditionModal2 model =
                             [ select [ onInput ChangeInputParentId ]
                                 (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
                             ]
-                        , text (Debug.log "foo" (Debug.toString model.inputChildId))
                         , br [] []
                         , text " zu Frage: "
                         , br [] []
@@ -549,8 +548,8 @@ viewNewConditionModal2 model =
                         , text "Bei Beantwortung der Antworten mit den IDs: "
                         , br [] []
                         , div [ class "select" ]
-                            [ select [ onInput ChangeInputChildId ]
-                                (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
+                            [ select [ onInput AddAnswerToNewCondition ]
+                                (getAnswerOptions model model.questionnaire.newCondition)
                             ]
                         , br [] []
                         , input

@@ -466,10 +466,10 @@ update msg model =
                         }
             in
             if model.editCondition == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, newCondition = Condition.initCondition }, Cmd.none )
 
             else 
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, editCondition = False }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, editCondition = False , newCondition = Condition.initCondition }, Cmd.none )
 
         SetAnswer ->
             let

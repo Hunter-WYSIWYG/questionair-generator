@@ -290,11 +290,11 @@ update msg model =
         ChangeInputParentId parent_id ->
             let 
                 oldQuestionnaire = model.questionnaire
-                oldCondition = oldQuestionnaire.newCondition
+                oldCondition = model.newCondition
                 newCondition2 = {oldCondition | parent_id = strToInt parent_id }
                 newQuestionnaire = {oldQuestionnaire | newCondition = newCondition2 }
             in
-                ( { model | questionnaire = newQuestionnaire }
+                ( { model | newCondition = newCondition2 }
                 , Cmd.none
                 )
 
@@ -302,11 +302,11 @@ update msg model =
         ChangeInputChildId child_id ->
             let 
                 oldQuestionnaire = model.questionnaire
-                oldCondition = oldQuestionnaire.newCondition
+                oldCondition = model.newCondition
                 newCondition2 = {oldCondition | child_id = strToInt child_id }
                 newQuestionnaire = {oldQuestionnaire | newCondition = newCondition2 }
             in
-                ( { model | questionnaire = newQuestionnaire }
+                ( { model | newCondition = newCondition2 }
                 , Cmd.none
                 )
 
@@ -335,30 +335,22 @@ update msg model =
 
         AddConditionAnswer ->
             let
-                oldQuestionnaire =
-                    model.questionnaire
+                oldCondition =
+                    model.newCondition
 
-                changedQuestionnaire =
-                    case String.toInt oldQuestionnaire.newAnswerID_Condition of
+                changedCondition =
+                    case String.toInt model.newAnswerID_Condition of
                         Nothing ->
-                            oldQuestionnaire
+                            oldCondition
 
                         Just id ->
-                            { oldQuestionnaire
-                                | newCondition = Condition.addAnswerOfQuestionToCondition id oldQuestionnaire.newElement oldQuestionnaire.newCondition
-                            }
+                            Condition.addAnswerOfQuestionToCondition id model.questionnaire.newElement model.newCondition
+
             in
-            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+            ( { model | newCondition = changedCondition }, Cmd.none )
 
         AddAnswerToNewCondition string ->
-            let
-                oldQuestionnaire =
-                    model.questionnaire
-
-                changedQuestionnaire =
-                    { oldQuestionnaire | newAnswerID_Condition = string }
-            in
-            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+            ( { model | newAnswerID_Condition = string }, Cmd.none )
 
         --Save input to questionnaire
         SetQuestionnaireTitle ->
@@ -456,7 +448,7 @@ update msg model =
                     if model.editCondition == False then
                         { oldQuestionnaire 
                             | conditions = 
-                                List.append oldQuestionnaire.conditions [ oldQuestionnaire.newCondition ] 
+                                List.append oldQuestionnaire.conditions [ model.newCondition ] 
                         }
 
                     else
@@ -466,10 +458,10 @@ update msg model =
                         }
             in
             if model.editCondition == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, newCondition = Condition.initCondition }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
 
             else 
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, editCondition = False , newCondition = Condition.initCondition }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, editCondition = False , newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
 
         SetAnswer ->
             let

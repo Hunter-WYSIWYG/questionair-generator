@@ -34,19 +34,15 @@ public class NoteView extends QuestionDisplayView {
 	}
 	
 	private void init () {
-		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.slider_view, null);
+		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.note_view, null);
 		
 		// set questionTypeText
-		TextView questionTypeTextView = this.container.findViewById (R.id.SliderQuestionTypeText);
-		questionTypeTextView.setText (this.question.type.name ());
+		TextView questionTypeTextView = this.container.findViewById (R.id.NoteTypeText);
+		questionTypeTextView.setText ("Notiz");
 		
 		// set questionText
-		TextView questionTextView = this.container.findViewById (R.id.SliderQuestionText);
+		TextView questionTextView = this.container.findViewById (R.id.NoteViewText);
 		questionTextView.setText (this.question.questionText);
-		
-		// find dividingLine
-		View dividingLine = this.container.findViewById (R.id.SliderDividingLine);
-
 		
 		// next button always enabled
 		this.getActivity ().setNextButtonEnabled (true);

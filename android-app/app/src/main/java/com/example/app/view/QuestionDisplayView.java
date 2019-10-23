@@ -14,6 +14,7 @@ import com.example.app.QuestionDisplayActivity;
 import com.example.app.QuestionnaireState;
 import com.example.app.answer.Answer;
 import com.example.app.question.ChoiceQuestion;
+import com.example.app.question.Note;
 import com.example.app.question.Question;
 import com.example.app.question.SliderQuestion;
 
@@ -41,6 +42,8 @@ public abstract class QuestionDisplayView {
 			return new MultipleChoiceView (activity, (ChoiceQuestion) question);
 		else if (question instanceof SliderQuestion)
 			return new SliderView (activity, (SliderQuestion) question);
+		else if (question instanceof Note)
+			return new NoteView (activity, (Note) question);
 		else
 			throw new IllegalArgumentException ();
 		// TODO: implement other question views

@@ -134,7 +134,7 @@ class MultipleChoiceOptionView extends OptionView {
 	}
 }
 
-// TODO: surpress virtual keyboard if displaying an edit text
+// TODO: suppress virtual keyboard if displaying an edit text
 // TODO: select button by clicking on option text or text box and not just the button
 
 

@@ -431,7 +431,7 @@ viewNewNoteModal model =
                             , style "width" "180px"
                             , style "margin-left" "10px"
                             , style "margin-right" "10px"
-                            , value (QElement.getElementText questionnaire.newElement)
+                            , value (QElement.getElementText model.newElement)
                             , onInput ChangeQuestionOrNoteText
                             ]
                             []
@@ -470,18 +470,18 @@ viewNewQuestionModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable model.questionnaire)
+                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable model)
                         , br [] []
                         , button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
                         , br [] []
-                        , showInputBipolarUnipolar model.questionnaire
+                        , showInputBipolarUnipolar model
                         , br [ style "margin-top" "20px" ] []
                         , text "Fragetext: "
                         , input
                             [ class "input is-medium"
                             , type_ "text"
                             , style "width" "100%"
-                            , value (QElement.getElementText model.questionnaire.newElement)
+                            , value (QElement.getElementText model.newElement)
                             , onInput ChangeQuestionOrNoteText
                             ]
                             []
@@ -491,12 +491,12 @@ viewNewQuestionModal model =
                             [ class "input is-medium"
                             , type_ "text"
                             , style "width" "100%"
-                            , value (QElement.getQuestionHinweis model.questionnaire.newElement)
+                            , value (QElement.getQuestionHinweis model.newElement)
                             , onInput ChangeQuestionNote
                             ]
                             []
                         , br [] []
-                        , text ("Typ: " ++ QElement.getQuestionTyp model.questionnaire.newElement)
+                        , text ("Typ: " ++ QElement.getQuestionTyp model.newElement)
                         , br [] []
                         , radio "Single Choice" (ChangeQuestionType "Single Choice")
                         , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
@@ -566,7 +566,7 @@ viewNewAnswerModal model =
                         ]
                     , br [] []
                     , div []
-                        [ text ("Typ: " ++ questionnaire.newAnswer.typ)
+                        [ text ("Typ: " ++ model.newAnswer.typ)
                         , br [] []
                         , radio "Fester Wert" (ChangeAnswerType "regular")
                         , radio "Freie Eingabe" (ChangeAnswerType "free")
@@ -601,7 +601,7 @@ viewNewConditionModal1 model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ table [ class "table is-striped", style "width" "100%" ] (conditionsTable model.questionnaire)
+                        [ table [ class "table is-striped", style "width" "100%" ] (conditionsTable model)
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
@@ -637,14 +637,14 @@ viewNewConditionModal2 model =
                         , br [] []
                         , div [ class "select" ]
                             [ select [ onInput ChangeInputParentId ]
-                                (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
+                                (getQuestionOptions model.questionnaire.elements model.newCondition)
                             ]
                         , br [] []
                         , text " zu Frage: "
                         , br [] []
                         , div [ class "select" ]
                             [ select [ onInput ChangeInputChildId ]
-                                (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
+                                (getQuestionOptions model.questionnaire.elements model.newCondition)
                             ]
                         , br [] []
                         , text "Bei Beantwortung der Antworten mit den IDs: "
@@ -783,11 +783,11 @@ getQuestionTable index element =
 
 {-| Zeigt die Tabelle mit den Antworten der "Inputfrage" (newElement) an.
 -}
-answersTable : Questionnaire -> List (Html Msg)
-answersTable questionnaire =
-    case questionnaire.newElement of
+answersTable : Model -> List (Html Msg)
+answersTable model =
+    case model.newElement of
         Question record ->
-            List.append [ tableHead_answers ] (List.indexedMap getAnswerTable (QElement.getAntworten questionnaire.newElement))
+            List.append [ tableHead_answers ] (List.indexedMap getAnswerTable (QElement.getAntworten model.newElement))
 
         Note record ->
             []
@@ -851,11 +851,11 @@ getAnswerTable index answer =
 
 {-| Tabelle von Bedingungen der "Input-Frage" (newElement).
 -}
-conditionsTable : Questionnaire -> List (Html Msg)
-conditionsTable questionnaire =
-    case questionnaire.newElement of
+conditionsTable : Model -> List (Html Msg)
+conditionsTable model =
+    case model.newElement of
         Question record ->
-            List.append [ tableHead_conditions ] (List.indexedMap getConditionTable questionnaire.conditions)
+            List.append [ tableHead_conditions ] (List.indexedMap getConditionTable model.questionnaire.conditions)
 
         Note record ->
             []
@@ -935,9 +935,9 @@ viewQuestionValidation result =
 
 {-| Eingabeoberfläche, wie viele Antworten für uni-/bipolare Fragen erstellt werden sollen.
 -}
-showInputBipolarUnipolar : Questionnaire -> Html Msg
-showInputBipolarUnipolar questionnaire =
-    case questionnaire.newElement of
+showInputBipolarUnipolar : Model -> Html Msg
+showInputBipolarUnipolar model =
+    case model.newElement of
         Question record ->
             if record.typ == "Skaliert unipolar" then
                 div []

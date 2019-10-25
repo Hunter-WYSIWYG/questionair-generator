@@ -61,6 +61,8 @@ type alias Model =
     , viewingTimeBeginPickerValue : Maybe DateTimePicker.DateTime
     , viewingTimeEndPickerState : DateTimePicker.State
     , viewingTimeEndPickerValue : Maybe DateTimePicker.DateTime
+    , newElement : Q_element
+    , newAnswer : Answer
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -187,7 +189,9 @@ initModel _ =
       , viewingTimeBeginPickerValue = Nothing
       , viewingTimeEndPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
       , viewingTimeEndPickerValue = Nothing
-
+      , newElement = QElement.initQuestion
+      , newAnswer = Answer.initAnswer
+      
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire
       , upload = False

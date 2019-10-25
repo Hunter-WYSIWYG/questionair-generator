@@ -30,17 +30,17 @@ type alias Questionnaire =
     { title : String
     , elements : List Q_element
     , conditions : List Condition
-    , newCondition : Condition
-    , newAnswerID_Condition : String
-
+    
     --times
     , viewingTimeBegin : String
     , viewingTimeEnd : String
     , editTime : String
 
     --newInputs
-    , newElement : Q_element
-    , newAnswer : Answer
+    --, newElement : Q_element
+    --, newAnswer : Answer
+    --, newCondition : Condition
+    --, newAnswerID_Condition : String
     }
 
 
@@ -51,17 +51,17 @@ initQuestionnaire =
     { title = "Titel eingeben"
     , elements = []
     , conditions = []
-    , newCondition = Condition.initCondition
-    , newAnswerID_Condition = ""
-
+    
     --times
     , viewingTimeBegin = ""
     , viewingTimeEnd = ""
     , editTime = ""
 
     --newInputs
-    , newElement = QElement.initQuestion
-    , newAnswer = Answer.initAnswer
+    --, newCondition = Condition.initCondition
+    --, newAnswerID_Condition = ""
+    --, newElement = QElement.initQuestion
+    --, newAnswer = Answer.initAnswer
     }
 
 

@@ -11,12 +11,12 @@ module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuest
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, option, p, section, select, table, tbody, td, text, th, thead, tr)
+import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
-import List
+import List exposing (member, map)
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
-import QElement exposing (Q_element(..))
+import QElement exposing (Q_element(..), NoteRecord, QuestionRecord)
 import Questionnaire exposing (Questionnaire)
 import DateTimePicker exposing (..)
 import DateTimePicker.Config exposing (..)
@@ -534,7 +534,19 @@ Siehe viewConditionModal
 getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
-        ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
+        ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] 
+            [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
+
+getAnswerOptions : Model -> Condition -> List (Html Msg)
+getAnswerOptions model newCondition =
+    let 
+        parent_frage = checkFrage (get model.questionnaire.newCondition.parent_id model.questionnaire.elements)
+        parent_antworten = (parent_frage.answers)
+        list = parent_antworten
+    in
+        [ option [] [ text "Keine" ] ]
+            ++ List.map (\e -> option [ selected (member (Answer.getAnswerId e) (getAnswersId(newCondition.answers))) ] 
+                [ text (String.fromInt(Answer.getAnswerId e) ++ "." ++ " " ++ Answer.getAnswerText e) ]) list
 
 
 {-| Zeigt ein Modal zum Erstellen neuer Antworten an.
@@ -648,8 +660,11 @@ viewNewConditionModal2 model =
                             ]
                         , br [] []
                         , text "Bei Beantwortung der Antworten mit den IDs: "
-
-                        --, text (Debug.toString (List.map getID model.questionnaire.newCondition.answers))
+                        , br [] []
+                        , div [ class "select" ]
+                            [ select [ onInput AddAnswerToNewCondition ]
+                                (getAnswerOptions model model.questionnaire.newCondition)
+                            ]
                         , br [] []
                         , input
                             [ placeholder "Hier ID eingeben"
@@ -867,10 +882,16 @@ tableHead_conditions : Html Msg
 tableHead_conditions =
     tr []
         [ th []
+            [ text "ID"
+            ]
+        , th []
             [ text "Von"
             ]
         , th []
             [ text "Zu"
+            ]
+        , th []
+            [ text "Mit der Antwort/en"
             ]
         , th []
             [ text "Aktion"
@@ -884,10 +905,19 @@ getConditionTable : Int -> Condition -> Html Msg
 getConditionTable index condition =
     tr [ id (String.fromInt index) ]
         [ td [] [ text (String.fromInt index) ]
-        , td [] []
+        , td [] [ text (String.fromInt condition.parent_id) ]
+        , td [] [ text (String.fromInt condition.child_id) ]
+        , td [] [ text "(", text (String.concat (List.map (\answer -> (++) (String.fromInt answer.id) ", ") condition.answers)), text ")" ]
         , td []
             [ i
+                [ class "fas fa-cog"
+                , style "margin-right" "1em"
+                , onClick (EditCondition condition)
+                ]
+                []
+            , i
                 [ class "fas fa-trash-alt"
+                , onClick (DeleteCondition condition)
                 ]
                 []
             ]
@@ -988,3 +1018,29 @@ radio value msg =
             []
         , text value
         ]
+
+get : Int -> List a -> Maybe a
+get nth list =
+    list
+        |> List.drop (nth - 1)
+        |> List.head
+
+checkFrage : Maybe Q_element -> QuestionRecord
+checkFrage frage =
+     case frage of 
+        Just (Question f) ->
+            f
+
+        _ -> 
+            { id = 0
+            , text = "Beispielfrage"
+            , answers = []
+            , hint = ""
+            , typ = ""
+            , questionTime = ""
+            }
+
+getAnswersId : List Answer -> List Int
+getAnswersId list = 
+    map Answer.getAnswerId list
+

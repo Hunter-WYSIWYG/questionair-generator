@@ -232,30 +232,27 @@ update msg model =
 
         --Add Condition
         ChangeInputParentId parent_id ->
-            ( { model
-                | inputParentId =
-                    case String.toInt parent_id of
-                        Just a ->
-                            a
+            let 
+                oldQuestionnaire = model.questionnaire
+                oldCondition = model.newCondition
+                newCondition2 = {oldCondition | parent_id = strToInt parent_id }
+                newQuestionnaire = {oldQuestionnaire | newCondition = newCondition2 }
+            in
+                ( { model | newCondition = newCondition2 }
+                , Cmd.none
+                )
 
-                        Nothing ->
-                            -1
-              }
-            , Cmd.none
-            )
-
+        --LOOK HERE
         ChangeInputChildId child_id ->
-            ( { model
-                | inputChildId =
-                    case String.toInt child_id of
-                        Just a ->
-                            a
-
-                        Nothing ->
-                            -1
-              }
-            , Cmd.none
-            )
+            let 
+                oldQuestionnaire = model.questionnaire
+                oldCondition = model.newCondition
+                newCondition2 = {oldCondition | child_id = strToInt child_id }
+                newQuestionnaire = {oldQuestionnaire | newCondition = newCondition2 }
+            in
+                ( { model | newCondition = newCondition2 }
+                , Cmd.none
+                )
 
         AddCondition ->
             let
@@ -378,9 +375,23 @@ update msg model =
                     model.questionnaire
 
                 changedQuestionnaire =
-                    { oldQuestionnaire | conditions = List.append oldQuestionnaire.conditions [ model.newCondition ] }
+                    if model.editCondition == False then
+                        { oldQuestionnaire 
+                            | conditions = 
+                                List.append oldQuestionnaire.conditions [ model.newCondition ] 
+                        }
+
+                    else
+                        { oldQuestionnaire
+                                    | conditions =
+                                         List.map (\e -> Condition.updateCondition oldQuestionnaire.newCondition e) oldQuestionnaire.conditions 
+                        }
             in
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False }, Cmd.none )
+            if model.editCondition == False then
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
+
+            else 
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, editCondition = False , newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
 
         SetAnswer ->
             case model.newElement of
@@ -417,6 +428,18 @@ update msg model =
         --Edits already existing elements
         EditAnswer element ->
             ( { model | newAnswer = element, showNewAnswerModal = True, editAnswer = True }, Cmd.none )
+
+        EditCondition condition ->
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire
+                        | newCondition = condition
+                    }
+            in
+            ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = True, editCondition = True }, Cmd.none )
 
         EditQuestion element ->
             let 
@@ -516,6 +539,17 @@ update msg model =
                     { oldQuestionnaire
                         | elements = QElement.deleteItemFrom element oldQuestionnaire.elements
                         , conditions = Condition.deleteConditionWithElement oldQuestionnaire.conditions (QElement.getID element)
+                    }
+            in
+            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+
+        DeleteCondition condition ->
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire | conditions = Condition.deleteConditionFrom condition oldQuestionnaire.conditions
                     }
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
@@ -627,3 +661,24 @@ showNavbar =
                 ]
             ]
         ]
+
+--LOOK HERE
+
+extractID : String -> String
+extractID id = 
+    case List.head (String.split "." id) of 
+        Just realID ->
+            realID
+        Nothing -> 
+            "-1"
+
+--HIER NOCH WAS HINZUFÜGEN
+strToInt id = 
+    case String.toInt (extractID id) of
+        Just a ->
+            a
+
+        Nothing ->
+            -1
+
+--model.questionnaire.newCondition.parent_id 

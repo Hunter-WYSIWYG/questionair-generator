@@ -540,7 +540,7 @@ getQuestionOptions list newCondition =
 getAnswerOptions : Model -> Condition -> List (Html Msg)
 getAnswerOptions model newCondition =
     let 
-        parent_frage = checkFrage (get model.questionnaire.newCondition.parent_id model.questionnaire.elements)
+        parent_frage = checkFrage (get model.newCondition.parent_id model.questionnaire.elements)
         parent_antworten = (parent_frage.answers)
         list = parent_antworten
     in
@@ -663,7 +663,7 @@ viewNewConditionModal2 model =
                         , br [] []
                         , div [ class "select" ]
                             [ select [ onInput AddAnswerToNewCondition ]
-                                (getAnswerOptions model model.questionnaire.newCondition)
+                                (getAnswerOptions model model.newCondition)
                             ]
                         , br [] []
                         , input

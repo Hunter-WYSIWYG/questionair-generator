@@ -236,23 +236,18 @@ update msg model =
                 oldQuestionnaire = model.questionnaire
                 oldCondition = model.newCondition
                 newCondition2 = {oldCondition | parent_id = strToInt parent_id }
-                newQuestionnaire = {oldQuestionnaire | newCondition = newCondition2 }
+                
             in
-                ( { model | newCondition = newCondition2 }
-                , Cmd.none
-                )
+                ( { model | newCondition = newCondition2 }, Cmd.none )
 
         --LOOK HERE
         ChangeInputChildId child_id ->
             let 
                 oldQuestionnaire = model.questionnaire
                 oldCondition = model.newCondition
-                newCondition2 = {oldCondition | child_id = strToInt child_id }
-                newQuestionnaire = {oldQuestionnaire | newCondition = newCondition2 }
+                newCondition2 = { oldCondition | child_id = strToInt child_id }
             in
-                ( { model | newCondition = newCondition2 }
-                , Cmd.none
-                )
+                ( { model | newCondition = newCondition2 }, Cmd.none )
 
         AddCondition ->
             let
@@ -384,7 +379,7 @@ update msg model =
                     else
                         { oldQuestionnaire
                                     | conditions =
-                                         List.map (\e -> Condition.updateCondition oldQuestionnaire.newCondition e) oldQuestionnaire.conditions 
+                                         List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions 
                         }
             in
             if model.editCondition == False then
@@ -430,16 +425,7 @@ update msg model =
             ( { model | newAnswer = element, showNewAnswerModal = True, editAnswer = True }, Cmd.none )
 
         EditCondition condition ->
-            let
-                oldQuestionnaire =
-                    model.questionnaire
-
-                changedQuestionnaire =
-                    { oldQuestionnaire
-                        | newCondition = condition
-                    }
-            in
-            ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = True, editCondition = True }, Cmd.none )
+            ( { model | newCondition = condition, showNewConditionModal2 = True, editCondition = True }, Cmd.none )
 
         EditQuestion element ->
             let 

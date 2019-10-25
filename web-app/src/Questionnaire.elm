@@ -30,28 +30,17 @@ type alias Questionnaire =
     { title : String
     , elements : List Q_element
     , conditions : List Condition
-<<<<<<< HEAD
     
-=======
-    , newAnswerID_Condition : String
-
->>>>>>> origin/condition-modal
     --times
     , viewingTimeBegin : String
     , viewingTimeEnd : String
     , editTime : String
 
     --newInputs
-<<<<<<< HEAD
     --, newElement : Q_element
     --, newAnswer : Answer
     --, newCondition : Condition
     --, newAnswerID_Condition : String
-=======
-    , newElement : Q_element
-    , newAnswer : Answer
-    , newCondition : Condition
->>>>>>> origin/condition-modal
     }
 
 

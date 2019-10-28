@@ -17,6 +17,7 @@ import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Note;
 import com.example.app.question.Question;
 import com.example.app.question.SliderQuestion;
+import com.example.app.question.TableQuestion;
 
 public abstract class QuestionDisplayView {
 
@@ -44,6 +45,8 @@ public abstract class QuestionDisplayView {
 			return new SliderView (activity, (SliderQuestion) question);
 		else if (question instanceof Note)
 			return new NoteView (activity, (Note) question);
+		else if (question instanceof TableQuestion)
+			return new TableView (activity, (TableQuestion) question);
 		else
 			throw new IllegalArgumentException ();
 		// TODO: implement other question views

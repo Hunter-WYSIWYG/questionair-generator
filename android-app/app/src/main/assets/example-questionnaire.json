@@ -107,6 +107,16 @@
           "optionType": "text"
         }
       ]
+    },
+    {
+      "questionID": 7,
+      "questionText": "Wie fuehlen Sie sich gerade?",
+      "type": "tableView",
+      "size": 3,
+      "topName:": "Voller Eergie",
+      "bottomName": "Energielos",
+      "rightName": "Gute Stimmung",
+      "leftName": "Schlechte Stimmung"
     }
   ]
 }

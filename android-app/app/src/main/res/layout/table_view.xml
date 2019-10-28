@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent" android:layout_height="match_parent">
+
+	<TableLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="visible"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:visibility="visible">
+
+		<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+			<Button
+					android:id="@+id/button1"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="#FFFFFF"
+					android:text="@string/_1" />
+
+			<Button
+					android:id="@+id/button2"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/_2" />
+
+			<Button
+					android:id="@+id/button3"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/_3" />
+		</TableRow>
+
+		<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+			<Button
+					android:id="@+id/button4"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/_4" />
+
+			<Button
+					android:id="@+id/button5"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/_5" />
+
+			<Button
+					android:id="@+id/button6"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/_6" />
+		</TableRow>
+
+		<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+			<Button
+					android:id="@+id/button7"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/_7" />
+
+			<Button
+					android:id="@+id/button8"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/_8" />
+
+			<Button
+					android:id="@+id/button9"
+					style="@style/Widget.AppCompat.Button.Borderless"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/_9" />
+		</TableRow>
+
+	</TableLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.app.view;
 
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
@@ -15,8 +16,8 @@ public class TableView extends QuestionDisplayView {
 	private final TableQuestion question;
 	// container of slider
 	private ConstraintLayout container;
-	// actual note
 	
+	private TableLayout table;
 	
 	// constructor
 	public TableView (QuestionDisplayActivity activity, TableQuestion question) {
@@ -29,16 +30,20 @@ public class TableView extends QuestionDisplayView {
 	private void init () {
 		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.table_view, null);
 		
-		// set questionTypeText
-		TextView questionTypeTextView = this.container.findViewById (R.id.NoteTypeText);
-		questionTypeTextView.setText ("Notiz");
+		// Tabelle erstellen
 		
-		// set questionText
-		TextView questionTextView = this.container.findViewById (R.id.NoteViewText);
-		questionTextView.setText (this.question.questionText);
+		this.createTable();
+		
+		// set questionTypeText
+		TextView questionTypeTextView = this.container.findViewById (R.id.TableTypeText);
+		questionTypeTextView.setText ("Table View");
 		
 		// next button always enabled
 		this.getActivity ().setNextButtonEnabled (true);
+	}
+	
+	private void createTable(){
+		this.table = this.container.findViewById (R.id.tableView);
 	}
 	
 	

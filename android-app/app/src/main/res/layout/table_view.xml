@@ -6,6 +6,7 @@
 		android:layout_width="match_parent" android:layout_height="match_parent">
 
 	<TableLayout
+			android:id="@+id/tableView"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:visibility="visible"
@@ -95,5 +96,14 @@
 		</TableRow>
 
 	</TableLayout>
+
+	<TextView
+			android:id="@+id/TableTypeText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="TableView"
+			tools:layout_editor_absoluteX="176dp"
+			tools:layout_editor_absoluteY="111dp"
+			tools:ignore="MissingConstraints" />
 
 </android.support.constraint.ConstraintLayout>

@@ -5,6 +5,43 @@
 		xmlns:tools="http://schemas.android.com/tools"
 		android:layout_width="match_parent" android:layout_height="match_parent">
 
+	<TextView
+			android:id="@+id/TableQuestionText"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginLeft="16dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginEnd="16dp"
+			android:layout_marginRight="16dp"
+			android:layout_marginBottom="16dp"
+			android:text="test frage"
+			android:textAppearance="@style/TextAppearance.AppCompat.Large"
+			android:textColor="#000000"
+			android:textSize="30sp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintVertical_bias="0.0"/>
+
+	<TextView
+			android:id="@+id/TableQuestionTypeText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Fragetyp"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+	<View
+			android:id="@+id/TableDividingLine"
+			android:layout_width="match_parent"
+			android:layout_height="2dp"
+			android:layout_marginTop="8dp"
+			android:background="?android:attr/listDivider"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/TableQuestionText" />
 	<TableLayout
 			android:id="@+id/tableView"
 			android:layout_width="wrap_content"
@@ -13,97 +50,8 @@
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/TableDividingLine"
 			tools:visibility="visible">
-
-		<TableRow
-				android:layout_width="match_parent"
-				android:layout_height="match_parent">
-
-			<Button
-					android:id="@+id/button1"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:background="#FFFFFF"
-					android:text="@string/_1" />
-
-			<Button
-					android:id="@+id/button2"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/_2" />
-
-			<Button
-					android:id="@+id/button3"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/_3" />
-		</TableRow>
-
-		<TableRow
-				android:layout_width="match_parent"
-				android:layout_height="match_parent">
-
-			<Button
-					android:id="@+id/button4"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/_4" />
-
-			<Button
-					android:id="@+id/button5"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/_5" />
-
-			<Button
-					android:id="@+id/button6"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/_6" />
-		</TableRow>
-
-		<TableRow
-				android:layout_width="match_parent"
-				android:layout_height="match_parent">
-
-			<Button
-					android:id="@+id/button7"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/_7" />
-
-			<Button
-					android:id="@+id/button8"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/_8" />
-
-			<Button
-					android:id="@+id/button9"
-					style="@style/Widget.AppCompat.Button.Borderless"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/_9" />
-		</TableRow>
-
 	</TableLayout>
-
-	<TextView
-			android:id="@+id/TableTypeText"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="TableView"
-			tools:layout_editor_absoluteX="176dp"
-			tools:layout_editor_absoluteY="111dp"
-			tools:ignore="MissingConstraints" />
 
 </android.support.constraint.ConstraintLayout>

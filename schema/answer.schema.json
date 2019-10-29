@@ -5,41 +5,35 @@
 	"properties": {
         "title_of_questionnaire": {
             "type": "string",
-            "description": "unique identifier of the corresponding questionnaire"
+            "description": "unique title identifier of the corresponding questionnaire"
         },
-        "answered_question_id_list": {
-            "type": "array",
-            "items": {
-                "type": "integer"
-            },
-            "description": "Array of answered question IDs, in order of answering"
-        },
-	"viewingTimeBegin": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Point in time when the questionnaire begins to be viewable"
-        },
-	"viewingTimeEnd": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Point in time when the questionnaire stops to be viewable"
-        },
-        "editTime": {
-            "type": "string",
-            "format": "time",
-            "description": "Duration which determines the max. answering time"
+	"questionnaire_id": {
+            "type": "integer",
+            "description": "unique id identifier of the corresponding questionnaire"
         },
 	"answerTime": {
             "type": "string",
             "format": "time",
-            "description": "Point in time when questionnaire was answered"
+            "description": "Point in time when question was answered"
         },
-	"anwers_to_questions": {
+        "type_of_question": {
+            "type": "string",
+            "description": "The type of the question(e.g. single choice,...)"
+        },
+	"question_id": {
+            "type": "integer",
+            "description": "Unique id identifier of the corresponding question"
+        },
+	"question_text": {
+            "type": "string",
+            "description": "Text of the given question"
+        },
+	"anwers": {
             "type": "array",
             "items": {
                 "$ref": "#/definitions/answer"
             },
-            "description": "Array of answers, in order of answered_question_id_list"
+            "description": "Array of answers given for this question"
         }
     },
 	"definitions": {
@@ -48,39 +42,25 @@
 			"required": [
 				"_type",
 				"id",
-				"value"
 			],
 			"properties": {
 				"_type": {
-					"type": "number",
-					"description": "The number corresponding to the type: (0) regular text, (1) number, (2) point, (3) free text"
-				},
-				"text": {
 					"type": "string",
-					"description": "Content of the answer"
+					"description": "The type of the question(e.g. free text,choice,slider,...)"
 				},
 				"id": {
 					"type": "integer",
 					"description": "ID of the answer"
 				},
-				"number": {
-					"type": "number",
-					"description": "If answer is represented by number, e.g. a percentage"
+				"text": {
+					"type": "string",
+					"description": "Content of the answer if free text"
 				},
-				"point": {
-					"type": "object",
-					"description": "If answer is represented by a point (x,y)",
-					"required": ["x-coordinate","y-coordinate"],
-					"properties":{
-						"x-coordinate": {
-							"type":"number",
-							"Description": "The x-coordinate of the point"
-						},
-						"y-coordinate": {
-							"type":"number",
-							"Description": "The y-coordinate of the point"
-						}
-					}
+
+				"number": {
+					"type": "integer",
+					"description": "Number of resulting choice for slider type"
+				}
 				}
 			}
 		}

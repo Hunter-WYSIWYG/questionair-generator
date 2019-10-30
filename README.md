@@ -32,10 +32,8 @@ wechseln und elm make ausführen:
 
 * regelmäßig git commit und git push ausführen
 
-----------------------------------------------------------------
+## Link zur Elm-Referenz
+* [package.elm-lang.org](https://package.elm-lang.org/)
 
-## Link zur Referenz für Elm-Sprache:
-	https://package.elm-lang.org/
-
-## Link zu Bulma:
-	bulma.io
+## Link zum CSS-Framework Bulma:
+* [bulma.io](https://bulma.io)

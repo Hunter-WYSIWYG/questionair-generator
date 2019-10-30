@@ -1,20 +1,15 @@
 image: node:latest
 
 stages:
-  - before_script
   - build
   - deploy
   - after_script
-
-before_script:
-  - apt-get update -qq && apt-get install -y -qq sshpass
 
 deploy:
   type: deploy
   environment:
     name: staging
   script:
-    - npm install -g elm --unsafe-perm=true
     - cd web-app/
     - mkdir build/
     - cp src/index.html build/

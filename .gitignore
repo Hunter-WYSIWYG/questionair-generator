@@ -2,12 +2,14 @@
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+.idea/
+android-app/.idea/gradle.xml
+android-app/.idea/caches
+android-app/.idea/libraries
+android-app/.idea/modules.xml
+android-app/.idea/workspace.xml
+android-app/.idea/navEditor.xml
+android-app/.idea/assetWizardSettings.xml
 .DS_Store
 /build
 src/build
@@ -19,3 +21,4 @@ src/build
 web-app/elm-stuff
 web-app/Main.js
 web-app/src/Main.js
+web-app/src/elm-stuff

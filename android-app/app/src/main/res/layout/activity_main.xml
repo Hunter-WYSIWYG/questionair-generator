@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent"
-                                             android:background="#FFFFFF"
-                                             tools:context=".MainActivity">
-    <Button
-            android:text="START"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/startButton"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/button_background"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:onClick="startButtonClick"/>
-    <TextView
-            android:text="Aktueller Fragebogen:"
-            android:layout_width="242dp"
-            android:layout_height="46dp"
-            android:id="@+id/sampleText" android:textSize="24sp"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="116dp"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"/>
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:id="@+id/dynamicQname"
-            app:layout_constraintTop_toBottomOf="@+id/sampleText"
-            app:layout_constraintBottom_toTopOf="@+id/startButton" app:layout_constraintVertical_bias="0.431"
-            android:textSize="24sp" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" tools:text="Kein Fragebogen eingelesen!"
-            android:textIsSelectable="true"/>
+<android.support.constraint.ConstraintLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#FFFFFF"
+		tools:context=".MainActivity">
+
+	<Button
+			android:id="@+id/startButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginRight="8dp"
+			android:layout_marginBottom="8dp"
+			android:onClick="startButtonClick"
+			android:text="Starte Fragebogen"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+	/>
+	<TextView
+			android:id="@+id/sampleText"
+			android:layout_width="242dp"
+			android:layout_height="46dp"
+			android:layout_marginTop="116dp" android:text="Aktueller Fragebogen:"
+			android:textSize="24sp" app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.497" app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"/>
+	<TextView
+			android:id="@+id/dynamicQname"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+			android:textIsSelectable="true" android:textSize="24sp"
+			app:layout_constraintBottom_toTopOf="@+id/startButton" app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/sampleText" app:layout_constraintVertical_bias="0.17000002"
+			tools:text="Kein Fragebogen eingelesen!"/>
 </android.support.constraint.ConstraintLayout>

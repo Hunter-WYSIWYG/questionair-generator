@@ -22,6 +22,8 @@ import Condition exposing (Condition)
 import File exposing (File)
 import QElement exposing (Q_element)
 import Questionnaire exposing (Questionnaire)
+import DateTimePicker exposing (..)
+import Time exposing (..)
 
 
 {-| Das Model für die Webanwendung.
@@ -56,6 +58,12 @@ type alias Model =
     , inputChildId : Int
     , newAnswerID_Condition : String
     , newCondition : Condition
+    , viewingTimeBeginPickerState : DateTimePicker.State
+    , viewingTimeBeginPickerValue : Maybe DateTimePicker.DateTime
+    , viewingTimeEndPickerState : DateTimePicker.State
+    , viewingTimeEndPickerValue : Maybe DateTimePicker.DateTime
+    , newElement : Q_element
+    , newAnswer : Answer
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -97,8 +105,6 @@ type
     --Changing Input
     = ChangeInputQuestionnaireTitle String
     | ChangeEditTime String
-    | ChangeViewingTimeBegin String
-    | ChangeViewingTimeEnd String
     | ChangeQuestionOrNoteText String
     | ChangeAnswerText String
     | ChangeQuestionNote String
@@ -106,6 +112,8 @@ type
     | ChangeAnswerType String
     | ChangeQuestionNewAnswer Answer
     | ChangeQuestionTime String
+    | ChangeViewingTimeBeginPicker DateTimePicker.State (Maybe DateTimePicker.DateTime)
+    | ChangeViewingTimeEndPicker DateTimePicker.State (Maybe DateTimePicker.DateTime)
       --Modals
     | ViewOrClose ModalType
       --Creates Condition
@@ -181,7 +189,13 @@ initModel _ =
       , inputChildId = -1
       , newCondition = Condition.initCondition
       , newAnswerID_Condition = ""
-
+      , viewingTimeBeginPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
+      , viewingTimeBeginPickerValue = Nothing
+      , viewingTimeEndPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
+      , viewingTimeEndPickerValue = Nothing
+      , newElement = QElement.initQuestion
+      , newAnswer = Answer.initAnswer
+      
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire
       , upload = False

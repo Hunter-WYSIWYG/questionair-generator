@@ -11,6 +11,8 @@
 			android:roundIcon="@mipmap/new_icon_launcher_round"
 			android:supportsRtl="true"
 			android:theme="@style/AppTheme">
+		<activity android:name=".view.percentSliderView">
+		</activity>
 		<activity android:name=".QuestionnaireFinishedActivity">
 		</activity>
 		<activity android:name=".SaveAnswersActivity">

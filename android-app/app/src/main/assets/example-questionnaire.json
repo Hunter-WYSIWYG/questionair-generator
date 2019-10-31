@@ -62,6 +62,11 @@
     },
     {
       "questionID": 4,
+      "questionText": "Haben sie alles erledigt heute?",
+      "type": "percentslider"
+    },
+    {
+      "questionID": 5,
       "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
       "type": "slider",
       "minValue": 0.0,
@@ -69,7 +74,7 @@
       "stepSize": 1.0
     },
     {
-      "questionID": 5,
+      "questionID": 6,
       "questionText": "Glauben Sie die momentane Situation im Griff zu haben? (-5 - gar nicht, 5 - völlig)",
       "type": "slider",
       "minValue": -5.0,
@@ -77,7 +82,7 @@
       "stepSize": 2.0
     },
     {
-      "questionID": 6,
+      "questionID": 7,
       "questionText": "Mit wem sind Sie gerade zusammen?",
       "type": "multipleChoice",
       "options": [

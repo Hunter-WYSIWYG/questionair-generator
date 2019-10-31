@@ -17,6 +17,7 @@ import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Note;
 import com.example.app.question.Question;
 import com.example.app.question.SliderQuestion;
+import com.example.app.question.percentSliderQuestion;
 
 public abstract class QuestionDisplayView {
 
@@ -42,6 +43,8 @@ public abstract class QuestionDisplayView {
 			return new MultipleChoiceView (activity, (ChoiceQuestion) question);
 		else if (question instanceof SliderQuestion)
 			return new SliderView (activity, (SliderQuestion) question);
+		else if (question instanceof percentSliderQuestion)
+			return new percentSliderView (activity, (percentSliderQuestion) question);
 		else if (question instanceof Note)
 			return new NoteView (activity, (Note) question);
 		else

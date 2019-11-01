@@ -123,4 +123,5 @@
 	<string name="hello_gallery_second">Hello HomeSecondFragment. Arg: %1$s</string>
 	<string name="hello_slideshow_second">Hello HomeSecondFragment. Arg: %1$s</string>
 	<string name="title_activity_navdrawer">navdrawer</string>
+	<string name="LicenceText">This App uses the IndicatorSeekBar by warkiz, which is used under the Apache Licence.</string>
 </resources>

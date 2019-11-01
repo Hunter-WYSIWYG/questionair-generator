@@ -3,12 +3,15 @@ package com.example.app;
 import android.app.ActionBar;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +27,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 	private DrawerLayout drawerlayout;
 	
 	private Questionnaire questionnaire = null;
@@ -36,38 +39,19 @@ public class MainActivity extends AppCompatActivity {
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		drawerlayout = findViewById(R.id.drawer_layout);
-		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerlayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+		NavigationView navView = findViewById(R.id.nav_view);
+		navView.setNavigationItemSelectedListener(this);
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerlayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		drawerlayout.addDrawerListener(toggle);
 		toggle.syncState();
-		
 		
 		questionnaire = importQuestions();
 		TextView tv = findViewById(R.id.dynamicQname);
 		tv.setText(questionnaire.getName());
 	}
 	
-	public boolean onCreateOptionsMenu(Menu menu) {
-		ActionBar actionBar = getActionBar();
-		if (null != actionBar) {
-			actionBar.setHomeButtonEnabled(false);      // Disable the button
-			actionBar.setDisplayHomeAsUpEnabled(false); // Remove the left caret
-			actionBar.setDisplayShowHomeEnabled(false); // Remove the icon
-		}
-		return true;
-	}
-	
-	public void onBackPressed() {
-		if(drawerlayout.isDrawerOpen(GravityCompat.START)) {
-			drawerlayout.closeDrawer(GravityCompat.START);
-			return;
-		}
-		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
-		myToast.show();
-	}
-	
 	@Nullable
 	private Questionnaire importQuestions() {
-		
 		// read JSON file with GSON library
 		// you have to add the dependency for gson
 		// File > Project Structure > Add Dependency
@@ -96,6 +80,25 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 	
+	public boolean onCreateOptionsMenu(Menu menu) {
+		ActionBar actionBar = getActionBar();
+		if (null != actionBar) {
+			actionBar.setHomeButtonEnabled(false);      // Disable the button
+			actionBar.setDisplayHomeAsUpEnabled(false); // Remove the left caret
+			actionBar.setDisplayShowHomeEnabled(false); // Remove the icon
+		}
+		return true;
+	}
+	
+	public void onBackPressed() {
+		if (drawerlayout.isDrawerOpen(GravityCompat.START)) {
+			drawerlayout.closeDrawer(GravityCompat.START);
+			return;
+		}
+		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
+		myToast.show();
+	}
+	
 	public void startButtonClick(View view) {
 		if (null == questionnaire) {
 			Toast toast = Toast.makeText(this, "Kein Fragebogen eingelesen.", Toast.LENGTH_SHORT);
@@ -104,6 +107,21 @@ public class MainActivity extends AppCompatActivity {
 		}
 		QuestionnaireState questionnaireState = new QuestionnaireState(questionnaire);
 		QuestionDisplayActivity.displayCurrentQuestion(questionnaireState, this);
-		
+	}
+	
+	@Override
+	public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
+		switch (menuItem.getItemId()) {
+			case R.id.nav_home:
+				getSupportFragmentManager().popBackStackImmediate();
+				break;
+			case R.id.nav_licence:
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LicenceFragment()).addToBackStack(null).commit();
+				break;
+			default:
+				break;
+		}
+		drawerlayout.closeDrawer(GravityCompat.START);
+		return true;
 	}
 }

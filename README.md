@@ -6,33 +6,34 @@ Ihr müsst das Android Studio Projekt neu öffnen, da sich die Ordnerstruktur ve
 
 ## CI/CD verwenden
 
-Nach jedem Commit auf den master-Branch wird ein Build von der WebApp erstellt und auf der Seite users.informatik.uni-halle.de/~anfvg hochgeladen.
+Nach jedem Commit auf den master-Branch wird ein Build von der WebApp erstellt und auf 
+  [users.informatik.uni-halle.de/~anfvg](http://users.informatik.uni-halle.de/~anfvg) 
+hochgeladen.
 
 ## Elm installieren:
-	https://guide.elm-lang.org/install.html
 
-* Ggf. Editor einrichten
+* [guide.elm-lang.org/install.html](https://guide.elm-lang.org/install.html)
 
-* Eigenen Branch anlegen
+* ggf. Editor einrichten
 
-* Zum Kompilieren in den Ordner fragebogengenerator/web-app/src/ 
+* eigenen Branch anlegen
+
+* zum Kompilieren in den Ordner fragebogengenerator/web-app/src/ 
 wechseln und elm make ausführen:
 ```
   cd web-app/src
   elm make Main.elm --output Main.js
 ```
-* Um eine Vorschau zu sehen: 
+* um eine Vorschau zu sehen, elm reactor starten 
 ```
   elm reactor
 ```
-Dann auf localhost:8000/index.html aufrufen.
+* [localhost:8000/index.html](localhost:8000/index.html) aufrufen
 
-* Regelmäßig git commit und git push ausführen
+* regelmäßig git commit und git push ausführen
 
-----------------------------------------------------------------
+## Link zur Elm-Referenz
+* [package.elm-lang.org](https://package.elm-lang.org/)
 
-## Link zur Referenz für Elm-Sprache:
-	https://package.elm-lang.org/
-
-## Link zu Bulma:
-	bulma.io
+## Link zum CSS-Framework Bulma:
+* [bulma.io](https://bulma.io)

@@ -23,23 +23,38 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 	/>
-	<TextView
-			android:id="@+id/sampleText"
-			android:layout_width="242dp"
-			android:layout_height="46dp"
-			android:layout_marginTop="116dp" android:text="Aktueller Fragebogen:"
-			android:textSize="24sp" app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.497" app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"/>
-	<TextView
-			android:id="@+id/dynamicQname"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-			android:textIsSelectable="true" android:textSize="24sp"
-			app:layout_constraintBottom_toTopOf="@+id/startButton" app:layout_constraintEnd_toEndOf="parent"
+
+
+	<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="0dp"
+			android:orientation="vertical"
+			app:layout_constraintBottom_toTopOf="@+id/startButton"
+			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/sampleText" app:layout_constraintVertical_bias="0.17000002"
-			tools:text="Kein Fragebogen eingelesen!"/>
+			app:layout_constraintTop_toTopOf="parent">
+
+
+		<TextView
+				android:id="@+id/textViewListOfQuestionnaires"
+				android:layout_width="match_parent"
+				android:layout_height="?attr/actionBarSize"
+				android:background="@color/DeepPink"
+				android:textColor="@color/White"
+				android:gravity="center"
+				android:text="Fragebögen"
+				android:textStyle="bold"
+				android:textAppearance="@style/TextAppearance.AppCompat.Large"
+		/>
+		<ListView
+				android:id="@android:id/list"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:headerDividersEnabled="true"
+				android:dividerHeight="1dp"
+				android:clickable="true"
+				android:choiceMode="singleChoice"
+		>
+		</ListView>
+	</LinearLayout>
 </android.support.constraint.ConstraintLayout>

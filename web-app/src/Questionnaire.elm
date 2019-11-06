@@ -19,7 +19,6 @@ module Questionnaire exposing
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import List.Extra as LExtra
 import QElement exposing (Q_element)
 
 

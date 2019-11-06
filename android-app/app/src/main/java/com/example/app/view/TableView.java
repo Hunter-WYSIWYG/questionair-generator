@@ -1,11 +1,9 @@
 package com.example.app.view;
 
 import android.support.constraint.ConstraintLayout;
+import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
@@ -57,6 +55,22 @@ public class TableView extends QuestionDisplayView {
 		// find dividingLine
 		View dividingLine = this.container.findViewById (R.id.TableDividingLine);
 		
+		// set leftName
+		TextView leftName = this.container.findViewById (R.id.leftName);
+		leftName.setText (this.question.leftName);
+		
+		// set rightName
+		TextView rightName = this.container.findViewById (R.id.rightName);
+		rightName.setText (this.question.rightName);
+		
+		// set topName
+		TextView topName = this.container.findViewById (R.id.topName);
+		topName.setText (this.question.topName);
+		
+		// set bottomName
+		TextView bottomName = this.container.findViewById (R.id.bottomName);
+		bottomName.setText (this.question.bottomName);
+		
 		// create table
 		this.createTable();
 		
@@ -65,25 +79,29 @@ public class TableView extends QuestionDisplayView {
 		this.getActivity ().setNextButtonEnabled (true);
 	}
 	
+	
 	// create table
 	private void createTable(){
 		this.table = this.container.findViewById (R.id.tableView);
+		this.table.setMinimumHeight (this.table.getWidth ());
 		for (int i = 0; i < this.size; i++) {
 			TableRow tableRow = new TableRow (this.getActivity ());
+			
 			// add table row to table
 			this.table.addView (tableRow);
+			
 			for(int j = 0; j < this.size; j++) {
 				Button button = new Button (this.getActivity ());
-				// set if of button
+				// set id of button
 				button.setId (this.idGenerator ());
+				// set layout of button
+				//button.set
 				// add button to button list
 				this.buttons.add (button);
 				// add button to table row
 				tableRow.addView (button);
 			}
 		}
-		TableRow tableRow = new TableRow (this.getActivity ());
-		this.table.addView (tableRow);
 	}
 	// return button id
 	private int idGenerator () {

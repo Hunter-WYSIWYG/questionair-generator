@@ -3,7 +3,8 @@
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:app="http://schemas.android.com/apk/res-auto"
 		xmlns:tools="http://schemas.android.com/tools"
-		android:layout_width="match_parent" android:layout_height="match_parent">
+		android:layout_width="match_parent" android:layout_height="match_parent"
+		android:scrollbars="horizontal|none">
 
 	<TextView
 			android:id="@+id/TableQuestionText"
@@ -31,27 +32,58 @@
 			android:layout_height="wrap_content"
 			android:text="Fragetyp"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+			app:layout_constraintTop_toTopOf="parent"/>
 
 	<View
 			android:id="@+id/TableDividingLine"
 			android:layout_width="match_parent"
 			android:layout_height="2dp"
-			android:layout_marginTop="8dp"
 			android:background="?android:attr/listDivider"
-			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/TableQuestionText" />
+			app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/TableQuestionText"/>
 	<TableLayout
 			android:id="@+id/tableView"
-			android:layout_width="wrap_content"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:visibility="visible"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/TableDividingLine"
+			android:gravity="center"
+			android:scrollbarAlwaysDrawHorizontalTrack="true"
+			android:scrollbarAlwaysDrawVerticalTrack="true" android:scrollbarTrackVertical="@null"
+			android:shrinkColumns="*" android:visibility="visible"
+			app:layout_constrainedHeight="false" app:layout_constraintBottom_toTopOf="@+id/bottomName"
+			app:layout_constraintEnd_toStartOf="@+id/rightName"
+			app:layout_constraintStart_toEndOf="@+id/leftName" app:layout_constraintTop_toBottomOf="@+id/topName"
 			tools:visibility="visible">
 	</TableLayout>
+	<VerticleTextView
+			android:id="@+id/leftName"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:rotation="270" android:text="TextView"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/TableDividingLine"/>
+	<TextView
+			android:id="@+id/rightName"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:rotation="90"
+			android:text="TextView" app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@+id/TableDividingLine"/>
+	<TextView
+			android:id="@+id/topName"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:text="TextView" app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/TableDividingLine"/>
+	<TextView
+			android:id="@+id/bottomName"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center" android:text="TextView"
+			app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

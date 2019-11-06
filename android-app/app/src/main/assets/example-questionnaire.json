@@ -27,8 +27,8 @@
       "questionID": 3,
       "questionText": "Wie fuehlen Sie sich gerade?",
       "type": "tableView",
-      "size": 3,
-      "topName:": "Voller Eergie",
+      "size": 9,
+      "topName": "Voller Energie",
       "bottomName": "Energielos",
       "rightName": "Gute Stimmung",
       "leftName": "Schlechte Stimmung"

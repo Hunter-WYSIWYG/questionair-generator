@@ -56,11 +56,11 @@ public class TableView extends QuestionDisplayView {
 		View dividingLine = this.container.findViewById (R.id.TableDividingLine);
 		
 		// set leftName
-		TextView leftName = this.container.findViewById (R.id.leftName);
+		VerticalTextView leftName = this.container.findViewById (R.id.leftName);
 		leftName.setText (this.question.leftName);
 		
 		// set rightName
-		TextView rightName = this.container.findViewById (R.id.rightName);
+		VerticalTextView rightName = this.container.findViewById (R.id.rightName);
 		rightName.setText (this.question.rightName);
 		
 		// set topName

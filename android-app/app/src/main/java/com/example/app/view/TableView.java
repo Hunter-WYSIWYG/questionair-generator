@@ -2,6 +2,7 @@ package com.example.app.view;
 
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
 
@@ -87,6 +88,8 @@ public class TableView extends QuestionDisplayView {
 		for (int i = 0; i < this.size; i++) {
 			TableRow tableRow = new TableRow (this.getActivity ());
 			
+			// row set in the middle
+			tableRow.setGravity (Gravity.CENTER);
 			// add table row to table
 			this.table.addView (tableRow);
 			

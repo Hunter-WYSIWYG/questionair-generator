@@ -7,6 +7,8 @@ public enum QuestionType {
 
 	@SerializedName ("multipleChoice") MultipleChoice,
 
-	@SerializedName ("slider") Slider
+	@SerializedName ("slider") Slider,
+	
+	@SerializedName ("note") Note
 }
 

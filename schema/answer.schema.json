@@ -1,0 +1,68 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "answers",
+	"type": "object",
+	"properties": {
+        "title_of_questionnaire": {
+            "type": "string",
+            "description": "unique title identifier of the corresponding questionnaire"
+        },
+	"questionnaire_id": {
+            "type": "integer",
+            "description": "unique id identifier of the corresponding questionnaire"
+        },
+	"answerTime": {
+            "type": "string",
+            "format": "time",
+            "description": "Point in time when question was answered"
+        },
+        "type_of_question": {
+            "type": "string",
+            "description": "The type of the question(e.g. single choice,...)"
+        },
+	"question_id": {
+            "type": "integer",
+            "description": "Unique id identifier of the corresponding question"
+        },
+	"question_text": {
+            "type": "string",
+            "description": "Text of the given question"
+        },
+	"anwers": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/answer"
+            },
+            "description": "Array of answers given for this question"
+        }
+    },
+	"definitions": {
+		"answer": {
+			"type": "object",
+			"required": [
+				"_type",
+				"id"
+			],
+			"properties": {
+				"_type": {
+					"type": "string",
+					"description": "The type of the question(e.g. free text,choice,slider,...)"
+				},
+				"id": {
+					"type": "integer",
+					"description": "ID of the answer"
+				},
+				"text": {
+					"type": "string",
+					"description": "Content of the answer if free text"
+				},
+
+				"number": {
+					"type": "integer",
+					"description": "Number of resulting choice for slider type"
+				}
+				
+			}
+		}
+	}
+}

@@ -1,5 +1,5 @@
 {
-  "questionnaireName": "Example Questionnaire:\nTag im Rueckblick",
+  "questionnaireName": "Beispiel Fragebogen:\nTag im Rückblick",
   "questions": [
     {
       "questionID": 1,
@@ -20,34 +20,8 @@
     },
     {
       "questionID": 2,
-      "questionText": "Mit wem sind Sie gerade zusammen?",
-      "type": "multipleChoice",
-      "options": [
-        {
-          "optionID": 1,
-          "optionText": "Allein",
-          "optionType": "text"
-        },
-        {
-          "optionID": 2,
-          "optionText": "Mit Freunden",
-          "optionType": "text"
-        },         {
-          "optionID": 3,
-          "optionText": "Familie",
-          "optionType": "text"
-        },
-        {
-          "optionID": 4,
-          "optionText": "Andere Bekannte",
-          "optionType": "text"
-        },
-        {
-          "optionID": 5,
-          "optionText": "Fremde Personen",
-          "optionType": "text"
-        }
-      ]
+      "questionText": "Dies ist ein Test der Notiz-Funktionalität. Falls alles klappt, wird hier eine Notiz angezeigt, die beliebig ausfallen kann. Kurze und lange Texte sollten kein Problem darstellen, da hier mal viel und mal wenig Informationen präsentiert werden müssen.",
+      "type": "note"
     },
     {
       "questionID": 3,
@@ -101,6 +75,38 @@
       "minValue": -5.0,
       "maxValue": 5.0,
       "stepSize": 2.0
+    },
+    {
+      "questionID": 6,
+      "questionText": "Mit wem sind Sie gerade zusammen?",
+      "type": "multipleChoice",
+      "options": [
+        {
+          "optionID": 1,
+          "optionText": "Allein",
+          "optionType": "text"
+        },
+        {
+          "optionID": 2,
+          "optionText": "Mit Freunden",
+          "optionType": "text"
+        },
+        {
+          "optionID": 3,
+          "optionText": "Familie",
+          "optionType": "text"
+        },
+        {
+          "optionID": 4,
+          "optionText": "Andere Bekannte",
+          "optionType": "text"
+        },
+        {
+          "optionID": 5,
+          "optionText": "Fremde Personen",
+          "optionType": "text"
+        }
+      ]
     }
   ]
 }

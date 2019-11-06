@@ -46,11 +46,25 @@ swapAt index1 index2 l =
                 l
 
 
+{-| Take a number and a list, return a tuple of lists, where first part is prefix of the list of length equal the number, and second part is the remainder of the list. `splitAt n xs` is equivalent to `(take n xs, drop n xs)`.
+splitAt 3 [1,2,3,4,5] == ([1,2,3],[4,5])
+splitAt 1 [1,2,3] == ([1],[2,3])
+splitAt 3 [1,2,3] == ([1,2,3],[])
+splitAt 4 [1,2,3] == ([1,2,3],[])
+splitAt 0 [1,2,3] == ([],[1,2,3])
+splitAt (-1) [1,2,3] == ([],[1,2,3])
+Uebernommen aus List.Extra, weil es damit Probleme gab
+-}
 splitAt : Int -> List a -> ( List a, List a )
 splitAt n xs =
     ( take n xs, drop n xs )
 
 
+{-| Decompose a list into its head and tail. If the list is empty, return `Nothing`. Otherwise, return `Just (x, xs)`, where `x` is head and `xs` is tail.
+uncons [1,2,3] == Just (1, [2,3])
+uncons [] = Nothing
+Uebernommen aus List.Extra, weil es damit Probleme gab
+-}
 uncons : List a -> Maybe ( a, List a )
 uncons list =
     case list of

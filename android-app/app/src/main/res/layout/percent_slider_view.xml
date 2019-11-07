@@ -43,12 +43,16 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/SliderQuestionText" />
-
+	<com.warkiz.widget.IndicatorStayLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_constraintTop_toBottomOf="@id/SliderDividingLine"
+			android:layout_marginTop="90dp">
 		<com.warkiz.widget.IndicatorSeekBar
 			android:id="@+id/Slider"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="100dp"
+			android:layout_marginTop="10dp"
 			app:isb_indicator_color="@color/DarkSlateGray"
 			app:isb_indicator_text_color="@color/White"
 			app:isb_indicator_text_size="18sp"
@@ -67,12 +71,12 @@
 			app:isb_tick_marks_size="13dp"
 			app:isb_tick_texts_color="@color/DarkSlateGray"
 			app:isb_tick_texts_size="15sp"
-			app:isb_ticks_count="5"
+			app:isb_ticks_count="0"
 			app:isb_track_background_color="@color/Gray"
 			app:isb_track_background_size="2dp"
 			app:isb_track_progress_color="@color/Blue"
 			app:isb_track_progress_size="4dp"
 			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/SliderDividingLine"/>
-
+</com.warkiz.widget.IndicatorStayLayout>
 </android.support.constraint.ConstraintLayout>

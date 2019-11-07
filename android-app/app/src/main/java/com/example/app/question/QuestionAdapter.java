@@ -22,8 +22,8 @@ class QuestionAdapter implements JsonSerializer<Question>, JsonDeserializer<Ques
 			return context.deserialize (json, ChoiceQuestion.class);
 		else if (type == QuestionType.Slider)
 			return context.deserialize (json, SliderQuestion.class);
-		else if (type == QuestionType.percentSlider)
-			return context.deserialize (json, percentSliderQuestion.class);
+		else if (type == QuestionType.PercentSlider)
+			return context.deserialize (json, PercentSliderQuestion.class);
 		else if (type == QuestionType.Note)
 			return context.deserialize (json, Note.class);
 		else

@@ -2,31 +2,24 @@ package com.example.app.view;
 
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
-import com.example.app.question.ChoiceQuestion;
-import com.example.app.question.SliderQuestion;
-import com.example.app.question.percentSliderQuestion;
+import com.example.app.question.PercentSliderQuestion;
 import com.warkiz.widget.IndicatorSeekBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class percentSliderView extends QuestionDisplayView  {
+public class PercentSliderView extends QuestionDisplayView  {
 	
 	// the corresponding question
-	private final percentSliderQuestion question;
+	private final PercentSliderQuestion question;
 	// container of slider
 	private ConstraintLayout container;
 	// slider
 	private IndicatorSeekBar seekBar;
 	
 	// constructor
-	public percentSliderView (QuestionDisplayActivity activity, percentSliderQuestion question) {
+	public PercentSliderView (QuestionDisplayActivity activity, PercentSliderQuestion question) {
 		super (activity);
 		this.question = question;
 		
@@ -34,7 +27,7 @@ public class percentSliderView extends QuestionDisplayView  {
 	}
 	
 	private void init () {
-		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.activity_percent_slider_view, null);
+		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.percent_slider_view, null);
 		
 		// set questionTypeText
 		TextView questionTypeTextView = this.container.findViewById (R.id.SliderQuestionTypeText);

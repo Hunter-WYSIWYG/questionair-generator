@@ -9,7 +9,7 @@ public enum QuestionType {
 
 	@SerializedName ("slider") Slider,
 	
-	@SerializedName ("percentslider") percentSlider,
+	@SerializedName ("percentslider") PercentSlider,
 	
 	@SerializedName ("note") Note
 }

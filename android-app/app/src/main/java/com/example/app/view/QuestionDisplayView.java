@@ -1,23 +1,14 @@
 package com.example.app.view;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.support.constraint.ConstraintLayout;
-import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.example.app.QuestionDisplayActivity;
-import com.example.app.QuestionnaireState;
 import com.example.app.answer.Answer;
 import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Note;
 import com.example.app.question.Question;
 import com.example.app.question.SliderQuestion;
-import com.example.app.question.percentSliderQuestion;
+import com.example.app.question.PercentSliderQuestion;
 
 public abstract class QuestionDisplayView {
 
@@ -43,8 +34,8 @@ public abstract class QuestionDisplayView {
 			return new MultipleChoiceView (activity, (ChoiceQuestion) question);
 		else if (question instanceof SliderQuestion)
 			return new SliderView (activity, (SliderQuestion) question);
-		else if (question instanceof percentSliderQuestion)
-			return new percentSliderView (activity, (percentSliderQuestion) question);
+		else if (question instanceof PercentSliderQuestion)
+			return new PercentSliderView (activity, (PercentSliderQuestion) question);
 		else if (question instanceof Note)
 			return new NoteView (activity, (Note) question);
 		else

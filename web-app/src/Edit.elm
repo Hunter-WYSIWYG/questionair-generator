@@ -99,14 +99,6 @@ showTimes questionnaire =
             , onClick (ViewOrClose EditTimeModal)
             ]
             []
-        , br [] []
-        , text ("Erscheinungszeit: " ++ Questionnaire.getEditTime questionnaire)
-        , i
-            [ class "fas fa-cog symbol"
-            , style "margin-left" "10px"
-            , onClick (ViewOrClose ViewingTimeModal)
-            ]
-            []
         ]
 
 
@@ -118,20 +110,22 @@ showCreateQuestionOrNoteButtons questionnaire =
         [ button
             [ class "qnButton"
             , style "margin-right" "10px"
-            , onClick (ViewOrClose QuestionModal)
-            ]
+            , onClick (ViewOrClose QuestionModal) ]
             [ text "Neue Frage" ]
         , button
             [ class "qnButton"
             , style "margin-right" "10px"
-            , onClick (ViewOrClose NewNoteModal)
-            ]
+            , onClick (ViewOrClose NewNoteModal) ]
             [ text "Neue Anmerkung" ]
-        , button [ class "qnButton", onClick (ViewOrClose ConditionModal1) ]
+        , button    
+            [ class "qnButton"
+            , style "margin-right" "10px"
+            , onClick (ViewOrClose ConditionModal1) ]
             [ text "Bedingungen" ]
-        , br [] []
-        , br [] []
-        , button [ class "qnButton", onClick DownloadQuestionnaire ] [ text "Download" ]
+        , button    
+            [ class "qnButton"
+            , onClick DownloadQuestionnaire ]
+            [ text "Download" ]
         ]
 
 

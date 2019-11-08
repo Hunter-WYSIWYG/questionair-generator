@@ -9,7 +9,11 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
     integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
   <link rel="stylesheet" href="stylesheet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/themes/dark.css">
   <script src="Main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
 </head>
 
 <body>
@@ -19,6 +23,26 @@
       node: document.getElementById('elm')
     });
   </script>
+
+  <footer>
+    <script src="./elmPort.js"></script>
+
+    <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" onclick="openDTPModal(1)">
+    DTP 1 öffnen
+  </button>
+
+  <!-- Modal -->
+  <div id="modalDTP1" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <input type="text" id="basicDate" placeholder="Please select Date Time" data-input oninput="sendToElm(this.value)">
+      <script src="./datetimepicker.js"></script>
+      <button onclick="closeDTPModal(1)">Schließen</button>
+    </div>
+  </div>
+
+  </footer>
 </body>
 
 </html>

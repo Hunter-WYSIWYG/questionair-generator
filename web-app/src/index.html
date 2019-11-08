@@ -28,17 +28,42 @@
     <script src="./elmPort.js"></script>
 
     <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" onclick="openDTPModal(1)">
-    DTP 1 öffnen
+  <button type="button" class="btn btn-primary" data-toggle="modal" onclick="openDTPModal('viewingTime')">
+    Erscheinungszeiten
   </button>
+  <button type="button" class="btn btn-primary" data-toggle="modal" onclick="openDTPModal('reminderTime')">
+    Erinnerungszeiten
+  </button>
+  <button type="button" class="btn btn-primary" data-toggle="modal" onclick="openDTPModal('editTime')">
+    Bearbeitungszeit
+  </button>
+        
 
   <!-- Modal -->
-  <div id="modalDTP1" class="modal">
+  <div id="modalViewingTime" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <input type="text" id="basicDate" placeholder="Please select Date Time" data-input oninput="sendToElm(this.value)">
+      <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value)">
       <script src="./datetimepicker.js"></script>
-      <button onclick="closeDTPModal(1)">Schließen</button>
+      <button onclick="closeDTPModal('viewingTime')">Schließen</button>
+    </div>
+  </div>
+
+  <div id="modalReminderTime" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" data-input oninput="sendToElm(this.value)">
+      <script src="./datetimepicker.js"></script>
+      <button onclick="closeDTPModal('reminderTime')">Schließen</button>
+    </div>
+  </div>
+
+  <div id="modalEditTime" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <input type="text" id="timePicker" placeholder="Bitte wählen sie eine Zeit" data-input oninput="sendToElm(this.value)">
+      <script src="./datetimepicker.js"></script>
+      <button onclick="closeDTPModal('editTime')">Schließen</button>
     </div>
   </div>
 

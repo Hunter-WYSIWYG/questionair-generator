@@ -1,4 +1,5 @@
 $("#basicDate").flatpickr({
+    mode: "multiple",
     enableTime: true,
     dateFormat: "F, d Y H:i"
 });

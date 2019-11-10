@@ -1,12 +1,14 @@
 package com.example.app;
 
-import android.app.ActionBar;
-import android.app.ListActivity;
+import android.app.*;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.widget.*;
@@ -14,6 +16,7 @@ import android.widget.*;
 import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,12 +26,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends AppCompatActivity {
 	// chosen questionnaire that the user will answer
 	private Questionnaire currentQuestionnaire = null;
 	// list of all questionnaires
 	private List<Questionnaire> questionnaireList = new ArrayList<> ();
-
+	// list view of all questionnaires
+	private ListView listView;
+	
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate (savedInstanceState);
@@ -38,10 +43,6 @@ public class MainActivity extends ListActivity {
 		for (int i = 0; i < 20; i++) {
 			this.questionnaireList.add (this.importQuestions ());
 		}
-		
-		// set current questionnaire - just for testing
-		this.currentQuestionnaire = this.questionnaireList.get (0);
-		
 		this.init ();
 	}
 	
@@ -51,48 +52,39 @@ public class MainActivity extends ListActivity {
 		return true;
 	}
 	
-	// init layout
-	private void init () {
-		
-		// create list of all questionnaires
-		this.initList ();
-		
-	}
 	// init list
-	public void initList () {
+	public void init () {
 		// list of string needed for arrayAdapter
 		List<String> data = new ArrayList<> ();
-		for (Questionnaire questionnaire : questionnaireList) {
+		for (Questionnaire questionnaire : this.questionnaireList) {
 			data.add (questionnaire.getName ());
 		}
+		// list view
+		this.listView = (ListView) findViewById (R.id.listView);
+		// adapter for handling list view
+		final ArrayAdapter adapter = new ArrayAdapter (this, android.R.layout.simple_list_item_activated_1, data);
+		listView.setAdapter (adapter);
+		// on click listener
+		listView.setOnItemClickListener (new AdapterView.OnItemClickListener () {
+			
+			@Override
+			public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
+				Toast.makeText (getApplicationContext (), "Click ListItem Number " + position, Toast.LENGTH_LONG).show ();
+			}
+			
+		});
 		
-		// Create the ArrayAdapter use the item row layout and the list data.
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.activity_main_list_row_element, R.id.listRowTextView, data);
-		
-		// Set this adapter to inner ListView object.
-		this.setListAdapter(arrayAdapter);
 		
 	}
-	// When user click list item, this method will be invoked.
-	@Override
-	protected void onListItemClick(ListView listView, View v, int position, long id) {
-		// Get the list data adapter.
-		ListAdapter listAdapter = listView.getAdapter();
-		// Get user selected item object.
-		Object selectItemObj = listAdapter.getItem(position);
-		String itemText = (String)selectItemObj;
-		
-		
-		
-		// for testing only
-		Toast test = Toast.makeText (this, "du hast ein list element angeclickt", Toast.LENGTH_LONG);
-		test.show ();
-	}
 	
-	
-	public void onBackPressed () {
-		Toast myToast = Toast.makeText (this, "Vergiss es!", Toast.LENGTH_SHORT);
-		myToast.show ();
+	public Questionnaire setCurrentQuestionnaire () {
+		int position = this.listView.getCheckedItemPosition ();
+		for (Questionnaire questionnaire : this.questionnaireList) {
+			if ((int) questionnaire.getID () == position) {
+				return questionnaire;
+			}
+		}
+		return null;
 	}
 	
 	private Questionnaire importQuestions () {
@@ -105,14 +97,12 @@ public class MainActivity extends ListActivity {
 			AssetManager assetManager = getAssets ();
 			InputStream ims = assetManager.open ("example-questionnaire.json");
 			
-			Gson gson = new Gson ();
+			Gson gson = new GsonBuilder ().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create();
 			Reader reader = new InputStreamReader (ims);
 			
-			Questionnaire quest = gson.fromJson (reader, Questionnaire.class);
-			// test if read file :
-			Toast success = Toast.makeText (this, "Alles erfolgreich eingelesen! Fragebogenname: \n" + quest.getName (), Toast.LENGTH_LONG);
-			success.show ();
-			return quest;
+			Questionnaire questionnaire = gson.fromJson (reader, Questionnaire.class);
+			
+			return questionnaire;
 			
 		}
 		catch (IOException e) {
@@ -126,6 +116,7 @@ public class MainActivity extends ListActivity {
 	}
 	
 	public void startButtonClick (View view) {
+		this.currentQuestionnaire = this.setCurrentQuestionnaire ();
 		if (this.currentQuestionnaire == null) {
 			Toast toast = Toast.makeText (this, "Kein Fragebogen eingelesen.", Toast.LENGTH_SHORT);
 			toast.show ();
@@ -133,6 +124,38 @@ public class MainActivity extends ListActivity {
 		}
 		QuestionnaireState questionnaireState = new QuestionnaireState (this.currentQuestionnaire);
 		QuestionDisplayActivity.displayCurrentQuestion (questionnaireState, this);
+	}
+	
+	private void notifyButtonClick (View view) {
+		// notifications
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		
+		NotificationManager notificationManager = (NotificationManager) getSystemService (Context.NOTIFICATION_SERVICE);
+
+		NotificationCompat.Builder builder;
+		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentApiVersion <= 25) {
+			builder = new NotificationCompat.Builder (this);
+		} else {
+			String channelId = "fragebogen";
+			NotificationChannel notificationChannel = new NotificationChannel(channelId, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+			notificationManager.createNotificationChannel(notificationChannel);
+			builder = new NotificationCompat.Builder (this, channelId);
+		}
+		Notification notify = builder
+				.setContentTitle("title")
+				.setContentText("text")
+				.setSmallIcon(R.drawable.ic_launcher_foreground)
+				.setContentIntent (pendingIntent)
+				.build ();
+		
+		notificationManager.notify (0, notify);
+		
+		// testing
+		Toast toast = Toast.makeText (this, "API " + currentApiVersion, Toast.LENGTH_SHORT);
+		toast.show ();
 		
 	}
 }

@@ -10,7 +10,7 @@ class QuestionAdapter implements JsonSerializer<Question>, JsonDeserializer<Ques
 	public JsonElement serialize (Question question, Type typeOfQuestion, JsonSerializationContext context) {
 		return context.serialize (question);
 	}
-
+	
 	// convert from Question to JSON
 	@Override
 	public Question deserialize (JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

@@ -18,12 +18,7 @@
 
 <body>
   <div id="elm"></div>
-  <script>
-    var app = Elm.Main.init({
-      node: document.getElementById('elm')
-    });
-  </script>
-
+  
   <footer>
     <script src="./elmPort.js"></script>
 
@@ -43,7 +38,7 @@
   <div id="modalViewingTime" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value)">
+      <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value, 'viewingTime')">
       <script src="./datetimepicker.js"></script>
       <button onclick="closeDTPModal('viewingTime')">Schließen</button>
     </div>
@@ -52,7 +47,7 @@
   <div id="modalReminderTime" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" data-input oninput="sendToElm(this.value)">
+      <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" data-input oninput="sendToElm(this.value, 'reminderTime')">
       <script src="./datetimepicker.js"></script>
       <button onclick="closeDTPModal('reminderTime')">Schließen</button>
     </div>
@@ -61,7 +56,7 @@
   <div id="modalEditTime" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <input type="text" id="timePicker" placeholder="Bitte wählen sie eine Zeit" data-input oninput="sendToElm(this.value)">
+      <input type="text" id="timePicker" placeholder="Bitte wählen sie eine Zeit" data-input oninput="sendToElm(this.value, 'editTime')">
       <script src="./datetimepicker.js"></script>
       <button onclick="closeDTPModal('editTime')">Schließen</button>
     </div>

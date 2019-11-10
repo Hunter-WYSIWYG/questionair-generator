@@ -1,5 +1,20 @@
-function sendToElm(value) {
-    alert(value);
+var app = Elm.Main.init({
+    node: document.getElementById('elm')
+  });
+
+function sendToElm(value, dateTimePicker) {
+
+    if (dateTimePicker == "viewingTime") {
+        app.ports.viewingTime.send(value);
+    }
+
+    if (dateTimePicker == "reminderTime") {
+        app.ports.reminderTime.send(value);
+    }
+
+    if (dateTimePicker == "editTime") {
+        app.ports.editTime.send(value);
+    }
 }
 
 function openDTPModal(value) {

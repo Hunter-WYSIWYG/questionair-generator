@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 			AssetManager assetManager = getAssets ();
 			InputStream ims = assetManager.open ("example-questionnaire.json");
 			
-			Gson gson = new Gson ();
+			Gson gson = new GsonBuilder ().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create();
 			Reader reader = new InputStreamReader (ims);
 			
 			Questionnaire questionnaire = gson.fromJson (reader, Questionnaire.class);
@@ -126,25 +126,35 @@ public class MainActivity extends AppCompatActivity {
 		QuestionDisplayActivity.displayCurrentQuestion (questionnaireState, this);
 	}
 	
-	public void notifyButtonClick (View view) {
+	private void notifyButtonClick (View view) {
 		// notifications
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		
-		
-		Notification notify = new Notification.Builder(this)
+		NotificationManager notificationManager = (NotificationManager) getSystemService (Context.NOTIFICATION_SERVICE);
+
+		NotificationCompat.Builder builder;
+		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentApiVersion <= 25) {
+			builder = new NotificationCompat.Builder (this);
+		} else {
+			String channelId = "fragebogen";
+			NotificationChannel notificationChannel = new NotificationChannel(channelId, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+			notificationManager.createNotificationChannel(notificationChannel);
+			builder = new NotificationCompat.Builder (this, channelId);
+		}
+		Notification notify = builder
 				.setContentTitle("title")
 				.setContentText("text")
 				.setSmallIcon(R.drawable.ic_launcher_foreground)
 				.setContentIntent (pendingIntent)
 				.build ();
 		
-		NotificationManager notificationManager = (NotificationManager) getSystemService (Context.NOTIFICATION_SERVICE);
 		notificationManager.notify (0, notify);
 		
 		// testing
-		Toast toast = Toast.makeText (this, "you clicked the button notify", Toast.LENGTH_SHORT);
+		Toast toast = Toast.makeText (this, "API " + currentApiVersion, Toast.LENGTH_SHORT);
 		toast.show ();
 		
 	}

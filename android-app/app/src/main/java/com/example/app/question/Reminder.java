@@ -11,16 +11,15 @@ import java.util.Date;
 import java.util.List;
 
 
-// Question uses id and type
-@JsonAdapter (ReminderAdapter.class) // -> using QuestionAdapter to convert from or to JSON
+// Reminder has date and text
 public class Reminder implements Serializable {
 	@SerializedName ("date")
-	public final String date;
+	public final Date date;
 	@SerializedName ("reminderText")
 	public final String reminderText;
 	
 	// constructor
-	public Reminder (String date, String reminderText) {
+	public Reminder (Date date, String reminderText) {
 		this.date = date;
 		this.reminderText = reminderText;
 	}

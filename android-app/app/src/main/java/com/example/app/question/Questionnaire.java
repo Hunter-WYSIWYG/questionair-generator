@@ -18,13 +18,9 @@ public class Questionnaire implements Serializable {
 	// list of all questions
 	@SerializedName ("questions")
 	private final List<Question> questionList;
-	
-	/*
 	// list of all reminders
 	@SerializedName ("reminderTimes")
 	private final List<Reminder> reminderList;
-	*/
-	
 	// path to the Questionnaire file
 	@Expose (serialize = false, deserialize = false)
 	private String path;
@@ -34,7 +30,7 @@ public class Questionnaire implements Serializable {
 		name = null;
 		questionList = null;
 		id = 0.0;
-		//reminderList = null;
+		reminderList = null;
 	}
 	
 	// getter
@@ -49,10 +45,10 @@ public class Questionnaire implements Serializable {
 	public List<Question> getQuestionList () {
 		return this.questionList;
 	}
-	/*
+	
 	public List<Reminder> getReminderList () {
 		return this.reminderList;
-	}*/
+	}
 	
 	public String getPath () {
 		return this.path;

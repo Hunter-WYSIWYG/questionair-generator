@@ -1,4 +1,4 @@
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal, convMaybeDateTime)
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
 
 {-| Enthält die View für das Bearbeiten von Fragebögen.
 
@@ -18,10 +18,6 @@ import List
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
-import DateTimePicker exposing (..)
-import DateTimePicker.Config exposing (..)
-import Html.Styled
-import Html.Styled.Attributes
 import Time exposing (..)
 
 
@@ -99,14 +95,6 @@ showTimes questionnaire =
             , onClick (ViewOrClose EditTimeModal)
             ]
             []
-        , br [] []
-        , text ("Erscheinungszeit: " ++ Questionnaire.getEditTime questionnaire)
-        , i
-            [ class "fas fa-cog symbol"
-            , style "margin-left" "10px"
-            , onClick (ViewOrClose ViewingTimeModal)
-            ]
-            []
         ]
 
 
@@ -118,20 +106,22 @@ showCreateQuestionOrNoteButtons questionnaire =
         [ button
             [ class "qnButton"
             , style "margin-right" "10px"
-            , onClick (ViewOrClose QuestionModal)
-            ]
+            , onClick (ViewOrClose QuestionModal) ]
             [ text "Neue Frage" ]
         , button
             [ class "qnButton"
             , style "margin-right" "10px"
-            , onClick (ViewOrClose NewNoteModal)
-            ]
+            , onClick (ViewOrClose NewNoteModal) ]
             [ text "Neue Anmerkung" ]
-        , button [ class "qnButton", onClick (ViewOrClose ConditionModal1) ]
+        , button    
+            [ class "qnButton"
+            , style "margin-right" "10px"
+            , onClick (ViewOrClose ConditionModal1) ]
             [ text "Bedingungen" ]
-        , br [] []
-        , br [] []
-        , button [ class "qnButton", onClick DownloadQuestionnaire ] [ text "Download" ]
+        , button    
+            [ class "qnButton"
+            , onClick DownloadQuestionnaire ]
+            [ text "Download" ]
         ]
 
 
@@ -154,21 +144,7 @@ viewViewingTimeModal model =
                 , section [ class "modal-card-body" ]
                     [ div [style "margin-bottom" "280px"]
                         [ text "Von "
-                        , Html.Styled.toUnstyled (DateTimePicker.dateTimePickerWithConfig
-                            customConfigViewingTimeBegin
-                            [ Html.Styled.Attributes.class "my-timepicker"
-                            , Html.Styled.Attributes.placeholder "DD:MM:YYYY:HH:MM"
-                            ]
-                            model.viewingTimeBeginPickerState
-                            model.viewingTimeBeginPickerValue)
                         , text " Bis "
-                        , Html.Styled.toUnstyled (DateTimePicker.dateTimePickerWithConfig
-                            customConfigViewingTimeEnd
-                            [ Html.Styled.Attributes.class "my-timepicker"
-                            , Html.Styled.Attributes.placeholder "DD:MM:YYYY:HH:MM"
-                            ]
-                            model.viewingTimeEndPickerState
-                            model.viewingTimeEndPickerValue)
                         , br [style "margin-bottom" "20px"] []
                         , viewValidation model
                         ]
@@ -186,126 +162,6 @@ viewViewingTimeModal model =
     else
         div [] []
 
-customConfigViewingTimeBegin =
-    let
-        default =
-            defaultDateTimePickerConfig ChangeViewingTimeBeginPicker
-    in
-    { default
-        | toInput = convDateTime
-        , fromInput = convInput
-    }
-
-customConfigViewingTimeEnd =
-    let
-        default =
-            defaultDateTimePickerConfig ChangeViewingTimeEndPicker
-    in
-    { default
-        | toInput = convDateTime
-        , fromInput = convInput
-    }
-
-convInput : String -> Maybe DateTime
-convInput input =
-    if input == ""
-    then Nothing
-    else Just (dateTime (toIntYear input) (toIntMonth2 input) (toIntDay input) (toIntHour input) (toIntMinute input))
-
-toIntYear : String -> Int
-toIntYear string = 
-    case List.head (List.reverse (String.split "." string)) of
-        Nothing -> 0
-        Just val -> case String.toInt (String.slice 1 4 val) of
-                        Nothing -> 0
-                        Just value -> value
-
-toIntMonth2 : String -> Month
-toIntMonth2 string =
-    case List.tail (String.split "." string) of
-        Nothing -> Jan
-        Just val ->   case List.head val of
-                            Nothing -> Jan
-                            Just value -> case value of
-                                            "01" -> Jan
-                                            "02" -> Feb
-                                            "03" -> Mar
-                                            "04" -> Apr
-                                            "05" -> May
-                                            "06" -> Jun
-                                            "07" -> Jul
-                                            "08" -> Aug
-                                            "09" -> Sep
-                                            "10" -> Oct
-                                            "11" -> Nov
-                                            "12" -> Dec
-                                            _    -> Jan
-
-toIntDay : String -> Int
-toIntDay string =
-    case List.head (String.split "." string) of
-        Nothing -> 0
-        Just val -> case String.toInt val of
-                        Nothing -> 0
-                        Just value -> value
-
-toIntHour : String -> Int
-toIntHour string =
-    case List.head (List.reverse (String.split " " string)) of
-        Nothing -> 0
-        Just val -> case String.toInt (String.left 2 val) of
-                        Nothing -> 0
-                        Just value -> value
-
-toIntMinute : String -> Int
-toIntMinute string =
-    case List.head (List.reverse (String.split " " string)) of
-        Nothing -> 0
-        Just val -> case String.toInt (String.right 2 val) of
-                        Nothing -> 0
-                        Just value -> value
-
-convMaybeDateTime : Maybe DateTime -> String
-convMaybeDateTime dateTime =
-    case dateTime of
-        Nothing -> ""
-        Just val -> toDayString val.day ++ "." ++ toMonthString val.month ++ "." ++ toYearString val.year ++ " " ++ toTimeString val.hour ++ ":" ++  toTimeString val.minute
-
-convDateTime : DateTime -> String
-convDateTime dateTime =
-    toDayString dateTime.day ++ "." ++ toMonthString dateTime.month ++ "." ++ toYearString dateTime.year ++ " " ++ toTimeString dateTime.hour ++ ":" ++  toTimeString dateTime.minute
-
-toMonthString : Month -> String
-toMonthString month =
-    case month of
-        Jan -> "01"
-        Feb -> "02"
-        Mar -> "03"
-        Apr -> "04"
-        May -> "05"
-        Jun -> "06"
-        Jul -> "07"
-        Aug -> "08"
-        Sep -> "09"
-        Oct -> "10"
-        Nov -> "11"
-        Dec -> "12"
-
-toDayString : Int -> String
-toDayString day =
-    if day < 10 then "0" ++ String.fromInt day
-    else String.fromInt day
-
-toYearString : Int -> String
-toYearString year =
-    if year < 10 then "200" ++ String.fromInt year
-    else if year < 100 then "20" ++ String.fromInt year
-    else "2" ++ String.fromInt year
-
-toTimeString : Int -> String
-toTimeString time =
-    if time < 10 then "0" ++ String.fromInt time
-    else String.fromInt time
 
 {-| Zeigt das Modal für das Bearbeiten der Bearbeitungszeit des Fragebogens an.
 -}

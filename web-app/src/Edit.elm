@@ -1,11 +1,11 @@
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal, convMaybeDateTime)
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal, convMaybeDateTime)
 
 {-| Enthält die View für das Bearbeiten von Fragebögen.
 
 
 # Öffentliche Funktionen
 
-@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
 
 -}
 
@@ -41,7 +41,6 @@ showEditQuestionnaire model =
         , viewNewNoteModal model
         , viewNewQuestionModal model
         , viewNewAnswerModal model
-        , viewConditions model.questionnaire
         , viewNewConditionModal1 model
         , viewNewConditionModal2 model
         ]
@@ -519,15 +518,6 @@ viewNewQuestionModal model =
     else
         div [] []
 
-
-{-| TODO: !!!NUR FÜR DEBUG ZWECKE!!!
-Zeigt eine Liste von Bedingungen an.
--}
-viewConditions : Questionnaire -> Html Msg
-viewConditions questionnaire =
-    div [] (List.map (\c -> text ("(" ++ String.fromInt c.parent_id ++ "," ++ String.fromInt c.child_id ++ ")")) questionnaire.conditions)
-
-
 {-| Zeigt eine Liste von Fragen an, die zur Bedingung als "Elternfrage" oder "Kindfrage" hinzugefügt werden können.
 Siehe viewConditionModal
 -}
@@ -545,7 +535,7 @@ getAnswerOptions model newCondition =
         list = parent_antworten
     in
         [ option [] [ text "Keine" ] ]
-            ++ List.map (\e -> option [ selected (member (Answer.getAnswerId e) (getAnswersId(newCondition.answers))) ] 
+            ++ List.map (\e -> option [ selected (Answer.getAnswerId e == newCondition.answer_id) ] 
                 [ text (String.fromInt(Answer.getAnswerId e) ++ "." ++ " " ++ Answer.getAnswerText e) ]) list
 
 
@@ -662,22 +652,9 @@ viewNewConditionModal2 model =
                         , text "Bei Beantwortung der Antworten mit den IDs: "
                         , br [] []
                         , div [ class "select" ]
-                            [ select [ onInput AddAnswerToNewCondition ]
+                            [ select [ onInput ChangeInputAnswerId ]
                                 (getAnswerOptions model model.newCondition)
                             ]
-                        , br [] []
-                        , input
-                            [ placeholder "Hier ID eingeben"
-                            , onInput AddAnswerToNewCondition
-                            ]
-                            []
-                        , button
-                            [ class "button"
-                            , style "margin-left" "1em"
-                            , style "margin-top" "0.25em"
-                            , onClick AddConditionAnswer
-                            ]
-                            [ text "Hinzufügen" ]
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
@@ -907,7 +884,7 @@ getConditionTable index condition =
         [ td [] [ text (String.fromInt index) ]
         , td [] [ text (String.fromInt condition.parent_id) ]
         , td [] [ text (String.fromInt condition.child_id) ]
-        , td [] [ text "(", text (String.concat (List.map (\answer -> (++) (String.fromInt answer.id) ", ") condition.answers)), text ")" ]
+        , td [] [ text (String.fromInt condition.answer_id) ]
         , td []
             [ i
                 [ class "fas fa-cog"

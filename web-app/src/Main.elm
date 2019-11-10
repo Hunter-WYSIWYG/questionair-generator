@@ -249,6 +249,14 @@ update msg model =
             in
                 ( { model | newCondition = newCondition2 }, Cmd.none )
 
+        ChangeInputAnswerId answer_id ->
+            let 
+                oldQuestionnaire = model.questionnaire
+                oldCondition = model.newCondition
+                newCondition2 = { oldCondition | answer_id = strToInt answer_id }
+            in
+                ( { model | newCondition = newCondition2 }, Cmd.none )
+
         AddCondition ->
             let
                 parent =
@@ -271,17 +279,6 @@ update msg model =
                       }
                     , Cmd.none
                     )
-
-        AddConditionAnswer ->
-            let 
-                oldElement = model.newElement
-                oldCondition = model.newCondition
-            in
-                case String.toInt model.newAnswerID_Condition of
-                    Nothing ->
-                        ( model, Cmd.none )
-                    Just id ->
-                        ( { model | newCondition = Condition.addAnswerOfQuestionToCondition id oldElement oldCondition }, Cmd.none )
                 
         AddAnswerToNewCondition string ->
             ( { model | newAnswerID_Condition = string }, Cmd.none )
@@ -547,7 +544,7 @@ update msg model =
                 oldQuestionnaire = model.questionnaire
 
                 changedQuestionnaire =
-                    { oldQuestionnaire | conditions = List.map (Condition.deleteAnswerInCondition answer.id) oldQuestionnaire.conditions }
+                    { oldQuestionnaire | conditions = oldQuestionnaire.conditions }
             in
             ( { model | questionnaire = changedQuestionnaire, newElement = QElement.deleteAnswerFromItem answer oldElement }, Cmd.none )
 

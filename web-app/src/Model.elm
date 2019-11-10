@@ -118,10 +118,10 @@ type
     | ViewOrClose ModalType
       --Creates Condition
     | AddCondition
-    | AddConditionAnswer
     | AddAnswerToNewCondition String
     | ChangeInputParentId String
     | ChangeInputChildId String
+    | ChangeInputAnswerId String
       --Save input to questionnaire
     | SetQuestionnaireTitle
     | SetNote

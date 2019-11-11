@@ -1,5 +1,6 @@
 package com.example.app.view;
 
+import android.graphics.PorterDuff;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -95,6 +96,7 @@ public class TableView extends QuestionDisplayView {
 			
 			for(int j = 0; j < this.size; j++) {
 				Button button = new Button (this.getActivity ());
+				button.setBackgroundResource (R.drawable.button_border);
 				// set id of button
 				button.setId (this.idGenerator ());
 				// set layout of button
@@ -111,15 +113,21 @@ public class TableView extends QuestionDisplayView {
 	// enable or disable 'next' button depending on whether any button is checked
 	// also disable other radio buttons if this is that kind of question
 	private void buttonClicked (Button button) {
-		button.setBackground (R.drawable.button_border);
+		button.setBackgroundResource (R.color.DeepPink);
+		for (Button b : buttons) {
+			//if (b != button) {
+			//	button.setBackgroundResource (R.drawable.button_border);
+			//}
+			
+		}
 		//this.updateNextButtonEnabled ();
 	}
+	
 	// return button id
 	private int idGenerator () {
 		this.buttonID++;
 		return buttonID;
 	}
-	
 	
 	@Override
 	public View getView () {

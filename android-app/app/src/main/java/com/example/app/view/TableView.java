@@ -29,6 +29,8 @@ public class TableView extends QuestionDisplayView {
 	private List<Button> buttons = new ArrayList<> ();
 	// id of button
 	private int buttonID;
+	// current pressed button
+	private Button currentButton;
 	
 	
 	// constructor
@@ -36,6 +38,8 @@ public class TableView extends QuestionDisplayView {
 		super (activity);
 		this.question = question;
 		this.size = this.question.size;
+		this.currentButton = null;
+		
 		
 		// start with button id = -1
 		this.buttonID = -1;
@@ -96,11 +100,10 @@ public class TableView extends QuestionDisplayView {
 			
 			for(int j = 0; j < this.size; j++) {
 				Button button = new Button (this.getActivity ());
-				button.setBackgroundResource (R.drawable.button_border);
+				// set color
+				button.setBackgroundResource (R.drawable.table_button_default);
 				// set id of button
 				button.setId (this.idGenerator ());
-				// set layout of button
-				//button.set
 				// add button to button list
 				this.buttons.add (button);
 				// set a colour button if clicked
@@ -113,14 +116,22 @@ public class TableView extends QuestionDisplayView {
 	// enable or disable 'next' button depending on whether any button is checked
 	// also disable other radio buttons if this is that kind of question
 	private void buttonClicked (Button button) {
-		button.setBackgroundResource (R.color.DeepPink);
+		this.currentButton = button;
+		button.setBackgroundResource (R.drawable.table_button_pressed);
 		for (Button b : buttons) {
-			//if (b != button) {
-			//	button.setBackgroundResource (R.drawable.button_border);
-			//}
+			if (b.getId () != button.getId ()) {
+				b.setBackgroundResource (R.drawable.table_button_default);
+			}
 			
 		}
-		//this.updateNextButtonEnabled ();
+		this.updateNextButtonEnabled ();
+	}
+	// enable or disable 'next' button depending on whether any button is checked
+	private void updateNextButtonEnabled () {
+		boolean enabled = false;
+		if (this.currentButton != null)
+			enabled = true;
+		this.getActivity ().setNextButtonEnabled (enabled);
 	}
 	
 	// return button id

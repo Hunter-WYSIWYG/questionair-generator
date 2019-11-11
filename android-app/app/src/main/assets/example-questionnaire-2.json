@@ -1,0 +1,125 @@
+{
+  "questionnaireName": "Fragebogen 2",
+  "questionnaireID": 2.0,
+  "reminderTimes": [
+    {
+      "date": "2019-11-05T22:00:00+01:00",
+      "reminderText": "REMINDER1!!!"
+    }, {
+      "date": "2019-11-05T22:00:00+01:00",
+      "reminderText": "REMINDER2!!!"
+    }, {
+      "date": "2019-11-05T22:00:00+01:00",
+      "reminderText": "REMINDER3!!!"
+    }
+  ],
+  "questions": [
+    {
+      "questionID": 1,
+      "questionText": "HOFFENTLICH IST DAS DER KLASSE FRAGEBOGEN 2 JUHU DA ISSER ENDLICH",
+      "type": "note"
+    },
+    {
+      "questionID": 2,
+      "questionText": "Gab es seit der letzten Befragung ein negatives Ereignis?",
+      "type": "singleChoice",
+      "options": [
+        {
+          "optionID": 1,
+          "optionText": "Nein",
+          "optionType": "text"
+        },
+        {
+          "optionID": 2,
+          "optionText": "Ja",
+          "optionType": "text"
+        }
+      ]
+    },
+    {
+      "questionID": 3,
+      "questionText": "Wo sind Sie gerade?",
+      "type": "multipleChoice",
+      "options": [
+        {
+          "optionID": 1,
+          "optionText": "auf Arbeit",
+          "optionType": "text"
+        },
+        {
+          "optionID": 2,
+          "optionText": "Zuhause",
+          "optionType": "text"
+        },
+        {
+          "optionID": 3,
+          "optionText": "Dienstlich unterwegs",
+          "optionType": "text"
+        },
+        {
+          "optionID": 4,
+          "optionText": "Privat unterwegs",
+          "optionType": "text"
+        },
+        {
+          "optionID": 5,
+          "optionText": "Bei Freunden",
+          "optionType": "text"
+        },
+        {
+          "optionID": 6,
+          "optionText": "woanders:  ",
+          "optionType": "textbox"
+        }
+      ]
+    },
+    {
+      "questionID": 4,
+      "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
+      "type": "slider",
+      "minValue": 0.0,
+      "maxValue": 5.0,
+      "stepSize": 1.0
+    },
+    {
+      "questionID": 5,
+      "questionText": "Glauben Sie die momentane Situation im Griff zu haben? (-5 - gar nicht, 5 - völlig)",
+      "type": "slider",
+      "minValue": -5.0,
+      "maxValue": 5.0,
+      "stepSize": 2.0
+    },
+    {
+      "questionID": 6,
+      "questionText": "Mit wem sind Sie gerade zusammen?",
+      "type": "multipleChoice",
+      "options": [
+        {
+          "optionID": 1,
+          "optionText": "Allein",
+          "optionType": "text"
+        },
+        {
+          "optionID": 2,
+          "optionText": "Mit Freunden",
+          "optionType": "text"
+        },
+        {
+          "optionID": 3,
+          "optionText": "Familie",
+          "optionType": "text"
+        },
+        {
+          "optionID": 4,
+          "optionText": "Andere Bekannte",
+          "optionType": "text"
+        },
+        {
+          "optionID": 5,
+          "optionText": "Fremde Personen",
+          "optionType": "text"
+        }
+      ]
+    }
+  ]
+}

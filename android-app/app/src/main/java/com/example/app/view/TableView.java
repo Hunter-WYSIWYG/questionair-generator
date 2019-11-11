@@ -101,10 +101,18 @@ public class TableView extends QuestionDisplayView {
 				//button.set
 				// add button to button list
 				this.buttons.add (button);
+				// set a colour button if clicked
+				button.setOnClickListener (v -> this.buttonClicked (button));
 				// add button to table row
 				tableRow.addView (button);
 			}
 		}
+	}
+	// enable or disable 'next' button depending on whether any button is checked
+	// also disable other radio buttons if this is that kind of question
+	private void buttonClicked (Button button) {
+		button.setBackground (R.drawable.button_border);
+		//this.updateNextButtonEnabled ();
 	}
 	// return button id
 	private int idGenerator () {

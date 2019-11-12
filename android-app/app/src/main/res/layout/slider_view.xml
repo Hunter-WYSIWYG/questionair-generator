@@ -63,16 +63,17 @@
 			app:isb_show_tick_texts="true"
 			app:isb_thumb_color="@color/Orange"
 			app:isb_thumb_size="15dp"
-			app:isb_tick_marks_color="@color/DeepPink"
+			app:isb_tick_marks_color="@color/DodgerBlue"
 			app:isb_tick_marks_size="13dp"
 			app:isb_tick_texts_color="@color/DarkSlateGray"
 			app:isb_tick_texts_size="15sp"
 			app:isb_ticks_count="5"
 			app:isb_track_background_color="@color/Gray"
 			app:isb_track_background_size="2dp"
-			app:isb_track_progress_color="@color/DeepPink"
+			app:isb_track_progress_color="@color/DodgerBlue"
 			app:isb_track_progress_size="4dp"
-			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/SliderDividingLine"/>
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/SliderDividingLine" />
 
 </android.support.constraint.ConstraintLayout>

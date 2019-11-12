@@ -18,7 +18,7 @@ module QElement exposing
 -}
 
 import Answer exposing (Answer)
-import List.Extra as LExtra
+import Utility as Utility
 
 
 {-| Element eines Fragebogens (Frage, Anmerkung)
@@ -66,14 +66,14 @@ initQuestion =
 -}
 putElementUp : List Q_element -> Q_element -> List Q_element
 putElementUp list element =
-    LExtra.swapAt (getID element) (getID element - 1) (List.map (updateID (getID element) (getID element - 1)) list)
+    Utility.swapAt (getID element) (getID element - 1) (List.map (updateID (getID element) (getID element - 1)) list)
 
 
 {-| Hilfsfunktion für das Verringern der ID einer Frage. Die Frage wird dann in der Tabelle von Fragen um eine Position nach unten verschoben.
 -}
 putElementDown : List Q_element -> Q_element -> List Q_element
 putElementDown list element =
-    LExtra.swapAt (getID element) (getID element + 1) (List.map (updateID (getID element) (getID element + 1)) list)
+    Utility.swapAt (getID element) (getID element + 1) (List.map (updateID (getID element) (getID element + 1)) list)
 
 
 {-| Hilfsfunktion für das Erhöhen der ID einer Antwort. Die Frage wird dann in der Tabelle von Antworten einer Frage um eine Position nach oben verschoben.
@@ -85,7 +85,7 @@ putAnswerUp newElement answer =
             Note record
 
         Question record ->
-            Question { record | answers = LExtra.swapAt answer.id (answer.id - 1) (List.map (updateAnsID answer.id (answer.id - 1)) record.answers) }
+            Question { record | answers = Utility.swapAt answer.id (answer.id - 1) (List.map (updateAnsID answer.id (answer.id - 1)) record.answers) }
 
 
 {-| Hilfsfunktion für das Verringern der ID einer Antwort. Die Frage wird dann in der Tabelle von Antworten einer Frage um eine Position nach unten verschoben.
@@ -97,7 +97,7 @@ putAnswerDown newElement answer =
             Note record
 
         Question record ->
-            Question { record | answers = LExtra.swapAt answer.id (answer.id + 1) (List.map (updateAnsID answer.id (answer.id + 1)) record.answers) }
+            Question { record | answers = Utility.swapAt answer.id (answer.id + 1) (List.map (updateAnsID answer.id (answer.id + 1)) record.answers) }
 
 
 {-| Setzt eine neue ID eines Fragebogenelements.

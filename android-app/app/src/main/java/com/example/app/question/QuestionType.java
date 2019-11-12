@@ -9,6 +9,8 @@ public enum QuestionType {
 
 	@SerializedName ("slider") Slider,
 	
-	@SerializedName ("note") Note
+	@SerializedName ("note") Note,
+	
+	@SerializedName ("tableView") Table,
 }
 

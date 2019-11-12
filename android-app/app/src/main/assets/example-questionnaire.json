@@ -38,6 +38,16 @@
     },
     {
       "questionID": 3,
+      "questionText": "Wie fuehlen Sie sich gerade?",
+      "type": "tableView",
+      "size": 5,
+      "topName": "Voller Energie",
+      "bottomName": "Energielos",
+      "rightName": "Gute Stimmung",
+      "leftName": "Schlechte Stimmung"
+    },
+    {
+      "questionID": 4,
       "questionText": "Wo sind Sie gerade?",
       "type": "multipleChoice",
       "options": [
@@ -74,7 +84,7 @@
       ]
     },
     {
-      "questionID": 4,
+      "questionID": 5,
       "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
       "type": "slider",
       "minValue": 0.0,
@@ -82,7 +92,7 @@
       "stepSize": 1.0
     },
     {
-      "questionID": 5,
+      "questionID": 6,
       "questionText": "Glauben Sie die momentane Situation im Griff zu haben? (-5 - gar nicht, 5 - völlig)",
       "type": "slider",
       "minValue": -5.0,
@@ -90,7 +100,7 @@
       "stepSize": 2.0
     },
     {
-      "questionID": 6,
+      "questionID": 7,
       "questionText": "Mit wem sind Sie gerade zusammen?",
       "type": "multipleChoice",
       "options": [

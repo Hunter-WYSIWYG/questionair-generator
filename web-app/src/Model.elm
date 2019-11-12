@@ -1,6 +1,6 @@
 module Model exposing
     ( Model, ModalType(..), Msg(..), ValidationResult(..)
-    , initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validate, validateQuestion
+    , initModel, isValidQuestionTime, validateQuestion
     )
 
 {-| Enthält die Typen für das Model, die Modale, die Messages und das ValidationResult. Enthällt außerdem den Anfangszustand des Models.
@@ -13,7 +13,7 @@ module Model exposing
 
 # Öffentliche Funktionen
 
-@docs initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validate, validateQuestion
+@docs initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validateQuestion
 
 -}
 
@@ -22,7 +22,6 @@ import Condition exposing (Condition)
 import File exposing (File)
 import QElement exposing (Q_element)
 import Questionnaire exposing (Questionnaire)
-import DateTimePicker exposing (..)
 import Time exposing (..)
 
 
@@ -49,18 +48,14 @@ type alias Model =
     , inputTitle : String
     , validationResult : ValidationResult
     , inputEditTime : String
-    , inputViewingTimeBegin : String
-    , inputViewingTimeEnd : String
+    , inputViewingTime : String
+    , inputReminderTimes : String
     , inputQuestionTime : String
     , questionValidationResult : ValidationResult
     , inputParentId : Int
     , inputChildId : Int
     , newAnswerID_Condition : String
     , newCondition : Condition
-    , viewingTimeBeginPickerState : DateTimePicker.State
-    , viewingTimeBeginPickerValue : Maybe DateTimePicker.DateTime
-    , viewingTimeEndPickerState : DateTimePicker.State
-    , viewingTimeEndPickerValue : Maybe DateTimePicker.DateTime
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -68,9 +63,6 @@ type alias Model =
 
     -- a page to edit Questionnaires
     , editQuestionnaire : Bool
-
-    --Debug
-    , tmp : String
     }
 
 
@@ -101,16 +93,15 @@ type
     Msg
     --Changing Input
     = ChangeInputQuestionnaireTitle String
-    | ChangeEditTime String
     | ChangeQuestionOrNoteText String
     | ChangeAnswerText String
     | ChangeQuestionNote String
     | ChangeQuestionType String
     | ChangeAnswerType String
     | ChangeQuestionNewAnswer Answer
-    | ChangeQuestionTime String
-    | ChangeViewingTimeBeginPicker DateTimePicker.State (Maybe DateTimePicker.DateTime)
-    | ChangeViewingTimeEndPicker DateTimePicker.State (Maybe DateTimePicker.DateTime)
+    | ChangeEditTime String
+    | ChangeReminderTimes String
+    | ChangeViewingTime String
       --Modals
     | ViewOrClose ModalType
       --Creates Condition
@@ -126,6 +117,11 @@ type
     | SetAnswer
     | SetConditions
     | SetPolarAnswers String
+    | SetTableSize String
+    | SetTopText String
+    | SetRightText String
+    | SetBottomText String
+    | SetLeftText String
       --Edit existing elements or answers
     | EditQuestion Q_element
     | EditNote Q_element
@@ -175,18 +171,14 @@ initModel _ =
       , inputTitle = ""
       , validationResult = NotDone
       , inputEditTime = ""
-      , inputViewingTimeBegin = ""
-      , inputViewingTimeEnd = ""
+      , inputViewingTime = ""
+      , inputReminderTimes = ""
       , inputQuestionTime = ""
       , questionValidationResult = NotDone
       , inputParentId = -1
       , inputChildId = -1
       , newCondition = Condition.initCondition
       , newAnswerID_Condition = ""
-      , viewingTimeBeginPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
-      , viewingTimeBeginPickerValue = Nothing
-      , viewingTimeEndPickerState = initialStateWithToday (dateTime 20 (toMonth utc (millisToPosix 0)) 1 1 1)
-      , viewingTimeEndPickerValue = Nothing
 
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire
@@ -194,43 +186,9 @@ initModel _ =
 
       -- a page to edit Questionnaires
       , editQuestionnaire = True
-
-      --Debug
-      , tmp = ""
       }
     , Cmd.none
     )
-
-
-{-| Methode zur Validierung des Models, speziell der Zeitformate.
--}
-validate : Model -> ValidationResult
-validate model =
-    if not (isValidEditTime model.inputEditTime) then
-        Error "Die Bearbeitungszeit muss das Format HH:MM haben"
-
-    else if not (isValidViewingTime model.inputViewingTimeBegin) then
-        Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
-
-    else if not (isValidViewingTime model.inputViewingTimeEnd) then
-        Error "Die Zeiten müssen das Format DD:MM:YYYY:HH:MM haben"
-
-    else
-        ValidationOK
-
-
-{-| Methode zur Validierung der Länge der Erscheindungszeit.
--}
-isValidViewingTime : String -> Bool
-isValidViewingTime viewingTime =
-    not (String.length viewingTime /= 16 && String.length viewingTime /= 0)
-
-
-{-| Methode zur Validierung der Länge der Bearbeitungszeit.
--}
-isValidEditTime : String -> Bool
-isValidEditTime editTime =
-    not (String.length editTime /= 5 && String.length editTime /= 0)
 
 
 {-| Methode zur Validierung des Fragenzeitformats.

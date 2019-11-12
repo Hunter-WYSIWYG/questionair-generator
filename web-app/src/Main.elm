@@ -1,4 +1,4 @@
-module Main exposing (subscriptions, main, update, view)
+port module Main exposing (subscriptions, main, update, view)
 
 {-| Main enthält die Hauptfunktionen der WebApp.
 
@@ -13,20 +13,20 @@ import Answer exposing (Answer)
 import Browser
 import Condition
 import Decoder
-import Edit exposing (convMaybeDateTime)
+import Edit 
 import Encoder
 import File exposing (File)
 import File.Select as Select
 import Html exposing (Html, a, br, div, nav, p, text)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
+import Json.Encode as JEncode
 import List
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
 import Questionnaire
 import Task
 import Upload
-import DateTimePicker exposing (..)
 import Time exposing (..)
 
 
@@ -41,12 +41,18 @@ main =
         , subscriptions = subscriptions
         }
 
+{-| Port für DateTimePicker
+-}
+port viewingTime : (String -> msg) -> Sub msg
+port reminderTime : (String -> msg) -> Sub msg
+port editTime : (String -> msg) -> Sub msg
+
 
 {-| Subscriptions-Funktion
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.batch [viewingTime ChangeViewingTime, reminderTime ChangeReminderTimes, editTime ChangeEditTime]
 
 
 {-| Update-Funktion mit Logik der WebApp.
@@ -57,13 +63,6 @@ update msg model =
         --changing properties of notes or questions or answers
         ChangeInputQuestionnaireTitle newTitle ->
             ( { model | inputTitle = newTitle }, Cmd.none )
-
-        ChangeEditTime newTime ->
-            let
-                changedModel =
-                    { model | inputEditTime = newTime }
-            in
-            ( { model | inputEditTime = newTime, validationResult = Model.validate changedModel }, Cmd.none )
 
         ChangeQuestionOrNoteText string ->
             let
@@ -143,9 +142,6 @@ update msg model =
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
-        ChangeQuestionTime newTime ->
-            ( { model | inputQuestionTime = newTime, questionValidationResult = Model.validateQuestion newTime }, Cmd.none )
-
         ChangeAnswerText string ->
             let
                 oldQuestionnaire =
@@ -169,19 +165,14 @@ update msg model =
             in
             ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
 
-        ChangeViewingTimeBeginPicker newState newValue ->
-            let
-                changedModel =
-                    { model | inputViewingTimeBegin = convMaybeDateTime newValue }
-            in
-            ( { model | inputViewingTimeBegin = convMaybeDateTime newValue, validationResult = Model.validate changedModel, viewingTimeBeginPickerValue = newValue, viewingTimeBeginPickerState = newState }, Cmd.none )
+        ChangeViewingTime string -> 
+            ( { model | inputViewingTime = string }, Cmd.none)
 
-        ChangeViewingTimeEndPicker newState newValue ->
-            let
-                changedModel =
-                    { model | inputViewingTimeEnd = convMaybeDateTime newValue }
-            in
-            ( { model | inputViewingTimeEnd = convMaybeDateTime newValue, validationResult = Model.validate changedModel, viewingTimeEndPickerValue = newValue, viewingTimeEndPickerState = newState }, Cmd.none )
+        ChangeEditTime string -> 
+            ( { model | inputEditTime = string }, Cmd.none)
+
+        ChangeReminderTimes string -> 
+            ( { model | inputReminderTimes = string }, Cmd.none)
 
         --open or close modals
         ViewOrClose modalType ->
@@ -231,6 +222,11 @@ update msg model =
                                             , hint = ""
                                             , typ = ""
                                             , questionTime = ""
+                                            , tableSize = 0
+                                            , topText = ""
+                                            , rightText = ""
+                                            , bottomText = ""
+                                            , leftText = ""
                                             }
                                 }
 
@@ -389,6 +385,102 @@ update msg model =
 
                             else
                                 { oldQuestionnaire | newElement = Question { record | answers = Answer.getBipolarAnswers string } }
+
+                        Note record ->
+                            oldQuestionnaire
+            in
+            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+
+        -- stellt Größe der Tabelle bei Raster-Auswahl Fragetyp ein
+        SetTableSize string ->
+            let 
+                oldQuestionnaire = model.questionnaire
+                size = Maybe.withDefault 0 ( String.toInt string )   
+                oldElement = oldQuestionnaire.newElement
+                changedElement = ( QElement.setTableSize oldElement size )
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of 
+                        Question record ->
+                            if record.typ == "Auswahl-Raster" then
+                                { oldQuestionnaire | newElement = changedElement }
+                            else 
+                                oldQuestionnaire
+
+                        Note record ->
+                            oldQuestionnaire
+            in
+            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+        
+        -- stellt obere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        SetTopText string ->
+            let
+                oldQuestionnaire = model.questionnaire
+                oldElement = oldQuestionnaire.newElement 
+                changedElement = QElement.setTopText oldElement string
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of 
+                        Question record ->
+                            if record.typ == "Auswahl-Raster" then
+                                { oldQuestionnaire | newElement = changedElement }
+                            else 
+                                oldQuestionnaire
+
+                        Note record ->
+                            oldQuestionnaire
+            in
+            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+        
+        -- stellt rechte Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        SetRightText string ->
+            let
+                oldQuestionnaire = model.questionnaire
+                oldElement = oldQuestionnaire.newElement 
+                changedElement = QElement.setRightText oldElement string
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of 
+                        Question record ->
+                            if record.typ == "Auswahl-Raster" then
+                                { oldQuestionnaire | newElement = changedElement }
+                            else 
+                                oldQuestionnaire
+
+                        Note record ->
+                            oldQuestionnaire
+            in
+            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+        
+        -- stellt untere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        SetBottomText string ->
+            let
+                oldQuestionnaire = model.questionnaire
+                oldElement = oldQuestionnaire.newElement 
+                changedElement = QElement.setBottomText oldElement string
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of 
+                        Question record ->
+                            if record.typ == "Auswahl-Raster" then
+                                { oldQuestionnaire | newElement = changedElement }
+                            else 
+                                oldQuestionnaire
+
+                        Note record ->
+                            oldQuestionnaire
+            in
+            ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
+        
+        -- stellt linke Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        SetLeftText string ->
+            let
+                oldQuestionnaire = model.questionnaire
+                oldElement = oldQuestionnaire.newElement 
+                changedElement = QElement.setLeftText oldElement string
+                changedQuestionnaire =
+                    case oldQuestionnaire.newElement of 
+                        Question record ->
+                            if record.typ == "Auswahl-Raster" then
+                                { oldQuestionnaire | newElement = changedElement }
+                            else 
+                                oldQuestionnaire
 
                         Note record ->
                             oldQuestionnaire
@@ -640,26 +732,15 @@ update msg model =
                 changedQuestionnaire =
                     { oldQuestionnaire
                         | editTime = model.inputEditTime
-                        , viewingTimeBegin = model.inputViewingTimeBegin
-                        , viewingTimeEnd = model.inputViewingTimeEnd
+                        , viewingTime = model.inputViewingTime
+                        , reminderTimes = model.inputReminderTimes
                     }
             in
-            if Model.validate model == ValidationOK then
                 ( { model
                     | questionnaire = changedQuestionnaire
                     , showViewingTimeModal = False
                     , showEditTimeModal = False
                     , validationResult = ValidationOK
-                  }
-                , Cmd.none
-                )
-
-            else
-                ( { model
-                    | validationResult = Model.validate model
-                    , inputViewingTimeBegin = ""
-                    , inputViewingTimeEnd = ""
-                    , inputEditTime = ""
                   }
                 , Cmd.none
                 )
@@ -713,6 +794,7 @@ view model =
         ]
 
 
+
 {-| Anzeige einer Navbar mit Optionen, um zischen den Views für das Bearbeiten und Uploaden von Fragebögen zu wechseln.
 -}
 showNavbar : Html Msg
@@ -727,3 +809,4 @@ showNavbar =
                 ]
             ]
         ]
+

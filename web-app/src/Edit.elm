@@ -1,11 +1,11 @@
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal, convMaybeDateTime)
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
 
 {-| Enthält die View für das Bearbeiten von Fragebögen.
 
 
 # Öffentliche Funktionen
 
-@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
 
 -}
 
@@ -18,10 +18,6 @@ import List
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
-import DateTimePicker exposing (..)
-import DateTimePicker.Config exposing (..)
-import Html.Styled
-import Html.Styled.Attributes
 import Time exposing (..)
 
 
@@ -99,14 +95,6 @@ showTimes questionnaire =
             , onClick (ViewOrClose EditTimeModal)
             ]
             []
-        , br [] []
-        , text ("Erscheinungszeit: " ++ Questionnaire.getEditTime questionnaire)
-        , i
-            [ class "fas fa-cog symbol"
-            , style "margin-left" "10px"
-            , onClick (ViewOrClose ViewingTimeModal)
-            ]
-            []
         ]
 
 
@@ -118,20 +106,22 @@ showCreateQuestionOrNoteButtons questionnaire =
         [ button
             [ class "qnButton"
             , style "margin-right" "10px"
-            , onClick (ViewOrClose QuestionModal)
-            ]
+            , onClick (ViewOrClose QuestionModal) ]
             [ text "Neue Frage" ]
         , button
             [ class "qnButton"
             , style "margin-right" "10px"
-            , onClick (ViewOrClose NewNoteModal)
-            ]
+            , onClick (ViewOrClose NewNoteModal) ]
             [ text "Neue Anmerkung" ]
-        , button [ class "qnButton", onClick (ViewOrClose ConditionModal1) ]
+        , button
+            [ class "qnButton"
+            , style "margin-right" "10px"
+            , onClick (ViewOrClose ConditionModal1) ]
             [ text "Bedingungen" ]
-        , br [] []
-        , br [] []
-        , button [ class "qnButton", onClick DownloadQuestionnaire ] [ text "Download" ]
+        , button
+            [ class "qnButton"
+            , onClick DownloadQuestionnaire ]
+            [ text "Download" ]
         ]
 
 
@@ -154,21 +144,7 @@ viewViewingTimeModal model =
                 , section [ class "modal-card-body" ]
                     [ div [style "margin-bottom" "280px"]
                         [ text "Von "
-                        , Html.Styled.toUnstyled (DateTimePicker.dateTimePickerWithConfig
-                            customConfigViewingTimeBegin
-                            [ Html.Styled.Attributes.class "my-timepicker"
-                            , Html.Styled.Attributes.placeholder "DD:MM:YYYY:HH:MM"
-                            ]
-                            model.viewingTimeBeginPickerState
-                            model.viewingTimeBeginPickerValue)
                         , text " Bis "
-                        , Html.Styled.toUnstyled (DateTimePicker.dateTimePickerWithConfig
-                            customConfigViewingTimeEnd
-                            [ Html.Styled.Attributes.class "my-timepicker"
-                            , Html.Styled.Attributes.placeholder "DD:MM:YYYY:HH:MM"
-                            ]
-                            model.viewingTimeEndPickerState
-                            model.viewingTimeEndPickerValue)
                         , br [style "margin-bottom" "20px"] []
                         , viewValidation model
                         ]
@@ -186,126 +162,6 @@ viewViewingTimeModal model =
     else
         div [] []
 
-customConfigViewingTimeBegin =
-    let
-        default =
-            defaultDateTimePickerConfig ChangeViewingTimeBeginPicker
-    in
-    { default
-        | toInput = convDateTime
-        , fromInput = convInput
-    }
-
-customConfigViewingTimeEnd =
-    let
-        default =
-            defaultDateTimePickerConfig ChangeViewingTimeEndPicker
-    in
-    { default
-        | toInput = convDateTime
-        , fromInput = convInput
-    }
-
-convInput : String -> Maybe DateTime
-convInput input =
-    if input == ""
-    then Nothing
-    else Just (dateTime (toIntYear input) (toIntMonth2 input) (toIntDay input) (toIntHour input) (toIntMinute input))
-
-toIntYear : String -> Int
-toIntYear string = 
-    case List.head (List.reverse (String.split "." string)) of
-        Nothing -> 0
-        Just val -> case String.toInt (String.slice 1 4 val) of
-                        Nothing -> 0
-                        Just value -> value
-
-toIntMonth2 : String -> Month
-toIntMonth2 string =
-    case List.tail (String.split "." string) of
-        Nothing -> Jan
-        Just val ->   case List.head val of
-                            Nothing -> Jan
-                            Just value -> case value of
-                                            "01" -> Jan
-                                            "02" -> Feb
-                                            "03" -> Mar
-                                            "04" -> Apr
-                                            "05" -> May
-                                            "06" -> Jun
-                                            "07" -> Jul
-                                            "08" -> Aug
-                                            "09" -> Sep
-                                            "10" -> Oct
-                                            "11" -> Nov
-                                            "12" -> Dec
-                                            _    -> Jan
-
-toIntDay : String -> Int
-toIntDay string =
-    case List.head (String.split "." string) of
-        Nothing -> 0
-        Just val -> case String.toInt val of
-                        Nothing -> 0
-                        Just value -> value
-
-toIntHour : String -> Int
-toIntHour string =
-    case List.head (List.reverse (String.split " " string)) of
-        Nothing -> 0
-        Just val -> case String.toInt (String.left 2 val) of
-                        Nothing -> 0
-                        Just value -> value
-
-toIntMinute : String -> Int
-toIntMinute string =
-    case List.head (List.reverse (String.split " " string)) of
-        Nothing -> 0
-        Just val -> case String.toInt (String.right 2 val) of
-                        Nothing -> 0
-                        Just value -> value
-
-convMaybeDateTime : Maybe DateTime -> String
-convMaybeDateTime dateTime =
-    case dateTime of
-        Nothing -> ""
-        Just val -> toDayString val.day ++ "." ++ toMonthString val.month ++ "." ++ toYearString val.year ++ " " ++ toTimeString val.hour ++ ":" ++  toTimeString val.minute
-
-convDateTime : DateTime -> String
-convDateTime dateTime =
-    toDayString dateTime.day ++ "." ++ toMonthString dateTime.month ++ "." ++ toYearString dateTime.year ++ " " ++ toTimeString dateTime.hour ++ ":" ++  toTimeString dateTime.minute
-
-toMonthString : Month -> String
-toMonthString month =
-    case month of
-        Jan -> "01"
-        Feb -> "02"
-        Mar -> "03"
-        Apr -> "04"
-        May -> "05"
-        Jun -> "06"
-        Jul -> "07"
-        Aug -> "08"
-        Sep -> "09"
-        Oct -> "10"
-        Nov -> "11"
-        Dec -> "12"
-
-toDayString : Int -> String
-toDayString day =
-    if day < 10 then "0" ++ String.fromInt day
-    else String.fromInt day
-
-toYearString : Int -> String
-toYearString year =
-    if year < 10 then "200" ++ String.fromInt year
-    else if year < 100 then "20" ++ String.fromInt year
-    else "2" ++ String.fromInt year
-
-toTimeString : Int -> String
-toTimeString time =
-    if time < 10 then "0" ++ String.fromInt time
-    else String.fromInt time
 
 {-| Zeigt das Modal für das Bearbeiten der Bearbeitungszeit des Fragebogens an.
 -}
@@ -470,11 +326,11 @@ viewNewQuestionModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable model.questionnaire)
+                        [ showAnswerTable model.questionnaire
                         , br [] []
-                        , button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                        , showNewAnswerButton model.questionnaire
                         , br [] []
-                        , showInputBipolarUnipolar model.questionnaire
+                        , showInputBipolarUnipolarTable model.questionnaire
                         , br [ style "margin-top" "20px" ] []
                         , text "Fragetext: "
                         , input
@@ -498,11 +354,13 @@ viewNewQuestionModal model =
                         , br [] []
                         , text ("Typ: " ++ QElement.getQuestionTyp model.questionnaire.newElement)
                         , br [] []
-                        , radio "Single Choice" (ChangeQuestionType "Single Choice")
+                        , selectedRadio "Single Choice" (ChangeQuestionType "Single Choice")
                         , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
                         , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
                         , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                        , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
+                        , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
                         , br [] []
                         ]
                     ]
@@ -932,11 +790,38 @@ viewQuestionValidation result =
     in
     div [ style "color" color ] [ text message ]
 
-
-{-| Eingabeoberfläche, wie viele Antworten für uni-/bipolare Fragen erstellt werden sollen.
+{- entfernt die Antworten-Tabelle wenn Raster-Auswahl Fragetyp gewählt wurde
 -}
-showInputBipolarUnipolar : Questionnaire -> Html Msg
-showInputBipolarUnipolar questionnaire =
+showAnswerTable : Questionnaire -> Html Msg
+showAnswerTable questionnaire =
+    case questionnaire.newElement of
+        Question record ->
+            if record.typ == "Raster-Auswahl" then
+                div [] []
+            else
+                table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
+
+        Note record ->
+            div [] []
+
+{- entfernt die "Neue Antwort"-Button wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
+-}
+showNewAnswerButton : Questionnaire -> Html Msg
+showNewAnswerButton questionnaire =
+    case questionnaire.newElement of
+        Question record ->
+            if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+                div [] []
+            else
+                button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+
+        Note record ->
+            div [] []
+
+{-| Eingabeoberfläche, wie viele Antworten/Eingabefelder für uni-/bipolare, Raster-Auswahl und Prozentslider Fragen erstellt werden sollen.
+-}
+showInputBipolarUnipolarTable : Questionnaire -> Html Msg
+showInputBipolarUnipolarTable questionnaire =
     case questionnaire.newElement of
         Question record ->
             if record.typ == "Skaliert unipolar" then
@@ -967,17 +852,112 @@ showInputBipolarUnipolar questionnaire =
                         []
                     ]
 
+            else if record.typ == "Raster-Auswahl" then
+                div []
+                    [ text "Raster-Größe: "
+                    , div
+                        [class "select"]
+                        [ select
+                            [ onInput SetTableSize ]
+                            [ option [ value "3" ] [ text "3x3" ]
+                            , option [ value "5" ] [ text "5x5" ]
+                            , option [ value "7" ] [ text "7x7" ]
+                            ]
+                        ]
+                    , br [] []
+                    , text "Raster-Beschriftung oben:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetTopText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung rechts:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetRightText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung unten:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetBottomText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung links:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetLeftText
+                        ]
+                        []
+                    ]
+
+            else if record.typ == "Prozentslider" then
+                div []
+                    [ text "Bitte linken Grenzwert eingeben:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetLeftText
+                        ]
+                        []
+                    , br [] []
+                    , text "Bitte rechten Grenzwert eingeben:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetRightText
+                        ]
+                        []
+                    ]
+
             else
                 div [] []
 
         Note record ->
             div [] []
 
-
 {-| Radiobutton.
 -}
 radio : String -> msg -> Html msg
 radio value msg =
+    label
+        [ style "padding" "20px" ]
+        [ input
+            [ type_ "radio"
+            , name "font-size"
+            , onClick msg
+            ]
+            []
+        , text value
+        ]
+
+selectedRadio : String -> msg -> Html msg
+selectedRadio value msg =
     label
         [ style "padding" "20px" ]
         [ input

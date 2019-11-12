@@ -1,5 +1,18 @@
 {
-  "questionnaireName": "Beispiel Fragebogen:\nTag im Rückblick",
+  "questionnaireName": "Beispiel Fragebogen",
+  "questionnaireID": 1,
+  "reminderTimes": [
+    {
+      "date": "2019-11-05T22:00:00+01:00",
+      "reminderText": "REMINDER1!!!"
+    }, {
+      "date": "2019-11-05T22:00:00+01:00",
+      "reminderText": "REMINDER2!!!"
+    }, {
+      "date": "2019-11-05T22:00:00+01:00",
+      "reminderText": "REMINDER3!!!"
+    }
+  ],
   "questions": [
     {
       "questionID": 1,

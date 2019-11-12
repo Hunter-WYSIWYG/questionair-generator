@@ -25,35 +25,33 @@
 	/>
 
 
+	<Button
+			android:id="@+id/notificationButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="#03A9F4"
+			android:onClick="notifyButtonClick"
+			android:text="notify"
+			android:textAppearance="@style/TextAppearance.AppCompat.Small" android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"/>
 	<LinearLayout
+			android:id="@+id/linearLayout"
 			android:layout_width="fill_parent"
 			android:layout_height="0dp"
 			android:orientation="vertical"
 			app:layout_constraintBottom_toTopOf="@+id/startButton"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent">
+			app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent">
 
 
-		<TextView
-				android:id="@+id/textViewListOfQuestionnaires"
-				android:layout_width="match_parent"
-				android:layout_height="?attr/actionBarSize"
-				android:background="@color/DeepPink"
-				android:textColor="@color/White"
-				android:gravity="center"
-				android:text="Fragebögen"
-				android:textStyle="bold"
-				android:textAppearance="@style/TextAppearance.AppCompat.Large"
-		/>
 		<ListView
-				android:id="@android:id/list"
+				android:id="@+id/listView"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:headerDividersEnabled="true"
-				android:dividerHeight="1dp"
-				android:clickable="true"
 				android:choiceMode="singleChoice"
+				android:clickable="true"
+				android:dividerHeight="1dp"
+				android:headerDividersEnabled="true"
 		>
 		</ListView>
 	</LinearLayout>

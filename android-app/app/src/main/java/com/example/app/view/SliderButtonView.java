@@ -8,15 +8,15 @@ import android.widget.*;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
-import com.example.app.question.TableQuestion;
+import com.example.app.question.SliderButtonQuestion;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TableView extends QuestionDisplayView {
+public class SliderButtonView extends QuestionDisplayView {
 	
 	// the corresponding question
-	private final TableQuestion question;
+	private final SliderButtonQuestion question;
 	// container of slider
 	private ConstraintLayout container;
 	// table
@@ -32,7 +32,7 @@ public class TableView extends QuestionDisplayView {
 	
 	
 	// constructor
-	public TableView (QuestionDisplayActivity activity, TableQuestion question) {
+	public SliderButtonView (QuestionDisplayActivity activity, SliderButtonQuestion question) {
 		super (activity);
 		this.question = question;
 		this.size = this.question.size;
@@ -46,34 +46,26 @@ public class TableView extends QuestionDisplayView {
 	}
 	
 	private void init () {
-		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.table_view, null);
+		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.slider_button_view, null);
 		
 		// set questionTypeText
-		TextView questionTypeTextView = this.container.findViewById (R.id.tableQuestionTypeText);
+		TextView questionTypeTextView = this.container.findViewById (R.id.sliderButtonQuestionTypeText);
 		questionTypeTextView.setText (this.question.type.name ());
 		
 		// set questionText
-		TextView questionTextView = this.container.findViewById (R.id.tableQuestionText);
+		TextView questionTextView = this.container.findViewById (R.id.sliderButtonQuestionText);
 		questionTextView.setText (this.question.questionText);
 		
 		// find dividingLine
-		View dividingLine = this.container.findViewById (R.id.tableDividingLine);
+		View dividingLine = this.container.findViewById (R.id.sliderButtonDividingLine);
 		
-		// set leftName
-		VerticalTextView leftName = this.container.findViewById (R.id.leftName);
-		leftName.setText (this.question.leftName);
+		// set leftIndex
+		TextView leftIndex = this.container.findViewById (R.id.leftIndex);
+		leftIndex.setText (this.question.leftIndex);
 		
-		// set rightName
-		VerticalTextView rightName = this.container.findViewById (R.id.rightName);
-		rightName.setText (this.question.rightName);
-		
-		// set topName
-		TextView topName = this.container.findViewById (R.id.topName);
-		topName.setText (this.question.topName);
-		
-		// set bottomName
-		TextView bottomName = this.container.findViewById (R.id.bottomName);
-		bottomName.setText (this.question.bottomName);
+		// set rightIndex
+		TextView rightIndex = this.container.findViewById (R.id.rightIndex);
+		rightIndex.setText (this.question.rightIndex);
 		
 		// create table
 		this.createTable();
@@ -82,30 +74,29 @@ public class TableView extends QuestionDisplayView {
 	
 	// create table
 	private void createTable(){
-		this.table = this.container.findViewById (R.id.tableView);
+		this.table = this.container.findViewById (R.id.sliderButtonView);
 		this.table.setMinimumHeight (this.table.getWidth ());
-		for (int i = 0; i < this.size; i++) {
-			TableRow tableRow = new TableRow (this.getActivity ());
+		TableRow tableRow = new TableRow (this.getActivity ());
 			
-			// row set in the middle
-			tableRow.setGravity (Gravity.CENTER);
-			// add table row to table
-			this.table.addView (tableRow);
+		// row set in the middle
+		tableRow.setGravity (Gravity.CENTER);
+		// add 1 table row to table
+		this.table.addView (tableRow);
 			
-			for(int j = 0; j < this.size; j++) {
-				Button button = new Button (this.getActivity ());
-				// set color
-				button.setBackgroundResource (R.drawable.table_button_default);
-				// set id of button
-				button.setId (this.idGenerator ());
-				// add button to button list
-				this.buttons.add (button);
-				// set a colour button if clicked
-				button.setOnClickListener (v -> this.buttonClicked (button));
-				// add button to table row
-				tableRow.addView (button);
+		for(int j = 0; j < this.size; j++) {
+			Button button = new Button (this.getActivity ());
+			// set color and number
+			button.setBackgroundResource (R.drawable.table_button_default);
+			button.setText ((j+1) +"");
+			// set id of button
+			button.setId (this.idGenerator ());
+			// add button to button list
+			this.buttons.add (button);
+			// set a colour button if clicked
+			button.setOnClickListener (v -> this.buttonClicked (button));
+			// add button to table row
+			tableRow.addView (button);
 			}
-		}
 	}
 	// enable or disable 'next' button depending on whether any button is checked
 	// also disable other radio buttons if this is that kind of question

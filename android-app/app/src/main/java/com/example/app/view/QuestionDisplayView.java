@@ -13,11 +13,7 @@ import android.widget.RelativeLayout;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.QuestionnaireState;
 import com.example.app.answer.Answer;
-import com.example.app.question.ChoiceQuestion;
-import com.example.app.question.Note;
-import com.example.app.question.Question;
-import com.example.app.question.SliderQuestion;
-import com.example.app.question.TableQuestion;
+import com.example.app.question.*;
 
 public abstract class QuestionDisplayView {
 
@@ -47,6 +43,8 @@ public abstract class QuestionDisplayView {
 			return new NoteView (activity, (Note) question);
 		else if (question instanceof TableQuestion)
 			return new TableView (activity, (TableQuestion) question);
+		else if(question instanceof SliderButtonQuestion)
+			return new SliderButtonView (activity, (SliderButtonQuestion) question);
 		else
 			throw new IllegalArgumentException ();
 		// TODO: implement other question views

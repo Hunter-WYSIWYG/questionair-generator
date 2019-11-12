@@ -12,5 +12,7 @@ public enum QuestionType {
 	@SerializedName ("note") Note,
 	
 	@SerializedName ("tableView") Table,
+	
+	@SerializedName ("buttonSlider") SliderButton,
 }
 

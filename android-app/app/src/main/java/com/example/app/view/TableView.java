@@ -79,10 +79,6 @@ public class TableView extends QuestionDisplayView {
 		
 		// create table
 		this.createTable();
-		
-		// TODO next button clicked method
-		// next button always enabled (for now)
-		this.getActivity ().setNextButtonEnabled (true);
 	}
 	
 	

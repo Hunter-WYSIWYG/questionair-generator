@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.widget.*;
 
-import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,9 +36,13 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate (savedInstanceState);
 		setContentView (R.layout.activity_main);
 		
+		// number of questionnaires
+		int x = 3;
+		
 		// import all questionnaires - just for testing
-		for (int i = 0; i < 20; i++) {
-			this.questionnaireList.add (this.importQuestions ());
+		// TODO how many questionnaires do we import???
+		for (int i = 0; i <= x; i++) {
+			this.questionnaireList.add (this.importQuestions (i));
 		}
 		this.init ();
 	}
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 		return null;
 	}
 	
-	private Questionnaire importQuestions () {
+	private Questionnaire importQuestions (int index) {
 		
 		// read JSON file with GSON library
 		// you have to add the dependency for gson
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 		// TODO: invalid JSON still crashes the app!!!
 		try {
 			AssetManager assetManager = getAssets ();
-			InputStream ims = assetManager.open ("example-questionnaire.json");
+			InputStream ims = assetManager.open ("example-questionnaire-" + index + ".json");
 			
 			Gson gson = new GsonBuilder ().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create();
 			Reader reader = new InputStreamReader (ims);

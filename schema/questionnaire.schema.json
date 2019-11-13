@@ -22,27 +22,19 @@
             },
             "description": "An Array of questions and notes"
         },
-        "viewingTimeBegin": {
+        "viewingTime": {
             "type": "string",
-            "format": "date-time",
-            "description": "Point in time when the questionnaire begins to be viewable"
-        },
-        "viewingTimeEnd": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Point in time when the questionnaire stops to be viewable"
+            "description": "Range when the questionnaire begins to be viewable. The format looks like '03-11-2019 to 14-11-2019'."
         },
         "editTime": {
             "type": "string",
-            "format": "time",
-            "description": "Duration which determines the max. answering time"
+            "description": "Duration which determines the max. answering time. The format looks like '12:00'."
         },
         "reminderTimes": {
             "type": "array",
             "items": {
                 "type": "string",
-                "format": "date-time",
-                "description": "List of points in time where a reminder should be sent for the questionnaire"
+                "description": "List of points in time where a reminder should be sent for the questionnaire. The format looks like '13-11-2019 12:00 monatlich;13-11-2019 12:00 wöchentlich;13-11-2019 12:00 täglich;13-11-2019 12:00 Keine'."
 
             }
 

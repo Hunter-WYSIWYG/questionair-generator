@@ -41,8 +41,8 @@ showEditQuestionnaire model =
         , viewNewNoteModal model
         , viewNewQuestionModal model
         , viewNewAnswerModal model
-        , viewNewConditionModal1 model
-        , viewNewConditionModal2 model
+        , viewNewConditionModalOverview model
+        , viewNewConditionModalCreate model
         ]
 
 
@@ -588,11 +588,10 @@ viewNewAnswerModal model =
         div [] []
 
 
-{-| TODO: AUSSAGEKRÄFTIGERE NAMEN!
-Zeigt ein Modal mit einer Tabelle mit vorhandenen Bedingungen an.
+{-| Zeigt ein Modal mit einer Tabelle mit vorhandenen Bedingungen an.
 -}
-viewNewConditionModal1 : Model -> Html Msg
-viewNewConditionModal1 model =
+viewNewConditionModalOverview : Model -> Html Msg
+viewNewConditionModalOverview model =
     if model.showNewConditionModal1 then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
@@ -620,11 +619,10 @@ viewNewConditionModal1 model =
         div [] []
 
 
-{-| TODO: AUSSAGEKRÄFTIGERE NAMEN!
-Zeigt ein Modal zur Erstellung von Bedingungen an.
+{-| Zeigt ein Modal zur Erstellung von Bedingungen an.
 -}
-viewNewConditionModal2 : Model -> Html Msg
-viewNewConditionModal2 model =
+viewNewConditionModalCreate : Model -> Html Msg
+viewNewConditionModalCreate model =
     if model.showNewConditionModal2 then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []

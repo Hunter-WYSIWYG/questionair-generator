@@ -50,7 +50,7 @@ updateIDsInCondition list old new =
     List.map (updateConditionID old new) list
 
 
-{-| TODO
+{-| updated die FrageId der child und parent Frage 
 -}
 updateConditionID : Int -> Int -> Condition -> Condition
 updateConditionID old new condition =
@@ -60,7 +60,7 @@ updateConditionID old new condition =
     }
 
 
-{-| TODO
+{-| Suche nach der neuen und der alten Id und wenn nötig umschreiben
 -}
 getNewConditionID : Int -> Int -> Int -> Int
 getNewConditionID cond_id old new =
@@ -74,20 +74,20 @@ getNewConditionID cond_id old new =
         cond_id
 
 
-{-| TODO
+{-| Sucht die Condition mit der alten AnswerId aus einer Liste und aktualisiert deren Id bei Aktualisierung der Fragenreihenfolge.
 -}
 updateConditionAnswers : List Condition -> Int -> Int -> List Condition
 updateConditionAnswers list old new =
     List.map (updateConditionWithAnswer old new) list
 
 
-{-| TODO
+{-| update der AnswerId jeder Condition
 -}
 updateConditionWithAnswer : Int -> Int -> Condition -> Condition
 updateConditionWithAnswer old new condition = { condition | answer_id =  updateConditionAnswer old new condition.answer_id}
 
 
-{-| TODO
+{-| Suche nach der neuen und der alten Id und wenn nötig umschreiben
 -}
 updateConditionAnswer : Int -> Int -> Int -> Int
 updateConditionAnswer old new answer_id =
@@ -169,6 +169,8 @@ getConditionWithParentID list id =
         Nothing ->
             initCondition
 
+{-| Löscht eine Condition aus der Condition Liste
+-}
 deleteConditionFrom : Condition -> List Condition -> List Condition
 deleteConditionFrom condition list =
     Tuple.first (List.partition (\e -> e /= condition) list)

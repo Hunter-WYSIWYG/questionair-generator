@@ -84,6 +84,11 @@
       ]
     },
     {
+      "questionID": 4,
+      "questionText": "Haben sie alles erledigt heute?",
+      "type": "percentslider"
+    },
+    {
       "questionID": 5,
       "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
       "type": "slider",

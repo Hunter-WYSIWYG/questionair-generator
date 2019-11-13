@@ -43,6 +43,7 @@ type alias Model =
     --editQElement for EditQuestion and EditNote
     , editQElement : Bool
     , editAnswer : Bool
+    , editCondition : Bool
 
     --new inputs
     , inputTitle : String
@@ -56,6 +57,8 @@ type alias Model =
     , inputChildId : Int
     , newAnswerID_Condition : String
     , newCondition : Condition
+    , newElement : Q_element
+    , newAnswer : Answer
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -106,10 +109,10 @@ type
     | ViewOrClose ModalType
       --Creates Condition
     | AddCondition
-    | AddConditionAnswer
     | AddAnswerToNewCondition String
     | ChangeInputParentId String
     | ChangeInputChildId String
+    | ChangeInputAnswerId String
       --Save input to questionnaire
     | SetQuestionnaireTitle
     | SetNote
@@ -121,6 +124,7 @@ type
     | EditQuestion Q_element
     | EditNote Q_element
     | EditAnswer Answer
+    | EditCondition Condition
     | EditQuestionnaire
       --Change order of elements
     | PutUpEl Q_element
@@ -130,6 +134,7 @@ type
       --Delete existing elements or answers
     | DeleteItem Q_element
     | DeleteAnswer Answer
+    | DeleteCondition Condition
       --Validation of times
     | Submit
       --Everything releated to upload
@@ -161,6 +166,7 @@ initModel _ =
       --editQElement for EditQuestion and EditNote
       , editQElement = False
       , editAnswer = False
+      , editCondition = False
 
       --new inputs
       , inputTitle = ""
@@ -174,7 +180,9 @@ initModel _ =
       , inputChildId = -1
       , newCondition = Condition.initCondition
       , newAnswerID_Condition = ""
-
+      , newElement = QElement.initQuestion
+      , newAnswer = Answer.initAnswer
+      
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire
       , upload = False

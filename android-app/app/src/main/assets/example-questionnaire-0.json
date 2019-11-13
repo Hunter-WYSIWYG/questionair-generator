@@ -1,6 +1,6 @@
 {
-  "questionnaireName": "Beispiel Fragebogen",
-  "questionnaireID": 1,
+  "questionnaireName": "Fragebogen 0",
+  "questionnaireID": 0.0,
   "reminderTimes": [
     {
       "date": "2019-11-05T22:00:00+01:00",
@@ -16,6 +16,11 @@
   "questions": [
     {
       "questionID": 1,
+      "questionText": "BOGEN 0 IST AM START!",
+      "type": "note"
+    },
+    {
+      "questionID": 2,
       "questionText": "Gab es seit der letzten Befragung ein negatives Ereignis?",
       "type": "singleChoice",
       "options": [
@@ -32,22 +37,7 @@
       ]
     },
     {
-      "questionID": 2,
-      "questionText": "Dies ist ein Test der Notiz-Funktionalität. Falls alles klappt, wird hier eine Notiz angezeigt, die beliebig ausfallen kann. Kurze und lange Texte sollten kein Problem darstellen, da hier mal viel und mal wenig Informationen präsentiert werden müssen.",
-      "type": "note"
-    },
-    {
       "questionID": 3,
-      "questionText": "Wie fuehlen Sie sich gerade?",
-      "type": "tableView",
-      "size": 5,
-      "topName": "Voller Energie",
-      "bottomName": "Energielos",
-      "rightName": "Gute Stimmung",
-      "leftName": "Schlechte Stimmung"
-    },
-    {
-      "questionID": 4,
       "questionText": "Wo sind Sie gerade?",
       "type": "multipleChoice",
       "options": [
@@ -85,11 +75,6 @@
     },
     {
       "questionID": 4,
-      "questionText": "Haben sie alles erledigt heute?",
-      "type": "percentslider"
-    },
-    {
-      "questionID": 5,
       "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
       "type": "slider",
       "minValue": 0.0,
@@ -97,7 +82,7 @@
       "stepSize": 1.0
     },
     {
-      "questionID": 6,
+      "questionID": 5,
       "questionText": "Glauben Sie die momentane Situation im Griff zu haben? (-5 - gar nicht, 5 - völlig)",
       "type": "slider",
       "minValue": -5.0,
@@ -105,7 +90,7 @@
       "stepSize": 2.0
     },
     {
-      "questionID": 7,
+      "questionID": 6,
       "questionText": "Mit wem sind Sie gerade zusammen?",
       "type": "multipleChoice",
       "options": [

@@ -3,9 +3,17 @@
     "title": "Questionnaire",
     "type": "object",
     "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Unique identifier for the questionnaire"
+        },
         "title": {
             "type": "string",
-            "description": "Unique identifier for the questionnaire"
+            "description": "Title of the questionnaire"
+        },
+        "priority": {
+            "type": "integer",
+            "description": "Priority of the questionnaire. 0 is the highest priority."
         },
         "elements": {
             "type": "array",
@@ -98,7 +106,7 @@
             ],
             "properties": {
                 "_type": {
-                    "type": "number",
+                    "type": "integer",
                     "description": "The number corresponding to the type: (0) Regular Text, (1) Number, (2) Point, (3) Free Text"
                 },
                 "text": {
@@ -132,38 +140,19 @@
         },
         "condition": {
             "type":"object",
-            "required": ["child_id", "connections"],
+            "required": ["parent_id", "child_id", "answer_id"],
             "properties": {
+                "parent_id": {
+                    "type": "integer",
+                    "description": "This question with the corresponding answer id activates the question with the child_id"
+                },
                 "child_id": {
                     "type": "integer",
                     "description": "Id of the question that is activated upon completing the condition"
                 },
-                "connections" : {
-                    "type":"array",
-                    "items": {
-                        "connection": {
-                            "type":"object",
-                            "required": ["connection_id", "parent_id", "answer_id"],
-                            "properties": {
-                                "connection_id": {
-                                    "type":"integer",
-                                    "description":"id of the connection, connections have the same id if they belong together (conditions means all connections need to be fulfilled)"
-
-                                },
-                                "parent_id" : {
-                                    "type":"integer",
-                                    "description":"id of the question that is being referenced"
-
-                                },
-                                "answer_id" : {
-                                    "type":"integer",
-                                    "description":"id of the answer from the parent-question that needs to be checked in oder for the connection to be fulfilled"
-                                }
-                            }
-
-                        }
-                    }
-
+                "answer_id": {
+                    "type": "integer",
+                    "description": "If this answer of the question with the parent_id is choosen by the user, the question with the child_id is viewable"
                 }
             }
         }

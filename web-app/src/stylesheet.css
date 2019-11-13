@@ -5,18 +5,6 @@
     border: 1px solid #F7F7F7 !important; 
     box-shadow:5px 5px 5px #1D140E !important;
 }
-/*00D1B2*/
-/*.divButtons {
-    display: block !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-}*/
-
-/*.divButtons {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}*/
 
 .qnButton {
     
@@ -77,4 +65,20 @@
 
 .lightblue{
     background-color: #F0F8FF;
+}
+
+#viewingTimeButton {
+	margin-top:15px;
+	margin-left:78px;
+	margin-bottom:21px
+}
+
+#editTimeButton {
+	margin-top:15px;
+	margin-left:6px
+}
+
+#reminderTimesButton{
+	margin-top:15px;
+	margin-left:6px
 }

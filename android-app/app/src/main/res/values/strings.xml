@@ -106,6 +106,7 @@
 	<string name="DEFAULT_ENTER_TEXT_HINT">Hier eingeben:</string>
 	<string name="QUESTION_TYPE_HINT_SINGLE_CHOICE">Single-Choice-Frage</string>
 	<string name="QUESTION_TYPE_HINT_MULTIPLE_CHOICE">Multiple-Choice-Frage</string>
+
 	<string name="navigation_drawer_open">Open navigation drawer</string>
 	<string name="navigation_drawer_close">Close navigation drawer</string>
 	<string name="nav_header_title">Android Studio</string>
@@ -123,4 +124,14 @@
 	<string name="hello_gallery_second">Hello HomeSecondFragment. Arg: %1$s</string>
 	<string name="hello_slideshow_second">Hello HomeSecondFragment. Arg: %1$s</string>
 	<string name="title_activity_navdrawer">navdrawer</string>
+
+	<string name="_5">5</string>
+	<string name="_4">4</string>
+	<string name="_1">1</string>
+	<string name="_2">2</string>
+	<string name="_3">3</string>
+	<string name="_6">6</string>
+	<string name="_7">7</string>
+	<string name="_8">8</string>
+	<string name="_9">9</string>
 </resources>

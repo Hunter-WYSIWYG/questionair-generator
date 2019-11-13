@@ -19,7 +19,6 @@ module Questionnaire exposing
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import List.Extra as LExtra
 import QElement exposing (Q_element)
 
 
@@ -30,17 +29,11 @@ type alias Questionnaire =
     { title : String
     , elements : List Q_element
     , conditions : List Condition
-    , newCondition : Condition
-    , newAnswerID_Condition : String
-
+    
     --times
-    , viewingTimeBegin : String
-    , viewingTimeEnd : String
+    , viewingTime : String
+    , reminderTimes : String
     , editTime : String
-
-    --newInputs
-    , newElement : Q_element
-    , newAnswer : Answer
     }
 
 
@@ -51,17 +44,17 @@ initQuestionnaire =
     { title = "Titel eingeben"
     , elements = []
     , conditions = []
-    , newCondition = Condition.initCondition
-    , newAnswerID_Condition = ""
-
+    
     --times
-    , viewingTimeBegin = ""
-    , viewingTimeEnd = ""
+    , viewingTime = ""
+    , reminderTimes = ""
     , editTime = ""
 
     --newInputs
-    , newElement = QElement.initQuestion
-    , newAnswer = Answer.initAnswer
+    --, newCondition = Condition.initCondition
+    --, newAnswerID_Condition = ""
+    --, newElement = QElement.initQuestion
+    --, newAnswer = Answer.initAnswer
     }
 
 
@@ -94,8 +87,8 @@ getViewingTime questionnaire =
 -}
 getEditTime : Questionnaire -> String
 getEditTime questionnaire =
-    if questionnaire.viewingTimeBegin == "" then
+    if questionnaire.viewingTime == "" then
         "unbegrenzt"
 
     else
-        "Von " ++ questionnaire.viewingTimeBegin ++ " Bis " ++ questionnaire.viewingTimeEnd
+        questionnaire.viewingTime

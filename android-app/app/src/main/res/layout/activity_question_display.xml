@@ -29,6 +29,7 @@
 				android:enabled="false"
 				android:paddingLeft="20dp"
 				android:paddingRight="20dp"
-				android:text="Weiter" android:textSize="14sp"/>
+				android:text="Weiter"
+				android:textSize="14sp" />
 	</LinearLayout>
 </ScrollView>

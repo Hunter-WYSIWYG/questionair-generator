@@ -11,11 +11,17 @@
 			android:roundIcon="@mipmap/new_icon_launcher_round"
 			android:supportsRtl="true"
 			android:theme="@style/AppTheme">
-		<activity android:name=".QuestionnaireFinishedActivity" />
-		<activity android:name=".SaveAnswersActivity" />
-		<activity android:name=".QuestionDisplayActivity" />
-		<activity android:name=".MainActivity"
-				android:theme="@style/AppTheme.NoActionBar">
+
+		<activity android:name=".view.PercentSliderView">
+		</activity>
+		<activity android:name=".QuestionnaireFinishedActivity">
+		</activity>
+		<activity android:name=".SaveAnswersActivity">
+		</activity>
+		<activity android:name=".QuestionDisplayActivity">
+		</activity>
+		<activity android:name=".MainActivity">
+		    android:theme="@style/AppTheme.NoActionBar">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 

@@ -1,0 +1,48 @@
+{
+    "id": 0,
+    "title": "This is an example",
+    "priority": 3,
+    "elements": [ 
+        {
+            "_type":"Question", 
+            "id":0, 
+            "text":"How are you?", 
+            "answers":[
+                {
+                    "_type":0,
+                    "text":"I'm good",
+                    "id":0
+                },
+                {
+                    "_type":0,
+                    "text":"I don't feel so well...",
+                    "id":1
+                }
+            ], 
+            "questionType":0,
+            "hint":"This is a hint", 
+            "editTime":"20:20:39+00:00"
+        },
+        {
+            "_type":"Question", 
+            "id":1, 
+            "text":"What is you problem?", 
+            "answers":[
+                {
+                    "_type":0,
+                    "text":"You!",
+                    "id":0
+                },
+                {
+                    "_type":3,
+                    "id":1
+                }
+            ]
+        } 
+    ],
+    "viewingTimeBegin": "2018-09-13T20:20:39+00:00",
+    "viewingTimeEnd": "2018-12-13T20:20:39+00:00",
+    "editTime": "20:20:39+00:00",
+    "reminderTimes": ["2018-10-13T20:20:39+00:00", "2018-11-13T20:20:39+00:00"],
+    "conditions": [ {"parent_id":0, "child_id":1, "answer_id":1} ]
+  }

@@ -46,9 +46,15 @@
   <div id="modalReminderTime" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" data-input oninput="sendToElm(this.value, 'reminderTime')">
+      <table id="reminderTimesTable">
+        <thead><th>Zeiten</th></thead>
+        <tbody></tbody>
+      </table>
+      <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" data-input>
       <script src="./datetimepicker.js"></script>
-      <button onclick="closeDTPModal('reminderTime')">Schließen</button>
+      <button onclick="appendToTimesTable()">Zeit hinzufügen</button>
+      <button onclick="resetTimesTable()">Reset</button>
+      <button onclick="closeDTPModal('reminderTime')">Speichern & Schließen</button>
     </div>
   </div>
 

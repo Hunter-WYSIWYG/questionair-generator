@@ -25,7 +25,7 @@
   <button type="button" class="qnButton" data-toggle="modal" onclick="openDTPModal('viewingTime')" id="viewingTimeButton">
     Erscheinungszeiten
   </button>
-  <button type="button" class="qnButton" data-toggle="modal" onclick="openDTPModal('reminderTime')" id="reminderTimesButton">
+  <button type="button" class="qnButton" data-toggle="modal" onclick="openDTPModal('reminderTimes')" id="reminderTimesButton">
     Erinnerungszeiten
   </button>
   <button type="button" class="qnButton" data-toggle="modal" onclick="openDTPModal('editTime')" id="editTimeButton">
@@ -44,17 +44,35 @@
   </div>
 
   <div id="modalReminderTime" class="modal">
+    <script src="./datetimepicker.js"></script>
     <div class="modal-background"></div>
     <div class="modal-content">
-      <table id="reminderTimesTable">
-        <thead><th>Zeiten</th></thead>
-        <tbody></tbody>
-      </table>
-      <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" data-input>
-      <script src="./datetimepicker.js"></script>
+      <div class="box container is-fluid questionList" style="flex-basis:80%; overflow-y:auto; height:60vh; margin-top:2em; margin-bottom:2em">
+        <table id="reminderTimesTable">
+          <thead>
+            <tr>
+              <th>Zeit</th>
+              <th>Wiederholung</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <form id="reminderTimesForm">
+        <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" data-input>
+        <fieldset>
+          <input type="radio" id="täglich" name="Häufigkeit">
+          <label for="täglich"> täglich</label>
+          <input type="radio" id="wöchentlich" name="Häufigkeit">
+          <label for="wöchentlich"> wöchentlich</label>
+          <input type="radio" id="monatlich" name="Häufigkeit">
+          <label for="monatlich"> monatlich</label>
+        </fieldset>
+      </form>
+      <br>
       <button onclick="appendToTimesTable()">Zeit hinzufügen</button>
       <button onclick="resetTimesTable()">Reset</button>
-      <button onclick="closeDTPModal('reminderTime')">Speichern & Schließen</button>
+      <button onclick="closeDTPModal('reminderTimes')">Speichern & Schließen</button>
     </div>
   </div>
 

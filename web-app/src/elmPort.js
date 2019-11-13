@@ -5,9 +5,22 @@ var app = Elm.Main.init({
 function appendToTimesTable() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
     var row = table.insertRow(0);
-    var cell = row.insertCell(0);
-    var value = document.getElementById("basicDate").value;
-    cell.innerHTML = value;
+    var time = row.insertCell(0);
+    var repeat = row.insertCell(1);
+    time.innerHTML = document.getElementById("basicDate").value;
+
+    var repeatValue = " Keine";
+
+    if (document.getElementById("täglich").checked) {
+        repeatValue = " täglich";
+    } else if (document.getElementById("wöchentlich").checked) {
+        repeatValue = " wöchentlich";
+    } else if (document.getElementById("monatlich").checked) {
+        repeatValue = " monatlich";
+    }
+
+    repeat.innerHTML = repeatValue;
+    document.getElementById("reminderTimesForm").reset();
 }
 
 function resetTimesTable() {
@@ -27,7 +40,7 @@ function connectReminderTimes() {
         allTimes += ';' + table.rows[i].innerText;
     }
 
-    sendToElm(allTimes, "reminderTime");
+    sendToElm(allTimes, "reminderTimes")
 }
 
 function sendToElm(value, dateTimePicker) {
@@ -36,7 +49,7 @@ function sendToElm(value, dateTimePicker) {
         app.ports.viewingTime.send(value);
     }
 
-    if (dateTimePicker == "reminderTime") {
+    if (dateTimePicker == "reminderTimes") {
         app.ports.reminderTime.send(value);
     }
 
@@ -52,7 +65,7 @@ function openDTPModal(value) {
         modal.classList.add("is-active");
     }
 
-    if (value == "reminderTime") {
+    if (value == "reminderTimes") {
         var modal = document.getElementById("modalReminderTime");
         modal.classList.add("is-active");
     }
@@ -70,10 +83,11 @@ function closeDTPModal(value) {
         modal.classList.remove("is-active");
     }
 
-    if (value == "reminderTime") {
+    if (value == "reminderTimes") {
         var modal = document.getElementById("modalReminderTime");
         modal.classList.remove("is-active");
         connectReminderTimes();
+        resetTimesTable();
     }
 
     if (value == "editTime") {

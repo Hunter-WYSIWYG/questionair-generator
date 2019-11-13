@@ -234,7 +234,7 @@ viewTitleModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ text "Text: "
+                        [ text "Titel: "
                         , input
                             [ class "input is-medium"
                             , type_ "text"
@@ -249,7 +249,7 @@ viewTitleModal model =
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-success"
+                        [ class "qnButton"
                         , onClick SetQuestionnaireTitle
                         ]
                         [ text "Übernehmen" ]
@@ -350,7 +350,7 @@ viewNewQuestionModal model =
                             , onInput ChangeQuestionNote
                             ]
                             []
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text ("Typ: " ++ QElement.getQuestionTyp model.newElement)
                         , br [] []
                         , radio "Single Choice" (ChangeQuestionType "Single Choice")
@@ -461,7 +461,7 @@ viewNewConditionModalOverview model =
                         [ table [ class "table is-striped", style "width" "100%" ] (conditionsTable model)
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [ class "qnButton"
                         , onClick (ViewOrClose ConditionModal2)
@@ -495,14 +495,14 @@ viewNewConditionModalCreate model =
                             [ select [ onInput ChangeInputParentId ]
                                 (getQuestionOptions model.questionnaire.elements model.newCondition)
                             ]
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text " zu Frage: "
                         , br [] []
                         , div [ class "select" ]
                             [ select [ onInput ChangeInputChildId ]
                                 (getQuestionOptions model.questionnaire.elements model.newCondition)
                             ]
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text "Bei Beantwortung der Antworten mit den IDs: "
                         , br [] []
                         , div [ class "select" ]
@@ -511,7 +511,7 @@ viewNewConditionModalCreate model =
                             ]
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [ class "qnButton"
                         , onClick SetConditions

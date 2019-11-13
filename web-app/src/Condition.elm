@@ -84,21 +84,21 @@ updateConditionAnswers list old new =
 {-| TODO
 -}
 updateConditionWithAnswer : Int -> Int -> Condition -> Condition
-updateConditionWithAnswer old new condition = condition
+updateConditionWithAnswer old new condition = { condition | answer_id =  updateConditionAnswer old new condition.answer_id}
 
 
 {-| TODO
 -}
-updateConditionAnswer : Int -> Int -> Answer -> Answer
-updateConditionAnswer old new answer =
-    if answer.id == old then
-        { answer | id = new }
+updateConditionAnswer : Int -> Int -> Int -> Int
+updateConditionAnswer old new answer_id =
+    if answer_id == old then
+        new
 
-    else if answer.id == new then
-        { answer | id = old }
+    else if answer_id == new then
+        old
 
     else
-        answer
+        answer_id
 
 
 {-| Löscht eine Condition aus einer Liste von Conditions, die das Element mit der angegebenen ID enthält.

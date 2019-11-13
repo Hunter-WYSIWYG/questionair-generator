@@ -505,10 +505,17 @@ update msg model =
 
         PutDownAns answer ->
             let
-                oldElement = model.newElement
+                oldQuestionnaire =
+                    model.questionnaire
+
+                oldElement = 
+                    model.newElement
+
+                changedQuestionnaire =
+                    { oldQuestionnaire |  conditions = Condition.updateConditionAnswers oldQuestionnaire.conditions answer.id (answer.id - 1) }
             in
                 if  answer.id /= (List.length (QElement.getAntworten oldElement) - 1) then
-                    ( { model | newElement = QElement.putAnswerDown oldElement answer }, Cmd.none )
+                    ( { model | questionnaire = changedQuestionnaire, newElement = QElement.putAnswerDown oldElement answer }, Cmd.none )
                 else
                     ( model, Cmd.none )
 

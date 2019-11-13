@@ -999,11 +999,12 @@ radio value msg =
 get : Int -> List a -> Maybe a
 get nth list =
     list
-        |> List.drop (nth - 1)
+        |> List.drop (nth)
         |> List.head
 
 checkFrage : Maybe Q_element -> QuestionRecord
 checkFrage frage =
+
      case frage of 
         Just (Question f) ->
             f

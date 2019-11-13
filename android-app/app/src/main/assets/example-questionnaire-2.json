@@ -135,6 +135,14 @@
           "optionType": "text"
         }
       ]
+    },
+    {
+      "questionID": 8,
+      "questionText": "Glauben Sie die momentane Situation im Griff zu haben?",
+      "type": "buttonSlider",
+      "size": 12,
+      "leftIndex": "gar nicht",
+      "rightIndex": "völlig"
     }
   ]
 }

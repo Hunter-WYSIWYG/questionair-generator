@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD:android-app/app/src/main/assets/example-questionnaire.json
+  "questionnaireName": "Beispiel Fragebogen",
+  "questionnaireID": 1,
+=======
   "questionnaireName": "Fragebogen 0",
   "questionnaireID": 0.0,
+>>>>>>> origin/master:android-app/app/src/main/assets/example-questionnaire-0.json
   "reminderTimes": [
     {
       "date": "2019-11-05T22:00:00+01:00",

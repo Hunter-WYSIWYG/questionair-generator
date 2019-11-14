@@ -1,7 +1,8 @@
 module QElement exposing
     ( Q_element(..), NoteRecord, QuestionRecord
-    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID
+    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, setTableSize, getTableSize, setTopText, getTopText, setRightText, getRightText, setBottomText, getBottomText, setLeftText, getLeftText
     )
+
 
 {-| Enthält den Typ für die Elemente von Fragebögen (Fragen, Anmerkungen) und ein Anfangszustand für das "Input-Element" (newElement).
 
@@ -45,6 +46,12 @@ type alias QuestionRecord =
     , hint : String
     , typ : String
     , questionTime : String
+    , tableSize : Int -- Größe der Tabelle bei Fragetyp Raster-Auswahl
+    -- Beschriftung der Tabelle bei Fragetyp Raster-Auswahl oder Prozentslider
+    , topText : String
+    , rightText : String
+    , bottomText : String
+    , leftText : String
     }
 
 
@@ -59,6 +66,11 @@ initQuestion =
         , hint = ""
         , typ = ""
         , questionTime = ""
+        , tableSize = 0
+        , topText = ""
+        , rightText = ""
+        , bottomText = "" 
+        , leftText = ""
         }
 
 
@@ -278,3 +290,94 @@ getElementId elem =
 
         Note a ->
             a.id
+{- set- und get-Funktionen für Variablen für Fragetyp Raster-Auswahl
+-}
+setTableSize : Q_element -> Int -> Q_element
+setTableSize element size  =
+    case element of
+        Question record ->
+            Question { record | tableSize = size }
+        
+        Note record ->
+            Note record
+
+getTableSize : Q_element -> Int
+getTableSize element = 
+    case element of 
+        Question record ->
+            record.tableSize
+    
+        Note record ->
+            0
+
+setTopText : Q_element -> String -> Q_element
+setTopText element text = 
+    case element of 
+        Question record ->
+           Question { record | topText = text }
+        
+        Note record ->
+            Note record
+
+getTopText : Q_element -> String
+getTopText element = 
+    case element of 
+        Question record ->
+            record.topText
+    
+        Note record ->
+            ""
+
+setRightText : Q_element -> String -> Q_element
+setRightText element text = 
+    case element of 
+        Question record ->
+           Question { record | rightText = text }
+        
+        Note record ->
+            Note record
+
+getRightText : Q_element -> String
+getRightText element = 
+    case element of 
+        Question record ->
+            record.rightText
+    
+        Note record ->
+            ""
+
+setBottomText : Q_element -> String -> Q_element
+setBottomText element text = 
+    case element of 
+        Question record ->
+           Question { record | bottomText = text }
+        
+        Note record ->
+            Note record
+
+getBottomText : Q_element -> String
+getBottomText element = 
+    case element of 
+        Question record ->
+            record.bottomText
+    
+        Note record ->
+            ""
+
+setLeftText : Q_element -> String -> Q_element
+setLeftText element text = 
+    case element of 
+        Question record ->
+           Question { record | leftText = text }
+        
+        Note record ->
+            Note record
+
+getLeftText : Q_element -> String
+getLeftText element = 
+    case element of 
+        Question record ->
+            record.leftText
+    
+        Note record ->
+            ""

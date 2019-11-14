@@ -120,6 +120,11 @@ type
     | SetAnswer
     | SetConditions
     | SetPolarAnswers String
+    | SetTableSize String
+    | SetTopText String
+    | SetRightText String
+    | SetBottomText String
+    | SetLeftText String
       --Edit existing elements or answers
     | EditQuestion Q_element
     | EditNote Q_element

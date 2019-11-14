@@ -156,7 +156,7 @@ update msg model =
                             ( { model | showNewNoteModal = not model.showNewNoteModal }, Cmd.none )
 
                 QuestionModal ->
-                    let
+                    let 
                         oldQuestionnaire = model.questionnaire
                     in
                         if not model.showNewQuestionModal == True then
@@ -169,21 +169,26 @@ update msg model =
                                             , hint = ""
                                             , typ = ""
                                             , questionTime = ""
+                                            , tableSize = 0
+                                            , topText = ""
+                                            , rightText = ""
+                                            , bottomText = ""
+                                            , leftText = ""
                                         }
                                 , showNewQuestionModal = not model.showNewQuestionModal
-                                , questionValidationResult = NotDone
-                                , inputQuestionTime = "" 
-                            }
+                                , questionValidationResult = NotDone    
+                                , inputQuestionTime = ""   
+                              }
                             , Cmd.none
                             )
-                        else
-                            ( { model
-                                | showNewQuestionModal = not model.showNewQuestionModal
-                                , questionValidationResult = NotDone
-                                , inputQuestionTime = ""
-                              }
-                            ,Cmd.none 
-                            )
+                            else
+                                ( { model
+                                    | showNewQuestionModal = not model.showNewQuestionModal
+                                    , questionValidationResult = NotDone
+                                    , inputQuestionTime = ""
+                                  }
+                                , Cmd.none
+                                )
 
                 AnswerModal ->
                     if not model.showNewAnswerModal == True then
@@ -295,6 +300,87 @@ update msg model =
 
                 Note record ->
                     ( model, Cmd.none )
+
+        -- stellt Größe der Tabelle bei Raster-Auswahl Fragetyp ein
+        SetTableSize string ->
+            let 
+                size = Maybe.withDefault 0 ( String.toInt string )   
+                oldElement = model.newElement
+                changedElement = ( QElement.setTableSize oldElement size )
+            in
+                case oldElement of 
+                    Question record ->
+                        if record.typ == "Auswahl-Raster" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+                
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        -- stellt obere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        SetTopText string ->
+            let
+                oldElement = model.newElement 
+                changedElement = QElement.setTopText oldElement string
+            in 
+                case oldElement of 
+                    Question record ->
+                        if record.typ == "Auswahl-Raster" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        -- stellt rechte Beschriftung des Rasters bei Fragetyp Raster-Auswahl oder Prozentslider ein 
+        SetRightText string ->
+            let
+                oldElement = model.newElement 
+                changedElement = QElement.setRightText oldElement string
+            in 
+                case oldElement of 
+                    Question record ->
+                        if record.typ == "Auswahl-Raster" || record.typ == "Prozentslider" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        -- stellt untere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        SetBottomText string ->
+            let
+                oldElement = model.newElement 
+                changedElement = QElement.setBottomText oldElement string
+            in 
+                case oldElement of 
+                    Question record ->
+                        if record.typ == "Auswahl-Raster" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        -- stellt linke Beschriftung des Rasters bei Fragetyp Raster-Auswahl oder Prozentslider ein 
+        SetLeftText string ->
+            let
+                oldElement = model.newElement 
+                changedElement = QElement.setLeftText oldElement string
+            in 
+                case oldElement of 
+                    Question record ->
+                        if record.typ == "Auswahl-Raster" || record.typ == "Prozentslider" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+
+                    Note record ->
+                        ( model, Cmd.none )
 
         SetNote ->
             let

@@ -1,11 +1,11 @@
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
 
 {-| Enthält die View für das Bearbeiten von Fragebögen.
 
 
 # Öffentliche Funktionen
 
-@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
 
 -}
 
@@ -325,11 +325,11 @@ viewNewQuestionModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable model)
+                        [ showAnswerTable model
                         , br [] []
-                        , button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                        , showNewAnswerButton model
                         , br [] []
-                        , showInputBipolarUnipolar model
+                        , showInputBipolarUnipolarTable model
                         , br [ style "margin-top" "20px" ] []
                         , text "Fragetext: "
                         , input
@@ -353,11 +353,13 @@ viewNewQuestionModal model =
                         , br [style "margin-top" "20px"] []
                         , text ("Typ: " ++ QElement.getQuestionTyp model.newElement)
                         , br [] []
-                        , radio "Single Choice" (ChangeQuestionType "Single Choice")
+                        , selectedRadio "Single Choice" (ChangeQuestionType "Single Choice")
                         , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
                         , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
                         , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                        , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
+                        , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
                         , br [] []
                         ]
                     ]
@@ -793,11 +795,38 @@ viewQuestionValidation result =
     in
     div [ style "color" color ] [ text message ]
 
-
-{-| Eingabeoberfläche, wie viele Antworten für uni-/bipolare Fragen erstellt werden sollen.
+{- entfernt die Antworten-Tabelle wenn Raster-Auswahl Fragetyp gewählt wurde
 -}
-showInputBipolarUnipolar : Model -> Html Msg
-showInputBipolarUnipolar model =
+showAnswerTable : Model -> Html Msg
+showAnswerTable model =
+    case model.newElement of
+        Question record ->
+            if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+                div [] []
+            else
+                table [ class "table is-striped", style "width" "100%" ] (answersTable model)
+
+        Note record ->
+            div [] []
+
+{- entfernt die "Neue Antwort"-Button wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
+-}
+showNewAnswerButton : Model -> Html Msg
+showNewAnswerButton model =
+    case model.newElement of
+        Question record ->
+            if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+                div [] []
+            else
+                button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+
+        Note record ->
+            div [] []
+
+{-| Eingabeoberfläche, wie viele Antworten/Eingabefelder für uni-/bipolare, Raster-Auswahl und Prozentslider Fragen erstellt werden sollen.
+-}
+showInputBipolarUnipolarTable : Model -> Html Msg
+showInputBipolarUnipolarTable model =
     case model.newElement of
         Question record ->
             if record.typ == "Skaliert unipolar" then
@@ -828,12 +857,94 @@ showInputBipolarUnipolar model =
                         []
                     ]
 
+            else if record.typ == "Raster-Auswahl" then
+                div []
+                    [ text "Raster-Größe: "
+                    , div
+                        [class "select"]
+                        [ select
+                            [ onInput SetTableSize ]
+                            [ option [ value "3" ] [ text "3x3" ]
+                            , option [ value "5" ] [ text "5x5" ]
+                            , option [ value "7" ] [ text "7x7" ]
+                            ]
+                        ]
+                    , br [] []
+                    , text "Raster-Beschriftung oben:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetTopText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung rechts:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetRightText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung unten:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetBottomText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung links:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetLeftText
+                        ]
+                        []
+                    ]
+
+            else if record.typ == "Prozentslider" then
+                div []
+                    [ text "Bitte linken Grenzwert eingeben:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetLeftText
+                        ]
+                        []
+                    , br [] []
+                    , text "Bitte rechten Grenzwert eingeben:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetRightText
+                        ]
+                        []
+                    ]
+
             else
                 div [] []
 
         Note record ->
             div [] []
-
 
 {-| Radiobutton.
 -}
@@ -850,6 +961,18 @@ radio value msg =
         , text value
         ]
 
+selectedRadio : String -> msg -> Html msg
+selectedRadio value msg =
+    label
+        [ style "padding" "20px" ]
+        [ input
+            [ type_ "radio"
+            , name "font-size"
+            , onClick msg
+            ]
+            []
+        , text value
+        ]
 get : Int -> List a -> Maybe a
 get nth list =
     list
@@ -870,6 +993,11 @@ checkFrage frage =
             , hint = ""
             , typ = ""
             , questionTime = ""
+            , tableSize = 0
+            , topText = ""
+            , rightText = ""
+            , bottomText = ""
+            , leftText = ""
             }
 
 getAnswersId : List Answer -> List Int

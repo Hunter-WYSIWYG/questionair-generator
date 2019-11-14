@@ -19,7 +19,7 @@ module Questionnaire exposing
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import QElement exposing (Q_element)
+import QElement exposing (Q_element(..))
 
 
 {-| Der Typ, der den Fragebogen mit:

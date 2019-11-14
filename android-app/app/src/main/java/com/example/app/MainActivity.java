@@ -5,8 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+<<<<<<< HEAD
+import android.support.constraint.ConstraintLayout;
+=======
+>>>>>>> origin/master
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.widget.*;

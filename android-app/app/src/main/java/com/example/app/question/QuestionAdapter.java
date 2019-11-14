@@ -22,8 +22,14 @@ class QuestionAdapter implements JsonSerializer<Question>, JsonDeserializer<Ques
 			return context.deserialize (json, ChoiceQuestion.class);
 		else if (type == QuestionType.Slider)
 			return context.deserialize (json, SliderQuestion.class);
+		else if (type == QuestionType.PercentSlider)
+			return context.deserialize (json, PercentSliderQuestion.class);
 		else if (type == QuestionType.Note)
 			return context.deserialize (json, Note.class);
+		else if (type == QuestionType.Table)
+			return context.deserialize (json, TableQuestion.class);
+		else if (type == QuestionType.SliderButton)
+			return context.deserialize (json, SliderButtonQuestion.class);
 		else
 			throw new JsonParseException ("unknown question type: " + type);
 	}

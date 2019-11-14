@@ -1,22 +1,30 @@
+<<<<<<< HEAD
 module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
+=======
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
+>>>>>>> origin/master
 
 {-| Enthält die View für das Bearbeiten von Fragebögen.
 
 
 # Öffentliche Funktionen
 
+<<<<<<< HEAD
 @docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+=======
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+>>>>>>> origin/master
 
 -}
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, option, p, section, select, table, tbody, td, text, th, thead, tr)
+import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
-import List
+import List exposing (member, map)
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
-import QElement exposing (Q_element(..))
+import QElement exposing (Q_element(..), NoteRecord, QuestionRecord)
 import Questionnaire exposing (Questionnaire)
 import Time exposing (..)
 
@@ -37,9 +45,8 @@ showEditQuestionnaire model =
         , viewNewNoteModal model
         , viewNewQuestionModal model
         , viewNewAnswerModal model
-        , viewConditions model.questionnaire
-        , viewNewConditionModal1 model
-        , viewNewConditionModal2 model
+        , viewNewConditionModalOverview model
+        , viewNewConditionModalCreate model
         ]
 
 
@@ -113,12 +120,20 @@ showCreateQuestionOrNoteButtons questionnaire =
             , style "margin-right" "10px"
             , onClick (ViewOrClose NewNoteModal) ]
             [ text "Neue Anmerkung" ]
+<<<<<<< HEAD
         , button
+=======
+        , button    
+>>>>>>> origin/master
             [ class "qnButton"
             , style "margin-right" "10px"
             , onClick (ViewOrClose ConditionModal1) ]
             [ text "Bedingungen" ]
+<<<<<<< HEAD
         , button
+=======
+        , button    
+>>>>>>> origin/master
             [ class "qnButton"
             , onClick DownloadQuestionnaire ]
             [ text "Download" ]
@@ -235,7 +250,7 @@ viewTitleModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ text "Text: "
+                        [ text "Titel: "
                         , input
                             [ class "input is-medium"
                             , type_ "text"
@@ -250,7 +265,7 @@ viewTitleModal model =
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
-                        [ class "button is-success"
+                        [ class "qnButton"
                         , onClick SetQuestionnaireTitle
                         ]
                         [ text "Übernehmen" ]
@@ -287,7 +302,7 @@ viewNewNoteModal model =
                             , style "width" "180px"
                             , style "margin-left" "10px"
                             , style "margin-right" "10px"
-                            , value (QElement.getElementText questionnaire.newElement)
+                            , value (QElement.getElementText model.newElement)
                             , onInput ChangeQuestionOrNoteText
                             ]
                             []
@@ -326,18 +341,26 @@ viewNewQuestionModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
+<<<<<<< HEAD
                         [ showAnswerTable model.questionnaire
+=======
+                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable model)
+>>>>>>> origin/master
                         , br [] []
                         , showNewAnswerButton model.questionnaire
                         , br [] []
+<<<<<<< HEAD
                         , showInputBipolarUnipolarTable model.questionnaire
+=======
+                        , showInputBipolarUnipolar model
+>>>>>>> origin/master
                         , br [ style "margin-top" "20px" ] []
                         , text "Fragetext: "
                         , input
                             [ class "input is-medium"
                             , type_ "text"
                             , style "width" "100%"
-                            , value (QElement.getElementText model.questionnaire.newElement)
+                            , value (QElement.getElementText model.newElement)
                             , onInput ChangeQuestionOrNoteText
                             ]
                             []
@@ -347,12 +370,12 @@ viewNewQuestionModal model =
                             [ class "input is-medium"
                             , type_ "text"
                             , style "width" "100%"
-                            , value (QElement.getQuestionHinweis model.questionnaire.newElement)
+                            , value (QElement.getQuestionHinweis model.newElement)
                             , onInput ChangeQuestionNote
                             ]
                             []
-                        , br [] []
-                        , text ("Typ: " ++ QElement.getQuestionTyp model.questionnaire.newElement)
+                        , br [style "margin-top" "20px"] []
+                        , text ("Typ: " ++ QElement.getQuestionTyp model.newElement)
                         , br [] []
                         , selectedRadio "Single Choice" (ChangeQuestionType "Single Choice")
                         , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
@@ -377,22 +400,25 @@ viewNewQuestionModal model =
     else
         div [] []
 
-
-{-| TODO: !!!NUR FÜR DEBUG ZWECKE!!!
-Zeigt eine Liste von Bedingungen an.
--}
-viewConditions : Questionnaire -> Html Msg
-viewConditions questionnaire =
-    div [] (List.map (\c -> text ("(" ++ String.fromInt c.parent_id ++ "," ++ String.fromInt c.child_id ++ ")")) questionnaire.conditions)
-
-
 {-| Zeigt eine Liste von Fragen an, die zur Bedingung als "Elternfrage" oder "Kindfrage" hinzugefügt werden können.
 Siehe viewConditionModal
 -}
 getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
-        ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
+        ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] 
+            [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
+
+getAnswerOptions : Model -> Condition -> List (Html Msg)
+getAnswerOptions model newCondition =
+    let 
+        parent_frage = checkFrage (get model.newCondition.parent_id model.questionnaire.elements)
+        parent_antworten = (parent_frage.answers)
+        list = parent_antworten
+    in
+        [ option [] [ text "Keine" ] ]
+            ++ List.map (\e -> option [ selected (Answer.getAnswerId e == newCondition.answer_id) ] 
+                [ text (String.fromInt(Answer.getAnswerId e) ++ "." ++ " " ++ Answer.getAnswerText e) ]) list
 
 
 {-| Zeigt ein Modal zum Erstellen neuer Antworten an.
@@ -424,7 +450,7 @@ viewNewAnswerModal model =
                         ]
                     , br [] []
                     , div []
-                        [ text ("Typ: " ++ questionnaire.newAnswer.typ)
+                        [ text ("Typ: " ++ model.newAnswer.typ)
                         , br [] []
                         , radio "Fester Wert" (ChangeAnswerType "regular")
                         , radio "Freie Eingabe" (ChangeAnswerType "free")
@@ -444,11 +470,10 @@ viewNewAnswerModal model =
         div [] []
 
 
-{-| TODO: AUSSAGEKRÄFTIGERE NAMEN!
-Zeigt ein Modal mit einer Tabelle mit vorhandenen Bedingungen an.
+{-| Zeigt ein Modal mit einer Tabelle mit vorhandenen Bedingungen an.
 -}
-viewNewConditionModal1 : Model -> Html Msg
-viewNewConditionModal1 model =
+viewNewConditionModalOverview : Model -> Html Msg
+viewNewConditionModalOverview model =
     if model.showNewConditionModal1 then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
@@ -459,10 +484,10 @@ viewNewConditionModal1 model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ table [ class "table is-striped", style "width" "100%" ] (conditionsTable model.questionnaire)
+                        [ table [ class "table is-striped", style "width" "100%" ] (conditionsTable model)
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [ class "qnButton"
                         , onClick (ViewOrClose ConditionModal2)
@@ -476,11 +501,10 @@ viewNewConditionModal1 model =
         div [] []
 
 
-{-| TODO: AUSSAGEKRÄFTIGERE NAMEN!
-Zeigt ein Modal zur Erstellung von Bedingungen an.
+{-| Zeigt ein Modal zur Erstellung von Bedingungen an.
 -}
-viewNewConditionModal2 : Model -> Html Msg
-viewNewConditionModal2 model =
+viewNewConditionModalCreate : Model -> Html Msg
+viewNewConditionModalCreate model =
     if model.showNewConditionModal2 then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
@@ -495,35 +519,25 @@ viewNewConditionModal2 model =
                         , br [] []
                         , div [ class "select" ]
                             [ select [ onInput ChangeInputParentId ]
-                                (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
+                                (getQuestionOptions model.questionnaire.elements model.newCondition)
                             ]
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text " zu Frage: "
                         , br [] []
                         , div [ class "select" ]
                             [ select [ onInput ChangeInputChildId ]
-                                (getQuestionOptions model.questionnaire.elements model.questionnaire.newCondition)
+                                (getQuestionOptions model.questionnaire.elements model.newCondition)
                             ]
-                        , br [] []
+                        , br [style "margin-top" "20px"] []
                         , text "Bei Beantwortung der Antworten mit den IDs: "
-
-                        --, text (Debug.toString (List.map getID model.questionnaire.newCondition.answers))
                         , br [] []
-                        , input
-                            [ placeholder "Hier ID eingeben"
-                            , onInput AddAnswerToNewCondition
+                        , div [ class "select" ]
+                            [ select [ onInput ChangeInputAnswerId ]
+                                (getAnswerOptions model model.newCondition)
                             ]
-                            []
-                        , button
-                            [ class "button"
-                            , style "margin-left" "1em"
-                            , style "margin-top" "0.25em"
-                            , onClick AddConditionAnswer
-                            ]
-                            [ text "Hinzufügen" ]
                         ]
                     ]
-                , footer [ class "modal-card-foot" ]
+                , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [ class "qnButton"
                         , onClick SetConditions
@@ -641,11 +655,11 @@ getQuestionTable index element =
 
 {-| Zeigt die Tabelle mit den Antworten der "Inputfrage" (newElement) an.
 -}
-answersTable : Questionnaire -> List (Html Msg)
-answersTable questionnaire =
-    case questionnaire.newElement of
+answersTable : Model -> List (Html Msg)
+answersTable model =
+    case model.newElement of
         Question record ->
-            List.append [ tableHead_answers ] (List.indexedMap getAnswerTable (QElement.getAntworten questionnaire.newElement))
+            List.append [ tableHead_answers ] (List.indexedMap getAnswerTable (QElement.getAntworten model.newElement))
 
         Note record ->
             []
@@ -709,11 +723,11 @@ getAnswerTable index answer =
 
 {-| Tabelle von Bedingungen der "Input-Frage" (newElement).
 -}
-conditionsTable : Questionnaire -> List (Html Msg)
-conditionsTable questionnaire =
-    case questionnaire.newElement of
+conditionsTable : Model -> List (Html Msg)
+conditionsTable model =
+    case model.newElement of
         Question record ->
-            List.append [ tableHead_conditions ] (List.indexedMap getConditionTable questionnaire.conditions)
+            List.append [ tableHead_conditions ] (List.indexedMap getConditionTable model.questionnaire.conditions)
 
         Note record ->
             []
@@ -725,10 +739,16 @@ tableHead_conditions : Html Msg
 tableHead_conditions =
     tr []
         [ th []
+            [ text "ID"
+            ]
+        , th []
             [ text "Von"
             ]
         , th []
             [ text "Zu"
+            ]
+        , th []
+            [ text "Mit der Antwort/en"
             ]
         , th []
             [ text "Aktion"
@@ -742,10 +762,19 @@ getConditionTable : Int -> Condition -> Html Msg
 getConditionTable index condition =
     tr [ id (String.fromInt index) ]
         [ td [] [ text (String.fromInt index) ]
-        , td [] []
+        , td [] [ text (String.fromInt condition.parent_id) ]
+        , td [] [ text (String.fromInt condition.child_id) ]
+        , td [] [ text (String.fromInt condition.answer_id) ]
         , td []
             [ i
+                [ class "fas fa-cog"
+                , style "margin-right" "1em"
+                , onClick (EditCondition condition)
+                ]
+                []
+            , i
                 [ class "fas fa-trash-alt"
+                , onClick (DeleteCondition condition)
                 ]
                 []
             ]
@@ -806,6 +835,7 @@ showAnswerTable questionnaire =
 
 {- entfernt die "Neue Antwort"-Button wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
 -}
+<<<<<<< HEAD
 showNewAnswerButton : Questionnaire -> Html Msg
 showNewAnswerButton questionnaire =
     case questionnaire.newElement of
@@ -823,6 +853,11 @@ showNewAnswerButton questionnaire =
 showInputBipolarUnipolarTable : Questionnaire -> Html Msg
 showInputBipolarUnipolarTable questionnaire =
     case questionnaire.newElement of
+=======
+showInputBipolarUnipolar : Model -> Html Msg
+showInputBipolarUnipolar model =
+    case model.newElement of
+>>>>>>> origin/master
         Question record ->
             if record.typ == "Skaliert unipolar" then
                 div []
@@ -956,6 +991,7 @@ radio value msg =
         , text value
         ]
 
+<<<<<<< HEAD
 selectedRadio : String -> msg -> Html msg
 selectedRadio value msg =
     label
@@ -968,3 +1004,31 @@ selectedRadio value msg =
             []
         , text value
         ]
+=======
+get : Int -> List a -> Maybe a
+get nth list =
+    list
+        |> List.drop (nth)
+        |> List.head
+
+checkFrage : Maybe Q_element -> QuestionRecord
+checkFrage frage =
+
+     case frage of 
+        Just (Question f) ->
+            f
+
+        _ -> 
+            { id = 0
+            , text = "Beispielfrage"
+            , answers = []
+            , hint = ""
+            , typ = ""
+            , questionTime = ""
+            }
+
+getAnswersId : List Answer -> List Int
+getAnswersId list = 
+    map Answer.getAnswerId list
+
+>>>>>>> origin/master

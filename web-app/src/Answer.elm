@@ -1,6 +1,6 @@
 module Answer exposing
     ( Answer
-    , getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update
+    , getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText
     )
 
 {-| Enthält den Typ Answer für Antworten, der für Questions und Conditions verwendet wird.
@@ -121,3 +121,10 @@ update answerToUpdate answer =
 
     else
         answer
+
+getAnswerId : Answer -> Int
+getAnswerId answer = answer.id
+
+getAnswerText : Answer -> String
+getAnswerText answer = answer.text
+ 

@@ -1,6 +1,6 @@
 {
-  "questionnaireName": "Beispiel Fragebogen",
-  "questionnaireID": 1,
+  "questionnaireName": "Fragebogen 1",
+  "questionnaireID": 1.0,
   "reminderTimes": [
     {
       "date": "2019-11-05T22:00:00+01:00",
@@ -16,6 +16,11 @@
   "questions": [
     {
       "questionID": 1,
+      "questionText": "DIES IST DER SUPER KLASSE BOGEN 1!! PARTY!!!!",
+      "type": "note"
+    },
+    {
+      "questionID": 2,
       "questionText": "Gab es seit der letzten Befragung ein negatives Ereignis?",
       "type": "singleChoice",
       "options": [
@@ -30,11 +35,6 @@
           "optionType": "text"
         }
       ]
-    },
-    {
-      "questionID": 2,
-      "questionText": "Dies ist ein Test der Notiz-Funktionalität. Falls alles klappt, wird hier eine Notiz angezeigt, die beliebig ausfallen kann. Kurze und lange Texte sollten kein Problem darstellen, da hier mal viel und mal wenig Informationen präsentiert werden müssen.",
-      "type": "note"
     },
     {
       "questionID": 3,

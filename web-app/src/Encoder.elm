@@ -61,7 +61,7 @@ conditionEncoder condition =
     object
         [ ( "parent_id", Encode.int condition.parent_id )
         , ( "child_id", Encode.int condition.child_id )
-        , ( "answers", Encode.list answerEncoder condition.answers )
+        , ( "answer_id", Encode.int condition.answer_id )
         ]
 
 

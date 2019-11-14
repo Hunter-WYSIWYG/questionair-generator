@@ -69,7 +69,7 @@
                     "description": "One of these values: Question, Note"
                 },
                 "id": {
-                    "type": "number",
+                    "type": "integer",
                     "description": "A unique identifier for this element"
                 },
                 "text": {
@@ -84,8 +84,8 @@
                     "description": "An array of answers that correspond to the question."
                 },
                 "questionType": {
-                    "type": "number",
-                    "description": "The number corresponding to the type: (0) Single Choice, (1) Multiple Choice, (2) Yes-No, (3) Scaled Unipolar, (4) Scaled Bipolar, (5) Raster-Buttons, (6) Scaled Field 3x3, (7) Scaled Field 5x5, (8) Scaled Field 7x7, (9) Free Input, (10) Procentural Slider"
+                    "type": "string",
+                    "description": "The possible types: Single Choice, Multiple Choice, Yes-No, Scaled Unipolar, Scaled Bipolar, Raster-Buttons, Scaled Field 3x3, Scaled Field 5x5, Scaled Field 7x7, Free Input, Percent Slider"
                 },
                 "hint": {
                     "type": "string",
@@ -126,8 +126,8 @@
             ],
             "properties": {
                 "_type": {
-                    "type": "integer",
-                    "description": "The number corresponding to the type: (0) Regular Text, (1) Number, (2) Point, (3) Free Text"
+                    "type": "string",
+                    "description": "The possible types: Regular Text, Percent, Point, Free Text"
                 },
                 "text": {
                     "type": "string",
@@ -137,9 +137,9 @@
                     "type": "integer",
                     "description": "ID of the answer"
                 },
-                "number": {
-                    "type": "number",
-                    "description": "if answer is represented by number, e.g. a percentage"
+                "percent": {
+                    "type": "integer",
+                    "description": "if answer is represented by a percentage"
                 },
                 "point": {
                     "type": "object",
@@ -147,11 +147,11 @@
                     "required": ["x-coordinate","y-coordinate"],
                     "properties":{
                         "x-coordinate": {
-                            "type":"number",
+                            "type":"integer",
                             "description": "The x-coordinate of the point"
                         },
                         "y-coordinate": {
-                            "type":"number",
+                            "type":"integer",
                             "description": "The y-coordinate of the point"
                         }
                     }

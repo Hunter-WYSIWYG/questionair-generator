@@ -1,19 +1,11 @@
-<<<<<<< HEAD
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
-=======
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
->>>>>>> origin/master
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
 
 {-| Enthält die View für das Bearbeiten von Fragebögen.
 
 
 # Öffentliche Funktionen
 
-<<<<<<< HEAD
-@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewConditions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
-=======
-@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
->>>>>>> origin/master
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
 
 -}
 
@@ -120,20 +112,12 @@ showCreateQuestionOrNoteButtons questionnaire =
             , style "margin-right" "10px"
             , onClick (ViewOrClose NewNoteModal) ]
             [ text "Neue Anmerkung" ]
-<<<<<<< HEAD
-        , button
-=======
         , button    
->>>>>>> origin/master
             [ class "qnButton"
             , style "margin-right" "10px"
             , onClick (ViewOrClose ConditionModal1) ]
             [ text "Bedingungen" ]
-<<<<<<< HEAD
-        , button
-=======
         , button    
->>>>>>> origin/master
             [ class "qnButton"
             , onClick DownloadQuestionnaire ]
             [ text "Download" ]
@@ -341,19 +325,11 @@ viewNewQuestionModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-<<<<<<< HEAD
-                        [ showAnswerTable model.questionnaire
-=======
-                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable model)
->>>>>>> origin/master
+                        [ showAnswerTable model
                         , br [] []
-                        , showNewAnswerButton model.questionnaire
+                        , showNewAnswerButton model
                         , br [] []
-<<<<<<< HEAD
-                        , showInputBipolarUnipolarTable model.questionnaire
-=======
-                        , showInputBipolarUnipolar model
->>>>>>> origin/master
+                        , showInputBipolarUnipolarTable model
                         , br [ style "margin-top" "20px" ] []
                         , text "Fragetext: "
                         , input
@@ -821,24 +797,23 @@ viewQuestionValidation result =
 
 {- entfernt die Antworten-Tabelle wenn Raster-Auswahl Fragetyp gewählt wurde
 -}
-showAnswerTable : Questionnaire -> Html Msg
-showAnswerTable questionnaire =
-    case questionnaire.newElement of
+showAnswerTable : Model -> Html Msg
+showAnswerTable model =
+    case model.newElement of
         Question record ->
-            if record.typ == "Raster-Auswahl" then
+            if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
                 div [] []
             else
-                table [ class "table is-striped", style "width" "100%" ] (answersTable questionnaire)
+                table [ class "table is-striped", style "width" "100%" ] (answersTable model)
 
         Note record ->
             div [] []
 
 {- entfernt die "Neue Antwort"-Button wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
 -}
-<<<<<<< HEAD
-showNewAnswerButton : Questionnaire -> Html Msg
-showNewAnswerButton questionnaire =
-    case questionnaire.newElement of
+showNewAnswerButton : Model -> Html Msg
+showNewAnswerButton model =
+    case model.newElement of
         Question record ->
             if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
                 div [] []
@@ -850,14 +825,9 @@ showNewAnswerButton questionnaire =
 
 {-| Eingabeoberfläche, wie viele Antworten/Eingabefelder für uni-/bipolare, Raster-Auswahl und Prozentslider Fragen erstellt werden sollen.
 -}
-showInputBipolarUnipolarTable : Questionnaire -> Html Msg
-showInputBipolarUnipolarTable questionnaire =
-    case questionnaire.newElement of
-=======
-showInputBipolarUnipolar : Model -> Html Msg
-showInputBipolarUnipolar model =
+showInputBipolarUnipolarTable : Model -> Html Msg
+showInputBipolarUnipolarTable model =
     case model.newElement of
->>>>>>> origin/master
         Question record ->
             if record.typ == "Skaliert unipolar" then
                 div []
@@ -991,7 +961,6 @@ radio value msg =
         , text value
         ]
 
-<<<<<<< HEAD
 selectedRadio : String -> msg -> Html msg
 selectedRadio value msg =
     label
@@ -1004,7 +973,6 @@ selectedRadio value msg =
             []
         , text value
         ]
-=======
 get : Int -> List a -> Maybe a
 get nth list =
     list
@@ -1025,10 +993,14 @@ checkFrage frage =
             , hint = ""
             , typ = ""
             , questionTime = ""
+            , tableSize = 0
+            , topText = ""
+            , rightText = ""
+            , bottomText = ""
+            , leftText = ""
             }
 
 getAnswersId : List Answer -> List Int
 getAnswersId list = 
     map Answer.getAnswerId list
 
->>>>>>> origin/master

@@ -95,6 +95,26 @@
                     "type": "string",
                     "format": "time",
                     "description": "Duration which determines the max. answering time"
+                },
+                "tableSize": {
+                    "type": "int",
+                    "description": "Size of table in x*x for questiontype Scaled-Field"
+                },
+                "topText": {
+                    "type": "string",
+                    "description": "Label on top of table for questiontype Scaled-Field"
+                },
+                "rightText": {
+                    "type": "string",
+                    "description": "Label on top of table for questiontype Scaled-Field"
+                },
+                "bottomText": {
+                    "type": "string",
+                    "description": "Label on top of table for questiontype Scaled-Field"
+                },
+                "leftText": {
+                    "type": "string",
+                    "description": "Label on top of table for questiontype Scaled-Field"
                 }
             }
         },

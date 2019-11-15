@@ -26,7 +26,9 @@ import QElement exposing (Q_element(..))
 Titel, Liste von Elementen, "input-Bedingung" + zugehörige "input-Antwort" (bei deren Beantwortung gesprungen wird), Erscheinungs- und Bearbeitungszeiten, "Input-Frage/Anmerkung" und zugehörige "Input-Antwort" dieser Frage.
 -}
 type alias Questionnaire =
-    { title : String
+    { id : Int
+    , priority : Int
+    , title : String
     , elements : List Q_element
     , conditions : List Condition
     
@@ -41,7 +43,9 @@ type alias Questionnaire =
 -}
 initQuestionnaire : Questionnaire
 initQuestionnaire =
-    { title = "Titel eingeben"
+    { id = 0
+    , priority = 0
+    , title = "Titel eingeben"
     , elements = []
     , conditions = []
     

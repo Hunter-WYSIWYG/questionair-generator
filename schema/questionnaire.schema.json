@@ -31,13 +31,8 @@
             "description": "Duration which determines the max. answering time"
         },
         "reminderTimes": {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "description": "List of points in time where a reminder should be sent for the questionnaire"
-
-            }
-
+            "type": "string",
+                "description": "List of points in time where a reminder should be sent for the questionnaire."
         },
         "conditions": {
             "type": "array",
@@ -83,24 +78,23 @@
                     "type": "string",
                     "description": "Hint for the Question"
                 },
-                "editTime": {
+                "questionTime": {
                     "type": "string",
-                    "format": "time",
                     "description": "Duration which determines the max. answering time"
                 },
                 "tableSize": {
                     "type": "integer",
                     "description": "Size of the table in x*x. This is for the question type Scaled Field"
                 },
-                "top_text": {
+                "topText": {
                     "type": "string",
                     "description": "Label on top of the table. This is for the question type Scaled Field"
                 },
-                "bottom_text": {
+                "bottomText": {
                     "type": "string",
                     "description": "Label on top of the table. This is for the question type Scaled Field"
                 },
-                "left_text": {
+                "leftText": {
                     "type": "string",
                     "description": "Label on top of the table. This is for the question types Scaled Field and Percent Slider."
                 },

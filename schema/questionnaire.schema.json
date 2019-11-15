@@ -22,26 +22,18 @@
             },
             "description": "An Array of questions and notes"
         },
-        "viewingTimeBegin": {
+        "viewingTime": {
             "type": "string",
-            "format": "date-time",
-            "description": "Point in time when the questionnaire begins to be viewable"
-        },
-        "viewingTimeEnd": {
-            "type": "string",
-            "format": "date-time",
             "description": "Point in time when the questionnaire stops to be viewable"
         },
         "editTime": {
             "type": "string",
-            "format": "time",
             "description": "Duration which determines the max. answering time"
         },
         "reminderTimes": {
             "type": "array",
             "items": {
                 "type": "string",
-                "format": "date-time",
                 "description": "List of points in time where a reminder should be sent for the questionnaire"
 
             }

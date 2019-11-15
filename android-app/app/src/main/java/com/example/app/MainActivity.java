@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.*;
 
 import com.example.app.question.Questionnaire;
+import com.example.app.question.Reminder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -19,9 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
 	// chosen questionnaire that the user will answer
@@ -44,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 		for (int i = 0; i <= x; i++) {
 			this.questionnaireList.add (this.importQuestions (i));
 		}
+		this.notifystart ();
 		this.init ();
 	}
 	
@@ -127,36 +127,31 @@ public class MainActivity extends AppCompatActivity {
 		QuestionDisplayActivity.displayCurrentQuestion (questionnaireState, this);
 	}
 	
-	private void notifyButtonClick (View view) {
-		// notifications
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+	public void notifystart () {
+		//use all reminders
+		int reminder_number=0;
+		Date datecheck = new Date(System.currentTimeMillis());
+		for (Questionnaire questionnaire : this.questionnaireList) {
+			for (Reminder reminder : questionnaire.getReminderList ()) {
+				if(reminder.date.after (datecheck)) {
+					Intent alarmIntent = new Intent (this, AlarmReceiver.class);
+					alarmIntent.putExtra ("questionnaire", questionnaire.getName ());
+					alarmIntent.putExtra ("reminder", reminder.reminderText);
+					alarmIntent.putExtra ("remindernmb", reminder_number);
+					PendingIntent pendingIntent = PendingIntent.getBroadcast (this, reminder_number, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+					AlarmManager manager = (AlarmManager) getSystemService (Context.ALARM_SERVICE);
+					
+					Calendar calendar = Calendar.getInstance ();
+					calendar.setTime (reminder.date);
+					manager.set (AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis (), pendingIntent);
+					reminder_number++;
+				}
+			}
 		
-		NotificationManager notificationManager = (NotificationManager) getSystemService (Context.NOTIFICATION_SERVICE);
-
-		NotificationCompat.Builder builder;
-		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
-		if (currentApiVersion <= 25) {
-			builder = new NotificationCompat.Builder (this);
-		} else {
-			String channelId = "fragebogen";
-			NotificationChannel notificationChannel = new NotificationChannel(channelId, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
-			notificationManager.createNotificationChannel(notificationChannel);
-			builder = new NotificationCompat.Builder (this, channelId);
 		}
-		Notification notify = builder
-				.setContentTitle("title")
-				.setContentText("text")
-				.setSmallIcon(R.drawable.ic_launcher_foreground)
-				.setContentIntent (pendingIntent)
-				.build ();
-		
-		notificationManager.notify (0, notify);
-		
-		// testing
-		Toast toast = Toast.makeText (this, "API " + currentApiVersion, Toast.LENGTH_SHORT);
+		Toast toast = Toast.makeText (this, " Notifications initiated", Toast.LENGTH_SHORT);
 		toast.show ();
 		
 	}
+	
 }

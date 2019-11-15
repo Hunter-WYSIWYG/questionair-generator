@@ -872,10 +872,10 @@ showInputBipolarUnipolarTableSlider model =
                     , br [] []
                     , text "Raster-Beschriftung oben:"
                     , input
-                        [ class "input is-medium"
+                        [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
+                        , style "margin-left" "17px"
                         , style "margin-top" "2px"
                         , onInput SetTopText
                         ]
@@ -883,7 +883,7 @@ showInputBipolarUnipolarTableSlider model =
                     , br [] []
                     , text "Raster-Beschriftung rechts:"
                     , input
-                        [ class "input is-medium"
+                        [ class "input"
                         , type_ "text"
                         , style "width" "100px"
                         , style "margin-left" "10px"
@@ -894,10 +894,10 @@ showInputBipolarUnipolarTableSlider model =
                     , br [] []
                     , text "Raster-Beschriftung unten:"
                     , input
-                        [ class "input is-medium"
+                        [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
+                        , style "margin-left" "13px"
                         , style "margin-top" "2px"
                         , onInput SetBottomText
                         ]
@@ -905,10 +905,10 @@ showInputBipolarUnipolarTableSlider model =
                     , br [] []
                     , text "Raster-Beschriftung links:"
                     , input
-                        [ class "input is-medium"
+                        [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
+                        , style "margin-left" "20px"
                         , style "margin-top" "2px"
                         , onInput SetLeftText
                         ]
@@ -922,7 +922,7 @@ showInputBipolarUnipolarTableSlider model =
                         [ class "input is-medium"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
+                        , style "margin-left" "16px"
                         , style "margin-top" "2px"
                         , onInput SetLeftText
                         ]

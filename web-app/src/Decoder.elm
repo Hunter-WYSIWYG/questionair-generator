@@ -1,11 +1,11 @@
-module Decoder exposing (answerDecoder, decodeElements, decodeTitle, elementDecoder, noteDecoder, questionDecoder)
+module Decoder exposing (answerDecoder, decodeElements, decodeTitle, decodeId, decodePriority, elementDecoder, noteDecoder, questionDecoder, decodeViewingTime, decodeReminderTimes, decodeEditTime)
 
 {-| Enthält die Decoder für Questionnaire, QElement, Answer (usw.).
 
 
 # Öffentliche Funktionen
 
-@docs answerDecoder, decodeElements, decodeTitle, elementDecoder, noteDecoder, questionDecoder
+@docs answerDecoder, decodeElements, decodeTitle, decodeId, decodePriority, elementDecoder, noteDecoder, questionDecoder, decodeViewingTime, decodeReminderTimes, decodeEditTime
 
 -}
 
@@ -26,6 +26,23 @@ decodeTitle content =
         Err e ->
             ""
 
+decodeId : String -> Int 
+decodeId content =
+    case Decode.decodeString (Decode.field "id" Decode.int) content of
+        Ok val ->
+            val
+        
+        Err e ->
+            -1
+decodePriority : String -> Int
+decodePriority content =    
+    case Decode.decodeString (Decode.field "priority" Decode.int) content of
+        Ok val ->
+            val 
+        
+        Err e ->
+            -1
+
 
 {-| Decodiert eine Liste von Fragebogenelementen (Fragen, Anmerkunden).
 -}
@@ -38,6 +55,32 @@ decodeElements content =
         Err e ->
             []
 
+decodeViewingTime : String -> String
+decodeViewingTime content =
+    case Decode.decodeString (Decode.field "viewingTime" Decode.string) content of
+        Ok val ->
+            val
+        
+        Err e ->
+            ""
+
+decodeReminderTimes : String -> String
+decodeReminderTimes content =
+    case Decode.decodeString (Decode.field "reminderTimes" Decode.string) content of 
+        Ok val ->
+            val 
+        
+        Err e ->
+            ""
+
+decodeEditTime : String -> String
+decodeEditTime content =
+    case Decode.decodeString (Decode.field "editTime" Decode.string) content of
+        Ok val ->
+            val
+        
+        Err e ->
+            ""
 
 {-| Decodiert ein einzelnes Fragebogenelement (Frage, Anmerkung).
 -}

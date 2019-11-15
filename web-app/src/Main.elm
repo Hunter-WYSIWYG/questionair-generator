@@ -691,7 +691,12 @@ update msg model =
                 changedQuestionnaire =
                     { oldQuestionnaire
                         | title = Decoder.decodeTitle content
+                        , id = Decoder.decodeId content
+                        , priority = Decoder.decodePriority content
                         , elements = Decoder.decodeElements content
+                        , viewingTime = Decoder.decodeViewingTime content
+                        , reminderTimes = Decoder.decodeReminderTimes content
+                        , editTime = Decoder.decodeEditTime content
                     }
             in
             ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }, Cmd.none )

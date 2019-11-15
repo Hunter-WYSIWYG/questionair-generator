@@ -121,13 +121,34 @@ update msg model =
                 ( { model | newAnswer = Answer oldAnswer.id oldAnswer.text string }, Cmd.none )
 
         ChangeViewingTime string -> 
-            ( { model | inputViewingTime = string }, Cmd.none)
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire | viewingTime = string }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
 
         ChangeEditTime string -> 
-            ( { model | inputEditTime = string }, Cmd.none)
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire | editTime = string }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
 
         ChangeReminderTimes string -> 
-            ( { model | inputReminderTimes = string }, Cmd.none)
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire | reminderTimes = string }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
 
         --open or close modals
         ViewOrClose modalType ->
@@ -484,15 +505,6 @@ update msg model =
 
                 Note record ->
                     ( model, Cmd.none )
-            
-            {-if model.editAnswer == False && oldQuestionnaire.newAnswer.typ /= "" then
-                ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = False }, Cmd.none )
-
-            else if oldQuestionnaire.newAnswer.typ == "" then
-                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
-
-            else
-                ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = False, editAnswer = False }, Cmd.none )-}
 
         --Edits already existing elements
         EditAnswer element ->

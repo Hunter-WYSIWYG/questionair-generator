@@ -100,15 +100,15 @@
                     "type": "integer",
                     "description": "Size of the table in x*x. This is for the question type Scaled Field"
                 },
-                "topText": {
+                "top_text": {
                     "type": "string",
                     "description": "Label on top of the table. This is for the question type Scaled Field"
                 },
-                "bottomText": {
+                "bottom_text": {
                     "type": "string",
                     "description": "Label on top of the table. This is for the question type Scaled Field"
                 },
-                "leftText": {
+                "left_text": {
                     "type": "string",
                     "description": "Label on top of the table. This is for the question types Scaled Field and Percent Slider."
                 },

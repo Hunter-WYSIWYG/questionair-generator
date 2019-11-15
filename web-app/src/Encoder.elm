@@ -51,6 +51,11 @@ elementEncoder element =
                 , ( "question_type", Encode.string record.typ )
                 , ( "answers", Encode.list answerEncoder record.answers )
                 , ( "question_time", Encode.string record.questionTime )
+                , ( "table_size", Encode.int record.tableSize )
+                , ( "top_text", Encode.string record.topText )
+                , ( "right_text", Encode.string record.rightText )
+                , ( "bottom_text", Encode.string record.bottomText )
+                , ( "left_text", Encode.string record.leftText )
                 ]
 
 

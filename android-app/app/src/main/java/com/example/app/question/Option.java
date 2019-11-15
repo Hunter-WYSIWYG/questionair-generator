@@ -2,11 +2,9 @@ package com.example.app.question;
 
 import android.os.Build;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 public class Option implements Serializable {

@@ -2,9 +2,6 @@ package com.example.app.question;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Collections;
-import java.util.List;
-
 public class SliderButtonQuestion extends Question {
 	@SerializedName ("size")
 	public final double size;

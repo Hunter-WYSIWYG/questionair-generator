@@ -1,12 +1,11 @@
 $("#basicDate").flatpickr({
-    mode: "multiple",
     enableTime: true,
-    dateFormat: "F, d Y H:i"
+    dateFormat: "d-m-Y H:i"
 });
 
 $("#rangeDate").flatpickr({
         mode: 'range',
-        dateFormat: "Y-m-d"
+        dateFormat: "d-m-Y"
 });
 
 $("#timePicker").flatpickr({

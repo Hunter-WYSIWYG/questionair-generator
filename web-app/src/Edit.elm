@@ -1,11 +1,11 @@
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTableSlider, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
 
 {-| Enthält die View für das Bearbeiten von Fragebögen.
 
 
 # Öffentliche Funktionen
 
-@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTable, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTableSlider, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
 
 -}
 
@@ -329,7 +329,7 @@ viewNewQuestionModal model =
                         , br [] []
                         , showNewAnswerButton model
                         , br [] []
-                        , showInputBipolarUnipolarTable model
+                        , showInputBipolarUnipolarTableSlider model
                         , br [ style "margin-top" "20px" ] []
                         , text "Fragetext: "
                         , input
@@ -795,7 +795,7 @@ viewQuestionValidation result =
     in
     div [ style "color" color ] [ text message ]
 
-{- entfernt die Antworten-Tabelle wenn Raster-Auswahl Fragetyp gewählt wurde
+{- entfernt die Antworten-Tabelle wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
 -}
 showAnswerTable : Model -> Html Msg
 showAnswerTable model =
@@ -825,8 +825,8 @@ showNewAnswerButton model =
 
 {-| Eingabeoberfläche, wie viele Antworten/Eingabefelder für uni-/bipolare, Raster-Auswahl und Prozentslider Fragen erstellt werden sollen.
 -}
-showInputBipolarUnipolarTable : Model -> Html Msg
-showInputBipolarUnipolarTable model =
+showInputBipolarUnipolarTableSlider : Model -> Html Msg
+showInputBipolarUnipolarTableSlider model =
     case model.newElement of
         Question record ->
             if record.typ == "Skaliert unipolar" then
@@ -917,7 +917,7 @@ showInputBipolarUnipolarTable model =
 
             else if record.typ == "Prozentslider" then
                 div []
-                    [ text "Bitte linken Grenzwert eingeben:"
+                    [ text "Bitte linken Grenzwert eingeben:   "
                     , input
                         [ class "input is-medium"
                         , type_ "text"

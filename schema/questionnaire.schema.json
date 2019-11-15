@@ -96,25 +96,25 @@
                     "format": "time",
                     "description": "Duration which determines the max. answering time"
                 },
-                "tableSize": {
+                "table_size": {
                     "type": "int",
                     "description": "Size of table in x*x for questiontype Scaled-Field"
                 },
-                "topText": {
+                "top_text": {
                     "type": "string",
                     "description": "Label on top of table for questiontype Scaled-Field"
                 },
-                "rightText": {
+                "right_text": {
+                    "type": "string",
+                    "description": "Label on top of table for questiontype Scaled-Field or Percent Slider"
+                },
+                "bottom_text": {
                     "type": "string",
                     "description": "Label on top of table for questiontype Scaled-Field"
                 },
-                "bottomText": {
+                "left_text": {
                     "type": "string",
-                    "description": "Label on top of table for questiontype Scaled-Field"
-                },
-                "leftText": {
-                    "type": "string",
-                    "description": "Label on top of table for questiontype Scaled-Field"
+                    "description": "Label on top of table for questiontype Scaled-Field or Percent Slider"
                 }
             }
         },

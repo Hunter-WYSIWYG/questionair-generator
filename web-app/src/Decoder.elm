@@ -67,11 +67,11 @@ questionDecoder =
         |> required "hint" Decode.string
         |> required "question_type" Decode.string
         |> required "question_time" Decode.string
-        |> required "tableSize" Decode.int
-        |> required "topText" Decode.string
-        |> required "rightText" Decode.string
-        |> required "bottomText" Decode.string
-        |> required "leftText" Decode.string
+        |> required "table_size" Decode.int
+        |> required "top_text" Decode.string
+        |> required "right_text" Decode.string
+        |> required "bottom_text" Decode.string
+        |> required "left_text" Decode.string
         |> Decode.map Question
 
 

@@ -85,7 +85,7 @@
                 },
                 "questionType": {
                     "type": "string",
-                    "description": "The possible types: Single Choice, Multiple Choice, Yes-No, Scaled Unipolar, Scaled Bipolar, Raster-Buttons, Scaled Field 3x3, Scaled Field 5x5, Scaled Field 7x7, Free Input, Percent Slider"
+                    "description": "The possible types: Single Choice, Multiple Choice, Yes-No, Scaled Unipolar, Scaled Bipolar, Raster-Buttons, Scaled Field, Free Input, Percent Slider"
                 },
                 "hint": {
                     "type": "string",
@@ -97,24 +97,24 @@
                     "description": "Duration which determines the max. answering time"
                 },
                 "tableSize": {
-                    "type": "int",
-                    "description": "Size of table in x*x for questiontype Scaled-Field"
+                    "type": "integer",
+                    "description": "Size of the table in x*x. This is for the question type Scaled Field"
                 },
                 "topText": {
                     "type": "string",
-                    "description": "Label on top of table for questiontype Scaled-Field"
-                },
-                "rightText": {
-                    "type": "string",
-                    "description": "Label on top of table for questiontype Scaled-Field"
+                    "description": "Label on top of the table. This is for the question type Scaled Field"
                 },
                 "bottomText": {
                     "type": "string",
-                    "description": "Label on top of table for questiontype Scaled-Field"
+                    "description": "Label on top of the table. This is for the question type Scaled Field"
                 },
                 "leftText": {
                     "type": "string",
-                    "description": "Label on top of table for questiontype Scaled-Field"
+                    "description": "Label on top of the table. This is for the question types Scaled Field and Percent Slider."
+                },
+                "rightText": {
+                    "type": "string",
+                    "description": "Label on top of the table. This is for the question types Scaled Field and Percent Slider."
                 }
             }
         },

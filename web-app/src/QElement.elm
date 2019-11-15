@@ -46,7 +46,8 @@ type alias QuestionRecord =
     , hint : String
     , typ : String
     , questionTime : String
-    , tableSize : Int -- Größe der Tabelle bei Fragetyp Raster-Auswahl
+    -- Größe der Tabelle bei Fragetyp Raster-Auswahl
+    , tableSize : Int 
     -- Beschriftung der Tabelle bei Fragetyp Raster-Auswahl oder Prozentslider
     , topText : String
     , rightText : String

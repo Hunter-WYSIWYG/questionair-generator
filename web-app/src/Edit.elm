@@ -11,7 +11,7 @@ module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuest
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, table, tbody, td, text, th, thead, tr)
+import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, small, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import List exposing (member, map)
@@ -239,18 +239,31 @@ viewTitleModal model =
                             [ class "input is-medium"
                             , type_ "text"
                             , style "width" "180px"
-                            , style "margin-left" "10px"
+                            , style "margin-left" "32px"
                             , style "margin-right" "10px"
                             , value model.inputTitle
                             , onInput ChangeInputQuestionnaireTitle
                             ]
                             []
+                        , br [] []
+                        , text "Priorität: "
+                        , input 
+                            [ class "input is-medium"
+                            , type_ "text"
+                            , style "width" "180px"
+                            , style "margin-left" "10px"
+                            , style "margin-right" "10px"
+                            , value ( String.fromInt model.inputPriority ) 
+                            , onInput ChangeInputPriority
+                            ]
+                            []
+                        , small [] [ text "(0 ist die höchste Priorität)" ]
                         ]
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [ class "qnButton"
-                        , onClick SetQuestionnaireTitle
+                        , onClick SetQuestionnaireTitlePriority
                         ]
                         [ text "Übernehmen" ]
                     ]

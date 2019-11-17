@@ -47,6 +47,7 @@ type alias Model =
 
     --new inputs
     , inputTitle : String
+    , inputPriority : Int
     , validationResult : ValidationResult
     , inputEditTime : String
     , inputViewingTime : String
@@ -96,6 +97,7 @@ type
     Msg
     --Changing Input
     = ChangeInputQuestionnaireTitle String
+    | ChangeInputPriority String
     | ChangeQuestionOrNoteText String
     | ChangeAnswerText String
     | ChangeQuestionNote String
@@ -114,7 +116,7 @@ type
     | ChangeInputChildId String
     | ChangeInputAnswerId String
       --Save input to questionnaire
-    | SetQuestionnaireTitle
+    | SetQuestionnaireTitlePriority
     | SetNote
     | SetQuestion
     | SetAnswer
@@ -175,6 +177,7 @@ initModel _ =
 
       --new inputs
       , inputTitle = ""
+      , inputPriority = 0
       , validationResult = NotDone
       , inputEditTime = ""
       , inputViewingTime = ""

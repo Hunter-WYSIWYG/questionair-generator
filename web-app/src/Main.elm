@@ -64,6 +64,12 @@ update msg model =
         ChangeInputQuestionnaireTitle newTitle ->
             ( { model | inputTitle = newTitle }, Cmd.none )
 
+        ChangeInputPriority newPriority ->
+            let 
+                priority = Maybe.withDefault 0 ( String.toInt newPriority ) 
+            in
+                ( { model | inputPriority = priority }, Cmd.none )
+
         ChangeQuestionOrNoteText string ->
             let
                 changedRecord rec =
@@ -301,13 +307,13 @@ update msg model =
             ( { model | newAnswerID_Condition = string }, Cmd.none )
 
         --Save input to questionnaire
-        SetQuestionnaireTitle ->
+        SetQuestionnaireTitlePriority ->
             let
                 oldQuestionnaire =
                     model.questionnaire
 
                 changedQuestionnaire =
-                    { oldQuestionnaire | title = model.inputTitle }
+                    { oldQuestionnaire | title = model.inputTitle, priority = model.inputPriority }
             in
             ( { model | questionnaire = changedQuestionnaire, showTitleModal = not model.showTitleModal, inputTitle = "" }, Cmd.none )
 

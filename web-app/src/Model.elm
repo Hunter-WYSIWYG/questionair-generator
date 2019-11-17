@@ -145,7 +145,6 @@ type
       --Validation of times
     | Submit
       --Everything releated to upload
-    | LeaveOrEnterUpload
     | EnterUpload
     | JsonRequested
     | JsonSelected File

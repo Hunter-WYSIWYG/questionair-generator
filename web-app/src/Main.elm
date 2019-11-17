@@ -46,6 +46,8 @@ main =
 port viewingTime : (String -> msg) -> Sub msg
 port reminderTime : (String -> msg) -> Sub msg
 port editTime : (String -> msg) -> Sub msg
+port enterUpload : () -> Cmd msg
+port leaveUpload : () -> Cmd msg
 
 
 {-| Subscriptions-Funktion
@@ -544,7 +546,7 @@ update msg model =
             )
 
         EditQuestionnaire ->
-            ( { model | upload = False, editQuestionnaire = True }, Cmd.none )
+            ( { model | upload = False, editQuestionnaire = True }, leaveUpload () )
 
         --Change order of elements
         PutDownEl element ->
@@ -674,10 +676,7 @@ update msg model =
 
         --Everything releated to upload
         EnterUpload ->
-            ( { model | upload = True }, Cmd.none )
-
-        LeaveOrEnterUpload ->
-            ( { model | upload = not model.upload }, Cmd.none )
+            ( { model | upload = True }, enterUpload ())
 
         JsonRequested ->
             ( model
@@ -705,7 +704,7 @@ update msg model =
                         , editTime = Decoder.decodeEditTime content
                     }
             in
-            ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }, Cmd.none )
+            ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }, leaveUpload () )
 
         --Everything releated to download
         DownloadQuestionnaire ->
@@ -761,5 +760,3 @@ strToInt id =
 
         Nothing ->
             -1
-
---model.questionnaire.newCondition.parent_id 

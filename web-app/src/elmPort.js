@@ -2,6 +2,18 @@ var app = Elm.Main.init({
     node: document.getElementById('elm')
   });
 
+app.ports.enterUpload.subscribe(function() {
+    //Hide footer if the user wants to upload a questionnaire
+    var footer = document.getElementById('footer');
+    footer.style.display = 'none';
+});
+
+app.ports.leaveUpload.subscribe(function() {
+    //Show footer if the user wants to edit a questionnaire
+    var footer = document.getElementById('footer');
+    footer.style.display = 'block';
+});
+
 function appendToTimesTable() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
     var row = table.insertRow(0);

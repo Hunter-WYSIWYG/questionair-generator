@@ -49,7 +49,7 @@ showHeroQuestionnaireTitle questionnaire =
     section [ class "hero is-info" ]
         [ div [ class "hero-body" ]
             [ div [ class "container is-fluid" ]
-                [ h1 [ class "title" ]
+                [ h1 [ id "page-title", class "title" ]
                     [ text questionnaire.title
                     , i
                         [ class "fas fa-cog symbol"

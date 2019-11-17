@@ -1,11 +1,11 @@
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTableSlider, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTableSlider, showQuestionList, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
 
 {-| Enthält die View für das Bearbeiten von Fragebögen.
 
 
 # Öffentliche Funktionen
 
-@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTableSlider, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTableSlider, showQuestionList, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
 
 -}
 
@@ -29,7 +29,6 @@ showEditQuestionnaire model =
     div []
         [ showHeroQuestionnaireTitle model.questionnaire
         , showQuestionList model.questionnaire
-        , showTimes model.questionnaire
         , showCreateQuestionOrNoteButtons model.questionnaire
         , viewTitleModal model
         , viewEditTimeModal model
@@ -79,21 +78,6 @@ showQuestionList questionnaire =
                 []
                 (questionsTable questionnaire)
             ]
-        ]
-
-
-{-| Zeigt die Zeiten (Bearbeitungszeiten, Erscheinungszeiten, usw.) an.
--}
-showTimes : Questionnaire -> Html Msg
-showTimes questionnaire =
-    div [ class "container is-fluid", style "margin-bottom" "10px" ]
-        [ text ("Bearbeitungszeit: " ++ Questionnaire.getViewingTime questionnaire)
-        , i
-            [ class "fas fa-cog symbol"
-            , style "margin-left" "10px"
-            , onClick (ViewOrClose EditTimeModal)
-            ]
-            []
         ]
 
 

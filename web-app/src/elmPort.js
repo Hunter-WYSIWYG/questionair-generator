@@ -1,6 +1,6 @@
 var app = Elm.Main.init({
     node: document.getElementById('elm')
-  });
+});
 
 app.ports.enterUpload.subscribe(function() {
     //Hide footer if the user wants to upload a questionnaire
@@ -29,26 +29,69 @@ app.ports.decodedEditTime.subscribe(function(time) {
     input.value = time;
 });
 
-
 function appendToTimesTable() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
-    var row = table.insertRow(0);
-    var time = row.insertCell(0);
-    var repeat = row.insertCell(1);
-    time.innerHTML = document.getElementById("basicDate").value;
 
-    var repeatValue = " Keine";
+    if (!document.getElementById("täglich").checked 
+        && !document.getElementById("wöchentlich").checked 
+        && !document.getElementById("monatlich").checked) {
+            
+        var row = table.insertRow(-1);
+        var time = row.insertCell(0);;
+        time.innerHTML = document.getElementById("basicDate").value;
+        return;
 
-    if (document.getElementById("täglich").checked) {
-        repeatValue = " täglich";
-    } else if (document.getElementById("wöchentlich").checked) {
-        repeatValue = " wöchentlich";
-    } else if (document.getElementById("monatlich").checked) {
-        repeatValue = " monatlich";
+    } else if (document.getElementById('rangeDate').value == '') {
+        alert("Es wurde keine Erscheinungszeit gesetzt. Bitte wählen Sie erst eine Erscheinungszeit!")
+        return;
+    } 
+
+    var inputString = document.getElementById("rangeDate").value;
+    var parts = inputString.split(' ');
+    var begin = parseDateTime(document.getElementById("basicDate").value);
+    var end = parseDate(parts[2]);
+    
+    for (var i = 0; begin <= end; i++) {
+        var row = table.insertRow(-1);
+        var time = row.insertCell(0);
+        time.innerHTML = begin;
+
+        if (document.getElementById("täglich").checked) {
+            begin = addDay(begin);
+        } else if (document.getElementById("wöchentlich").checked) {
+            begin = addWeek(begin);
+        } else if (document.getElementById("monatlich").checked) {
+            begin = addMonth(begin);
+        }
+
     }
 
-    repeat.innerHTML = repeatValue;
     document.getElementById("reminderTimesForm").reset();
+}
+
+function parseDate(date) {
+    var parts = date.split('-');
+    return new Date(parts[2], parts[1]-1, parts[0]);
+}
+
+function parseDateTime(dateTime) {
+    var parts = dateTime.split(' ');
+    var dateParts = parts[0].split('-');
+    var timeParts = parts[1].split(':');
+
+    return new Date(dateParts[2], dateParts[1]-1, dateParts[0], timeParts[0], timeParts[1]);
+}
+
+function addDay(date) {
+    return new Date(date.setDate(date.getDate() + 1));      
+}
+
+function addWeek(date) {
+    return new Date(date.setDate(date.getDate() + 7));      
+}
+
+function addMonth(date) {
+    return new Date(date.setMonth(date.getMonth() + 1));      
 }
 
 function resetTimesTable() {

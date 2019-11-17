@@ -37,7 +37,7 @@
   <div id="modalViewingTime" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value, 'viewingTime')">
+      <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value, 'viewingTime')" value="viewingTime">
       <script src="./datetimepicker.js"></script>
       <button onclick="closeDTPModal('viewingTime')">Schließen</button>
     </div>
@@ -52,7 +52,6 @@
           <thead>
             <tr>
               <th>Zeit</th>
-              <th>Wiederholung</th>
             </tr>
           </thead>
           <tbody></tbody>

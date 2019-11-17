@@ -14,6 +14,22 @@ app.ports.leaveUpload.subscribe(function() {
     footer.style.display = 'block';
 });
 
+app.ports.decodedViewingTime.subscribe(function(time) {
+    var input = document.getElementById("rangeDate");
+    input.value = time;
+});
+
+app.ports.decodedReminderTime.subscribe(function(time) {
+    var input = document.getElementById("basicDate");
+    input.value = time;
+});
+
+app.ports.decodedEditTime.subscribe(function(time) {
+    var input = document.getElementById("timePicker");
+    input.value = time;
+});
+
+
 function appendToTimesTable() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
     var row = table.insertRow(0);
@@ -99,7 +115,7 @@ function closeDTPModal(value) {
         var modal = document.getElementById("modalReminderTime");
         modal.classList.remove("is-active");
         connectReminderTimes();
-        resetTimesTable();
+        //resetTimesTable();
     }
 
     if (value == "editTime") {

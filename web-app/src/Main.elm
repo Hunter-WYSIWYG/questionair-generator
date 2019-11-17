@@ -48,6 +48,9 @@ port reminderTime : (String -> msg) -> Sub msg
 port editTime : (String -> msg) -> Sub msg
 port enterUpload : () -> Cmd msg
 port leaveUpload : () -> Cmd msg
+port decodedViewingTime : String -> Cmd msg
+port decodedReminderTime : String -> Cmd msg
+port decodedEditTime : String -> Cmd msg
 
 
 {-| Subscriptions-Funktion
@@ -704,7 +707,13 @@ update msg model =
                         , editTime = Decoder.decodeEditTime content
                     }
             in
-            ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }, leaveUpload () )
+            ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }
+            , Cmd.batch     [ leaveUpload ()
+                            , decodedViewingTime (Decoder.decodeViewingTime content)
+                            , decodedReminderTime (Decoder.decodeReminderTimes content)
+                            , decodedEditTime (Decoder.decodeEditTime content)
+                            ] 
+            )
 
         --Everything releated to download
         DownloadQuestionnaire ->

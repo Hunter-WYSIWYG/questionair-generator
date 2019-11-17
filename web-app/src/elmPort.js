@@ -1,19 +1,21 @@
+//Initiates our Elm App
 var app = Elm.Main.init({
     node: document.getElementById('elm')
 });
 
+//Hide footer if the user wants to upload a questionnaire
 app.ports.enterUpload.subscribe(function() {
-    //Hide footer if the user wants to upload a questionnaire
     var footer = document.getElementById('footer');
     footer.style.display = 'none';
 });
 
+//Show footer if the user wants to edit a questionnaire
 app.ports.leaveUpload.subscribe(function() {
-    //Show footer if the user wants to edit a questionnaire
     var footer = document.getElementById('footer');
     footer.style.display = 'block';
 });
 
+//Listens to the Elm App and sets up the times if the user uploads a questionnaire
 app.ports.decodedViewingTime.subscribe(function(time) {
     var input = document.getElementById("rangeDate");
     input.value = time;
@@ -29,6 +31,7 @@ app.ports.decodedEditTime.subscribe(function(time) {
     input.value = time;
 });
 
+//Adds the given reminder time to the table of reminder times inside a modal
 function appendToTimesTable() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
 
@@ -69,11 +72,13 @@ function appendToTimesTable() {
     document.getElementById("reminderTimesForm").reset();
 }
 
+//Parses a date like dd-mm-YYYY to a JavaScript date
 function parseDate(date) {
     var parts = date.split('-');
     return new Date(parts[2], parts[1]-1, parts[0]);
 }
 
+//Parses a date like dd-mm-YYY hh-mm to a JavaScript date
 function parseDateTime(dateTime) {
     var parts = dateTime.split(' ');
     var dateParts = parts[0].split('-');
@@ -82,38 +87,40 @@ function parseDateTime(dateTime) {
     return new Date(dateParts[2], dateParts[1]-1, dateParts[0], timeParts[0], timeParts[1]);
 }
 
+//Adds a day to a given date
 function addDay(date) {
     return new Date(date.setDate(date.getDate() + 1));      
 }
 
+//Adds a week to a given date
 function addWeek(date) {
     return new Date(date.setDate(date.getDate() + 7));      
 }
 
+//Adds a month to a given date
 function addMonth(date) {
     return new Date(date.setMonth(date.getMonth() + 1));      
 }
 
+//Resets the table with the reminder times
 function resetTimesTable() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
     table.innerHTML = "";
 }
 
+//Reads the table with the reminder times an sends the array to the Elm app
 function connectReminderTimes() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
-    var allTimes;
+    var list = [];
 
-    if (table.rows.length > 0) {
-        allTimes = table.rows[0].innerText;
+    for (var i = 0; i < table.rows.length; i++) {
+        list.push(table.rows[i].innerText);
     }
 
-    for (var i = 1; i < table.rows.length; i++) {
-        allTimes += ';' + table.rows[i].innerText;
-    }
-
-    sendToElm(allTimes, "reminderTimes")
+    sendToElm(JSON.stringify(list), "reminderTimes")
 }
 
+//Sends the given values of the given dateTimePicker to the Elm app
 function sendToElm(value, dateTimePicker) {
 
     if (dateTimePicker == "viewingTime") {
@@ -129,6 +136,7 @@ function sendToElm(value, dateTimePicker) {
     }
 }
 
+//Opens a modal for the given time type
 function openDTPModal(value) {
     
     if (value == "viewingTime") {
@@ -147,6 +155,7 @@ function openDTPModal(value) {
     }
 }
 
+//Closes a modal for the given time type
 function closeDTPModal(value) {
 
     if (value == 'viewingTime') {
@@ -158,7 +167,6 @@ function closeDTPModal(value) {
         var modal = document.getElementById("modalReminderTime");
         modal.classList.remove("is-active");
         connectReminderTimes();
-        //resetTimesTable();
     }
 
     if (value == "editTime") {

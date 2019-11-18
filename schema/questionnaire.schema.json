@@ -31,8 +31,12 @@
             "description": "Duration which determines the max. answering time"
         },
         "reminderTimes": {
-            "type": "string",
-                "description": "List of points in time where a reminder should be sent for the questionnaire."
+            "type": "array",
+            "description": "List of points in time where a reminder should be sent for the questionnaire.",
+            "items": {
+                "type":"string",
+                "format": "datetime"
+            }
         },
         "conditions": {
             "type": "array",

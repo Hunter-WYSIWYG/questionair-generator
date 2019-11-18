@@ -10,6 +10,7 @@ module Decoder exposing (answerDecoder, decodeElements, decodeTitle, decodeId, d
 -}
 
 import Answer exposing (Answer)
+import Condition exposing (Condition)
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import QElement exposing (Q_element(..))
@@ -127,3 +128,11 @@ answerDecoder =
         (Decode.field "id" Decode.int)
         (Decode.field "text" Decode.string)
         (Decode.field "_type" Decode.string)
+
+conditionDecoder : Decode.Decoder Condition
+conditionDecoder = 
+    Decode.succeed Condition
+        |> required "parent_id" Decode.int
+        |> required "child_id" Decode.int
+        |> required "answer_id" Decode.int
+        |> hardcoded True

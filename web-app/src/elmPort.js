@@ -57,7 +57,7 @@ function appendToTimesTable() {
     for (var i = 0; begin <= end; i++) {
         var row = table.insertRow(-1);
         var time = row.insertCell(0);
-        time.innerHTML = begin;
+        time.innerHTML = dateToEuropeanTime(begin);
 
         if (document.getElementById("täglich").checked) {
             begin = addDay(begin);
@@ -87,6 +87,51 @@ function parseDateTime(dateTime) {
     return new Date(dateParts[2], dateParts[1]-1, dateParts[0], timeParts[0], timeParts[1]);
 }
 
+//Converts a Date to the European date time format
+function dateToEuropeanTime(dateTime) {
+    var year = dateTime.getFullYear();
+    var month = dateTime.getMonth() + 1;
+    
+    if (month < 10) {
+        month = '0' + month;
+    }
+
+    var day = dateTime.getDate();
+
+    if (day < 10) {
+        day = '0' + day;
+    }
+
+    var hour = dateTime.getHours();
+
+    if (hour < 10) {
+        hour = '0' + hour;
+    }
+
+    var minutes = dateTime.getMinutes();
+
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+
+    return day + '-' + month + '-' + year + ' ' + hour + ':' + minutes;
+}
+
+//Converts a Date to a JSON string
+function europeanDateToJson(dateTime) {
+    var parts = dateTime.split(' ');
+    var dateParts = parts[0].split('-');
+    var timeParts = parts[1].split(':');
+
+    var day = dateParts[0];
+    var month = dateParts[1];
+    var year = dateParts[2];
+    var hour = timeParts[0];
+    var minute = timeParts[1];
+
+    return year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':00+01:00';
+}
+
 //Adds a day to a given date
 function addDay(date) {
     return new Date(date.setDate(date.getDate() + 1));      
@@ -114,7 +159,7 @@ function connectReminderTimes() {
     var list = [];
 
     for (var i = 0; i < table.rows.length; i++) {
-        list.push(table.rows[i].innerText);
+        list.push(europeanDateToJson(table.rows[i].innerText));
     }
 
     sendToElm(JSON.stringify(list), "reminderTimes")

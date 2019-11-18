@@ -34,7 +34,7 @@ type alias Questionnaire =
     
     --times
     , viewingTime : String
-    , reminderTimes : String
+    , reminderTimes : List String
     , editTime : String
     }
 
@@ -51,7 +51,7 @@ initQuestionnaire =
     
     --times
     , viewingTime = ""
-    , reminderTimes = ""
+    , reminderTimes = []
     , editTime = ""
 
     --newInputs

@@ -22,8 +22,14 @@ app.ports.decodedViewingTime.subscribe(function(time) {
 });
 
 app.ports.decodedReminderTime.subscribe(function(time) {
-    var input = document.getElementById("basicDate");
-    input.value = time;
+    var list = time;
+    var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
+
+    for (var i = 0; i < list.length; i++) {
+        var row = table.insertRow(-1);
+        var time = row.insertCell(0);
+        time.innerHTML = dateToEuropeanTime(new Date(list[i]));
+    }
 });
 
 app.ports.decodedEditTime.subscribe(function(time) {
@@ -162,7 +168,7 @@ function connectReminderTimes() {
         list.push(europeanDateToJson(table.rows[i].innerText));
     }
 
-    sendToElm(JSON.stringify(list), "reminderTimes")
+    sendToElm(list, "reminderTimes");
 }
 
 //Sends the given values of the given dateTimePicker to the Elm app

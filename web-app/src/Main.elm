@@ -21,6 +21,7 @@ import Html exposing (Html, a, br, div, nav, p, text)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Json.Encode as JEncode
+import Json.Decode as JDecode
 import List
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
@@ -44,12 +45,12 @@ main =
 {-| Port für DateTimePicker
 -}
 port viewingTime : (String -> msg) -> Sub msg
-port reminderTime : (String -> msg) -> Sub msg
+port reminderTime : (JDecode.Value -> msg) -> Sub msg
 port editTime : (String -> msg) -> Sub msg
 port enterUpload : () -> Cmd msg
 port leaveUpload : () -> Cmd msg
 port decodedViewingTime : String -> Cmd msg
-port decodedReminderTime : String -> Cmd msg
+port decodedReminderTime : List String -> Cmd msg
 port decodedEditTime : String -> Cmd msg
 
 
@@ -151,15 +152,21 @@ update msg model =
             in
                 ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
 
-        ChangeReminderTimes string -> 
-            let
-                oldQuestionnaire =
-                    model.questionnaire
+        ChangeReminderTimes json -> 
+            case JDecode.decodeValue (JDecode.list JDecode.string) json  of
+                Ok times ->
+                    let
+                        oldQuestionnaire =
+                            model.questionnaire
 
-                changedQuestionnaire =
-                    { oldQuestionnaire | reminderTimes = string }
-            in
-                ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
+                        changedQuestionnaire =
+                            { oldQuestionnaire | reminderTimes = times }
+                    in
+                        ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
+            
+                _ ->
+                    (model, Cmd.none)
+                    
 
         --open or close modals
         ViewOrClose modalType ->

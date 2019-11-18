@@ -29,7 +29,7 @@ encodeQuestionnaire questionnaire =
             , ( "elements", Encode.list elementEncoder questionnaire.elements )
             , ( "conditions", Encode.list conditionEncoder questionnaire.conditions )
             , ( "viewingTime", Encode.string questionnaire.viewingTime )
-            , ( "reminderTimes", Encode.string questionnaire.reminderTimes )
+            , ( "reminderTimes", Encode.list Encode.string questionnaire.reminderTimes )
             , ( "editTime", Encode.string questionnaire.editTime ) 
             ]
         )

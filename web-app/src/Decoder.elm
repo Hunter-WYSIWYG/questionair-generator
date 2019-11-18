@@ -65,14 +65,14 @@ decodeViewingTime content =
         Err e ->
             ""
 
-decodeReminderTimes : String -> String
+decodeReminderTimes : String -> List String
 decodeReminderTimes content =
-    case Decode.decodeString (Decode.field "reminderTimes" Decode.string) content of 
+    case Decode.decodeString (Decode.field "reminderTimes" (Decode.list Decode.string)) content of 
         Ok val ->
             val 
         
         Err e ->
-            ""
+            []
 
 decodeEditTime : String -> String
 decodeEditTime content =

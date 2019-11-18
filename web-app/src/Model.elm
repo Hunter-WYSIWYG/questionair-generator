@@ -20,6 +20,7 @@ module Model exposing
 import Answer exposing (Answer)
 import Condition exposing (Condition)
 import File exposing (File)
+import Json.Decode as JDecode
 import QElement exposing (Q_element)
 import Questionnaire exposing (Questionnaire)
 import Time exposing (..)
@@ -51,7 +52,7 @@ type alias Model =
     , validationResult : ValidationResult
     , inputEditTime : String
     , inputViewingTime : String
-    , inputReminderTimes : String
+    , inputReminderTimes : List String
     , inputQuestionTime : String
     , questionValidationResult : ValidationResult
     , inputParentId : Int
@@ -105,7 +106,7 @@ type
     | ChangeAnswerType String
     | ChangeQuestionNewAnswer Answer
     | ChangeEditTime String
-    | ChangeReminderTimes String
+    | ChangeReminderTimes JDecode.Value
     | ChangeViewingTime String
       --Modals
     | ViewOrClose ModalType
@@ -180,7 +181,7 @@ initModel _ =
       , validationResult = NotDone
       , inputEditTime = ""
       , inputViewingTime = ""
-      , inputReminderTimes = ""
+      , inputReminderTimes = []
       , inputQuestionTime = ""
       , questionValidationResult = NotDone
       , inputParentId = -1

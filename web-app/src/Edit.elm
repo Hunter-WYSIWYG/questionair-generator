@@ -699,12 +699,8 @@ getAnswerTable index answer =
 -}
 conditionsTable : Model -> List (Html Msg)
 conditionsTable model =
-    case model.newElement of
-        Question record ->
-            List.append [ tableHead_conditions ] (List.indexedMap getConditionTable model.questionnaire.conditions)
-
-        Note record ->
-            []
+    List.append [ tableHead_conditions ] (List.indexedMap getConditionTable model.questionnaire.conditions)
+            
 
 
 {-| Tabellenkopf der Tabelle für Bedingungen.

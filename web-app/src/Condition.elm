@@ -1,6 +1,6 @@
 module Condition exposing
     ( Condition
-    , deleteConditionFrom, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
+    , deleteConditionFrom, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition, validateCondition
     )
 
 {-| Enthält den Typ Condition für Bedingungen.
@@ -174,3 +174,58 @@ getConditionWithParentID list id =
 deleteConditionFrom : Condition -> List Condition -> List Condition
 deleteConditionFrom condition list =
     Tuple.first (List.partition (\e -> e /= condition) list)
+
+validateCondition : Condition -> List Q_element -> Condition
+validateCondition newCondition q_elements =
+    if  (newCondition.parent_id /= -1)
+        && (checkParentAndAnswerID q_elements newCondition.parent_id newCondition.answer_id)
+        && (checkChildID q_elements newCondition.child_id)
+    then { newCondition | isValid = True }
+    else { newCondition | isValid = False }
+
+checkParentAndAnswerID : List Q_element -> Int -> Int -> Bool
+checkParentAndAnswerID q_elements parent_id answer_id =
+    let
+        pid =
+            case (List.head q_elements) of
+                Just (QElement.Note n) -> n.id
+                Just (QElement.Question q) -> q.id
+                Nothing -> -1
+    in
+    if not (pid == parent_id)
+    then    case List.tail q_elements of
+                Just list -> checkParentAndAnswerID list parent_id answer_id
+                Nothing -> False
+    else    case (List.head q_elements) of
+                Nothing -> True
+                Just (QElement.Note n) -> True
+                Just (QElement.Question q) -> checkAnswerID q.answers answer_id
+
+checkChildID : List Q_element -> Int -> Bool
+checkChildID q_elements child_id =
+    let
+        id =
+            case (List.head q_elements) of
+                Just (QElement.Note n) -> n.id
+                Just (QElement.Question q) -> q.id
+                Nothing -> -1
+    in
+    if not (id == child_id)
+    then    case List.tail q_elements of
+                Just list -> checkChildID list child_id
+                Nothing -> False
+    else True
+
+checkAnswerID : List Answer -> Int -> Bool
+checkAnswerID answers answer_id =
+    let
+        id =
+            case (List.head answers) of
+                Just a -> a.id
+                Nothing -> -1
+    in
+    if not (id == answer_id)
+    then    case List.tail answers of
+                Just list -> checkAnswerID list answer_id
+                Nothing -> False
+    else True

@@ -422,7 +422,7 @@ update msg model =
                 ( 
                     { model  
                         | newElement = element
-                        , newCondition = Condition.getConditionWithParentID oldQuestionnaire.conditions (QElement.getID element)
+                        , newCondition = Condition.validateCondition (Condition.getConditionWithParentID oldQuestionnaire.conditions (QElement.getID element)) oldQuestionnaire.elements
                         , showNewQuestionModal = True
                         , editQElement = True
                     }

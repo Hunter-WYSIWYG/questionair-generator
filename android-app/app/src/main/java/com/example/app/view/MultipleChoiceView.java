@@ -265,7 +265,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	}
 	@Override
 	public Answer getCurrentAnswer () {
-		return null;
+		return new Answer ()
 	}
 
 }

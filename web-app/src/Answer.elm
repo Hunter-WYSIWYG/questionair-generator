@@ -3,7 +3,7 @@ module Answer exposing
     , getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText
     )
 
-{-| Enthält den Typ Answer für Antworten, der für Questions und Conditions verwendet wird.
+{-| Contains the answer type used for questions and conditions.
 
 
 # Definition
@@ -11,15 +11,15 @@ module Answer exposing
 @docs Answer
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update
 
 -}
 
 
-{-| Repäsentiert Antworten, die in Fragen und Bedingungen vorkommen. Antworten bestehen aus einer eindeutigen ID, einem Text und einem Typ.
-Ein Typ kann entweder 'free' oder 'regular' sein
+{-| Represents answers that occur in questions and conditions. Answers consist of a unique ID, a text and a type.
+A type can be either 'free' or 'regular'
 -}
 type alias Answer =
     { id : Int
@@ -28,8 +28,8 @@ type alias Answer =
     }
 
 
-{-| Eine Antwort ohne Typ und Text, die als Input bspw. bei Erzeugung einer neuen Frage verwendet wird.
-Die Antwort wird in die Liste der Antworten übernommen, wenn Text und Typ angepasst wurden.
+{-| An answer without type and text used as input when creating a new question.
+The answer will be included in the list of answers if text and type have been adjusted.
 -}
 initAnswer : Answer
 initAnswer =
@@ -39,7 +39,7 @@ initAnswer =
     }
 
 
-{-| Gibt die vordefinierten Antworten für Ja/Nein-Fragen zurück
+{-| Returns the predefined answers for yes / no questions
 -}
 getYesNoAnswers : String -> List Answer
 getYesNoAnswers questionType =
@@ -50,7 +50,7 @@ getYesNoAnswers questionType =
         []
 
 
-{-| Gibt eine reguläre Antwort mit festgelegter ID und Text zurück.
+{-| Returns a regular answer with a set ID and text.
 -}
 regularAnswer : Int -> String -> Answer
 regularAnswer int string =
@@ -60,7 +60,7 @@ regularAnswer int string =
     }
 
 
-{-| Gibt eine freie Antwort (freie Eingabe) mit festgelegter ID und Text zurück.
+{-| Returns a free answer (free input) with a defined ID and text.
 -}
 freeAnswer : Int -> String -> Answer
 freeAnswer int string =
@@ -70,7 +70,7 @@ freeAnswer int string =
     }
 
 
-{-| Gibt eine Liste von Antworten für unipolare Antworten im Bereich von 0 bis zum angegebenen Wert zurück.
+{-| Returns a list of answers for unipolar answers ranging from 0 to the specified value.
 -}
 getUnipolarAnswers : String -> List Answer
 getUnipolarAnswers string =
@@ -82,7 +82,7 @@ getUnipolarAnswers string =
             getAnswersWithRange 1 val 0
 
 
-{-| Gibt eine Liste von Antworten für bipolare Antworten im Bereich vom negativen angegebenen Wert bis zum positiven Wert zurück.
+{-| Returns a list of answers for bipolar answers ranging from the negative specified value to the positive value.
 -}
 getBipolarAnswers : String -> List Answer
 getBipolarAnswers string =
@@ -94,7 +94,7 @@ getBipolarAnswers string =
             getAnswersWithRange -val val 0
 
 
-{-| Gibt eine Liste von Antworten im Breich von begin bis end zurück.
+{-| Returns a list of answers ranging from start to end.
 -}
 getAnswersWithRange : Int -> Int -> Int -> List Answer
 getAnswersWithRange begin end index =
@@ -112,7 +112,7 @@ updateAnswerList answerToUpdate list =
     List.map (update answerToUpdate) list
 
 
-{-| Überprüft ob zwei Antworten die gleichen IDs haben und ersetzt answer durch answerToUpdate.
+{-| Checks if two answers have the same IDs and replaces answer with answerToUpdate.
 -}
 update : Answer -> Answer -> Answer
 update answerToUpdate answer =
@@ -127,4 +127,3 @@ getAnswerId answer = answer.id
 
 getAnswerText : Answer -> String
 getAnswerText answer = answer.text
- 

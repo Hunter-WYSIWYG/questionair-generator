@@ -1,9 +1,9 @@
 module Decoder exposing (answerDecoder, decodeElements, decodeTitle, elementDecoder, noteDecoder, questionDecoder)
 
-{-| Enthält die Decoder für Questionnaire, QElement, Answer (usw.).
+{-| Contains the decoder for Questionnaire, QElement, Answer (etc.).
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs answerDecoder, decodeElements, decodeTitle, elementDecoder, noteDecoder, questionDecoder
 
@@ -15,7 +15,7 @@ import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import QElement exposing (Q_element(..))
 
 
-{-| Decodiert den Titel des Questionnaires, kann aber auch auf andere Typen angewendet werden.
+{-| Decodes the title of the questionnaire, but can also be applied to other types.
 -}
 decodeTitle : String -> String
 decodeTitle content =
@@ -27,7 +27,7 @@ decodeTitle content =
             ""
 
 
-{-| Decodiert eine Liste von Fragebogenelementen (Fragen, Anmerkunden).
+{-| Decodes a list of questionnaire items (questions, annotations).
 -}
 decodeElements : String -> List Q_element
 decodeElements content =
@@ -39,14 +39,14 @@ decodeElements content =
             []
 
 
-{-| Decodiert ein einzelnes Fragebogenelement (Frage, Anmerkung).
+{-| Decodes a single questionnaire item (question, annotation).
 -}
 elementDecoder : Decode.Decoder Q_element
 elementDecoder =
     Decode.oneOf [ questionDecoder, noteDecoder ]
 
 
-{-| Decodiert eine Anmerkung.
+{-| Decodes an annotation.
 -}
 noteDecoder : Decode.Decoder Q_element
 noteDecoder =
@@ -56,7 +56,7 @@ noteDecoder =
         |> Decode.map Note
 
 
-{-| Decodiert eine Frage.
+{-| Decodes a question.
 -}
 questionDecoder : Decode.Decoder Q_element
 questionDecoder =
@@ -70,7 +70,7 @@ questionDecoder =
         |> Decode.map Question
 
 
-{-| Decodiert eine Antwort.
+{-| Decodes an answer.
 -}
 answerDecoder : Decode.Decoder Answer
 answerDecoder =

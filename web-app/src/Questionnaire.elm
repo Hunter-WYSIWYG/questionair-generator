@@ -3,7 +3,7 @@ module Questionnaire exposing
     , getEditTime, getElementWithText, getViewingTime, initQuestionnaire
     )
 
-{-| Enthält den Typ für den Fragebogen und den Anfangszustand des Fragebogens im Model.
+{-| Contains the type for the questionnaire and the initial state of the questionnaire in the model.
 
 
 # Definition
@@ -11,7 +11,7 @@ module Questionnaire exposing
 @docs Questionnaire
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs getEditTime, getElementWithText, getViewingTime, initQuestionnaire
 
@@ -29,7 +29,7 @@ type alias Questionnaire =
     { title : String
     , elements : List Q_element
     , conditions : List Condition
-    
+
     --times
     , viewingTime : String
     , reminderTimes : String
@@ -37,14 +37,14 @@ type alias Questionnaire =
     }
 
 
-{-| Anfangszustand des Fragebogens.
+{-| Initial state of the questionnaire.
 -}
 initQuestionnaire : Questionnaire
 initQuestionnaire =
     { title = "Titel eingeben"
     , elements = []
     , conditions = []
-    
+
     --times
     , viewingTime = ""
     , reminderTimes = ""
@@ -59,8 +59,8 @@ initQuestionnaire =
 
 
 {-| TODO: ALS RÜCKGABETYP Maybe Q\_element VERWENDEN
-Gibt das Element mit dem angegeben Text aus, falls es sich in der Liste von Elementen des Fragebogens questionnaire befindet.
-Andernfalls wird der "Anfangszustand" einer Frage ausgegeben.
+Returns the element with the specified text if it is in the list of elements of the questionnaire "questionnaire".
+Otherwise, the "initial state" of a question is output.
 -}
 getElementWithText : String -> Questionnaire -> Q_element
 getElementWithText string questionnaire =
@@ -72,7 +72,7 @@ getElementWithText string questionnaire =
             QElement.initQuestion
 
 
-{-| Gibt die Erscheinungszeit des Fragebogens aus.
+{-| Returns the appearance time of the questionnaire.
 -}
 getViewingTime : Questionnaire -> String
 getViewingTime questionnaire =

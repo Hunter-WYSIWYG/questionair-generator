@@ -1,6 +1,6 @@
 module Utility exposing (swapAt)
 
-{-| Enthaelt allgemeine utility-Funktionen, die zB wegen Problemen nicht aus externen Quellen geladen werden konnten
+{-| Contains general utility functions that could not be loaded from external sources due to problems
 
 
 # Definition
@@ -8,7 +8,7 @@ module Utility exposing (swapAt)
 @docs Utility
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs swapAt
 

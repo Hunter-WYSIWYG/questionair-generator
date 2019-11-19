@@ -35,8 +35,8 @@ public class QuestionnaireState implements Serializable {
 	}
 
 	// next button clicked -> current question answered and go to next question
-	public void currentQuestionAnswered (Answer answer) {
-		this.answers.add (answer);
+	public void currentQuestionAnswered (List<Answer> answer) {
+		this.answers.addAll (answer);
 		this.currentIndex++;
 		this.goToNextPossibleQuestion ();
 	}

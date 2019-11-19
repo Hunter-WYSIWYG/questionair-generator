@@ -56,7 +56,7 @@ public class NoteView extends QuestionDisplayView {
 	}
 	
 	@Override
-	public Answer getCurrentAnswer () {
+	public List<Answer> getCurrentAnswer () {
 		return null;
 	}
 }

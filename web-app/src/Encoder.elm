@@ -21,7 +21,7 @@ import Questionnaire exposing (Questionnaire)
 -}
 encodeQuestionnaire : Questionnaire -> String
 encodeQuestionnaire questionnaire =
-    encode 4
+    encode 8
         (object
             [ ( "id", Encode.int questionnaire.id )
             , ( "priority", Encode.int questionnaire.priority )

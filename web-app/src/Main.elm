@@ -709,6 +709,7 @@ update msg model =
                         , id = Decoder.decodeId content
                         , priority = Decoder.decodePriority content
                         , elements = Decoder.decodeElements content
+                        , conditions = Decoder.decodeConditions content
                         , viewingTime = Decoder.decodeViewingTime content
                         , reminderTimes = Decoder.decodeReminderTimes content
                         , editTime = Decoder.decodeEditTime content

@@ -343,13 +343,19 @@ update msg model =
         -- stellt Größe der Tabelle bei Raster-Auswahl Fragetyp ein
         SetTableSize string ->
             let 
-                size = Maybe.withDefault 0 ( String.toInt string )   
-                oldElement = model.newElement
-                changedElement = ( QElement.setTableSize oldElement size )
+                size = Maybe.withDefault 0 ( String.toInt string ) 
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | tableSize = size }
+                     
+                        Note record ->
+                            Note record
+
             in
-                case oldElement of 
+                case model.newElement of 
                     Question record ->
-                        if record.typ == "Auswahl-Raster" then
+                        if record.typ == "Raster-Auswahl" then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -360,12 +366,17 @@ update msg model =
         -- stellt obere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
         SetTopText string ->
             let
-                oldElement = model.newElement 
-                changedElement = QElement.setTopText oldElement string
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | topText = string }
+                     
+                        Note record ->
+                            Note record
             in 
-                case oldElement of 
+                case model.newElement of 
                     Question record ->
-                        if record.typ == "Auswahl-Raster" then
+                        if record.typ == "Raster-Auswahl" then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -376,12 +387,17 @@ update msg model =
         -- stellt rechte Beschriftung des Rasters bei Fragetyp Raster-Auswahl oder Prozentslider ein 
         SetRightText string ->
             let
-                oldElement = model.newElement 
-                changedElement = QElement.setRightText oldElement string
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | rightText = string }
+                    
+                        Note record ->
+                            Note record
             in 
-                case oldElement of 
+                case model.newElement of 
                     Question record ->
-                        if record.typ == "Auswahl-Raster" || record.typ == "Prozentslider" then
+                        if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -392,12 +408,17 @@ update msg model =
         -- stellt untere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
         SetBottomText string ->
             let
-                oldElement = model.newElement 
-                changedElement = QElement.setBottomText oldElement string
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | bottomText = string }
+                     
+                        Note record ->
+                            Note record
             in 
-                case oldElement of 
+                case model.newElement of 
                     Question record ->
-                        if record.typ == "Auswahl-Raster" then
+                        if record.typ == "Raster-Auswahl" then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -408,12 +429,17 @@ update msg model =
         -- stellt linke Beschriftung des Rasters bei Fragetyp Raster-Auswahl oder Prozentslider ein 
         SetLeftText string ->
             let
-                oldElement = model.newElement 
-                changedElement = QElement.setLeftText oldElement string
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | leftText = string }
+                     
+                        Note record ->
+                            Note record
             in 
-                case oldElement of 
+                case model.newElement of 
                     Question record ->
-                        if record.typ == "Auswahl-Raster" || record.typ == "Prozentslider" then
+                        if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )

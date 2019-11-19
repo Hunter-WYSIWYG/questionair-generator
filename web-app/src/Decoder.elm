@@ -10,11 +10,7 @@ module Decoder exposing (answerDecoder, conditionDecoder, decodeConditions, deco
 -}
 
 import Answer exposing (Answer)
-<<<<<<< HEAD
-import Condition exposing (..)
-=======
 import Condition exposing (Condition)
->>>>>>> 280596de002e615214626932db2a9e016a5f69ab
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import QElement exposing (Q_element(..))
@@ -146,16 +142,6 @@ answerDecoder =
         (Decode.field "text" Decode.string)
         (Decode.field "_type" Decode.string)
 
-<<<<<<< HEAD
-{-| Decodiert eine Bedingung
--}
-conditionDecoder : Decode.Decoder Condition
-conditionDecoder =    
-    Decode.map3 Condition
-        ( Decode.field "parent_id" Decode.int )
-        ( Decode.field "child_id" Decode.int )
-        ( Decode.field "answer_id" Decode.int )
-=======
 conditionDecoder : Decode.Decoder Condition
 conditionDecoder = 
     Decode.succeed Condition
@@ -163,4 +149,3 @@ conditionDecoder =
         |> required "child_id" Decode.int
         |> required "answer_id" Decode.int
         |> hardcoded True
->>>>>>> 280596de002e615214626932db2a9e016a5f69ab

@@ -481,14 +481,21 @@ update msg model =
 
                     else
                         { oldQuestionnaire
-                            | elements = List.map (\e -> QElement.updateElement model.newElement e) oldQuestionnaire.elements }
+                            | elements = List.map (\e -> QElement.updateElement model.newElement e) oldQuestionnaire.elements
+                            , conditions =
+                                if (Condition.validateCondition model.newCondition model.newElement) then
+                                    Debug.log "true" List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
+
+                                else
+                                    Debug.log "false" Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
+                        }
             in
             if model.editQElement == False then
                 ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, newCondition = Condition.initCondition }, Cmd.none )
 
             else
                 ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, editQElement = False }, Cmd.none )
-
+                
         SetConditions ->
             let
                 oldQuestionnaire =
@@ -550,7 +557,7 @@ update msg model =
                 ( 
                     { model  
                         | newElement = element
-                        , newCondition = Condition.validateCondition (Condition.getConditionWithParentID oldQuestionnaire.conditions (QElement.getID element)) oldQuestionnaire.elements
+                        , newCondition = Condition.getConditionWithParentID oldQuestionnaire.conditions (QElement.getID element)
                         , showNewQuestionModal = True
                         , editQElement = True
                     }

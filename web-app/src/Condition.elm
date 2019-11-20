@@ -175,46 +175,15 @@ deleteConditionFrom : Condition -> List Condition -> List Condition
 deleteConditionFrom condition list =
     Tuple.first (List.partition (\e -> e /= condition) list)
 
-validateCondition : Condition -> List Q_element -> Condition
-validateCondition newCondition q_elements =
-    if  (newCondition.parent_id /= -1)
-        && (checkParentAndAnswerID q_elements newCondition.parent_id newCondition.answer_id)
-        && (checkChildID q_elements newCondition.child_id)
-    then { newCondition | isValid = True }
-    else { newCondition | isValid = False }
-
-checkParentAndAnswerID : List Q_element -> Int -> Int -> Bool
-checkParentAndAnswerID q_elements parent_id answer_id =
+validateCondition : Condition -> Q_element -> Bool
+validateCondition condition q_element =
     let
-        pid =
-            case (List.head q_elements) of
-                Just (QElement.Note n) -> n.id
-                Just (QElement.Question q) -> q.id
-                Nothing -> -1
+        id = condition.answer_id
+        answers = case q_element of
+                        QElement.Note n -> []
+                        QElement.Question q -> q.answers
     in
-    if not (pid == parent_id)
-    then    case List.tail q_elements of
-                Just list -> checkParentAndAnswerID list parent_id answer_id
-                Nothing -> False
-    else    case (List.head q_elements) of
-                Nothing -> True
-                Just (QElement.Note n) -> True
-                Just (QElement.Question q) -> checkAnswerID q.answers answer_id
-
-checkChildID : List Q_element -> Int -> Bool
-checkChildID q_elements child_id =
-    let
-        id =
-            case (List.head q_elements) of
-                Just (QElement.Note n) -> n.id
-                Just (QElement.Question q) -> q.id
-                Nothing -> -1
-    in
-    if not (id == child_id)
-    then    case List.tail q_elements of
-                Just list -> checkChildID list child_id
-                Nothing -> False
-    else True
+    checkAnswerID answers id
 
 checkAnswerID : List Answer -> Int -> Bool
 checkAnswerID answers answer_id =
@@ -224,8 +193,8 @@ checkAnswerID answers answer_id =
                 Just a -> a.id
                 Nothing -> -1
     in
-    if not (id == answer_id)
-    then    case List.tail answers of
+    if id == answer_id
+    then True
+    else    case List.tail answers of
                 Just list -> checkAnswerID list answer_id
                 Nothing -> False
-    else True

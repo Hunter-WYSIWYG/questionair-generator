@@ -115,7 +115,7 @@ showCreateQuestionOrNoteButtons questionnaire =
         , button    
             [ class "qnButton"
             , style "margin-right" "10px"
-            , onClick (ViewOrClose ConditionModal1) ]
+            , onClick (ViewOrClose ConditionModalOverview) ]
             [ text "Bedingungen" ]
         , button    
             [ class "qnButton"
@@ -448,13 +448,13 @@ viewNewAnswerModal model =
 -}
 viewNewConditionModalOverview : Model -> Html Msg
 viewNewConditionModalOverview model =
-    if model.showNewConditionModal1 then
+    if model.showNewConditionModalOverview then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bedingungen" ]
-                    , button [ class "is-large delete", onClick (ViewOrClose ConditionModal1) ] []
+                    , button [ class "is-large delete", onClick (ViewOrClose ConditionModalOverview) ] []
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
@@ -464,7 +464,7 @@ viewNewConditionModalOverview model =
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [ class "qnButton"
-                        , onClick (ViewOrClose ConditionModal2)
+                        , onClick (ViewOrClose ConditionModalCreate)
                         ]
                         [ text "Neu" ]
                     ]
@@ -479,13 +479,13 @@ viewNewConditionModalOverview model =
 -}
 viewNewConditionModalCreate : Model -> Html Msg
 viewNewConditionModalCreate model =
-    if model.showNewConditionModal2 then
+    if model.showNewConditionModalCreate then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bedingungen" ]
-                    , button [ class "is-large delete", onClick (ViewOrClose ConditionModal2) ] []
+                    , button [ class "is-large delete", onClick (ViewOrClose ConditionModalCreate) ] []
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []

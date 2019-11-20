@@ -201,7 +201,7 @@ update msg model =
                     else
                         ( { model | showNewAnswerModal = not model.showNewAnswerModal }, Cmd.none )
                     
-                ConditionModal1 ->
+                ConditionModalOverview ->
                     let
                         oldQuestionnaire =
                             model.questionnaire
@@ -209,9 +209,9 @@ update msg model =
                         changedQuestionnaire =
                             oldQuestionnaire
                     in
-                    ( { model | questionnaire = changedQuestionnaire, showNewConditionModal1 = not model.showNewConditionModal1 }, Cmd.none )
+                    ( { model | questionnaire = changedQuestionnaire, showNewConditionModalOverview = not model.showNewConditionModalOverview }, Cmd.none )
 
-                ConditionModal2 ->
+                ConditionModalCreate ->
                     let
                         oldQuestionnaire =
                             model.questionnaire
@@ -219,7 +219,7 @@ update msg model =
                         changedQuestionnaire =
                             oldQuestionnaire
                     in
-                    ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = not model.showNewConditionModal2 }, Cmd.none )
+                    ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = not model.showNewConditionModalCreate }, Cmd.none )
 
         --Add Condition
         ChangeInputParentId parent_id ->
@@ -326,25 +326,11 @@ update msg model =
                 changedQuestionnaire =
                     if model.editQElement == False then
                         { oldQuestionnaire
-                            | elements = List.append oldQuestionnaire.elements [ model.newElement ]
-                            , conditions =
-                                if model.newCondition.isValid then
-                                    Debug.log "true" (List.append oldQuestionnaire.conditions [ model.newCondition ])
-
-                                else
-                                    Debug.log "false" Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
-                        }
+                            | elements = List.append oldQuestionnaire.elements [ model.newElement ] }
 
                     else
                         { oldQuestionnaire
-                            | elements = List.map (\e -> QElement.updateElement model.newElement e) oldQuestionnaire.elements
-                            , conditions =
-                                if model.newCondition.isValid then
-                                    Debug.log "true" List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
-
-                                else
-                                    Debug.log "false" Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
-                        }
+                            | elements = List.map (\e -> QElement.updateElement model.newElement e) oldQuestionnaire.elements }
             in
             if model.editQElement == False then
                 ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, newCondition = Condition.initCondition }, Cmd.none )
@@ -371,10 +357,10 @@ update msg model =
                         }
             in
             if model.editCondition == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
 
             else 
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModal2 = False, editCondition = False , newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, editCondition = False , newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
 
         SetAnswer ->
             case model.newElement of
@@ -413,7 +399,7 @@ update msg model =
             ( { model | newAnswer = element, showNewAnswerModal = True, editAnswer = True }, Cmd.none )
 
         EditCondition condition ->
-            ( { model | newCondition = condition, showNewConditionModal2 = True, editCondition = True }, Cmd.none )
+            ( { model | newCondition = condition, showNewConditionModalCreate = True, editCondition = True }, Cmd.none )
 
         EditQuestion element ->
             let 

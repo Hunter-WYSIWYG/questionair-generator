@@ -489,7 +489,7 @@ update msg model =
                     model.newElement
 
                 changedQuestionnaire =
-                    { oldQuestionnaire |  conditions = Condition.updateConditionAnswers oldQuestionnaire.conditions answer.id (answer.id - 1) }
+                    { oldQuestionnaire |  conditions = Condition.updateConditionAnswers oldQuestionnaire.conditions answer.id (answer.id + 1) }
             in
                 if  answer.id /= (List.length (QElement.getAntworten oldElement) - 1) then
                     ( { model | questionnaire = changedQuestionnaire, newElement = QElement.putAnswerDown oldElement answer }, Cmd.none )

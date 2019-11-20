@@ -20,6 +20,7 @@ module Model exposing
 import Answer exposing (Answer)
 import Condition exposing (Condition)
 import File exposing (File)
+import Json.Decode as JDecode
 import QElement exposing (Q_element)
 import Questionnaire exposing (Questionnaire)
 import Time exposing (..)
@@ -47,10 +48,11 @@ type alias Model =
 
     --new inputs
     , inputTitle : String
+    , inputPriority : Int
     , validationResult : ValidationResult
     , inputEditTime : String
     , inputViewingTime : String
-    , inputReminderTimes : String
+    , inputReminderTimes : List String
     , inputQuestionTime : String
     , questionValidationResult : ValidationResult
     , inputParentId : Int
@@ -96,6 +98,7 @@ type
     Msg
     --Changing Input
     = ChangeInputQuestionnaireTitle String
+    | ChangeInputPriority String
     | ChangeQuestionOrNoteText String
     | ChangeAnswerText String
     | ChangeQuestionNote String
@@ -103,7 +106,7 @@ type
     | ChangeAnswerType String
     | ChangeQuestionNewAnswer Answer
     | ChangeEditTime String
-    | ChangeReminderTimes String
+    | ChangeReminderTimes JDecode.Value
     | ChangeViewingTime String
       --Modals
     | ViewOrClose ModalType
@@ -114,12 +117,17 @@ type
     | ChangeInputChildId String
     | ChangeInputAnswerId String
       --Save input to questionnaire
-    | SetQuestionnaireTitle
+    | SetQuestionnaireTitlePriority
     | SetNote
     | SetQuestion
     | SetAnswer
     | SetConditions
     | SetPolarAnswers String
+    | SetTableSize String
+    | SetTopText String
+    | SetRightText String
+    | SetBottomText String
+    | SetLeftText String
       --Edit existing elements or answers
     | EditQuestion Q_element
     | EditNote Q_element
@@ -138,7 +146,6 @@ type
       --Validation of times
     | Submit
       --Everything releated to upload
-    | LeaveOrEnterUpload
     | EnterUpload
     | JsonRequested
     | JsonSelected File
@@ -170,10 +177,11 @@ initModel _ =
 
       --new inputs
       , inputTitle = ""
+      , inputPriority = 0
       , validationResult = NotDone
       , inputEditTime = ""
       , inputViewingTime = ""
-      , inputReminderTimes = ""
+      , inputReminderTimes = []
       , inputQuestionTime = ""
       , questionValidationResult = NotDone
       , inputParentId = -1

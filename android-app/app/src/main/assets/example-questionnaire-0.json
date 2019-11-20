@@ -1,6 +1,6 @@
 {
-  "questionnaireName": "Fragebogen 0",
-  "questionnaireID": 0.0,
+  "questionnaireName": "Beispiel Fragebogen",
+  "questionnaireID": 1,
   "reminderTimes": [
     {
       "date": "2019-11-05T22:00:00+01:00",

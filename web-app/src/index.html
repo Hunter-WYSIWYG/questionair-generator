@@ -19,7 +19,7 @@
 <body>
   <div id="elm"></div>
   
-  <footer class="lightblue">
+  <footer id="footer" class="lightblue">
     <script src="./elmPort.js"></script>
     <!-- Button trigger modal -->
   <button type="button" class="qnButton" data-toggle="modal" onclick="openDTPModal('viewingTime')" id="viewingTimeButton">
@@ -36,52 +36,75 @@
   <!-- Modal -->
   <div id="modalViewingTime" class="modal">
     <div class="modal-background"></div>
-    <div class="modal-content">
-      <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value, 'viewingTime')">
-      <script src="./datetimepicker.js"></script>
-      <button onclick="closeDTPModal('viewingTime')">Schließen</button>
+    <div class="modal-card">
+      <header class="modal-card-head mediumlightblue">
+        <p class="modal-card-title is-size-3 has-text-centered is-italic">Erscheinungszeiten</p>
+        <button class="is-large delete" onclick="closeDTPModal('viewingTime')"></button>  
+      </header>
+      <section class="modal-card-body">
+        <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value, 'viewingTime')"  style="width:230px; margin-right:20px">
+        <script src="./datetimepicker.js"></script>
+      </section>
+      <footer class="modal-card-foot mediumlightblue">
+        <button class="qnButton" onclick="closeDTPModal('viewingTime')">Übernehmen</button>  
+      </footer>
     </div>
   </div>
 
   <div id="modalReminderTime" class="modal">
     <script src="./datetimepicker.js"></script>
     <div class="modal-background"></div>
-    <div class="modal-content">
-      <div class="box container is-fluid questionList" style="flex-basis:80%; overflow-y:auto; height:60vh; margin-top:2em; margin-bottom:2em">
-        <table id="reminderTimesTable">
-          <thead>
-            <tr>
-              <th>Zeit</th>
-              <th>Wiederholung</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <form id="reminderTimesForm">
-        <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" data-input>
-        <fieldset>
-          <input type="radio" id="täglich" name="Häufigkeit">
-          <label for="täglich"> täglich</label>
-          <input type="radio" id="wöchentlich" name="Häufigkeit">
-          <label for="wöchentlich"> wöchentlich</label>
-          <input type="radio" id="monatlich" name="Häufigkeit">
-          <label for="monatlich"> monatlich</label>
-        </fieldset>
-      </form>
-      <br>
-      <button onclick="appendToTimesTable()">Zeit hinzufügen</button>
-      <button onclick="resetTimesTable()">Reset</button>
-      <button onclick="closeDTPModal('reminderTimes')">Speichern & Schließen</button>
+    <div class="modal-card">
+      <header class="modal-card-head mediumlightblue">
+        <p class="modal-card-title is-size-3 has-text-centered is-italic">Erinnerungszeiten</p>
+        <button class="is-large delete" onclick="closeDTPModal('reminderTimes')"></button>  
+      </header>
+      <section class="modal-card-body">
+    <div class="box container questionList" style="flex-basis:80%; overflow-y:auto; height:50vh; width:575px; margin-bottom:2em">
+           <table class="table is-striped" id="reminderTimesTable">
+            <thead>
+              <tr>
+                <th>Zeit</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <form id="reminderTimesForm">
+          <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" style="margin-bottom:20px; width:200px" data-input>
+          <fieldset>
+            <input type="radio" id="täglich" name="Häufigkeit">
+            <label for="täglich" style="margin-right:20px"> täglich</label>
+            <input type="radio" id="wöchentlich" name="Häufigkeit">
+            <label for="wöchentlich" style="margin-right:20px"> wöchentlich</label>
+            <input type="radio" id="monatlich" name="Häufigkeit">
+            <label for="monatlich"> monatlich</label>            
+          </fieldset>
+        </form>
+        <br>
+        <button class="qnButton" onclick="appendToTimesTable()" style="margin-right:20px">Zeit hinzufügen</button>
+        <button class="qnButton" onclick="resetTimesTable()">Reset</button>
+      </section>
+      <footer class="modal-card-foot mediumlightblue">
+        <button class="qnButton" onclick="closeDTPModal('reminderTimes')">Übernehmen</button>  
+      </footer>
     </div>
   </div>
 
   <div id="modalEditTime" class="modal">
     <div class="modal-background"></div>
-    <div class="modal-content">
-      <input type="text" id="timePicker" placeholder="Bitte wählen sie eine Zeit" data-input oninput="sendToElm(this.value, 'editTime')">
-      <script src="./datetimepicker.js"></script>
-      <button onclick="closeDTPModal('editTime')">Schließen</button>
+    <div class="modal-card">
+      <header class="modal-card-head mediumlightblue">
+        <p class="modal-card-title is-size-3 has-text-centered is-italic">Bearbeitungszeit</p>
+        <button class="is-large delete" onclick="closeDTPModal('editTime')"></button>  
+      </header>
+      <section class="modal-card-body">
+        <input type="text" id="timePicker" placeholder="Bitte wählen sie eine Zeit" data-input oninput="sendToElm(this.value, 'editTime')">
+        <script src="./datetimepicker.js"></script>
+      </section>
+      <footer class="modal-card-foot mediumlightblue">
+        <button class="qnButton" onclick="closeDTPModal('editTime')">Übernehmen</button>  
+      </footer>
     </div>
   </div>
 

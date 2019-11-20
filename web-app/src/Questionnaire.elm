@@ -19,20 +19,22 @@ module Questionnaire exposing
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import QElement exposing (Q_element)
+import QElement exposing (Q_element(..))
 
 
 {-| Der Typ, der den Fragebogen mit:
 Titel, Liste von Elementen, "input-Bedingung" + zugehörige "input-Antwort" (bei deren Beantwortung gesprungen wird), Erscheinungs- und Bearbeitungszeiten, "Input-Frage/Anmerkung" und zugehörige "Input-Antwort" dieser Frage.
 -}
 type alias Questionnaire =
-    { title : String
+    { id : Int
+    , priority : Int
+    , title : String
     , elements : List Q_element
     , conditions : List Condition
     
     --times
     , viewingTime : String
-    , reminderTimes : String
+    , reminderTimes : List String
     , editTime : String
     }
 
@@ -41,13 +43,15 @@ type alias Questionnaire =
 -}
 initQuestionnaire : Questionnaire
 initQuestionnaire =
-    { title = "Titel eingeben"
+    { id = 0
+    , priority = 0
+    , title = "Titel eingeben"
     , elements = []
     , conditions = []
     
     --times
     , viewingTime = ""
-    , reminderTimes = ""
+    , reminderTimes = []
     , editTime = ""
 
     --newInputs

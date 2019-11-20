@@ -1,7 +1,7 @@
 module QElement exposing
     ( Q_element(..), NoteRecord, QuestionRecord
-    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID
-    )
+    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID )
+
 
 {-| Enthält den Typ für die Elemente von Fragebögen (Fragen, Anmerkungen) und ein Anfangszustand für das "Input-Element" (newElement).
 
@@ -45,6 +45,13 @@ type alias QuestionRecord =
     , hint : String
     , typ : String
     , questionTime : String
+    -- Größe der Tabelle bei Fragetyp Raster-Auswahl
+    , tableSize : Int 
+    -- Beschriftung der Tabelle bei Fragetyp Raster-Auswahl oder Prozentslider
+    , topText : String
+    , rightText : String
+    , bottomText : String
+    , leftText : String
     }
 
 
@@ -59,6 +66,11 @@ initQuestion =
         , hint = ""
         , typ = ""
         , questionTime = ""
+        , tableSize = 0
+        , topText = ""
+        , rightText = ""
+        , bottomText = "" 
+        , leftText = ""
         }
 
 
@@ -278,3 +290,5 @@ getElementId elem =
 
         Note a ->
             a.id
+{- set- und get-Funktionen für Variablen für Fragetyp Raster-Auswahl
+-}

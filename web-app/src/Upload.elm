@@ -10,7 +10,7 @@ module Upload exposing (showUpload)
 -}
 
 import Html exposing (Html, br, button, div, h1, section, text)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, id)
 import Html.Events exposing (onClick)
 import Model exposing (Model, Msg(..))
 
@@ -37,7 +37,7 @@ showHeroWith string =
     section [ class "hero is-info" ]
         [ div [ class "hero-body" ]
             [ div [ class "container is-fluid" ]
-                [ h1 [ class "title" ] [ text string ]
+                [ h1 [ id "page-title", class "title" ] [ text string ]
                 ]
             ]
         ]

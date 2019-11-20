@@ -21,6 +21,7 @@ import Html exposing (Html, a, br, div, nav, p, text)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Json.Encode as JEncode
+import Json.Decode as JDecode
 import List
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
 import QElement exposing (Q_element(..))
@@ -44,8 +45,13 @@ main =
 {-| Port für DateTimePicker
 -}
 port viewingTime : (String -> msg) -> Sub msg
-port reminderTime : (String -> msg) -> Sub msg
+port reminderTime : (JDecode.Value -> msg) -> Sub msg
 port editTime : (String -> msg) -> Sub msg
+port enterUpload : () -> Cmd msg
+port leaveUpload : () -> Cmd msg
+port decodedViewingTime : String -> Cmd msg
+port decodedReminderTime : List String -> Cmd msg
+port decodedEditTime : String -> Cmd msg
 
 
 {-| Subscriptions-Funktion
@@ -63,6 +69,12 @@ update msg model =
         --changing properties of notes or questions or answers
         ChangeInputQuestionnaireTitle newTitle ->
             ( { model | inputTitle = newTitle }, Cmd.none )
+
+        ChangeInputPriority newPriority ->
+            let 
+                priority = Maybe.withDefault 0 ( String.toInt newPriority ) 
+            in
+                ( { model | inputPriority = priority }, Cmd.none )
 
         ChangeQuestionOrNoteText string ->
             let
@@ -121,13 +133,40 @@ update msg model =
                 ( { model | newAnswer = Answer oldAnswer.id oldAnswer.text string }, Cmd.none )
 
         ChangeViewingTime string -> 
-            ( { model | inputViewingTime = string }, Cmd.none)
+            let
+                oldQuestionnaire =
+                    model.questionnaire
+
+                changedQuestionnaire =
+                    { oldQuestionnaire | viewingTime = string }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
 
         ChangeEditTime string -> 
-            ( { model | inputEditTime = string }, Cmd.none)
+            let
+                oldQuestionnaire =
+                    model.questionnaire
 
-        ChangeReminderTimes string -> 
-            ( { model | inputReminderTimes = string }, Cmd.none)
+                changedQuestionnaire =
+                    { oldQuestionnaire | editTime = string }
+            in
+                ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
+
+        ChangeReminderTimes json -> 
+            case JDecode.decodeValue (JDecode.list JDecode.string) json  of
+                Ok times ->
+                    let
+                        oldQuestionnaire =
+                            model.questionnaire
+
+                        changedQuestionnaire =
+                            { oldQuestionnaire | reminderTimes = times }
+                    in
+                        ( { model | questionnaire = changedQuestionnaire }, Cmd.none)
+            
+                _ ->
+                    (model, Cmd.none)
+                    
 
         --open or close modals
         ViewOrClose modalType ->
@@ -156,7 +195,7 @@ update msg model =
                             ( { model | showNewNoteModal = not model.showNewNoteModal }, Cmd.none )
 
                 QuestionModal ->
-                    let
+                    let 
                         oldQuestionnaire = model.questionnaire
                     in
                         if not model.showNewQuestionModal == True then
@@ -169,21 +208,26 @@ update msg model =
                                             , hint = ""
                                             , typ = ""
                                             , questionTime = ""
+                                            , tableSize = 0
+                                            , topText = ""
+                                            , rightText = ""
+                                            , bottomText = ""
+                                            , leftText = ""
                                         }
                                 , showNewQuestionModal = not model.showNewQuestionModal
-                                , questionValidationResult = NotDone
-                                , inputQuestionTime = "" 
-                            }
+                                , questionValidationResult = NotDone    
+                                , inputQuestionTime = ""   
+                              }
                             , Cmd.none
                             )
-                        else
-                            ( { model
-                                | showNewQuestionModal = not model.showNewQuestionModal
-                                , questionValidationResult = NotDone
-                                , inputQuestionTime = ""
-                              }
-                            ,Cmd.none 
-                            )
+                            else
+                                ( { model
+                                    | showNewQuestionModal = not model.showNewQuestionModal
+                                    , questionValidationResult = NotDone
+                                    , inputQuestionTime = ""
+                                  }
+                                , Cmd.none
+                                )
 
                 AnswerModal ->
                     if not model.showNewAnswerModal == True then
@@ -275,13 +319,13 @@ update msg model =
             ( { model | newAnswerID_Condition = string }, Cmd.none )
 
         --Save input to questionnaire
-        SetQuestionnaireTitle ->
+        SetQuestionnaireTitlePriority ->
             let
                 oldQuestionnaire =
                     model.questionnaire
 
                 changedQuestionnaire =
-                    { oldQuestionnaire | title = model.inputTitle }
+                    { oldQuestionnaire | title = model.inputTitle, priority = model.inputPriority }
             in
             ( { model | questionnaire = changedQuestionnaire, showTitleModal = not model.showTitleModal, inputTitle = "" }, Cmd.none )
 
@@ -295,6 +339,113 @@ update msg model =
 
                 Note record ->
                     ( model, Cmd.none )
+
+        -- stellt Größe der Tabelle bei Raster-Auswahl Fragetyp ein
+        SetTableSize string ->
+            let 
+                size = Maybe.withDefault 0 ( String.toInt string ) 
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | tableSize = size }
+                     
+                        Note record ->
+                            Note record
+
+            in
+                case model.newElement of 
+                    Question record ->
+                        if record.typ == "Raster-Auswahl" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+                
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        -- stellt obere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        SetTopText string ->
+            let
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | topText = string }
+                     
+                        Note record ->
+                            Note record
+            in 
+                case model.newElement of 
+                    Question record ->
+                        if record.typ == "Raster-Auswahl" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        -- stellt rechte Beschriftung des Rasters bei Fragetyp Raster-Auswahl oder Prozentslider ein 
+        SetRightText string ->
+            let
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | rightText = string }
+                    
+                        Note record ->
+                            Note record
+            in 
+                case model.newElement of 
+                    Question record ->
+                        if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        -- stellt untere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        SetBottomText string ->
+            let
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | bottomText = string }
+                     
+                        Note record ->
+                            Note record
+            in 
+                case model.newElement of 
+                    Question record ->
+                        if record.typ == "Raster-Auswahl" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        -- stellt linke Beschriftung des Rasters bei Fragetyp Raster-Auswahl oder Prozentslider ein 
+        SetLeftText string ->
+            let
+                changedElement =  
+                    case model.newElement of 
+                        Question record ->
+                            Question { record | leftText = string }
+                     
+                        Note record ->
+                            Note record
+            in 
+                case model.newElement of 
+                    Question record ->
+                        if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+                            ( { model | newElement = changedElement }, Cmd.none )
+                        else 
+                            ( model, Cmd.none )
+
+                    Note record ->
+                        ( model, Cmd.none )
 
         SetNote ->
             let
@@ -398,15 +549,6 @@ update msg model =
 
                 Note record ->
                     ( model, Cmd.none )
-            
-            {-if model.editAnswer == False && oldQuestionnaire.newAnswer.typ /= "" then
-                ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = False }, Cmd.none )
-
-            else if oldQuestionnaire.newAnswer.typ == "" then
-                ( { model | questionnaire = changedQuestionnaire }, Cmd.none )
-
-            else
-                ( { model | questionnaire = changedQuestionnaire, showNewAnswerModal = False, editAnswer = False }, Cmd.none )-}
 
         --Edits already existing elements
         EditAnswer element ->
@@ -440,7 +582,7 @@ update msg model =
             )
 
         EditQuestionnaire ->
-            ( { model | upload = False, editQuestionnaire = True }, Cmd.none )
+            ( { model | upload = False, editQuestionnaire = True }, leaveUpload () )
 
         --Change order of elements
         PutDownEl element ->
@@ -570,10 +712,7 @@ update msg model =
 
         --Everything releated to upload
         EnterUpload ->
-            ( { model | upload = True }, Cmd.none )
-
-        LeaveOrEnterUpload ->
-            ( { model | upload = not model.upload }, Cmd.none )
+            ( { model | upload = True }, enterUpload ())
 
         JsonRequested ->
             ( model
@@ -593,10 +732,22 @@ update msg model =
                 changedQuestionnaire =
                     { oldQuestionnaire
                         | title = Decoder.decodeTitle content
+                        , id = Decoder.decodeId content
+                        , priority = Decoder.decodePriority content
                         , elements = Decoder.decodeElements content
+                        , conditions = Decoder.decodeConditions content
+                        , viewingTime = Decoder.decodeViewingTime content
+                        , reminderTimes = Decoder.decodeReminderTimes content
+                        , editTime = Decoder.decodeEditTime content
                     }
             in
-            ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }, Cmd.none )
+            ( { model | questionnaire = changedQuestionnaire, upload = False, editQuestionnaire = True }
+            , Cmd.batch     [ leaveUpload ()
+                            , decodedViewingTime (Decoder.decodeViewingTime content)
+                            , decodedReminderTime (Decoder.decodeReminderTimes content)
+                            , decodedEditTime (Decoder.decodeEditTime content)
+                            ] 
+            )
 
         --Everything releated to download
         DownloadQuestionnaire ->
@@ -652,5 +803,3 @@ strToInt id =
 
         Nothing ->
             -1
-
---model.questionnaire.newCondition.parent_id 

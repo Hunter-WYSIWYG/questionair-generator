@@ -21,7 +21,7 @@ import Answer exposing (Answer)
 import QElement exposing (Q_element)
 
 
-{-| Conditions have a parent\_id and child\_id that refer to a question (child) and the question (parent) to the condition it contains.
+{-| Conditions have a parent\_id and child\_id that refer to a question (child) and the question (parent) which acts as the condition.
 It will jump to the question with the child\_id if an answer from the list of answers in the question with the parent\_id is answered.
 -}
 type alias Condition =

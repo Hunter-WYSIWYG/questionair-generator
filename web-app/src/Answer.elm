@@ -105,7 +105,7 @@ getAnswersWithRange begin end index =
         [ regularAnswer index (String.fromInt begin) ] ++ getAnswersWithRange (begin + 1) end (index + 1)
 
 
-{-| Aktualisiert die angegebene Antwort in einer Liste von Antworten. Es wird die Antwort mit der entsprechenden ID in der Liste gesucht und durch die angegebene Antwort ersetzt.
+{-| Updates the specified answer in a list of answers. It searches for the answer with the corresponding ID in the list and replaces it with the specified answer.
 -}
 updateAnswerList : Answer -> List Answer -> List Answer
 updateAnswerList answerToUpdate list =

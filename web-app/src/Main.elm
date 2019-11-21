@@ -484,10 +484,10 @@ update msg model =
                             | elements = List.map (\e -> QElement.updateElement model.newElement e) oldQuestionnaire.elements
                             , conditions =
                                 if (Condition.validateCondition model.newCondition model.newElement) then
-                                    Debug.log "true" List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
+                                    List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
 
                                 else
-                                    Debug.log "false" Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
+                                    Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
                         }
             in
             if model.editQElement == False then

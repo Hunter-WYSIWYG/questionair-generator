@@ -12,7 +12,7 @@ hochgeladen.
 
 ## Electron-App bauen
 
-* Elm [intallieren](https://guide.elm-lang.org/install.html)
+* Elm [installieren](https://guide.elm-lang.org/install.html)
 
 * Node.js [installieren](https://nodejs.org/en/download/) 
 
@@ -28,7 +28,7 @@ hochgeladen.
 
 ## Web-App bauen
 
-* Elm [intallieren](https://guide.elm-lang.org/install.html)
+* Elm [installieren](https://guide.elm-lang.org/install.html)
 
 * Im Verzeichnis `web-app` folgenden Befehl ausführen:
 ```

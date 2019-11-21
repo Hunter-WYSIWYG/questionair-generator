@@ -557,7 +557,6 @@ update msg model =
                 (
                     { model
                         | newElement = element
-                        , newCondition = Condition.getConditionWithParentID oldQuestionnaire.conditions (QElement.getID element)
                         , showNewQuestionModal = True
                         , editQElement = True
                     }

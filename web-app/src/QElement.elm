@@ -3,7 +3,7 @@ module QElement exposing
     , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID )
 
 
-{-| Enthält den Typ für die Elemente von Fragebögen (Fragen, Anmerkungen) und ein Anfangszustand für das "Input-Element" (newElement).
+{-| Contains the type for the elements of questionnaires (questions, annotations) and an initial state for the "input element" (newElement).
 
 
 # Definition
@@ -11,7 +11,7 @@ module QElement exposing
 @docs Q_element, NoteRecord, QuestionRecord
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID
 
@@ -21,14 +21,14 @@ import Answer exposing (Answer)
 import Utility as Utility
 
 
-{-| Element eines Fragebogens (Frage, Anmerkung)
+{-| Element of a questionnaire (question, annotation)
 -}
 type Q_element
     = Note NoteRecord
     | Question QuestionRecord
 
 
-{-| Record einer Anmerkung mit ID und Text der Anmerkung.
+{-| Record of annotation with ID and text of the annotation.
 -}
 type alias NoteRecord =
     { id : Int
@@ -36,7 +36,7 @@ type alias NoteRecord =
     }
 
 
-{-| Record einer Frage mit ID, Text, Liste von Antworten, Hinweis, Fragetyp und Fragenzeit.
+{-| Record of a question with ID, text, list of answers, hint, question type and question time.
 -}
 type alias QuestionRecord =
     { id : Int
@@ -55,7 +55,7 @@ type alias QuestionRecord =
     }
 
 
-{-| Anfangszustand einer Frage für die "Inputfrage" (newElement).
+{-| Initial state of a question for the "input question" (newElement).
 -}
 initQuestion : Q_element
 initQuestion =
@@ -74,21 +74,21 @@ initQuestion =
         }
 
 
-{-| Hilfsfunktion für das Erhöhen der ID einer Frage. Die Frage wird dann in der Tabelle von Fragen um eine Position nach oben verschoben.
+{-| Helper function to raise the ID of a question. The question is then moved up in the table of questions by one position.
 -}
 putElementUp : List Q_element -> Q_element -> List Q_element
 putElementUp list element =
     Utility.swapAt (getID element) (getID element - 1) (List.map (updateID (getID element) (getID element - 1)) list)
 
 
-{-| Hilfsfunktion für das Verringern der ID einer Frage. Die Frage wird dann in der Tabelle von Fragen um eine Position nach unten verschoben.
+{-| Helper function for reducing the ID of a question. The question is then moved down one position in the table of questions.
 -}
 putElementDown : List Q_element -> Q_element -> List Q_element
 putElementDown list element =
     Utility.swapAt (getID element) (getID element + 1) (List.map (updateID (getID element) (getID element + 1)) list)
 
 
-{-| Hilfsfunktion für das Erhöhen der ID einer Antwort. Die Frage wird dann in der Tabelle von Antworten einer Frage um eine Position nach oben verschoben.
+{-| Helper function for increasing the ID of an answer. The question is then moved up one position in the table of answers to a question.
 -}
 putAnswerUp : Q_element -> Answer -> Q_element
 putAnswerUp newElement answer =
@@ -100,7 +100,7 @@ putAnswerUp newElement answer =
             Question { record | answers = Utility.swapAt answer.id (answer.id - 1) (List.map (updateAnsID answer.id (answer.id - 1)) record.answers) }
 
 
-{-| Hilfsfunktion für das Verringern der ID einer Antwort. Die Frage wird dann in der Tabelle von Antworten einer Frage um eine Position nach unten verschoben.
+{-| Helper function for reducing the ID of an answer. The question is then moved one position lower in the table of answers to a question.
 -}
 putAnswerDown : Q_element -> Answer -> Q_element
 putAnswerDown newElement answer =
@@ -112,7 +112,7 @@ putAnswerDown newElement answer =
             Question { record | answers = Utility.swapAt answer.id (answer.id + 1) (List.map (updateAnsID answer.id (answer.id + 1)) record.answers) }
 
 
-{-| Setzt eine neue ID eines Fragebogenelements.
+{-| Sets a new ID of a questionnaire item.
 -}
 setNewID : Q_element -> Int -> Q_element
 setNewID element new =
@@ -124,8 +124,8 @@ setNewID element new =
             Question { record | id = new }
 
 
-{-| Vertauscht die IDs zweier Elemente mit den IDs "old" und "new".
-Hat das Fragebogenelement die ID "old", wird die ID auf "new" gesetzt. Ist die ID gleich "new", wird die ID auf "old" gesetzt.
+{-| Swaps the IDs of two elements with the IDs "old" and "new".
+If the questionnaire element has the ID "old", the ID is set to "new". If the ID is "new", the ID is set to "old".
 -}
 updateID : Int -> Int -> Q_element -> Q_element
 updateID old new element =
@@ -139,8 +139,8 @@ updateID old new element =
         element
 
 
-{-| Vertauscht die IDs zweier Antowrten mit den IDs "old" und "new".
-Hat das Antwort die ID "old", wird die ID auf "new" gesetzt. Ist die ID gleich "new", wird die ID auf "old" gesetzt.
+{-| Swaps the IDs of two answers with the IDs "old" and "new".
+If the answer has the ID "old", the ID is set to "new". If the ID is "new", the ID is set to "old".
 -}
 updateAnsID : Int -> Int -> Answer -> Answer
 updateAnsID old new answer =
@@ -154,7 +154,7 @@ updateAnsID old new answer =
         answer
 
 
-{-| Findet die Antwort mit der angegebenen ID innerhalb einer Frage.
+{-| Finds the answer with the given ID within a question.
 -}
 getAnswerWithID : Int -> Q_element -> Maybe Answer
 getAnswerWithID id newElement =
@@ -166,7 +166,7 @@ getAnswerWithID id newElement =
             Nothing
 
 
-{-| Gibt die Antworten einer Frage aus.
+{-| Returns the answers to a question.
 -}
 getAntworten : Q_element -> List Answer
 getAntworten element =
@@ -178,15 +178,15 @@ getAntworten element =
             []
 
 
-{-| Aktualisiert das angegebene Element in einer Liste von Elementen.
-Dabei wird eine Frage mit der ID von elementToUpdate in der Liste list gesucht und durch elementToUpdate ersetzt.
+{-| Updates the specified item in a list of items.
+A question is searched with the ID of elementToUpdate in the list "list" and replaced by elementToUpdate.
 -}
 updateElementList : Q_element -> List Q_element -> List Q_element
 updateElementList elementToUpdate list =
     List.map (updateElement elementToUpdate) list
 
 
-{-| Ersetzt das Element element durch elementToUpdate, wenn die IDs beieder Fragebogenelemente übereinstimmen.
+{-| Replaces element "element" with elementToUpdate if the IDs of both questionnaire elements match.
 -}
 updateElement : Q_element -> Q_element -> Q_element
 updateElement elementToUpdate element =
@@ -198,7 +198,7 @@ updateElement elementToUpdate element =
 
 
 {-| TODO: WIRKLICH NÖTOG?
-Gibt die ID eines Fragebogenelements aus.
+Returns the ID of a questionnaire item.
 -}
 getID : Q_element -> Int
 getID element =
@@ -211,7 +211,7 @@ getID element =
 
 
 {-| TODO: WIRKLICH NÖTOG?
-Gibt den Text eines Fragebogenelements aus.
+Returns the text of a questionnaire item.
 -}
 getText : Q_element -> String
 getText element =
@@ -223,16 +223,16 @@ getText element =
             record.text
 
 
-{-| Löscht das Fragebogenelement element in der Liste list.
-Dabei wird das Element in der Liste gesucht, dass die gleiche ID wie element hat.
+{-| Deletes the questionnaire item "element" in the list "list".
+It searches for the item in the list that has the same ID as "element".
 -}
 deleteItemFrom : Q_element -> List Q_element -> List Q_element
 deleteItemFrom element list =
     Tuple.first (List.partition (\e -> e /= element) list)
 
 
-{-| Löscht die angegebene Antwort answer von einer Frage element.
-Dabei wird die Antwort in der Liste gesucht, dass die gleiche ID wie answer hat.
+{-| Deletes the specified answer "answer" from a question element.
+It looks for the answer in the list that has the same ID as "answer".
 -}
 deleteAnswerFromItem : Answer -> Q_element -> Q_element
 deleteAnswerFromItem answer element =
@@ -256,7 +256,7 @@ getElementText element =
             record.text
 
 
-{-| Gibt den Hinweis einer Frage aus.
+{-| Returns the hint of a question.
 -}
 getQuestionHinweis : Q_element -> String
 getQuestionHinweis element =
@@ -268,7 +268,7 @@ getQuestionHinweis element =
             "None"
 
 
-{-| Gibt den Typ einer Frage aus
+{-| Returns the type of a question
 -}
 getQuestionTyp : Q_element -> String
 getQuestionTyp element =

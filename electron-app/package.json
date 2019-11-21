@@ -1,0 +1,19 @@
+{
+  "name": "fragebogengenerator-electron",
+  "version": "0.8.0",
+  "description": "You can create and edit questionnaires with this tool.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.informatik.uni-halle.de/projektpraktikum-ss19/fragebogengenerator"
+  },
+  "author": "Niclas Arnhold, Marcus Gagelmann, Johann Maximilian Goldacker, Alexander Kampf, Maximilian Probst, Laura Spilling",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "electron": "^7.1.2",
+    "electron-packager": "^14.1.0"
+  }
+}

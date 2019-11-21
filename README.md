@@ -10,27 +10,30 @@ Nach jedem Commit auf den master-Branch wird ein Build von der WebApp erstellt u
   [users.informatik.uni-halle.de/~anfvg](http://users.informatik.uni-halle.de/~anfvg) 
 hochgeladen.
 
-## Elm installieren:
+## Electron-App bauen
 
-* [guide.elm-lang.org/install.html](https://guide.elm-lang.org/install.html)
+* Elm [intallieren](https://guide.elm-lang.org/install.html)
 
-* ggf. Editor einrichten
+* Node.js [installieren](https://nodejs.org/en/download/) 
 
-* eigenen Branch anlegen
+* In das Verzeichnis electron-app wechseln
 
-* zum Kompilieren in den Ordner fragebogengenerator/web-app/src/ 
-wechseln und elm make ausführen:
+* Die Kommandozeile (cmd.exe) öffnen, nicht die PowerShell!
+
+* Beim ersten Build `install_electron.bat` ausführen
+
+* In der Kommandozeile `build.bat` ausführen, um einen Build zu erstellen
+
+* In dem Verzeichnis `electron-app` finden sich die fertigen Builds
+
+## Web-App bauen
+
+* Elm [intallieren](https://guide.elm-lang.org/install.html)
+
+* Im Verzeichnis `web-app` folgenden Befehl ausführen:
 ```
-  cd web-app/src
-  elm make Main.elm --output Main.js
+elm make src\Main.elm --output src\elm.js
 ```
-* um eine Vorschau zu sehen, elm reactor starten 
-```
-  elm reactor
-```
-* [localhost:8000/index.html](localhost:8000/index.html) aufrufen
-
-* regelmäßig git commit und git push ausführen
 
 ## Link zur Elm-Referenz
 * [package.elm-lang.org](https://package.elm-lang.org/)

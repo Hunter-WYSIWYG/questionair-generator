@@ -1,6 +1,6 @@
 module Condition exposing
     ( Condition
-    , deleteConditionFrom, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
+    , deleteConditionFrom, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition, validateCondition
     )
 
 {-| Enthält den Typ Condition für Bedingungen.
@@ -174,3 +174,27 @@ getConditionWithParentID list id =
 deleteConditionFrom : Condition -> List Condition -> List Condition
 deleteConditionFrom condition list =
     Tuple.first (List.partition (\e -> e /= condition) list)
+
+validateCondition : Condition -> Q_element -> Bool
+validateCondition condition q_element =
+    let
+        id = condition.answer_id
+        answers = case q_element of
+                        QElement.Note n -> []
+                        QElement.Question q -> q.answers
+    in
+    checkAnswerID answers id
+
+checkAnswerID : List Answer -> Int -> Bool
+checkAnswerID answers answer_id =
+    let
+        id =
+            case (List.head answers) of
+                Just a -> a.id
+                Nothing -> -1
+    in
+    if id == answer_id
+    then True
+    else    case List.tail answers of
+                Just list -> checkAnswerID list answer_id
+                Nothing -> False

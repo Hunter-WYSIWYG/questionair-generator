@@ -38,8 +38,8 @@ type alias Model =
     , showNewNoteModal : Bool
     , showNewQuestionModal : Bool
     , showNewAnswerModal : Bool
-    , showNewConditionModal1 : Bool
-    , showNewConditionModal2 : Bool
+    , showNewConditionModalOverview : Bool
+    , showNewConditionModalCreate : Bool
 
     --editQElement for EditQuestion and EditNote
     , editQElement : Bool
@@ -88,8 +88,8 @@ type ModalType
     | QuestionModal
     | TitleModal
     | AnswerModal
-    | ConditionModal1
-    | ConditionModal2
+    | ConditionModalOverview
+    | ConditionModalCreate
 
 
 {-| Die Messages der Webanwendung.
@@ -167,8 +167,8 @@ initModel _ =
       , showNewNoteModal = False
       , showNewQuestionModal = False
       , showNewAnswerModal = False
-      , showNewConditionModal1 = False
-      , showNewConditionModal2 = False
+      , showNewConditionModalOverview = False
+      , showNewConditionModalCreate = False
 
       --editQElement for EditQuestion and EditNote
       , editQElement = False

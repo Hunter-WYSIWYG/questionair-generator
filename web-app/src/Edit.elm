@@ -708,16 +708,13 @@ tableHead_conditions : Html Msg
 tableHead_conditions =
     tr []
         [ th []
-            [ text "ID"
-            ]
-        , th []
             [ text "Von"
             ]
         , th []
             [ text "Zu"
             ]
         , th []
-            [ text "Mit der Antwort/en"
+            [ text "Mit der Antwort"
             ]
         , th []
             [ text "Aktion"
@@ -730,8 +727,7 @@ tableHead_conditions =
 getConditionTable : Int -> Condition -> Html Msg
 getConditionTable index condition =
     tr [ id (String.fromInt index) ]
-        [ td [] [ text (String.fromInt index) ]
-        , td [] [ text (String.fromInt condition.parent_id) ]
+        [ td [] [ text (String.fromInt condition.parent_id) ]
         , td [] [ text (String.fromInt condition.child_id) ]
         , td [] [ text (String.fromInt condition.answer_id) ]
         , td []

@@ -1,6 +1,6 @@
 module Condition exposing
     ( Condition
-    , deleteConditionFrom, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition, validateCondition
+    , deleteConditionFrom, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition, validateCondition
     )
 
 {-| Contains the Condition type for conditions.
@@ -13,7 +13,7 @@ module Condition exposing
 
 # Public functions
 
-@docs addAnswerOfQuestionToCondition, deleteAnswerInCondition, deleteCondAnswer, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
+@docs addAnswerOfQuestionToCondition, deleteAnswerInCondition, deleteCondAnswer, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
 
 -}
 
@@ -157,17 +157,6 @@ setValid : Condition -> Bool -> Condition
 setValid condition value =
     { condition | isValid = value }
 
-
-{-| Returns the condition from a list of conditions that has the specified id as parent\_id.
--}
-getConditionWithParentID : List Condition -> Int -> Condition
-getConditionWithParentID list id =
-    case List.head (Tuple.first (List.partition (\e -> e.parent_id == id) list)) of
-        Just condition ->
-            condition
-
-        Nothing ->
-            initCondition
 
 {-| Deletes a condition from the condition list
 -}

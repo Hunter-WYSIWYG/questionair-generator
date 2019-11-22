@@ -19,6 +19,15 @@ src/build
 --WebApp
 -- exclude all generated content
 web-app/elm-stuff
-web-app/Main.js
-web-app/src/Main.js
+web-app/src/elm.js
 web-app/src/elm-stuff
+
+--Electron-App
+electron-app/node_modules
+electron-app/Fragebogengenerator-win32-arm64
+electron-app/Fragebogengenerator-win32-x64
+electron-app/Fragebogengenerator-win32-ia32
+electron-app/*.html
+electron-app/*.js
+electron-app/*.css
+electron-app/*.zip

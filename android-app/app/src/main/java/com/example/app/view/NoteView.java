@@ -1,5 +1,6 @@
 package com.example.app.view;
 
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.TextView;
@@ -19,7 +20,7 @@ public class NoteView extends QuestionDisplayView {
 	
 	
 	// constructor
-	public NoteView(QuestionDisplayActivity activity, Note question) {
+	NoteView(QuestionDisplayActivity activity, Note question) {
 		super(activity);
 		this.question = question;
 		
@@ -31,7 +32,7 @@ public class NoteView extends QuestionDisplayView {
 		
 		// set questionTypeText
 		TextView questionTypeTextView = this.container.findViewById(R.id.NoteTypeText);
-		questionTypeTextView.setText("Notiz");
+		questionTypeTextView.setText(R.string.noteview_note);
 		
 		// set questionText
 		TextView questionTextView = this.container.findViewById(R.id.NoteViewText);
@@ -46,7 +47,8 @@ public class NoteView extends QuestionDisplayView {
 	public View getView() {
 		return this.container;
 	}
-	
+
+	@Nullable
 	@Override
 	public Answer getCurrentAnswer() {
 		return null;

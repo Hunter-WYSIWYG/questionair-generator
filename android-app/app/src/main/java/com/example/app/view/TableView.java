@@ -1,5 +1,7 @@
 package com.example.app.view;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.view.Gravity;
 import android.view.View;
@@ -14,7 +16,7 @@ import com.example.app.answer.Answer;
 import com.example.app.question.TableQuestion;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class TableView extends QuestionDisplayView {
 	
@@ -27,15 +29,16 @@ public class TableView extends QuestionDisplayView {
 	// size of table
 	private final double size;
 	// list of all buttons
-	private final List<Button> buttons = new ArrayList<>();
+	private final Collection<Button> buttons = new ArrayList<>();
 	// id of button
 	private int buttonID;
 	// current pressed button
+	@Nullable
 	private Button currentButton;
 	
 	
 	// constructor
-	public TableView(QuestionDisplayActivity activity, TableQuestion question) {
+	TableView(QuestionDisplayActivity activity, TableQuestion question) {
 		super(activity);
 		this.question = question;
 		this.size = this.question.size;
@@ -113,7 +116,7 @@ public class TableView extends QuestionDisplayView {
 	
 	// enable or disable 'next' button depending on whether any button is checked
 	// also disable other radio buttons if this is that kind of question
-	private void buttonClicked(Button button) {
+	private void buttonClicked(@NonNull Button button) {
 		this.currentButton = button;
 		button.setBackgroundResource(R.drawable.table_button_pressed);
 		for (Button b : buttons) {
@@ -127,10 +130,7 @@ public class TableView extends QuestionDisplayView {
 	
 	// enable or disable 'next' button depending on whether any button is checked
 	private void updateNextButtonEnabled() {
-		boolean enabled = false;
-		if (this.currentButton != null)
-			enabled = true;
-		this.getActivity().setNextButtonEnabled(enabled);
+		this.getActivity().setNextButtonEnabled(this.currentButton != null);
 	}
 	
 	// return button id
@@ -143,7 +143,8 @@ public class TableView extends QuestionDisplayView {
 	public View getView() {
 		return this.container;
 	}
-	
+
+	@Nullable
 	@Override
 	public Answer getCurrentAnswer() {
 		return null;

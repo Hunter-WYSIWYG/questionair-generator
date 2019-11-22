@@ -1,5 +1,6 @@
 package com.example.app.view;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.example.app.QuestionDisplayActivity;
@@ -13,8 +14,9 @@ import com.example.app.question.SliderButtonQuestion;
 import com.example.app.question.SliderQuestion;
 import com.example.app.question.TableQuestion;
 
+import org.jetbrains.annotations.Contract;
+
 public abstract class QuestionDisplayView {
-	
 	// the corresponding activity
 	private final QuestionDisplayActivity activity;
 	
@@ -24,6 +26,8 @@ public abstract class QuestionDisplayView {
 	}
 	
 	// create new view for the current question of the activity
+	@Contract("_ -> new")
+	@NonNull
 	public static QuestionDisplayView create(QuestionDisplayActivity activity) {
 		Question question = QuestionnaireState.getCurrentQuestion();
 		
@@ -52,7 +56,7 @@ public abstract class QuestionDisplayView {
 	public abstract View getView();
 	
 	// get all answer
+	@NonNull
 	@SuppressWarnings ("SameReturnValue")
 	public abstract Answer getCurrentAnswer();
-	
 }

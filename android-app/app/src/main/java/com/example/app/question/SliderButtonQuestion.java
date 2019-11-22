@@ -18,4 +18,9 @@ public class SliderButtonQuestion extends Question {
 		this.leftIndex = leftIndex;
 		this.rightIndex = rightIndex;
 	}
+	
+	@Override
+	public int getAmountPossibleOutcomes() {
+		return 1;
+	}
 }

@@ -1,12 +1,12 @@
 package com.example.app;
 
+import android.app.Activity;
+import android.support.annotation.Nullable;
+import android.widget.Toast;
+
 import com.example.app.answer.Answer;
-import com.example.app.question.ChoiceQuestion;
-import com.example.app.question.Option;
 import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
-import com.example.app.question.SliderButtonQuestion;
-import com.example.app.question.TableQuestion;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -14,117 +14,122 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-final public class QuestionnaireState {
-	static private final List<Answer> answersList = new ArrayList<>(32);
-	static private Questionnaire questionnaire = null;
-	static private List<Question> questionsList = null;
-	static private int[][] conditionMatrix = null;
-	static private int currentQ = -1;
-	
+public final class QuestionnaireState {
+	private static final List<Answer> answersList = new ArrayList<>(32);
+	@Nullable
+	private static Questionnaire questionnaire = null;
+	@Nullable
+	private static List<Question> questionsList = null;
+	@Nullable
+	private static int[][] conditionMatrix = null;
+	private static int currentQID = -1;
+
 	private QuestionnaireState() {
 	}
-	
-	static void setQuestionnaire(final @NotNull Questionnaire givenQuestionnaire) {
+
+	static void setQuestionnaire(@NotNull final Questionnaire givenQuestionnaire) {
 		questionnaire = givenQuestionnaire;
-		
+
 		questionsList = questionnaire.getQuestionList();
-		
-		// TODO: who decided to start indexing in the questionnaires with 0? this leads to this stupid code where the array is one size bigger and the first entry is always unused
-		final int qListSize = questionsList.size();
-		conditionMatrix = new int[qListSize + 1][];
-		for (int i = 1; i <= qListSize; i++) {
-			Question q = questionsList.get(i - 1);
-			// breaking this up differently would probably be good
-			// putting a matrix for this into the questionnaire JSON would be best,
-			// or reading it straight from Question class
-			switch (q.type) {
-				case SingleChoice:
-				case MultipleChoice:
-					final ChoiceQuestion qCastChoice = (ChoiceQuestion) q;
-					final List<Option> qOptionsChoice = qCastChoice.options;
-					final int qIdxChoice = qCastChoice.id;
-					if ((qIdxChoice != i))
-						throw new AssertionError("qIdx was: " + qIdxChoice + ", i was: " + i);
-					final int amountOptionsChoice = qOptionsChoice.size();
-					conditionMatrix[i] = new int[amountOptionsChoice + 1];
-					for (int j = 1; j <= amountOptionsChoice; j++) {
-						// TODO: CONDITIONS -> which optionID leads to which new questionID
-						conditionMatrix[i][j] = i != qListSize ? i + 1 : -1;
-					}
-					break;
-				case Slider:
-				case PercentSlider:
-				case Note:
-					// TODO : Slider position leads to different next question?
-					conditionMatrix[i] = new int[] {i != qListSize ? i + 1 : -1};
-					break;
-				case Table:
-					final TableQuestion qCastTable = (TableQuestion) q;
-					final int qSizeTable = (int) qCastTable.size;
-					final int qIdxTable = qCastTable.id;
-					if ((qIdxTable != i))
-						throw new AssertionError("qIdx was: " + qIdxTable + ", i was: " + i);
-					final int amountOptionsTable = (qSizeTable) * (qSizeTable);
-					conditionMatrix[i] = new int[amountOptionsTable];
-					// these buttons are hopefully 0-indexed. i hope
-					for (int j = 0; j < amountOptionsTable; j++) {
-						// TODO: CONDITIONS -> which optionID leads to which new questionID
-						conditionMatrix[i][j] = i != qListSize ? i + 1 : -1;
-					}
-					break;
-				case SliderButton:
-					final SliderButtonQuestion qCastSliderButton = (SliderButtonQuestion) q;
-					final int qSizeSliderButton = (int) qCastSliderButton.size;
-					final int qIdxSliderButton = qCastSliderButton.id;
-					if ((qIdxSliderButton != i))
-						throw new AssertionError("qIdx was: " + qIdxSliderButton + ", i was: " + i);
-					final int amountOptionsSliderButton = (qSizeSliderButton) * (qSizeSliderButton);
-					conditionMatrix[i] = new int[amountOptionsSliderButton];
-					// these buttons are hopefully 0-indexed. i hope
-					for (int j = 0; j < amountOptionsSliderButton; j++) {
-						// TODO: CONDITIONS -> which optionID leads to which new questionID
-						// TODO : Slider affects too? -> would need more entries!!!
-						conditionMatrix[i][j] = i != qListSize ? i + 1 : -1;
-					}
-					break;
-			}
-			if ((conditionMatrix[i] == null))
-				throw new AssertionError("Should have set condition matrix entries, but array still null");
+
+		// TODO : who decided to start indexing in the questionnaires with 1? this leads to this stupid code
+		// TODO : also, this throws a lot of things off
+		// change this a lot to implement conditions
+		// layout:
+		// int nextQuestionID = conditionMatrix[currentQuestionID][chosenOptionID];
+		// gets big for MultipleChoice/Table...
+		// BETTER BE 0-INDEXED!!!
+		if (questionsList == null) {
+			throw new AssertionError();
 		}
-		
-		currentQ = 0;
+		final int qListSize = questionsList.size();
+		conditionMatrix = new int[qListSize][];
+		for (int i = 0; i < qListSize; i++) {
+			final int amountPossibleOutcomes = questionsList.get(i).getAmountPossibleOutcomes();
+			conditionMatrix[i] = new int[amountPossibleOutcomes];
+			for (int j = 0; j < amountPossibleOutcomes; j++) {
+				// put condition changes here
+				conditionMatrix[i][j] = i == qListSize - 1 ? -1 : i + 1;
+			}
+		}
+
+		// 1, because questions are currently 1-indexed
+		currentQID = 1;
 		answersList.clear();
 	}
-	
-	@Contract (pure = true)
+
+	@Contract(pure = true)
 	public static Question getCurrentQuestion() {
-		return questionsList.get(currentQ);
+		if (questionsList == null) {
+			throw new AssertionError();
+		}
+
+		// -1, because still 1-indexed
+		return questionsList.get(questionID_to_MatrixIndex(currentQID));
 	}
-	
-	public static void giveAnswer(final @NotNull Answer answer) {
-		final int currentQID = questionsList.get(currentQ).id;
-		if ((answer.getQuestionID() != currentQID))
-			throw new AssertionError("Answer was not for current question");
-		
+
+	//this can be removed, if questions start getting indexed from 0
+	@Contract(pure = true)
+	private static int questionID_to_MatrixIndex(final int qIdx) {
+		return qIdx - 1;
+	}
+
+	static void giveAnswer(@NotNull final Answer answer) {
+		if (answer == null) {
+			// android does not have the runtime checks for the annotation
+			// this check should be removed once all Questions return a non-null answer
+			currentQID += 1;
+			if (questionsList == null) {
+				throw new AssertionError();
+			}
+			if (currentQID == questionsList.size()) {
+				currentQID = -1;
+			}
+			return;
+		}
+
+		if ((currentQID != answer.getQuestionID())) {
+			throw new AssertionError();
+		}
+
 		//add answer to list
 		answersList.add(answer);
-		
+
+		// TODO :
 		// look for next question
-		currentQ = conditionMatrix[currentQID][answer.getOptionID()];
+		if (conditionMatrix == null) {
+			throw new AssertionError();
+		}
+		//currentQID = conditionMatrix[questionID_to_MatrixIndex(currentQID)][answer.getChosenOutcomeIdx()];
+
+		// only step to the next one for now
+		currentQID += 1;
+		if (questionsList == null) {
+			throw new AssertionError();
+		}
+		if (currentQID == questionsList.size()) {
+			currentQID = -1;
+		}
 	}
-	
-	@Contract (pure = true)
-	public static boolean nextIsQuestion() {
-		// currentQ is only -1 if last answer leads to end of questionnaire
-		return currentQ != -1;
+
+	@Contract(pure = true)
+	static boolean nextIsQuestion() {
+		// currentQ is only -1 if last answer lead to end of questionnaire
+		return currentQID != -1;
 	}
-	
-	public static void save() {
+
+	static void save() {
 		// TODO : send questionnaire and answersList to saveAnswers-something
 		questionnaire = null;
 		for (int i = 0; i < answersList.size(); i++) {
 			answersList.set(i, null);
 		}
 		answersList.clear();
+	}
+
+	static void display_DEBUG(Activity source) {
+		for (Answer answer : answersList) {
+			Toast.makeText(source, answer.toString(), Toast.LENGTH_LONG).show();
+		}
 	}
 }

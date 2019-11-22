@@ -1,151 +1,26 @@
 package com.example.app.view;
 
-import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.Space;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.MultipleChoiceAnswer;
 import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Option;
 import com.example.app.question.OptionType;
-import com.example.app.question.Question;
-import com.example.app.question.QuestionType;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-// TODO: allow clicking on the text next to the radio button or checkbox
-// OptionView is the view of one option (button + text)
-abstract class OptionView {
-	// rootView of button, textView, ...
-	private final LinearLayout container;
-	// view of optionText
-	private final TextView optionTextView;
-	// option
-	private final Option option;
-	// edit text is null if there is no edit text
-	private final EditText editText;
-	
-	// constructor
-	OptionView(Context context, Option option) {
-		this.container = (LinearLayout) View.inflate(context, R.layout.multiple_choice_option_view, null);
-		this.optionTextView = new TextView(context);
-		this.optionTextView.setText(option.getOptionText());
-		this.optionTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-		this.option = option;
-		this.editText = this.createEditText(context);
-	}
-	
-	private EditText createEditText(Context context) {
-		if (this.option.getType() == OptionType.EnterText) {
-			EditText editText = new EditText(context);
-			editText.setHint("Hier eingeben...");
-			return editText;
-		}
-		else if (this.option.getType() == OptionType.StaticText)
-			return null;
-		else
-			throw new IllegalArgumentException();
-	}
-	
-	// creates new option view depending on the question type
-	public static OptionView create(Context context, Option option, Question question, View.OnClickListener onClickListener) {
-		if (question.type == QuestionType.SingleChoice)
-			return new SingleChoiceOptionView(context, option, onClickListener);
-		else if (question.type == QuestionType.MultipleChoice)
-			return new MultipleChoiceOptionView(context, option, onClickListener);
-		else
-			throw new IllegalArgumentException();
-	}
-	
-	// getter
-	public LinearLayout getContainer() {
-		return this.container;
-	}
-	
-	public Option getOption() {
-		return this.option;
-	}
-	
-	public EditText getEditText() {
-		return this.editText;
-	}
-	
-	// add button and everything else in the right order to the rootView
-	void addButton(Button button) {
-		this.container.addView(button);
-		this.container.addView(this.optionTextView);
-		if (this.editText != null)
-			this.container.addView(this.editText);
-	}
-	
-	// true if button is checked
-	public abstract boolean isChecked();
-	
-	public abstract void setChecked(boolean checked);
-}
-
-// view of one single choice option
-class SingleChoiceOptionView extends OptionView {
-	
-	private final RadioButton radioButton;
-	
-	
-	// constructor
-	public SingleChoiceOptionView(Context context, Option option, View.OnClickListener onClickListener) {
-		super(context, option);
-		this.radioButton = new RadioButton(context);
-		this.radioButton.setOnClickListener(onClickListener);
-		this.addButton(this.radioButton);
-	}
-	
-	@Override
-	public boolean isChecked() {
-		return this.radioButton.isChecked();
-	}
-	
-	@Override
-	public void setChecked(boolean checked) {
-		this.radioButton.setChecked(checked);
-	}
-}
-
-// view of one multiple choice option
-class MultipleChoiceOptionView extends OptionView {
-	
-	private final CheckBox checkBox;
-	
-	// constructor
-	public MultipleChoiceOptionView(Context context, Option option, View.OnClickListener onClickListener) {
-		super(context, option);
-		this.checkBox = new CheckBox(context);
-		this.checkBox.setOnClickListener(onClickListener);
-		this.addButton(this.checkBox);
-	}
-	
-	@Override
-	public boolean isChecked() {
-		return this.checkBox.isChecked();
-	}
-	
-	@Override
-	public void setChecked(boolean checked) {
-		this.checkBox.setChecked(checked);
-	}
-}
 
 // TODO: suppress virtual keyboard if displaying an edit text
 // TODO: select button by clicking on option text or text box and not just the button
@@ -163,7 +38,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	private final List<OptionView> optionViews = new ArrayList<>();
 	
 	// constructor
-	public MultipleChoiceView(QuestionDisplayActivity activity, ChoiceQuestion question) {
+	MultipleChoiceView(QuestionDisplayActivity activity, ChoiceQuestion question) {
 		super(activity);
 		this.question = question;
 		this.init();
@@ -261,10 +136,8 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		for (OptionView optionView : this.optionViews) {
 			if (optionView.isChecked()) {
 				if (optionView.getOption().getType() == OptionType.EnterText) {
-					Editable debug1 = optionView.getEditText().getText();
-					String debug2 = debug1.toString();
-					
-					if (optionView.getEditText().getText().toString().equals(""))
+					assert optionView.getEditText() != null;
+					if ("".equals(optionView.getEditText().getText().toString()))
 						return false;
 				}
 			}
@@ -277,11 +150,23 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	public View getView() {
 		return this.rootView;
 	}
-	
+
+	@NotNull
+	private List<Integer> getIdsOfAllChecked() {
+		final List<Integer> list = new ArrayList<>(question.options.size());
+		for (OptionView optionView : this.optionViews) {
+			if (optionView.isChecked()) {
+				// -1 to account for 1-indexing of Option
+				list.add(optionView.getOption().getId() - 1);
+			}
+		}
+		return list;
+	}
+
+	@NotNull
 	@Override
 	public Answer getCurrentAnswer() {
-		return null;
+		return new MultipleChoiceAnswer(question, getIdsOfAllChecked());
 	}
-	
 }
 

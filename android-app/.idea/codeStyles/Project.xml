@@ -1,51 +1,7 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <option name="AUTODETECT_INDENTS" value="false" />
-    <JavaCodeStyleSettings>
-      <option name="GENERATE_FINAL_LOCALS" value="true" />
-      <option name="GENERATE_FINAL_PARAMETERS" value="true" />
-      <option name="USE_EXTERNAL_ANNOTATIONS" value="true" />
-    </JavaCodeStyleSettings>
-    <codeStyleSettings language="HTML">
-      <indentOptions>
-        <option name="USE_TAB_CHARACTER" value="true" />
-        <option name="SMART_TABS" value="true" />
-      </indentOptions>
-    </codeStyleSettings>
     <codeStyleSettings language="JAVA">
-      <option name="KEEP_LINE_BREAKS" value="false" />
-      <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
-      <option name="KEEP_CONTROL_STATEMENT_IN_ONE_LINE" value="false" />
-      <option name="ELSE_ON_NEW_LINE" value="true" />
-      <option name="CATCH_ON_NEW_LINE" value="true" />
-      <option name="FINALLY_ON_NEW_LINE" value="true" />
-      <option name="SPACE_BEFORE_ARRAY_INITIALIZER_LBRACE" value="true" />
-      <option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="true" />
-      <option name="KEEP_SIMPLE_LAMBDAS_IN_ONE_LINE" value="true" />
-      <option name="KEEP_SIMPLE_CLASSES_IN_ONE_LINE" value="true" />
-      <option name="SPACE_BEFORE_ANOTATION_PARAMETER_LIST" value="true" />
-      <indentOptions>
-        <option name="USE_TAB_CHARACTER" value="true" />
-        <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="true" />
-      </indentOptions>
-      <arrangement>
-        <groups>
-          <group>
-            <type>GETTERS_AND_SETTERS</type>
-            <order>KEEP</order>
-          </group>
-          <group>
-            <type>OVERRIDDEN_METHODS</type>
-            <order>BY_NAME</order>
-          </group>
-          <group>
-            <type>DEPENDENT_METHODS</type>
-            <order>DEPTH_FIRST</order>
-          </group>
-        </groups>
-      </arrangement>
-    </codeStyleSettings>
-    <codeStyleSettings language="ObjectiveC">
+      <option name="IF_BRACE_FORCE" value="3" />
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />
         <option name="SMART_TABS" value="true" />
@@ -53,8 +9,7 @@
     </codeStyleSettings>
     <codeStyleSettings language="XML">
       <indentOptions>
-        <option name="USE_TAB_CHARACTER" value="true" />
-        <option name="SMART_TABS" value="true" />
+        <option name="CONTINUATION_INDENT_SIZE" value="4" />
       </indentOptions>
       <arrangement>
         <rules>

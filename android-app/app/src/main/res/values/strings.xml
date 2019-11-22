@@ -117,10 +117,10 @@
 	<string name="_9">9</string>
 	<string name="starte_fragebogen">Starte Fragebogen</string>
 	<string name="notify">notify</string>
-	<string name="fragetyp">Fragetyp</string>
 	<string name="test_note">Test Note</string>
 	<string name="weiter">Weiter</string>
 	<string name="vielen_dank_f_r_ihre_zeit_ihre_antworten_wurden_gespeichert">Vielen Dank für Ihre Zeit! Ihre Antworten wurden gespeichert.</string>
 	<string name="zur_ck_zur_startseite">Zurück zur Startseite</string>
 	<string name="q_finished_picture_description">TODO</string>
+	<string name="noteview_note">Notiz</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.app.view;
 
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.TextView;
@@ -20,7 +21,7 @@ public class SliderView extends QuestionDisplayView {
 	private IndicatorSeekBar seekBar;
 	
 	// constructor
-	public SliderView(QuestionDisplayActivity activity, SliderQuestion question) {
+	SliderView(QuestionDisplayActivity activity, SliderQuestion question) {
 		super(activity);
 		this.question = question;
 		
@@ -62,7 +63,8 @@ public class SliderView extends QuestionDisplayView {
 	public View getView() {
 		return this.container;
 	}
-	
+
+	@Nullable
 	@Override
 	public Answer getCurrentAnswer() {
 		return null;

@@ -11,8 +11,9 @@ import java.io.Serializable;
 public abstract class Question implements Serializable {
 	
 	// TODO : put conditions here?
-	
-	public static final String TYPE_JSON_NAME = "type";
+
+	static final String TYPE_JSON_NAME = "type";
+	@SerializedName("questionID")
 	public final int id;
 	@SerializedName (TYPE_JSON_NAME)
 	public final QuestionType type;
@@ -25,6 +26,8 @@ public abstract class Question implements Serializable {
 		this.type = type;
 		this.questionText = questionText;
 	}
-	
+
+	// at least as big as the branch count from this question, better would be making it as big as could occur, at least 1
+	public abstract int getAmountPossibleOutcomes();
 }
 

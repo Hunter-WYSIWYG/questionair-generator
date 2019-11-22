@@ -13,5 +13,9 @@ public class Note extends Question {
 		
 		this.noteText = text;
 	}
-	
+
+	@Override
+	public int getAmountPossibleOutcomes() {
+		return 1;
+	}
 }

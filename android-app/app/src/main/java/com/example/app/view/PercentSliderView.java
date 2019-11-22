@@ -1,5 +1,6 @@
 package com.example.app.view;
 
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.TextView;
@@ -20,7 +21,7 @@ public class PercentSliderView extends QuestionDisplayView {
 	private IndicatorSeekBar seekBar;
 	
 	// constructor
-	public PercentSliderView(QuestionDisplayActivity activity, PercentSliderQuestion question) {
+	PercentSliderView(QuestionDisplayActivity activity, PercentSliderQuestion question) {
 		super(activity);
 		this.question = question;
 		
@@ -60,7 +61,8 @@ public class PercentSliderView extends QuestionDisplayView {
 	public View getView() {
 		return this.container;
 	}
-	
+
+	@Nullable
 	@Override
 	public Answer getCurrentAnswer() {
 		return null;

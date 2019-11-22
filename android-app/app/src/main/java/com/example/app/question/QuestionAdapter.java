@@ -1,5 +1,7 @@
 package com.example.app.question;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -13,13 +15,13 @@ import java.lang.reflect.Type;
 class QuestionAdapter implements JsonSerializer<Question>, JsonDeserializer<Question> {
 	// convert from JSON to Question
 	@Override
-	public JsonElement serialize(Question question, Type typeOfQuestion, JsonSerializationContext context) {
+	public JsonElement serialize(Question question, Type typeOfQuestion, @NonNull JsonSerializationContext context) {
 		return context.serialize(question);
 	}
 	
 	// convert from Question to JSON
 	@Override
-	public Question deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+	public Question deserialize(@NonNull JsonElement json, Type typeOfT, @NonNull JsonDeserializationContext context) throws JsonParseException {
 		JsonObject questionJson = json.getAsJsonObject();
 		QuestionType type = context.deserialize(questionJson.get(Question.TYPE_JSON_NAME), QuestionType.class);
 		if (type == QuestionType.SingleChoice)

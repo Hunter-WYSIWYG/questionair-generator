@@ -1,6 +1,7 @@
 package com.example.app.question;
 
 import android.os.Build;
+import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -8,8 +9,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Option implements Serializable {
-	
-	
+
+	// TODO : this is also 1-indexed
 	@SerializedName ("optionID")
 	private final Integer id;
 	
@@ -57,7 +58,7 @@ public class Option implements Serializable {
 	}
 	
 	@Override
-	public boolean equals(final Object o) {
+	public boolean equals(@Nullable final Object o) {
 		if (this == o)
 			return true;
 		if (o == null || getClass() != o.getClass())

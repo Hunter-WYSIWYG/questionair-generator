@@ -25,4 +25,9 @@ public class TableQuestion extends Question {
 		this.rightName = rightName;
 		this.leftName = leftName;
 	}
+
+	@Override
+	public int getAmountPossibleOutcomes() {
+		return 1;
+	}
 }

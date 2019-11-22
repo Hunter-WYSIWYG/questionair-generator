@@ -27,5 +27,9 @@ public class PercentSliderQuestion extends Question {
 		this.maxValue = maxValue;
 		this.stepSize = stepSize;
 	}
-	
+
+	@Override
+	public int getAmountPossibleOutcomes() {
+		return 1;
+	}
 }

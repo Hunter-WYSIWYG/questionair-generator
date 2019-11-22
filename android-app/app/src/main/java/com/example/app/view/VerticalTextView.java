@@ -2,6 +2,7 @@ package com.example.app.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -10,8 +11,8 @@ import android.view.Gravity;
 // class wich allows to proper display vertical TextViews
 class VerticalTextView extends AppCompatTextView {
 	private final boolean topDown;
-	
-	public VerticalTextView(Context context, AttributeSet attrs) {
+
+	VerticalTextView(@NonNull Context context, AttributeSet attrs) {
 		super(context, attrs);
 		final int gravity = getGravity();
 		if (Gravity.isVertical(gravity) && (gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.BOTTOM) {
@@ -30,7 +31,7 @@ class VerticalTextView extends AppCompatTextView {
 	}
 	
 	@Override
-	protected void onDraw(Canvas canvas) {
+	protected void onDraw(@NonNull Canvas canvas) {
 		TextPaint textPaint = getPaint();
 		textPaint.setColor(getCurrentTextColor());
 		textPaint.drawableState = getDrawableState();

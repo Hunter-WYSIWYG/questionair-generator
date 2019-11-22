@@ -1,59 +1,43 @@
 package com.example.app.answer;
 
+import com.example.app.question.Question;
 import com.example.app.question.QuestionType;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class Answer implements Serializable {
+import java.io.Serializable;
+
+public abstract class Answer implements Serializable {
 	// TODO : EVERYTHING
-	
+
+	@NotNull
 	private final QuestionType qType;
 	private final int questionID;
-	private final int optionID;
-	private final List<Integer> chosenValues;
-	
-	private Answer() {
-		qType = null;
-		questionID = -1;
-		optionID = -1;
-		chosenValues = null;
+
+	public Answer(@NotNull QuestionType givenQType, final int givenQuestionID) {
+		qType = givenQType;
+		questionID = givenQuestionID;
 	}
-	
-	public Answer(final int questionID, QuestionType questionType, int optionID) {
-		this.questionID = questionID;
-		this.optionID = optionID;
-		if (questionType == QuestionType.SingleChoice) {
-			qType = QuestionType.SingleChoice;
-			chosenValues = new ArrayList<>(1);
-			chosenValues.add(optionID);
-		}
-		else {
-			qType = QuestionType.MultipleChoice;
-			chosenValues = new ArrayList<>(1);
-		}
+
+	//this constructor should be preferred
+	public Answer(@NotNull final Question question) {
+		qType = question.type;
+		questionID = question.id;
 	}
-	
-	public void AddAnswer(int chosenIndex) {
-		if (qType != QuestionType.SingleChoice) {
-			chosenValues.add(chosenIndex);
-		}
-	}
-	
-	public int getQuestionID() {
-		return questionID;
-	}
-	
-	public int getOptionID() {
-		return optionID;
-	}
-	
+
+	@NotNull
 	public QuestionType getQType() {
 		return qType;
 	}
-	
-	public List<Integer> getChosenValues() {
-		return chosenValues;
+
+	public int getQuestionID() {
+		return questionID;
+	}
+
+	// to know which branch need to be taken when adding conditions
+	public abstract int getChosenOutcomeIdx();
+
+	public String toString() {
+		return "Answer(qID:" + questionID + ",qType:" + qType + ",outcome:" + getChosenOutcomeIdx() + ")";
 	}
 }

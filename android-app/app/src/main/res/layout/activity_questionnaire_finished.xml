@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-                                             android:layout_height="match_parent">
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
 	<TextView
 			android:id="@+id/textView"
@@ -9,8 +10,8 @@
 			android:layout_height="wrap_content"
 			android:paddingLeft="40dp"
 			android:paddingRight="40dp"
-			android:text="Vielen Dank für Ihre Zeit! Ihre Antworten wurden gespeichert."
-			android:textSize="40dp"
+			android:text="@string/vielen_dank_f_r_ihre_zeit_ihre_antworten_wurden_gespeichert"
+			android:textSize="40sp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.0" app:layout_constraintStart_toStartOf="parent"
@@ -18,7 +19,8 @@
 	<Button
 			android:id="@+id/backToStartButton"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="Zurück zur Startseite"
+			android:layout_height="wrap_content"
+			android:text="@string/zur_ck_zur_startseite"
 			android:textSize="14sp" app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
 	/>
@@ -27,5 +29,6 @@
 			android:layout_width="143dp" android:layout_height="189dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/textView"
-			app:srcCompat="@drawable/smiley"/>
+			android:contentDescription="@string/q_finished_picture_description"
+			app:srcCompat="@drawable/smiley" />
 </android.support.constraint.ConstraintLayout>

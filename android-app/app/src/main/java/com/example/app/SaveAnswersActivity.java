@@ -23,7 +23,7 @@ public class SaveAnswersActivity extends AppCompatActivity {
 	private int size;
 	private List<String> answers;
 	private String res;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,7 +44,8 @@ public class SaveAnswersActivity extends AppCompatActivity {
 			for (int k = 0; k < aList.get(j).getChosenValues().size(); k++) {
 				if (k == 0) {
 					answers.set(j, aList.get(j).getChosenValues().get(k).toString());
-				} else {
+				}
+				else {
 					answers.set(j, answers.get(j) + "," + aList.get(j).getChosenValues().get(k));
 				}
 			}
@@ -56,7 +57,7 @@ public class SaveAnswersActivity extends AppCompatActivity {
 		TextView tv = findViewById(R.id.textViewres);
 		tv.setText(res);//Wieso startet die activity nicht???????
 	}
-
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
@@ -66,39 +67,40 @@ public class SaveAnswersActivity extends AppCompatActivity {
 		}
 		return true;
 	}
-
+	
 	public void onBackPressed() {
 		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
 		myToast.show();
 	}
-
+	
 	//save to json without format
 	public void saveButtonClick(View view) {
 		Gson gson = new Gson();
 		//Text of the Document
 		String textToWrite = gson.toJson(res);
-
+		
 		//Checking the availability state of the External Storage.
 		String state = Environment.getExternalStorageState();
 		if (!Environment.MEDIA_MOUNTED.equals(state)) {
-
+			
 			//If it isn't mounted - we can't write into it.
 			return;
 		}
-
+		
 		//Create a new file that points to the root directory, with the given name:
 		File file = new File(getExternalFilesDir(null), "questions.json");
-
+		
 		//This point and below is responsible for the write operation
 		try {
-			file.createNewFile();
+			final boolean newFile = file.createNewFile();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(textToWrite);
-
+			
 			writer.close();
 			Toast myToast = Toast.makeText(this, "Gespeichert!", Toast.LENGTH_SHORT);
 			myToast.show();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			Toast myToast = Toast.makeText(this, "Nicht Gespeichert!", Toast.LENGTH_SHORT);
 			myToast.show();

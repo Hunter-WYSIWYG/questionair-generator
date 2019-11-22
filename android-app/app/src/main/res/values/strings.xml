@@ -115,4 +115,12 @@
 	<string name="_7">7</string>
 	<string name="_8">8</string>
 	<string name="_9">9</string>
+	<string name="LicenseText">This App uses the IndicatorSeekBar by warkiz, which is used under the Apache Licence.</string>
+	<string name="navigation_drawer_open">Open navigation drawer</string>
+	<string name="navigation_drawer_close">Close navigation drawer</string>
+	<string name="nav_home_text">MAIN</string>
+	<string name="nav_licence_text">DEBUG_LICENCE</string>
+	<string name="nav_header_text">MENU DEBUG</string>
+	<string name="button_start_quest_text">Starte Fragebogen</string>
+	<string name="button_notify_text">notify</string>
 </resources>

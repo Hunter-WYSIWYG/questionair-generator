@@ -15,35 +15,34 @@ public class QuestionnaireState implements Serializable {
 	private final Questionnaire questionnaire;
 	@SerializedName ("currentIndex")
 	private int currentIndex;
-	@SerializedName ("answers")
-	private List<Answer> answers = new ArrayList<> ();
+	@SerializedName ("answers") private final List<Answer> answers = new ArrayList<>();
 
 	// constructor, creates a new QuestionnaireState that starts at the first question
 	public QuestionnaireState (Questionnaire questionnaire) {
 		this.questionnaire = questionnaire;
-		this.currentIndex = 0;
-
-		this.goToNextPossibleQuestion ();
+		currentIndex = 0;
+		
+		goToNextPossibleQuestion();
 	}
 
 	// goes to next question, skip zero or more questions if necessary (conditions)
 	private void goToNextPossibleQuestion () {
-		if (!this.isFinished () && !this.isCurrentQuestionPossible ()) {
-			this.currentIndex++;
-			this.goToNextPossibleQuestion ();
+		if (!isFinished() && !isCurrentQuestionPossible()) {
+			currentIndex++;
+			goToNextPossibleQuestion();
 		}
 	}
 
 	// next button clicked -> current question answered and go to next question
 	public void currentQuestionAnswered (Answer answer) {
-		this.answers.add (answer);
-		this.currentIndex++;
-		this.goToNextPossibleQuestion ();
+		answers.add(answer);
+		currentIndex++;
+		goToNextPossibleQuestion();
 	}
 
 	// return true if there is no question left
 	public boolean isFinished () {
-		return this.currentIndex >= this.questionnaire.getQuestionList ().size ();
+		return currentIndex >= questionnaire.getQuestionList().size();
 	}
 
 	// test conditions and see if you can display this question
@@ -55,15 +54,15 @@ public class QuestionnaireState implements Serializable {
 
 	// getter
 	public int getCurrentIndex () {
-		return this.currentIndex;
+		return currentIndex;
 	}
 
 	public Questionnaire getQuestionnaire () {
-		return this.questionnaire;
+		return questionnaire;
 	}
 
 	public Question getCurrentQuestion () {
-		return this.questionnaire.getQuestionList ().get (this.currentIndex);
+		return questionnaire.getQuestionList().get(currentIndex);
 	}
 
 

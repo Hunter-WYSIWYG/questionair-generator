@@ -70,6 +70,8 @@ public class SliderView extends QuestionDisplayView {
 	
 	@Override
 	public List<Answer> getCurrentAnswer () {
-		return null;
+		List<Answer> returnList = new ArrayList<>();
+		returnList.add (new Answer (this.question.id, this.seekBar.getProgress ()));
+		return returnList;
 	}
 }

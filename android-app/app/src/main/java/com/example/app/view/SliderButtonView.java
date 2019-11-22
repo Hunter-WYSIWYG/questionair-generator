@@ -132,6 +132,9 @@ public class SliderButtonView extends QuestionDisplayView {
 	
 	@Override
 	public List<Answer> getCurrentAnswer () {
-		return null;
+		//TODO: get real value of button
+		List<Answer> returnList = new ArrayList<>();
+		returnList.add (new Answer (this.question.id, -1));
+		return returnList;
 	}
 }

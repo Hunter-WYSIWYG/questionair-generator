@@ -141,6 +141,9 @@ public class TableView extends QuestionDisplayView {
 	
 	@Override
 	public List<Answer> getCurrentAnswer () {
-		return null;
+		//TODO: get the real value of the answer!
+		List<Answer> returnList = new ArrayList<>();
+		returnList.add (new Answer (this.question.id, -1));
+		return returnList;
 	}
 }

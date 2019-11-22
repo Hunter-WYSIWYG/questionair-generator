@@ -272,7 +272,14 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	
 	@Override
 	public List<Answer> getCurrentAnswer () {
-		return null;
+		List<Answer> returnList = new ArrayList<> ();
+		for (OptionView optionView : this.optionViews) {
+			if (optionView.isChecked ()) {
+				returnList.add(new Answer(this.question.id, optionView.getOption ().getId ()));
+			}
+		}
+		
+		return returnList;
 	}
 	
 	

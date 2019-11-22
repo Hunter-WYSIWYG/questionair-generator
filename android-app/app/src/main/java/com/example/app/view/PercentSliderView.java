@@ -9,6 +9,7 @@ import com.example.app.answer.Answer;
 import com.example.app.question.PercentSliderQuestion;
 import com.warkiz.widget.IndicatorSeekBar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PercentSliderView extends QuestionDisplayView  {
@@ -64,6 +65,8 @@ public class PercentSliderView extends QuestionDisplayView  {
 	
 	@Override
 	public List<Answer> getCurrentAnswer () {
-		return null;
+		List<Answer> returnList = new ArrayList<>();
+		returnList.add (new Answer (this.question.id, this.seekBar.getProgress ()));
+		return returnList;
 	}
 }

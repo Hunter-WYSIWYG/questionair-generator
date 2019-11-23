@@ -19,6 +19,8 @@ To build just the web app, change the directory to `web-app` and run
 elm make src/Main.elm --output src/elm.js
 ```
 
+You may now open the file `index.html` and use the generator.
+
 ### The electron app
 
 If you want to use our electron app, install the Elm compiler and [Node.js](https://nodejs.org/en/download/). 

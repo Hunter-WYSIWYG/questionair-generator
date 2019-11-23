@@ -1,5 +1,6 @@
 package com.example.app.question;
 
+import com.example.app.answer.Answer;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Collections;
@@ -14,8 +15,8 @@ public class SliderQuestion extends Question {
 	public final double stepSize;
 
 	// constructor
-	public SliderQuestion (int id, String questionText, double minValue, double maxValue, double stepSize) {
-		super (id, QuestionType.Slider, questionText);
+	public SliderQuestion (int id, String questionText, List<Answer> conditions, double minValue, double maxValue, double stepSize) {
+		super (id, QuestionType.Slider, conditions, questionText);
 		
 		if (minValue > maxValue)
 			throw new IllegalArgumentException ();

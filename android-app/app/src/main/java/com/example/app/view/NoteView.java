@@ -62,7 +62,7 @@ public class NoteView extends QuestionDisplayView {
 	@Override
 	public List<Answer> getCurrentAnswer () {
 		List<Answer> returnList = new ArrayList<> ();
-		returnList.add(new Answer(this.question.questionID,1));
+		returnList.add(new Answer(this.question.questionID,0));
 		return returnList;
 	}
 }

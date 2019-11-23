@@ -91,7 +91,7 @@ public class SliderButtonView extends QuestionDisplayView {
 			Button button = new Button (this.getActivity ());
 			// set color and number
 			button.setBackgroundResource (R.drawable.table_button_default);
-			button.setText ((j+1) +"");
+			button.setText ((j+1) + "");
 			// set id of button
 			button.setId (this.idGenerator ());
 			// add button to button list
@@ -138,7 +138,7 @@ public class SliderButtonView extends QuestionDisplayView {
 	public List<Answer> getCurrentAnswer () {
 		//TODO: get real value of button
 		List<Answer> returnList = new ArrayList<>();
-		returnList.add (new Answer (this.question.questionID, -1));
+		returnList.add (new Answer (this.question.questionID, Integer.parseInt(this.currentButton.getText().toString())));
 		return returnList;
 	}
 }

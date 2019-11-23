@@ -34,7 +34,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		intent.putExtra ("state", questionnaireState);
 		activity.startActivity (intent); // starting our own activity (onCreate) with questionnaire state so we can save it
 		activity.finish (); // prevent the back button
-		// TODO: if back button pressed -> popup with "sind sie sicher dass sie den fragebogen abbrechen wollen?"
+		// TODO: if back button pressed -> popup with "Sind Sie sicher, dass Sie den Fragebogen abbrechen wollen?"
 	}
 	
 	// is called when this activity is started
@@ -53,6 +53,9 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		this.contentContainer.addView (this.questionView.getView (), 0);
 		
 		this.nextButton.setOnClickListener (v -> this.nextButtonClicked ());
+
+		Toast kek = Toast.makeText(this, this.state.getCurrentQuestion().conditions.toString(), Toast.LENGTH_LONG);
+		kek.show();
 	}
 	
 	

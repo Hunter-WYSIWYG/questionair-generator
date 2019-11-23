@@ -36,14 +36,16 @@ public class Answer implements Serializable {
 
 	}
 	 */
-	
-	public boolean equals (Answer answer){
-		if (answer.getChosenValue () == chosenValue && answer.getQId () == qId){
-			return true;
-		}
-		
-		return false;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Answer answer = (Answer) o;
+		return qId == answer.qId &&
+				chosenValue == answer.chosenValue;
 	}
+
 
 	public int getQId () {
 		return qId;

@@ -1,6 +1,9 @@
 package com.example.app.question;
 
+import com.example.app.answer.Answer;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class PercentSliderQuestion extends Question {
 	@SerializedName ("minValue")
@@ -9,10 +12,9 @@ public class PercentSliderQuestion extends Question {
 	public final double maxValue;
 	@SerializedName ("stepSize")
 	public final double stepSize;
-	
 	// constructor
-	public PercentSliderQuestion (int id, String questionText, double minValue, double maxValue, double stepSize) {
-		super (id, QuestionType.PercentSlider, questionText);
+	public PercentSliderQuestion (int id, String questionText, List<Answer> conditions, double minValue, double maxValue, double stepSize) {
+		super (id, QuestionType.PercentSlider, conditions, questionText);
 		
 		if (minValue > maxValue)
 			throw new IllegalArgumentException ();

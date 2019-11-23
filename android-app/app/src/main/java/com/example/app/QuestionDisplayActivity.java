@@ -71,9 +71,21 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 		else {
 			Intent intent = new Intent (this, QuestionnaireFinishedActivity.class);
+			intent.putExtra("EXTRA_ANSWERS", answerListToString ());
 			this.startActivity (intent);
 			this.finish ();
 		}
+	}
+	
+	//TODO: better solution for this
+	private String answerListToString () {
+		List<Answer> answerList = this.state.getAnswers ();
+		StringBuilder returnString = new StringBuilder ();
+		for (Answer answer : answerList) {
+			returnString.append (answer);
+			returnString.append("\n");
+		}
+		return returnString.toString ();
 	}
 	
 }

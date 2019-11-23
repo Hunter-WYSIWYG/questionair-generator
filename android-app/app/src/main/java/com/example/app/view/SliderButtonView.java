@@ -52,6 +52,10 @@ public class SliderButtonView extends QuestionDisplayView {
 		TextView questionTypeTextView = this.container.findViewById (R.id.sliderButtonQuestionTypeText);
 		questionTypeTextView.setText (this.question.type.name ());
 		
+		// set question Number
+		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
+		questionNumber.setText("Fragenummer: " + question.questionID);
+		
 		// set questionText
 		TextView questionTextView = this.container.findViewById (R.id.sliderButtonQuestionText);
 		questionTextView.setText (this.question.questionText);
@@ -134,7 +138,7 @@ public class SliderButtonView extends QuestionDisplayView {
 	public List<Answer> getCurrentAnswer () {
 		//TODO: get real value of button
 		List<Answer> returnList = new ArrayList<>();
-		returnList.add (new Answer (this.question.id, -1));
+		returnList.add (new Answer (this.question.questionID, -1));
 		return returnList;
 	}
 }

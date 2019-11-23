@@ -52,6 +52,10 @@ public class TableView extends QuestionDisplayView {
 		TextView questionTypeTextView = this.container.findViewById (R.id.tableQuestionTypeText);
 		questionTypeTextView.setText (this.question.type.name ());
 		
+		// set question Number
+		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
+		questionNumber.setText("Fragenummer: " + question.questionID);
+		
 		// set questionText
 		TextView questionTextView = this.container.findViewById (R.id.tableQuestionText);
 		questionTextView.setText (this.question.questionText);
@@ -143,7 +147,7 @@ public class TableView extends QuestionDisplayView {
 	public List<Answer> getCurrentAnswer () {
 		//TODO: get the real value of the answer!
 		List<Answer> returnList = new ArrayList<>();
-		returnList.add (new Answer (this.question.id, -1));
+		returnList.add (new Answer (this.question.questionID, -1));
 		return returnList;
 	}
 }

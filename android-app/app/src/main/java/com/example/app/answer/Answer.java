@@ -52,4 +52,9 @@ public class Answer implements Serializable {
 	public int getChosenValue () {
 		return chosenValue;
 	}
+	
+	@Override
+	public String toString () {
+		return "Answer {" + "Question-ID: " + qId + ", Answer-ID: " + chosenValue + '}';
+	}
 }

@@ -65,6 +65,10 @@ public class QuestionnaireState implements Serializable {
 	public Question getCurrentQuestion () {
 		return this.questionnaire.getQuestionList ().get (this.currentIndex);
 	}
+	
+	public List<Answer> getAnswers () {
+		return this.answers;
+	}
 
 
 	// TODO: method saveCurrentState

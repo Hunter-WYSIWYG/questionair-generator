@@ -36,6 +36,10 @@ public class PercentSliderView extends QuestionDisplayView  {
 		TextView questionTypeTextView = this.container.findViewById (R.id.SliderQuestionTypeText);
 		questionTypeTextView.setText (this.question.type.name ());
 		
+		// set question Number
+		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
+		questionNumber.setText("Fragenummer: " + question.questionID);
+		
 		// set questionText
 		TextView questionTextView = this.container.findViewById (R.id.SliderQuestionText);
 		questionTextView.setText (this.question.questionText);
@@ -66,7 +70,7 @@ public class PercentSliderView extends QuestionDisplayView  {
 	@Override
 	public List<Answer> getCurrentAnswer () {
 		List<Answer> returnList = new ArrayList<>();
-		returnList.add (new Answer (this.question.id, this.seekBar.getProgress ()));
+		returnList.add (new Answer (this.question.questionID, this.seekBar.getProgress ()));
 		return returnList;
 	}
 }

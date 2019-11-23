@@ -14,7 +14,7 @@ import java.util.List;
 @JsonAdapter (QuestionAdapter.class) // -> using QuestionAdapter to convert from or to JSON
 public abstract class Question implements Serializable {
 	
-	public final int id;
+	public final int questionID;
 	
 	public static final String TYPE_JSON_NAME = "type";
 	@SerializedName (TYPE_JSON_NAME)
@@ -24,10 +24,11 @@ public abstract class Question implements Serializable {
 	
 	// constructor
 	public Question (int id, QuestionType type, String questionText) {
-		this.id = id;
+		this.questionID = id;
 		this.type = type;
 		this.questionText = questionText;
 	}
+	
 	
 }
 

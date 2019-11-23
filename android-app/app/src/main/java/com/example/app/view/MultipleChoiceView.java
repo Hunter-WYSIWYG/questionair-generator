@@ -168,6 +168,10 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		TextView questionTypeTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionTypeText);
 		questionTypeTextView.setText (this.question.type.name ());
 		
+		// set question Number
+		TextView questionNumber = this.rootView.findViewById (R.id.questionNumber);
+		questionNumber.setText("Fragenummer: " + question.questionID);
+		
 		// set questionText
 		TextView questionTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionText);
 		questionTextView.setText (this.question.questionText);
@@ -275,7 +279,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		List<Answer> returnList = new ArrayList<> ();
 		for (OptionView optionView : this.optionViews) {
 			if (optionView.isChecked ()) {
-				returnList.add(new Answer(this.question.id, optionView.getOption ().getId ()));
+				returnList.add(new Answer(this.question.questionID, optionView.getOption ().getId ()));
 			}
 		}
 		

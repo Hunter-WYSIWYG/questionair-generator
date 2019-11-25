@@ -1,4 +1,4 @@
-package converter.UI.table;
+package converter.graphical.table;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;

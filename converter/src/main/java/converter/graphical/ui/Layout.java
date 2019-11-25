@@ -13,7 +13,7 @@ public class Layout extends JPanel {
 
     private Layout() {
         super(new GridBagLayout());
-
+        
         GridBagConstraints constraints = new GridBagConstraints();
 
         JButton jsonButton = new JButton("JSON auswählen");

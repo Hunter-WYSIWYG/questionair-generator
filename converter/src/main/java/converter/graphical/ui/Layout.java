@@ -1,10 +1,13 @@
 package converter.graphical.ui;
 
 import converter.graphical.buttons.JsonBtnEvent;
+import converter.graphical.buttons.SaveBtnEvent;
 import converter.graphical.table.CsvTable;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static java.awt.GridBagConstraints.FIRST_LINE_START;
 
 public class Layout extends JPanel {
 
@@ -41,6 +44,15 @@ public class Layout extends JPanel {
         constraints.gridwidth = 3;
         constraints.weighty = 1.0;
         add(scrollPane, constraints);
+
+        JButton saveButton = new JButton("Speichern");
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        constraints.weighty = 0;
+        constraints.anchor = FIRST_LINE_START;
+        constraints.insets = new Insets(10, 10, 10, 0);
+        saveButton.addActionListener(new SaveBtnEvent());
+        add(saveButton, constraints);
     }
 
     static Layout getInstance() {

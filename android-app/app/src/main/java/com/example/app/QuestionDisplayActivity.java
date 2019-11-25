@@ -3,12 +3,22 @@ package com.example.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.example.app.answer.Answer;
+import android.widget.Toast;
+import com.example.app.answer.Answers;
 import com.example.app.view.QuestionDisplayView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.List;
 
 public class QuestionDisplayActivity extends AppCompatActivity {
 
@@ -53,12 +63,13 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 
 	// next button is clicked, update questionnaire state and go to next question
 	private void nextButtonClicked () {
-		Answer answer = questionView.getCurrentAnswer();
-		state.currentQuestionAnswered(answer);
+		Answers answers = questionView.getCurrentAnswer();
+		state.currentQuestionAnswered(answers);
 		if (!state.isFinished()) {
 			displayCurrentQuestion(state, this);
 		}
 		else {
+			save(state.getAnswers());
 			Intent intent = new Intent (this, QuestionnaireFinishedActivity.class);
 			startActivity(intent);
 			finish();
@@ -71,5 +82,36 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		// TODO: color 'next' button depending on enabled or not
 	}
-
+	public void save(List<Answers> answers) {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		//Text of the Document
+		String textToWrite = gson.toJson(answers);
+		//Checking the availability state of the External Storage.
+		String state = Environment.getExternalStorageState();
+		if (!Environment.MEDIA_MOUNTED.equals(state)) {
+				
+				//If it isn't mounted - we can't write into it.
+				return;
+			}
+			
+		//Create a new file that points to the root directory, with the given name:
+		File file = new File(getExternalFilesDir(null), this.getState().getQuestionnaire().getName() + ".json");
+			
+		//This point and below is responsible for the write operation
+		try {
+				file.createNewFile();
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+				writer.write(textToWrite);
+				
+				writer.close();
+				Toast myToast = Toast.makeText(this, "Gespeichert!", Toast.LENGTH_SHORT);
+				myToast.show();
+		}
+		catch (Exception e) {
+				e.printStackTrace();
+				Toast myToast = Toast.makeText(this, "Nicht Gespeichert!", Toast.LENGTH_SHORT);
+				myToast.show();
+		}
+	}
+	
 }

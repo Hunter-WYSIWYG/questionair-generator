@@ -5,9 +5,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
+import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Answers;
 import com.example.app.question.Note;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class NoteView extends QuestionDisplayView {
 	
@@ -16,13 +22,14 @@ public class NoteView extends QuestionDisplayView {
 	// container of slider
 	private ConstraintLayout container;
 	// actual note
-	
+	//current State
+	private QuestionnaireState qState;
 	
 	// constructor
-	public NoteView (QuestionDisplayActivity activity, Note question) {
+	public NoteView(QuestionDisplayActivity activity, Note question, QuestionnaireState state) {
 		super (activity);
 		this.question = question;
-		
+		qState=state;
 		init();
 	}
 	
@@ -49,7 +56,12 @@ public class NoteView extends QuestionDisplayView {
 	}
 	
 	@Override
-	public Answer getCurrentAnswer () {
-		return null;
+	public Answers getCurrentAnswer() {
+		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
+		Answer ans=new Answer(question.type.toString(),-1 , "", -1);
+		List<Answer> answerList=new ArrayList<Answer>();
+		answerList.add(ans);
+		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
+		return answers;
 	}
 }

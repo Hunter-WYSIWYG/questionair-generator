@@ -9,11 +9,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
+import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Answers;
 import com.example.app.question.SliderButtonQuestion;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class SliderButtonView extends QuestionDisplayView {
@@ -32,15 +35,16 @@ public class SliderButtonView extends QuestionDisplayView {
 	private int buttonID;
 	// current pressed button
 	private Button currentButton;
-	
+	//current State
+	private QuestionnaireState qState;
 	
 	// constructor
-	public SliderButtonView (QuestionDisplayActivity activity, SliderButtonQuestion question) {
+	public SliderButtonView (QuestionDisplayActivity activity, SliderButtonQuestion question, QuestionnaireState state) {
 		super (activity);
 		this.question = question;
 		size = this.question.size;
 		currentButton = null;
-		
+		qState=state;
 		
 		// start with button id = -1
 		buttonID = -1;
@@ -134,7 +138,13 @@ public class SliderButtonView extends QuestionDisplayView {
 	}
 	
 	@Override
-	public Answer getCurrentAnswer () {
-		return null;
+	public Answers getCurrentAnswer() {
+		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
+		Answer ans=new Answer(question.type.toString(), currentButton.getId() , "", -1);
+		List<Answer> answerList=new ArrayList<Answer>();
+		answerList.add(ans);
+		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
+		return answers;
+		
 	}
 }

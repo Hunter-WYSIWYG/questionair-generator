@@ -1,6 +1,6 @@
 package com.example.app;
 
-import com.example.app.answer.Answer;
+import com.example.app.answer.Answers;
 import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
 import com.google.gson.annotations.SerializedName;
@@ -15,7 +15,7 @@ public class QuestionnaireState implements Serializable {
 	private final Questionnaire questionnaire;
 	@SerializedName ("currentIndex")
 	private int currentIndex;
-	@SerializedName ("answers") private final List<Answer> answers = new ArrayList<>();
+	@SerializedName ("answers") private final List<Answers> answers = new ArrayList<>();
 
 	// constructor, creates a new QuestionnaireState that starts at the first question
 	public QuestionnaireState (Questionnaire questionnaire) {
@@ -34,8 +34,8 @@ public class QuestionnaireState implements Serializable {
 	}
 
 	// next button clicked -> current question answered and go to next question
-	public void currentQuestionAnswered (Answer answer) {
-		answers.add(answer);
+	public void currentQuestionAnswered(Answers answers) {
+		this.answers.add(answers);
 		currentIndex++;
 		goToNextPossibleQuestion();
 	}
@@ -64,7 +64,10 @@ public class QuestionnaireState implements Serializable {
 	public Question getCurrentQuestion () {
 		return questionnaire.getQuestionList().get(currentIndex);
 	}
-
-
+	
+	public List<Answers> getAnswers() {
+		return answers;
+	}
+	
 	// TODO: method saveCurrentState
 }

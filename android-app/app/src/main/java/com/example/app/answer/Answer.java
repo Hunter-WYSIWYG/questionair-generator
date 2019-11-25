@@ -1,48 +1,41 @@
 package com.example.app.answer;
 
-import com.example.app.question.QuestionType;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Answer implements Serializable {
-	private final QuestionType qType;
-	private final List<Integer> chosenValues;
-
-	public Answer () {
-		qType = null;
-		chosenValues = null;
+	@SerializedName("_type")
+	public final String type;
+	@SerializedName("id")
+	public final int id;
+	@SerializedName("text")
+	public final String text;
+	@SerializedName("number")
+	public final int number;
+	
+	
+	public Answer(final String type, final int id, final String text, final int number) {
+		this.type = type;
+		this.id = id;
+		this.text = text;
+		this.number = number;
 	}
-
-	public Answer (QuestionType qtyp, int chosenIndex) {
-		if (qtyp == QuestionType.SingleChoice) {
-			qType = QuestionType.SingleChoice;
-			chosenValues = new ArrayList<> (1);
-			chosenValues.add (chosenIndex);
-		}
-		else {
-			qType = QuestionType.MultipleChoice;
-			chosenValues = new ArrayList<> (1);
-		}
+	
+	public String getType() {
+		return type;
 	}
-
-	public void AddAnswer (int chosenIndex) {
-		if (qType == QuestionType.SingleChoice) {
-			return;
-		}
-		else {
-			chosenValues.add (chosenIndex);
-			return;
-		}
-
+	
+	public Integer getId() {
+		return id;
 	}
-
-	public QuestionType getqType () {
-		return qType;
+	
+	public String getText() {
+		return text;
 	}
-
-	public List<Integer> getChosenValues () {
-		return chosenValues;
+	
+	public int getNumber() {
+		return number;
 	}
+	
 }

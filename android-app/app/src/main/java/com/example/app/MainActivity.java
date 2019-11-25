@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			notificationManager.createNotificationChannel(notificationChannel);
 			builder = new NotificationCompat.Builder(this, channelId);
 		}
-		Notification notify = builder.setContentTitle("title").setContentText("text").setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent).build();
+		Notification notify = builder.setContentTitle("type").setContentText("text").setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent).build();
 		
 		assert (notificationManager != null);
 		notificationManager.notify(0, notify);

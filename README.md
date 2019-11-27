@@ -1,6 +1,6 @@
 # Questionnaire-Toolset
 
-This repository provides you tools to generate, answer and analyze questionnaires. 
+This repository provides tools to generate, answer and analyze questionnaires. 
 
 We created this toolset as part of our practical training at the Martin-Luther-University Halle-Wittenberg. 
 Our target group is the psychology institute of our university. 

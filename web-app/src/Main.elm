@@ -678,7 +678,7 @@ update msg model =
                 oldQuestionnaire = model.questionnaire
 
                 changedQuestionnaire =
-                    { oldQuestionnaire | conditions = Debug.log "test" Condition.deleteConditionUpdate oldQuestionnaire.conditions (QElement.getID oldElement) (Answer.getAnswerId answer) }
+                    { oldQuestionnaire | conditions = Condition.deleteConditionUpdate oldQuestionnaire.conditions (QElement.getID oldElement) (Answer.getAnswerId answer) }
             in
             ( { model | questionnaire = changedQuestionnaire, newElement = QElement.deleteAnswerFromItem answer oldElement }, Cmd.none )
 

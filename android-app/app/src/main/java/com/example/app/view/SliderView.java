@@ -74,7 +74,7 @@ public class SliderView extends QuestionDisplayView {
 	@Override
 	public Answers getCurrentAnswer() {
 		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
-		Answer ans=new Answer(question.type.toString(), -1 , "", seekBar.getProgress());
+		Answer ans=new Answer(question.type.toString(), seekBar.getProgress() , "");
 		List<Answer> answerList=new ArrayList<Answer>();
 		answerList.add(ans);
 		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);

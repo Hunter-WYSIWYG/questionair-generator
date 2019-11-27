@@ -287,7 +287,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		if(this.question.isSingleChoice()){
 			for (OptionView optionView : optionViews) {
 				if (optionView.isChecked ()) {
-					Answer ans=new Answer(question.type.toString(),optionView.getOption().getId()  , optionView.getOption().getOptionText(), -1);
+					Answer ans=new Answer(question.type.toString(),optionView.getOption().getId()  , optionView.getOption().getOptionText());
 					List<Answer> answerList=new ArrayList<Answer>();
 					answerList.add(ans);
 					Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
@@ -300,7 +300,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 			List<Answer> answerList=new ArrayList<Answer>();
 			for (OptionView optionView : optionViews) {
 				if (optionView.isChecked ()) {
-					Answer ans=new Answer(question.type.toString(),optionView.getOption().getId()  , optionView.getOption().getOptionText(), -1);
+					Answer ans=new Answer(question.type.toString(),optionView.getOption().getId()  , optionView.getOption().getOptionText());
 					answerList.add(ans);
 				}
 			}

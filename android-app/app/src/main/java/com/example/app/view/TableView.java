@@ -150,7 +150,7 @@ public class TableView extends QuestionDisplayView {
 	@Override
 	public Answers getCurrentAnswer() {
 		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
-	    Answer ans=new Answer(question.type.toString(),currentButton.getId() ,"",-1);
+	    Answer ans=new Answer(question.type.toString(),currentButton.getId() ,"");
 	    ArrayList<Answer> answerList=new ArrayList<Answer>();
 	    answerList.add(ans);
 		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);

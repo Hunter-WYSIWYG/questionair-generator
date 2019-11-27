@@ -9,7 +9,7 @@ import java.io.Serializable;
 // Question uses id and type
 @JsonAdapter (QuestionAdapter.class) // -> using QuestionAdapter to convert from or to JSON
 public abstract class Question implements Serializable {
-	
+	@SerializedName("questionID")
 	public final int id;
 	
 	public static final String TYPE_JSON_NAME = "type";

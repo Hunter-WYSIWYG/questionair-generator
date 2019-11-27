@@ -11,15 +11,11 @@ public class Answer implements Serializable {
 	public final int id;
 	@SerializedName("text")
 	public final String text;
-	@SerializedName("number")
-	public final int number;
 	
-	
-	public Answer(final String type, final int id, final String text, final int number) {
+	public Answer(final String type, final int id, final String text) {
 		this.type = type;
 		this.id = id;
 		this.text = text;
-		this.number = number;
 	}
 	
 	public String getType() {
@@ -34,8 +30,5 @@ public class Answer implements Serializable {
 		return text;
 	}
 	
-	public int getNumber() {
-		return number;
-	}
 	
 }

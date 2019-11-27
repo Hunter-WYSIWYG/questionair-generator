@@ -19,7 +19,8 @@ public class GUI extends JFrame {
     private GUI() {
 
         setTitle("Converter");
-        setSize(400,300);
+        setSize(400,400);
+        setResizable(false);
         setLocationRelativeTo(null);
         setContentPane(Layout.getInstance());
         setVisible(true);

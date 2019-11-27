@@ -1,14 +1,21 @@
 package converter.graphical.ui;
 
-
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+
+/**
+ * This class implements the GUI of the converter tool.
+ */
 
 public class GUI extends JFrame {
 
+    /**
+     * the instance of the GUI
+     */
     private static GUI instance;
 
+    /**
+     * Initiates the GUI.
+     */
     private GUI() {
 
         setTitle("Converter");
@@ -21,6 +28,11 @@ public class GUI extends JFrame {
         initMenu();
     }
 
+    /**
+     * Returns the instance of the GUI.
+     *
+     * @return the instance of the GUI
+     */
     public static GUI getInstance() {
         if (instance == null) {
             instance = new GUI();
@@ -29,6 +41,9 @@ public class GUI extends JFrame {
         return instance;
     }
 
+    /**
+     * Initiates the menu for selecting devices.
+     */
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Gerät");

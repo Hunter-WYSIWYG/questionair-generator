@@ -8,7 +8,17 @@ import java.io.File;
 import converter.graphical.ui.GUI;
 import converter.graphical.ui.Layout;
 
+/**
+ * Class that handles the event when the button for selecting the JSON-file is pressed.
+ */
+
 public class JsonBtnEvent implements ActionListener {
+
+    /**
+     * Opens a file browser if the user presses the button to select the JSON-file.
+     *
+     * @param e the event when the button for selecting the JSON-file is pressed
+     */
     public void actionPerformed(ActionEvent e) {
         JFileChooser jsonChooser = new JFileChooser();
         int returnValue = jsonChooser.showOpenDialog(null);

@@ -6,11 +6,18 @@ import converter.graphical.table.CsvTable;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * This class represents the layout of the GUI.
+ */
+
 public class Layout extends JPanel {
 
     private static JLabel fileLabel;
     private static Layout instance;
 
+    /**
+     * Initiates the layout of the GUI with all elements
+     */
     private Layout() {
         super(new GridBagLayout());
         
@@ -43,6 +50,11 @@ public class Layout extends JPanel {
         add(scrollPane, constraints);
     }
 
+    /**
+     * Returns the instance of the layout GUI.
+     *
+     * @return the layout of the GUI
+     */
     static Layout getInstance() {
         if (instance == null) {
             instance = new Layout();
@@ -51,6 +63,11 @@ public class Layout extends JPanel {
         return instance;
     }
 
+    /**
+     * Changes the label of the current selected file.
+     *
+     * @param text the text to be set for the label
+     */
     public static void changeFileLabel(String text) {
         fileLabel.setText(text);
     }

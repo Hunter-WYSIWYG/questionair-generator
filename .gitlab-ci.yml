@@ -1,0 +1,19 @@
+image: jmgoldacker98/questionnaire-toolset-builder
+
+stages:
+  - deploy
+
+deploy:
+  type: deploy
+  environment:
+    name: staging
+  script:
+    - cd web-app/
+    - mkdir build/
+    - cp src/index.html build/
+    - cp src/stylesheet.css build/
+    - /elm make src/Main.elm --output=build/Main.js
+    - export SSHPASS=$USER_PASS 
+    - cd build/
+    - sshpass -e scp -o stricthostkeychecking=no -r ./* anfvg@anubis.informatik.uni-halle.de:/home/anfvg/public_html
+

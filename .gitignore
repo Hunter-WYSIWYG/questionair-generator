@@ -20,6 +20,7 @@ src/build
 -- exclude all generated content
 web-app/elm-stuff
 web-app/src/elm.js
+web-app/src/Main.js
 web-app/src/elm-stuff
 
 --Electron-App

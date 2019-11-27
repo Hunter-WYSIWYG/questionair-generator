@@ -114,7 +114,8 @@ deleteConditionWithParent : List Condition -> Int -> List Condition
 deleteConditionWithParent list id =
     Tuple.first (List.partition (\e -> e.parent_id /= id) list)
 
-
+{-| Deletes a condition from a list of conditions that contains the element with the specified ID's as a PARENT\_ID and ANSWER\_ID.
+-}
 deleteConditionUpdate : List Condition -> Int -> Int -> List Condition
 deleteConditionUpdate list parent answer =
     Tuple.second (List.partition (\e -> ((e.answer_id == answer && e.parent_id == parent))) list)

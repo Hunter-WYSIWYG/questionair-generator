@@ -494,7 +494,7 @@ update msg model =
                         }
             in
             if model.editCondition == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, newCondition = (Condition.initCondition) }, Cmd.none )
 
             else 
                 ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, editCondition = False , newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )

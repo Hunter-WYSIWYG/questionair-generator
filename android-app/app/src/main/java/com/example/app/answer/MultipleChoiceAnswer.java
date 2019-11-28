@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class MultipleChoiceAnswer extends Answer {
-	@SerializedName("outcomeID")
+	@SerializedName("checkedButtonIds")
 	@NotNull
 	private final Collection<Integer> checkedButtonIds;
 

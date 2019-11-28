@@ -292,29 +292,6 @@ update msg model =
             in
                 ( { model | newCondition = newCondition2 }, Cmd.none )
 
-        AddCondition ->
-            let
-                parent =
-                    model.inputParentId
-
-                child =
-                    model.inputChildId
-            in
-            if parent /= -1 && child /= -1 then
-                ( { model
-                    | newCondition = Condition.setParentChildInCondition parent child model.newCondition
-                  }
-                , Cmd.none
-                )
-
-            else
-                Debug.log "Keine ausgewählt"
-                    ( { model
-                        | newCondition = Condition.setValid model.newCondition False
-                      }
-                    , Cmd.none
-                    )
-
         AddAnswerToNewCondition string ->
             ( { model | newAnswerID_Condition = string }, Cmd.none )
 
@@ -537,6 +514,7 @@ update msg model =
                     else
                         ( { model |
                             showNewAnswerModal = False
+                            , editAnswer = False
                             , newElement = Question { record | answers = List.map (\e -> Answer.update model.newAnswer e) record.answers }
                           }
                         , Cmd.none

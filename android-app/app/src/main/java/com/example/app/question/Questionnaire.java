@@ -3,6 +3,8 @@ package com.example.app.question;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -39,9 +41,9 @@ public class Questionnaire implements Serializable {
 	public String getName() {
 		return name;
 	}
-	
-	public double getID() {
-		return id;
+
+	public int getID() {
+		return (int) id;
 	}
 
 	@Nullable

@@ -1,31 +1,35 @@
 package com.example.app;
 
 import android.app.Activity;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.example.app.answer.Answer;
 import com.example.app.answer.Answers;
 import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class QuestionnaireState {
 	private static final List<Answer> answersList = new ArrayList<>(32);
 	@Nullable
-	private static Questionnaire questionnaire = null;
+	private static Questionnaire questionnaire;
 	@Nullable
-	private static List<Question> questionsList = null;
+	private static List<Question> questionsList;
 	@Nullable
-	private static int[][] conditionMatrix = null;
+	private static int[][] conditionMatrix;
 	private static int currentQID = -1;
-
-	private QuestionnaireState() {
-	}
 
 	static void setQuestionnaire(@NotNull final Questionnaire givenQuestionnaire) {
 		questionnaire = givenQuestionnaire;
@@ -74,10 +78,9 @@ public final class QuestionnaireState {
 		return qIdx - 1;
 	}
 
-	static void giveAnswer(@NotNull final Answer answer) {
+	static void giveAnswer(@Nullable final Answer answer) {
 		if (answer == null) {
-			// android does not have the runtime checks for the annotation
-			// this check should be removed once all Questions return a non-null answer
+			//simple null answer, do not store, go straight to next question
 			currentQID += 1;
 			if (questionsList == null) {
 				throw new AssertionError();
@@ -88,7 +91,7 @@ public final class QuestionnaireState {
 			return;
 		}
 
-		if ((currentQID != answer.getQuestionID())) {
+		if ((currentQID != answer.getId())) {
 			throw new AssertionError();
 		}
 
@@ -117,22 +120,71 @@ public final class QuestionnaireState {
 		// currentQ is only -1 if last answer lead to end of questionnaire
 		return currentQID != -1;
 	}
-	
-	public List<Answers> getAnswers() {
-		return answers;
-	}
-	static void save() {
-		// TODO : send questionnaire and answersList to saveAnswers-something
-		questionnaire = null;
-		for (int i = 0; i < answersList.size(); i++) {
-			answersList.set(i, null);
+
+	/**
+	 * save the current list of answers to disk
+	 * <p>
+	 * PRE: questionnaire must not be null
+	 *
+	 * @param externalFilesDir must be this.getExternalFilesDir(), cannot be called from static context
+	 *                         TODO: find a way to do that?
+	 * @return boolean true, if write was successful
+	 * false, else
+	 */
+	static boolean save(@NotNull final File externalFilesDir) {
+		assert (questionnaire != null);
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		//Text of the Document
+		String textToWrite = gson.toJson(new Answers(questionnaire, answersList));
+		//Checking the availability state of the External Storage.
+		String state = Environment.getExternalStorageState();
+		if (!Environment.MEDIA_MOUNTED.equals(state)) {
+			//If it isn't mounted - we can't write into it.
+			return false;
 		}
-		answersList.clear();
+
+		//Create a new file that points to the root directory, with the given name:
+		File file = new File(externalFilesDir, questionnaire.getName() + ".json");
+
+		//This point and below is responsible for the write operation
+		try {
+			final boolean success = file.createNewFile();
+			if (!success) {
+				//file already exists
+				final boolean hasDeleted = file.delete();
+				if (!hasDeleted) {
+					return false;
+				}
+				final boolean hasCreatedNew = file.createNewFile();
+				if (!hasCreatedNew) {
+					//i just don't know what went wrong
+					return false;
+				}
+			}
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write(textToWrite);
+
+			writer.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
+
+	/**
+	 * debug function to display currently stored answers
+	 *
+	 * @param source activity where display should happen (for Toast)
+	 */
 	static void display_DEBUG(Activity source) {
 		for (Answer answer : answersList) {
 			Toast.makeText(source, answer.toString(), Toast.LENGTH_LONG).show();
 		}
+	}
+
+	private QuestionnaireState() {
 	}
 }

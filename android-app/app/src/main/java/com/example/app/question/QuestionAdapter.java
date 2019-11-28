@@ -23,7 +23,7 @@ class QuestionAdapter implements JsonSerializer<Question>, JsonDeserializer<Ques
 	@Override
 	public Question deserialize(@NonNull JsonElement json, Type typeOfT, @NonNull JsonDeserializationContext context) throws JsonParseException {
 		JsonObject questionJson = json.getAsJsonObject();
-		QuestionType type = context.deserialize(questionJson.get(Question.TYPE_JSON_NAME), QuestionType.class);
+		QuestionType type = context.deserialize(questionJson.get("type"), QuestionType.class);
 		if (type == QuestionType.SingleChoice)
 			return context.deserialize(json, ChoiceQuestion.class);
 		else if (type == QuestionType.MultipleChoice)

@@ -12,14 +12,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,8 +29,6 @@ import android.widget.Toast;
 import com.example.app.question.Questionnaire;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-Toolbar toolbar = findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		drawerlayout = findViewById(R.id.drawer_layout);
 		NavigationView navView = findViewById(R.id.nav_view);
@@ -63,7 +59,7 @@ Toolbar toolbar = findViewById(R.id.toolbar);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerlayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		drawerlayout.addDrawerListener(toggle);
 		toggle.syncState();
-		
+
 		// number of questionnaires
 		int x = 3;
 
@@ -74,6 +70,7 @@ Toolbar toolbar = findViewById(R.id.toolbar);
 		}
 		init();
 	}
+
 	// init list
 	private void init() {
 		// list of string needed for arrayAdapter
@@ -103,8 +100,7 @@ Toolbar toolbar = findViewById(R.id.toolbar);
 			Reader reader = new InputStreamReader(ims);
 
 			return gson.fromJson(reader, Questionnaire.class);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			// test if failed to read file :
 			final StackTraceElement[] stackTrace = e.getStackTrace();
@@ -113,7 +109,7 @@ Toolbar toolbar = findViewById(R.id.toolbar);
 			return null;
 		}
 	}
-	
+
 	public boolean onCreateOptionsMenu(Menu menu) {
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
@@ -141,14 +137,16 @@ Toolbar toolbar = findViewById(R.id.toolbar);
 			toast.show();
 			return;
 		}
-		QuestionnaireState questionnaireState = new QuestionnaireState(currentQuestionnaire);
-		QuestionDisplayActivity.displayCurrentQuestion(questionnaireState, this);
+		QuestionnaireState.setQuestionnaire(currentQuestionnaire);
+		startActivity(new Intent(this, QuestionDisplayActivity.class)); // starting our own activity (onCreate) with questionnaire state so we can save it
+		finish(); // prevent the back button
+		// TODO: if back button pressed -> popup with "sind sie sicher dass sie den fragebogen abbrechen wollen?"
 	}
-	
+
 	public Questionnaire setCurrentQuestionnaire() {
 		int position = listView.getCheckedItemPosition();
 		for (Questionnaire questionnaire : questionnaireList) {
-			if ((int) questionnaire.getID() == position) {
+			if (questionnaire.getID() == position) {
 				return questionnaire;
 			}
 		}
@@ -175,11 +173,12 @@ Toolbar toolbar = findViewById(R.id.toolbar);
 			builder = new NotificationCompat.Builder(this, channelId);
 		}
 		Notification notify = builder.setContentTitle("type").setContentText("text").setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent).build();
-assert (notificationManager != null);
+		assert (notificationManager != null);
 		notificationManager.notify(0, notify);
 		// testing
 		Toast toast = Toast.makeText(this, "API " + currentApiVersion, Toast.LENGTH_SHORT);
-		toast.show();}
+		toast.show();
+	}
 
 	@Override
 	public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {

@@ -6,16 +6,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
-import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
-import com.example.app.answer.Answers;
+import com.example.app.answer.PercentSliderAnswer;
 import com.example.app.question.PercentSliderQuestion;
 import com.warkiz.widget.IndicatorSeekBar;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 public class PercentSliderView extends QuestionDisplayView {
 	
@@ -25,14 +20,11 @@ public class PercentSliderView extends QuestionDisplayView {
 	private ConstraintLayout container;
 	// slider
 	private IndicatorSeekBar seekBar;
-	//current State
-	private QuestionnaireState qState;
 	
 	// constructor
-	PercentSliderView(QuestionDisplayActivity activity, PercentSliderQuestion question, QuestionnaireState state) {
+	PercentSliderView(QuestionDisplayActivity activity, PercentSliderQuestion question) {
 		super(activity);
 		this.question = question;
-		qState=state;
 		init();
 	}
 	
@@ -72,13 +64,7 @@ public class PercentSliderView extends QuestionDisplayView {
 
 	@Nullable
 	@Override
-	public Answers getCurrentAnswer() {
-		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
-		Answer ans=new Answer(question.type.toString(), seekBar.getProgress() , "");
-		List<Answer> answerList=new ArrayList<Answer>();
-		answerList.add(ans);
-		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
-		return answers;
-		
+	public Answer getCurrentAnswer() {
+		return new PercentSliderAnswer(question, seekBar.getProgressFloat());
 	}
 }

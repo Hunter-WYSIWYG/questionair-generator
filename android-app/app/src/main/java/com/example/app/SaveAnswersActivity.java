@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app.answer.Answers;
@@ -14,7 +15,16 @@ import com.google.gson.Gson;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * DEPRECATED
+ * <p>
+ * we do not use this thing at all
+ * <p>
+ * delete sometime
+ */
 
 public class SaveAnswersActivity extends AppCompatActivity {
 	private List<Answers> aList;
@@ -23,37 +33,42 @@ public class SaveAnswersActivity extends AppCompatActivity {
 	private String res;
 
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
-		super.onCreate (savedInstanceState);
-		setContentView (R.layout.activity_save_answers);
-		Bundle more = getIntent ().getExtras ();
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_save_answers);
+		Bundle more = getIntent().getExtras();
 		assert more != null;
 		res = "";
-		size = more.getInt ("size", 0);
-		aList = new ArrayList<> (size);
-		answers = new ArrayList<> (size);
+		size = more.getInt("size", 0);
+		aList = new ArrayList<>(size);
+		answers = new ArrayList<>(size);
 		/* get answers from intent */
 		for (int i = 0; i < size; i++) {
 			aList.add((Answers) more.getSerializable("a" + i));
-			answers.add ("");
+			answers.add("");
 		}
 		/* save to answer list */
-		for (int j = 0; j < aList.size (); j++) {
-			for (int k = 0; k < aList.get (j).getChosenValues ().size (); k++) {
+
+		/*
+		for (int j = 0; j < aList.size(); j++) {
+			for (int k = 0; k < aList.get(j).getChosenValues().size(); k++) {
 				if (k == 0) {
-					answers.set (j, aList.get (j).getChosenValues ().get (k).toString ());
-				}
-				else {
-					answers.set (j, answers.get (j) + "," + aList.get (j).getChosenValues ().get (k));
+					answers.set(j, aList.get(j).getChosenValues().get(k).toString());
+				} else {
+					answers.set(j, answers.get(j) + "," + aList.get(j).getChosenValues().get(k));
 				}
 			}
 		}
+		*/
+
 		/*show user his answers for failsafe*/
-		for (int i = 0; i < answers.size (); i++) {
-			res += "Frage " + (i + 1) + " Antwort " + answers.get (i) + "\n";
+		/*
+		for (int i = 0; i < answers.size(); i++) {
+			res += "Frage " + (i + 1) + " Antwort " + answers.get(i) + "\n";
 		}
-		TextView tv = findViewById (R.id.textViewres);
-		tv.setText (res);//Wieso startet die activity nicht???????
+		*/
+		TextView tv = findViewById(R.id.textViewres);
+		tv.setText(res);//Wieso startet die activity nicht???????
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {

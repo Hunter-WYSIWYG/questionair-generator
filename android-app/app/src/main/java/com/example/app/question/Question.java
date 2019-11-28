@@ -7,15 +7,15 @@ import java.io.Serializable;
 
 
 // Question uses id and type
-@JsonAdapter (QuestionAdapter.class) // -> using QuestionAdapter to convert from or to JSON
+@JsonAdapter(QuestionAdapter.class) // -> using QuestionAdapter to convert from or to JSON
 public abstract class Question implements Serializable {
 	@SerializedName("questionID")
 	public final int id;
-	@SerializedName (TYPE_JSON_NAME)
+	@SerializedName("type")
 	public final QuestionType type;
-	
+
 	public final String questionText;
-	
+
 	// constructor
 	Question(int id, QuestionType type, String questionText) {
 		this.id = id;

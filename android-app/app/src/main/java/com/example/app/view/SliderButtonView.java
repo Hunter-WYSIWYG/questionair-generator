@@ -11,89 +11,84 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
-import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
-import com.example.app.answer.Answers;
+import com.example.app.answer.SliderButtonAnswer;
 import com.example.app.question.SliderButtonQuestion;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
 
 public class SliderButtonView extends QuestionDisplayView {
-	
+
 	// the corresponding question
 	private final SliderButtonQuestion question;
+	// size of table
+	private final double size;
+	// list of all buttons
+	private final Collection<Button> buttons = new ArrayList<>();
 	// container of slider
 	private ConstraintLayout container;
 	// table
 	private TableLayout table;
-	// size of table
-	private final double size;
-	// list of all buttons
-	private final List<Button> buttons = new ArrayList<>();
 	// id of button
 	private int buttonID;
 	// current pressed button
 	@Nullable
 	private Button currentButton;
-	//current State
-	private QuestionnaireState qState;
-	
+
 	// constructor
-	SliderButtonView(QuestionDisplayActivity activity, SliderButtonQuestion question, QuestionnaireState state) {
+	SliderButtonView(QuestionDisplayActivity activity, SliderButtonQuestion question) {
 		super(activity);
 		this.question = question;
 		size = this.question.size;
 		currentButton = null;
-		qState=state;
-		
+
 		// start with button id = -1
 		buttonID = -1;
-		
+
 		init();
 	}
-	
+
 	private void init() {
 		container = (ConstraintLayout) View.inflate(getActivity(), R.layout.slider_button_view, null);
-		
+
 		// set questionTypeText
 		TextView questionTypeTextView = container.findViewById(R.id.sliderButtonQuestionTypeText);
 		questionTypeTextView.setText(question.type.name());
-		
+
 		// set questionText
 		TextView questionTextView = container.findViewById(R.id.sliderButtonQuestionText);
 		questionTextView.setText(question.questionText);
-		
+
 		// find dividingLine
 		View dividingLine = container.findViewById(R.id.sliderButtonDividingLine);
-		
+
 		// set leftIndex
 		TextView leftIndex = container.findViewById(R.id.leftIndex);
 		leftIndex.setText(question.leftIndex);
-		
+
 		// set rightIndex
 		TextView rightIndex = container.findViewById(R.id.rightIndex);
 		rightIndex.setText(question.rightIndex);
-		
+
 		// create table
 		createTable();
 	}
-	
-	
+
+
 	// create table
 	private void createTable() {
 		table = container.findViewById(R.id.sliderButtonView);
 		table.setMinimumHeight(table.getWidth());
 		TableRow tableRow = new TableRow(getActivity());
-		
+
 		// row set in the middle
 		tableRow.setGravity(Gravity.CENTER);
 		// add 1 table row to table
 		table.addView(tableRow);
-		
+
 		for (int j = 0; j < size; j++) {
 			Button button = new Button(getActivity());
 			// set color and number
@@ -109,7 +104,7 @@ public class SliderButtonView extends QuestionDisplayView {
 			tableRow.addView(button);
 		}
 	}
-	
+
 	// enable or disable 'next' button depending on whether any button is checked
 	// also disable other radio buttons if this is that kind of question
 	private void buttonClicked(@NonNull Button button) {
@@ -122,21 +117,18 @@ public class SliderButtonView extends QuestionDisplayView {
 		}
 		updateNextButtonEnabled();
 	}
-	
-	// enable or disable 'next' button depending on whether any button is checked
-	private void updateNextButtonEnabled () {
-		boolean enabled = false;
-		if (currentButton != null)
-			enabled = true;
-		getActivity().setNextButtonEnabled(enabled);
-	}
-	
+
 	// return button id
-	private int idGenerator () {
+	private int idGenerator() {
 		buttonID++;
 		return buttonID;
 	}
-	
+
+	// enable or disable 'next' button depending on whether any button is checked
+	private void updateNextButtonEnabled() {
+		getActivity().setNextButtonEnabled(currentButton != null);
+	}
+
 	@Override
 	public View getView() {
 		return container;
@@ -144,13 +136,8 @@ public class SliderButtonView extends QuestionDisplayView {
 
 	@Nullable
 	@Override
-	public Answers getCurrentAnswer() {
-		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
-		Answer ans=new Answer(question.type.toString(), currentButton.getId() , "");
-		List<Answer> answerList=new ArrayList<Answer>();
-		answerList.add(ans);
-		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
-		return answers;
-		
+	public Answer getCurrentAnswer() {
+		assert currentButton != null;
+		return new SliderButtonAnswer(question, currentButton.getId());
 	}
 }

@@ -10,9 +10,18 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
@@ -34,12 +43,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 	// list of all questionnaires
 	private final Collection<Questionnaire> questionnaireList = new ArrayList<>();
-	// chosen questionnaire that the user will answer
-	@Nullable
-	private Questionnaire currentQuestionnaire = null;
+
+	private DrawerLayout drawerlayout;
 	// list view of all questionnaires
 	private ListView listView;
 
@@ -47,27 +55,34 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		drawerlayout = findViewById(R.id.drawer_layout);
+		NavigationView navView = findViewById(R.id.nav_view);
+		navView.setNavigationItemSelectedListener(this);
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerlayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+		drawerlayout.addDrawerListener(toggle);
+		toggle.syncState();
+		
 		// number of questionnaires
 		int x = 3;
 
 		// import all questionnaires - just for testing
 		// TODO how many questionnaires do we import???
 		for (int i = 0; i <= x; i++) {
-			this.questionnaireList.add(this.importQuestions(i));
+			questionnaireList.add(importQuestions(i));
 		}
-		this.init();
+		init();
 	}
-
 	// init list
 	private void init() {
 		// list of string needed for arrayAdapter
 		List<String> data = new ArrayList<>();
-		for (Questionnaire questionnaire : this.questionnaireList) {
+		for (Questionnaire questionnaire : questionnaireList) {
 			data.add(questionnaire.getName());
 		}
 		// list view
-		this.listView = findViewById(R.id.listView);
+		listView = findViewById(R.id.listView);
 		// adapter for handling list view
 		final ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, data);
 		listView.setAdapter(adapter);
@@ -75,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 		listView.setOnItemClickListener((parent, view, position, id) -> Toast.makeText(getApplicationContext(), "Click ListItem Number " + position, Toast.LENGTH_LONG).show());
 	}
 
-	@Nullable
 	private Questionnaire importQuestions(int index) {
 		// read JSON file with GSON library
 		// you have to add the dependency for gson
@@ -89,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
 			Reader reader = new InputStreamReader(ims);
 
 			return gson.fromJson(reader, Questionnaire.class);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 			// test if failed to read file :
 			final StackTraceElement[] stackTrace = e.getStackTrace();
@@ -98,33 +113,41 @@ public class MainActivity extends AppCompatActivity {
 			return null;
 		}
 	}
-
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		ActionBar actionBar = getActionBar();
-		// TODO with navigation view
+		if (actionBar != null) {
+			actionBar.setHomeButtonEnabled(false);      // Disable the button
+			actionBar.setDisplayHomeAsUpEnabled(false); // Remove the left caret
+			actionBar.setDisplayShowHomeEnabled(false); // Remove the icon
+		}
 		return true;
 	}
 
+	public void onBackPressed() {
+		if (drawerlayout.isDrawerOpen(GravityCompat.START)) {
+			drawerlayout.closeDrawer(GravityCompat.START);
+			return;
+		}
+		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
+		myToast.show();
+	}
+
 	public void startButtonClick(View view) {
-		this.currentQuestionnaire = this.setCurrentQuestionnaire();
-		if (this.currentQuestionnaire == null) {
+		// chosen questionnaire that the user will answer
+		final Questionnaire currentQuestionnaire = setCurrentQuestionnaire();
+		if (currentQuestionnaire == null) {
 			Toast toast = Toast.makeText(this, "Kein Fragebogen eingelesen.", Toast.LENGTH_SHORT);
 			toast.show();
 			return;
 		}
-
-		QuestionnaireState.setQuestionnaire(currentQuestionnaire);
-
-		Intent intent = new Intent(this, QuestionDisplayActivity.class);
-		startActivity(intent); // starting our own activity (onCreate) with questionnaire state so we can save it
-		finish(); // prevent the back button
-		// TODO: if back button pressed -> popup with "sind sie sicher dass sie den fragebogen abbrechen wollen?"
+		QuestionnaireState questionnaireState = new QuestionnaireState(currentQuestionnaire);
+		QuestionDisplayActivity.displayCurrentQuestion(questionnaireState, this);
 	}
-
-	@android.support.annotation.Nullable
-	private Questionnaire setCurrentQuestionnaire() {
-		int position = this.listView.getCheckedItemPosition();
-		for (Questionnaire questionnaire : this.questionnaireList) {
+	
+	public Questionnaire setCurrentQuestionnaire() {
+		int position = listView.getCheckedItemPosition();
+		for (Questionnaire questionnaire : questionnaireList) {
 			if ((int) questionnaire.getID() == position) {
 				return questionnaire;
 			}
@@ -143,19 +166,34 @@ public class MainActivity extends AppCompatActivity {
 		NotificationCompat.Builder builder;
 		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
 		if (currentApiVersion <= Build.VERSION_CODES.N_MR1) {
+			//noinspection deprecation
 			builder = new NotificationCompat.Builder(this);
 		} else {
-			String channelId = "fragebogen";
+			String channelId = "Fragebogen";
 			NotificationChannel notificationChannel = new NotificationChannel(channelId, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
 			notificationManager.createNotificationChannel(notificationChannel);
 			builder = new NotificationCompat.Builder(this, channelId);
 		}
-		Notification notify = builder.setContentTitle("title").setContentText("text").setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent).build();
-
+		Notification notify = builder.setContentTitle("type").setContentText("text").setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent).build();
+assert (notificationManager != null);
 		notificationManager.notify(0, notify);
-
 		// testing
 		Toast toast = Toast.makeText(this, "API " + currentApiVersion, Toast.LENGTH_SHORT);
-		toast.show();
+		toast.show();}
+
+	@Override
+	public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
+		switch (menuItem.getItemId()) {
+			case R.id.nav_home:
+				getSupportFragmentManager().popBackStackImmediate();
+				break;
+			case R.id.nav_licence:
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LicenceFragment()).addToBackStack(null).commit();
+				break;
+			default:
+				break;
+		}
+		drawerlayout.closeDrawer(GravityCompat.START);
+		return true;
 	}
 }

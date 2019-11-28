@@ -30,7 +30,7 @@ public class ChoiceQuestion extends Question {
 	
 	// test if singleChoice
 	public boolean isSingleChoice() {
-		return this.type == QuestionType.SingleChoice;
+		return type == QuestionType.SingleChoice;
 	}
 
 	@Override

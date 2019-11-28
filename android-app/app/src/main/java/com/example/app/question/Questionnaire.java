@@ -1,7 +1,5 @@
 package com.example.app.question;
 
-import android.support.annotation.Nullable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -39,25 +37,25 @@ public class Questionnaire implements Serializable {
 	// getter
 	@Nullable
 	public String getName() {
-		return this.name;
+		return name;
 	}
 	
 	public double getID() {
-		return this.id;
+		return id;
 	}
 
 	@Nullable
 	public List<Question> getQuestionList() {
-		return this.questionList;
+		return questionList;
 	}
 
 	@Nullable
 	public List<Reminder> getReminderList() {
-		return this.reminderList;
+		return reminderList;
 	}
 	
 	public String getPath() {
-		return this.path;
+		return path;
 	}
 	
 	// setter (only needed for path)

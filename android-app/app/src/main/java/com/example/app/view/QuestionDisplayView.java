@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.QuestionnaireState;
-import com.example.app.answer.Answer;
+import com.example.app.answer.Answers;
 import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Note;
 import com.example.app.question.PercentSliderQuestion;
@@ -13,8 +13,6 @@ import com.example.app.question.Question;
 import com.example.app.question.SliderButtonQuestion;
 import com.example.app.question.SliderQuestion;
 import com.example.app.question.TableQuestion;
-
-import org.jetbrains.annotations.Contract;
 
 public abstract class QuestionDisplayView {
 	// the corresponding activity
@@ -24,7 +22,13 @@ public abstract class QuestionDisplayView {
 	QuestionDisplayView(QuestionDisplayActivity activity) {
 		this.activity = activity;
 	}
-	
+
+	// getter
+	protected QuestionDisplayActivity getActivity () {
+		return activity;
+	}
+
+
 	// create new view for the current question of the activity
 	@Contract("_ -> new")
 	@NonNull
@@ -32,17 +36,17 @@ public abstract class QuestionDisplayView {
 		Question question = QuestionnaireState.getCurrentQuestion();
 		
 		if (question instanceof ChoiceQuestion)
-			return new MultipleChoiceView(activity, (ChoiceQuestion) question);
+			return new MultipleChoiceView(activity, (ChoiceQuestion) question ,activity.getState());
 		else if (question instanceof SliderQuestion)
-			return new SliderView(activity, (SliderQuestion) question);
+			return new SliderView(activity, (SliderQuestion) question,activity.getState());
 		else if (question instanceof PercentSliderQuestion)
-			return new PercentSliderView(activity, (PercentSliderQuestion) question);
+			return new PercentSliderView(activity, (PercentSliderQuestion) question, activity.getState());
 		else if (question instanceof Note)
-			return new NoteView(activity, (Note) question);
+			return new NoteView(activity, (Note) question, activity.getState());
 		else if (question instanceof TableQuestion)
-			return new TableView(activity, (TableQuestion) question);
+			return new TableView(activity, (TableQuestion) question, activity.getState());
 		else if (question instanceof SliderButtonQuestion)
-			return new SliderButtonView(activity, (SliderButtonQuestion) question);
+			return new SliderButtonView(activity, (SliderButtonQuestion) question, activity.getState());
 		else
 			throw new IllegalArgumentException();
 		// TODO: implement other question views
@@ -58,5 +62,5 @@ public abstract class QuestionDisplayView {
 	// get all answer
 	@NonNull
 	@SuppressWarnings ("SameReturnValue")
-	public abstract Answer getCurrentAnswer();
+	public abstract Answers getCurrentAnswer();
 }

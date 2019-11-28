@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import com.example.app.answer.Answer;
+import com.example.app.answer.Answers;
 import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
 
@@ -117,7 +117,10 @@ public final class QuestionnaireState {
 		// currentQ is only -1 if last answer lead to end of questionnaire
 		return currentQID != -1;
 	}
-
+	
+	public List<Answers> getAnswers() {
+		return answers;
+	}
 	static void save() {
 		// TODO : send questionnaire and answersList to saveAnswers-something
 		questionnaire = null;

@@ -484,17 +484,19 @@ update msg model =
                             | elements = List.map (\e -> QElement.updateElement model.newElement e) oldQuestionnaire.elements
                             , conditions =
                                 if (Condition.validateCondition model.newCondition model.newElement) then
-                                    Debug.log "true" List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
+                                    List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
 
                                 else
-                                    Debug.log "false" Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
+                                    Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
                         }
             in
-            if model.editQElement == False then
+            if model.editQElement == False && (isTypeEmpty model) == False then
                 ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, newCondition = Condition.initCondition }, Cmd.none )
 
-            else
+            else if (isTypeEmpty model) == False then
                 ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, editQElement = False }, Cmd.none )
+
+            else (model, Cmd.none)
                 
         SetConditions ->
             let
@@ -795,3 +797,13 @@ strToInt id =
 
         Nothing ->
             -1
+
+{-| Checks whether the type of a Question is empty. Returns true if the newElement is a Note.
+-}
+isTypeEmpty : Model -> Bool
+isTypeEmpty model = 
+    case model.newElement of
+        Question record ->
+            (record.typ == "")
+        Note record ->
+            True

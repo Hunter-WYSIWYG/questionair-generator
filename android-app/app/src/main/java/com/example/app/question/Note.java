@@ -11,7 +11,7 @@ public class Note extends Question {
 	public Note(int id, String questionText, String text) {
 		super(id, QuestionType.Note, text);
 		
-		this.noteText = text;
+		noteText = text;
 	}
 
 	@Override

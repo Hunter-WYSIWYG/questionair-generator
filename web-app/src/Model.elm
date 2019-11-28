@@ -111,7 +111,6 @@ type
       --Modals
     | ViewOrClose ModalType
       --Creates Condition
-    | AddCondition
     | AddAnswerToNewCondition String
     | ChangeInputParentId String
     | ChangeInputChildId String

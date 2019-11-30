@@ -4,7 +4,9 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 
 /**
- * This class is the implementation for the representation of a CSV-file as a table.
+ * Contains the implementation for the representation of a CSV-file as a table.
+ *
+ * @author Maximilian Goldacker
  */
 
 public class CsvTable extends JTable {
@@ -14,16 +16,16 @@ public class CsvTable extends JTable {
      */
     public CsvTable() {
         super(new CsvTableModel());
-        setColumnWidth();
+        setColumnWidth(5);
     }
 
     /**
      * Sets the width for each column.
      */
-    private void setColumnWidth() {
+    private void setColumnWidth(int width) {
         for (int i = 0; i < this.getColumnCount(); i++) {
             TableColumn c = this.getColumnModel().getColumn(i);
-            c.setPreferredWidth(5);
+            c.setPreferredWidth(width);
         }
     }
 }

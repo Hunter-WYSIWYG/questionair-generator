@@ -3,9 +3,10 @@ package converter.graphical.ui;
 import javax.swing.*;
 
 /**
- * This class implements the GUI of the converter tool.
+ * Implements the GUI of the converter tool.
+ *
+ * @author Maximilian Goldacker
  */
-
 public class GUI extends JFrame {
 
     /**
@@ -30,8 +31,6 @@ public class GUI extends JFrame {
     }
 
     /**
-     * Returns the instance of the GUI.
-     *
      * @return the instance of the GUI
      */
     public static GUI getInstance() {

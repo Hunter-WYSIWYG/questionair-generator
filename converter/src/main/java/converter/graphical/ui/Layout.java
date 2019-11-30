@@ -8,9 +8,10 @@ import java.awt.*;
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 
 /**
- * This class represents the layout of the GUI.
+ * Represents the layout of the GUI.
+ *
+ * @author Maximilian Goldacker
  */
-
 public class Layout extends JPanel {
 
     private static JLabel fileLabel;
@@ -61,8 +62,6 @@ public class Layout extends JPanel {
     }
 
     /**
-     * Returns the instance of the layout GUI.
-     *
      * @return the layout of the GUI
      */
     static Layout getInstance() {

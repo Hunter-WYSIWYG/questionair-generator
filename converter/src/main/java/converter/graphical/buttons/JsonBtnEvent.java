@@ -9,7 +9,9 @@ import converter.graphical.ui.GUI;
 import converter.graphical.ui.Layout;
 
 /**
- * Class that handles the event when the button for selecting the JSON-file is pressed.
+ * Handles the event when the button for selecting the JSON-file is pressed.
+ *
+ * @author Maximilian Goldacker
  */
 
 public class JsonBtnEvent implements ActionListener {
@@ -21,9 +23,9 @@ public class JsonBtnEvent implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         JFileChooser jsonChooser = new JFileChooser();
-        int returnValue = jsonChooser.showOpenDialog(null);
+        int dialogOption = jsonChooser.showOpenDialog(null);
 
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
+        if (dialogOption == JFileChooser.APPROVE_OPTION) {
             File file = jsonChooser.getSelectedFile();
             JOptionPane.showMessageDialog(GUI.getInstance(), "Es wurde folgende Datei ausgewählt: " + file.getName());
             Layout.changeFileLabel(file.getName());

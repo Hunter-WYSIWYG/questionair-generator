@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		toggle.syncState();
 
 		// number of questionnaires
-		int x = 3;
+		int x = 4;
 
 		// import all questionnaires - just for testing
 		// TODO how many questionnaires do we import???
@@ -138,6 +138,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			return;
 		}
 		QuestionnaireState.setQuestionnaire(currentQuestionnaire);
+		final String editTime = currentQuestionnaire.getEditTime();
+		if (editTime != null) {
+			TimeTracker.startTimer(editTime);
+		}
 		startActivity(new Intent(this, QuestionDisplayActivity.class)); // starting our own activity (onCreate) with questionnaire state so we can save it
 		finish(); // prevent the back button
 		// TODO: if back button pressed -> popup with "sind sie sicher dass sie den fragebogen abbrechen wollen?"

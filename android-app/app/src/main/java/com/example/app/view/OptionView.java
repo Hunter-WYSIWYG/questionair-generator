@@ -17,7 +17,7 @@ import com.example.app.question.QuestionType;
 // TODO: allow clicking on the text next to the radio button or checkbox
 // OptionView is the view of one option (button + text)
 abstract class OptionView {
-	public static final int TEXT_SIZE = 24;
+	private static final int TEXT_SIZE = 24;
 	// rootView of button, textView, ...
 	private final LinearLayout container;
 	// view of optionText

@@ -17,6 +17,10 @@ public class QuestionnaireFinishedActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_questionnaire_finished);
 
+		if (getIntent().getBooleanExtra("fromTimeTracker", false)) {
+			Toast.makeText(this, "Time has run out!", Toast.LENGTH_LONG).show();
+		}
+		TimeTracker.finish();
 		final File externalFilesDir = getExternalFilesDir(null);
 		if (externalFilesDir != null) {
 			if (QuestionnaireState.save(externalFilesDir)) {

@@ -24,6 +24,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		nextButton = findViewById(R.id.QuestionDisplayNextButton);
 		contentContainer = findViewById(R.id.QuestionDisplayContentContainer);
 
+		TimeTracker.setContext(this);
 		questionView = QuestionDisplayView.create(this);
 
 		// insert as the new first element, before the space filler and the next button
@@ -34,6 +35,11 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 
 	// next button is clicked, update questionnaire state and go to next question
 	private void nextButtonClicked() {
+		if (TimeTracker.isTimeOver()) {
+			startActivity(new Intent(this, QuestionnaireFinishedActivity.class));
+			finish();
+			return;
+		}
 		Answer answer = questionView.getCurrentAnswer();
 		QuestionnaireState.giveAnswer(answer);
 		if (QuestionnaireState.nextIsQuestion()) {

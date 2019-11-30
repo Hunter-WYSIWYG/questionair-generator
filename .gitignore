@@ -29,6 +29,8 @@ electron-app/Fragebogengenerator-win32-arm64
 electron-app/Fragebogengenerator-win32-x64
 electron-app/Fragebogengenerator-win32-ia32
 electron-app/*.html
-electron-app/*.js
+electron-app/elm.js
+electron-app/elmPort.js
+electron-app/datetimepicker.js
 electron-app/*.css
 electron-app/*.zip

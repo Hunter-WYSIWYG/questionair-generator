@@ -9,6 +9,9 @@ import com.example.app.R;
 import com.example.app.answer.Answer;
 import com.example.app.question.Note;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NoteView extends QuestionDisplayView {
 	
 	// the corresponding question
@@ -54,7 +57,7 @@ public class NoteView extends QuestionDisplayView {
 	
 	@Override
 	public List<Answer> getCurrentAnswer () {
-		List<Answer> returnList = new ArrayList<> ();
+		List<Answer> returnList = new ArrayList<>();
 		returnList.add(new Answer(this.question.questionID,0));
 		return returnList;
 	}

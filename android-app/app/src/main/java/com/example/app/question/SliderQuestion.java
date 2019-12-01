@@ -3,6 +3,8 @@ package com.example.app.question;
 import com.example.app.answer.Answer;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class SliderQuestion extends Question {
 	@SerializedName ("minValue")
 	public final double minValue;
@@ -12,7 +14,7 @@ public class SliderQuestion extends Question {
 	public final double stepSize;
 
 	// constructor
-	public SliderQuestion (int id, String questionText, List<Answer> conditions, double minValue, double maxValue, double stepSize) {
+	public SliderQuestion(int id, String questionText, List<Answer> conditions, double minValue, double maxValue, double stepSize) {
 		super (id, QuestionType.Slider, conditions, questionText);
 		
 		if (minValue > maxValue)

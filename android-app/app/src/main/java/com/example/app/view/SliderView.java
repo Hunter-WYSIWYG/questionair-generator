@@ -10,6 +10,9 @@ import com.example.app.answer.Answer;
 import com.example.app.question.SliderQuestion;
 import com.warkiz.widget.IndicatorSeekBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SliderView extends QuestionDisplayView {
 	
 	// the corresponding question

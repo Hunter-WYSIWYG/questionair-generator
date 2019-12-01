@@ -6,7 +6,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.widget.TextView;
 
 // class wich allows to proper display vertical TextViews
 class VerticalTextView extends AppCompatTextView {

@@ -1,9 +1,9 @@
 module Condition exposing
     ( Condition
-    , deleteConditionFrom, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
+    , deleteConditionFrom, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, deleteConditionUpdate, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition, validateCondition
     )
 
-{-| Enthält den Typ Condition für Bedingungen.
+{-| Contains the Condition type for conditions.
 
 
 # Definition
@@ -11,9 +11,9 @@ module Condition exposing
 @docs Condition
 
 
-# Öffentliche Funktionen
+# Public functions
 
-@docs addAnswerOfQuestionToCondition, deleteAnswerInCondition, deleteCondAnswer, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getConditionWithParentID, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
+@docs addAnswerOfQuestionToCondition, deleteAnswerInCondition, deleteCondAnswer, deleteConditionWithChild, deleteConditionWithElement, deleteConditionWithParent, getNewConditionID, initCondition, removeConditionFromCondList, setParentChildInCondition, setValid, updateCondition, updateConditionAnswer, updateConditionAnswers, updateConditionID, updateConditionWithAnswer, updateIDsInCondition
 
 -}
 
@@ -21,8 +21,8 @@ import Answer exposing (Answer)
 import QElement exposing (Q_element)
 
 
-{-| Bedingungen haben eine parent\_id und child\_id, die sich auf eine Frage (child) und die Frage (parent) mit der enthaltenen Bedingung beziehen.
-Es wird zu der Frage mit der child\_id gesprungen, wenn eine Antwort aus der Liste von Antworten in der Frage mit der parent\_id beantwortet ist.
+{-| Conditions have a parent\_id and child\_id that refer to a question (child) and the question (parent) which acts as the condition.
+It will jump to the question with the child\_id if an answer from the list of answers in the question with the parent\_id is answered.
 -}
 type alias Condition =
     { parent_id : Int
@@ -32,7 +32,7 @@ type alias Condition =
     }
 
 
-{-| Leere Bedingung für die Input-Condition. Bezieht sich auf keine konkreten Fragen und wird mit dem Input überschrieben.
+{-| Empty condition for the Input-Condition. Refers to no specific questions and is overwritten with the Input.
 -}
 initCondition : Condition
 initCondition =
@@ -43,14 +43,14 @@ initCondition =
     }
 
 
-{-| Sucht die Condition mit der alten Id aus einer Liste und aktualisiert deren Id bei Aktualisierung der Fragenreihenfolge.
+{-| Searches the condition with the old ID from a list and updates its ID when updating the question sequence.
 -}
 updateIDsInCondition : List Condition -> Int -> Int -> List Condition
 updateIDsInCondition list old new =
     List.map (updateConditionID old new) list
 
 
-{-| updated die FrageId der child und parent Frage 
+{-| updates the QuestionId of the child and parent questions
 -}
 updateConditionID : Int -> Int -> Condition -> Condition
 updateConditionID old new condition =
@@ -60,7 +60,7 @@ updateConditionID old new condition =
     }
 
 
-{-| Suche nach der neuen und der alten Id und wenn nötig umschreiben
+{-| Searches for the new and the old ID and rewrites if necessary
 -}
 getNewConditionID : Int -> Int -> Int -> Int
 getNewConditionID cond_id old new =
@@ -74,20 +74,20 @@ getNewConditionID cond_id old new =
         cond_id
 
 
-{-| Sucht die Condition mit der alten AnswerId aus einer Liste und aktualisiert deren Id bei Aktualisierung der Fragenreihenfolge.
+{-| Searches the condition with the old AnswerId from a list and updates its Id when updating the order of questions.
 -}
 updateConditionAnswers : List Condition -> Int -> Int -> List Condition
 updateConditionAnswers list old new =
     List.map (updateConditionWithAnswer old new) list
 
 
-{-| update der AnswerId jeder Condition
+{-| Updates the AnswerId of each condition
 -}
 updateConditionWithAnswer : Int -> Int -> Condition -> Condition
 updateConditionWithAnswer old new condition = { condition | answer_id =  updateConditionAnswer old new condition.answer_id}
 
 
-{-| Suche nach der neuen und der alten Id und wenn nötig umschreiben
+{-| Searches for the new and the old ID and rewrites if necessary
 -}
 updateConditionAnswer : Int -> Int -> Int -> Int
 updateConditionAnswer old new answer_id =
@@ -101,28 +101,33 @@ updateConditionAnswer old new answer_id =
         answer_id
 
 
-{-| Löscht eine Condition aus einer Liste von Conditions, die das Element mit der angegebenen ID enthält.
+{-| Deletes a condition from a list of conditions that contains the element with the specified ID.
 -}
 deleteConditionWithElement : List Condition -> Int -> List Condition
 deleteConditionWithElement list id =
     deleteConditionWithParent (deleteConditionWithChild list id) id
 
 
-{-| Löscht eine Condition aus einer Liste von Conditions, die das Element mit der angegebenen ID als PARENT\_ID enthält.
+{-| Deletes a condition from a list of conditions that contains the element with the specified ID as a PARENT\_ID.
 -}
 deleteConditionWithParent : List Condition -> Int -> List Condition
 deleteConditionWithParent list id =
     Tuple.first (List.partition (\e -> e.parent_id /= id) list)
 
+{-| Deletes a condition from a list of conditions that contains the element with the specified ID's as a PARENT\_ID and ANSWER\_ID.
+-}
+deleteConditionUpdate : List Condition -> Int -> Int -> List Condition
+deleteConditionUpdate list parent answer =
+    Tuple.second (List.partition (\e -> ((e.answer_id == answer && e.parent_id == parent))) list)
 
-{-| Löscht eine Condition aus einer Liste von Conditions, die das Element mit der angegebenen ID als CHILD\_ID enthält.
+{-| Deletes a condition from a list of conditions that contains the element with the specified ID as CHILD\_ID.
 -}
 deleteConditionWithChild : List Condition -> Int -> List Condition
 deleteConditionWithChild list id =
     Tuple.first (List.partition (\e -> e.child_id /= id) list)
 
 
-{-| Aktualisiert die Fragen-IDs in einer Condition.
+{-| Updates the question IDs in one condition.
 -}
 setParentChildInCondition : Int -> Int -> Condition -> Condition
 setParentChildInCondition parent child condition =
@@ -133,14 +138,14 @@ setParentChildInCondition parent child condition =
     }
 
 
-{-| Entfernt eine Condition aus der Liste von Conditions.
+{-| Removes a condition from the list of conditions.
 -}
 removeConditionFromCondList : Condition -> List Condition -> List Condition
 removeConditionFromCondList condition list =
     Tuple.first (List.partition (\c -> c.parent_id /= condition.parent_id) list)
 
 
-{-| Ersetzt eine Condition in einer Liste von Conditions durch conditionToUpdate.
+{-| Replaces a condition in a list of conditions with conditionToUpdate.
 -}
 updateCondition : Condition -> Condition -> Condition
 updateCondition conditionToUpdate condition =
@@ -151,26 +156,43 @@ updateCondition conditionToUpdate condition =
         condition
 
 
-{-| Setzt isValid einer Condition auf den angegebenen Wert.
+{-| Sets isValid of a condition to the specified value.
 -}
 setValid : Condition -> Bool -> Condition
 setValid condition value =
     { condition | isValid = value }
 
 
-{-| Gibt aus einer Liste von Conditions die Condition zurück, die als parent\_id die angegebene ID hat.
--}
-getConditionWithParentID : List Condition -> Int -> Condition
-getConditionWithParentID list id =
-    case List.head (Tuple.first (List.partition (\e -> e.parent_id == id) list)) of
-        Just condition ->
-            condition
-
-        Nothing ->
-            initCondition
-
-{-| Löscht eine Condition aus der Condition Liste
+{-| Deletes a condition from the condition list
 -}
 deleteConditionFrom : Condition -> List Condition -> List Condition
 deleteConditionFrom condition list =
     Tuple.first (List.partition (\e -> e /= condition) list)
+
+{-| Check whether the condition is valid
+-}
+validateCondition : Condition -> Q_element -> Bool
+validateCondition condition q_element =
+    let
+        id = condition.answer_id
+        answers = case q_element of
+                        QElement.Note n -> []
+                        QElement.Question q -> q.answers
+    in
+    checkAnswerID answers id
+
+{-| TODO 
+-}
+checkAnswerID : List Answer -> Int -> Bool
+checkAnswerID answers answer_id =
+    let
+        id =
+            case (List.head answers) of
+                Just a -> a.id
+                Nothing -> -1
+    in
+        if id == answer_id then True
+        else    
+            case List.tail answers of
+                Just list -> checkAnswerID list answer_id
+                Nothing -> False

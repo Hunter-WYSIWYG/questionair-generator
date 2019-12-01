@@ -1,21 +1,22 @@
-module Decoder exposing (answerDecoder, decodeElements, decodeTitle, elementDecoder, noteDecoder, questionDecoder)
+module Decoder exposing (answerDecoder, conditionDecoder, decodeConditions, decodeElements, decodeTitle, decodeId, decodePriority, elementDecoder, noteDecoder, questionDecoder, decodeViewingTime, decodeReminderTimes, decodeEditTime)
 
-{-| Enthält die Decoder für Questionnaire, QElement, Answer (usw.).
+{-| Contains the decoder for Questionnaire, QElement, Answer (etc.).
 
 
-# Öffentliche Funktionen
+# Public functions
 
-@docs answerDecoder, decodeElements, decodeTitle, elementDecoder, noteDecoder, questionDecoder
+@docs answerDecoder,  conditionDecoder, decodeConditions, decodeElements, decodeTitle, decodeId, decodePriority, elementDecoder, noteDecoder, questionDecoder, decodeViewingTime, decodeReminderTimes, decodeEditTime
 
 -}
 
 import Answer exposing (Answer)
+import Condition exposing (Condition)
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import QElement exposing (Q_element(..))
 
 
-{-| Decodiert den Titel des Questionnaires, kann aber auch auf andere Typen angewendet werden.
+{-| Decodes the title of the questionnaire, but can also be applied to other types.
 -}
 decodeTitle : String -> String
 decodeTitle content =
@@ -25,9 +26,30 @@ decodeTitle content =
 
         Err e ->
             ""
+{-| Decodiert die ID des Questionnaires
+-}
+decodeId : String -> Int 
+decodeId content =
+    case Decode.decodeString (Decode.field "id" Decode.int) content of
+        Ok val ->
+            val
+        
+        Err e ->
+            -1
+
+{-| Decodiert die Priorität des Questionnaires
+-}           
+decodePriority : String -> Int
+decodePriority content =    
+    case Decode.decodeString (Decode.field "priority" Decode.int) content of
+        Ok val ->
+            val 
+        
+        Err e ->
+            -1
 
 
-{-| Decodiert eine Liste von Fragebogenelementen (Fragen, Anmerkunden).
+{-| Decodes a list of questionnaire items (questions, annotations).
 -}
 decodeElements : String -> List Q_element
 decodeElements content =
@@ -38,15 +60,51 @@ decodeElements content =
         Err e ->
             []
 
+decodeViewingTime : String -> String
+decodeViewingTime content =
+    case Decode.decodeString (Decode.field "viewingTime" Decode.string) content of
+        Ok val ->
+            val
+        
+        Err e ->
+            ""
 
-{-| Decodiert ein einzelnes Fragebogenelement (Frage, Anmerkung).
+decodeReminderTimes : String -> List String
+decodeReminderTimes content =
+    case Decode.decodeString (Decode.field "reminderTimes" (Decode.list Decode.string)) content of 
+        Ok val ->
+            val 
+        
+        Err e ->
+            []
+
+decodeEditTime : String -> String
+decodeEditTime content =
+    case Decode.decodeString (Decode.field "editTime" Decode.string) content of
+        Ok val ->
+            val
+        
+        Err e ->
+            ""
+{-| Decodiert eine Liste von Bedingungen
+-}
+decodeConditions : String -> List Condition
+decodeConditions content = 
+    case Decode.decodeString (Decode.at [ "conditions" ] (Decode.list conditionDecoder)) content of
+        Ok conditions ->
+            conditions
+        
+        Err e ->
+            []
+
+{-| Decodes a single questionnaire item (question, annotation).
 -}
 elementDecoder : Decode.Decoder Q_element
 elementDecoder =
     Decode.oneOf [ questionDecoder, noteDecoder ]
 
 
-{-| Decodiert eine Anmerkung.
+{-| Decodes an annotation.
 -}
 noteDecoder : Decode.Decoder Q_element
 noteDecoder =
@@ -56,7 +114,7 @@ noteDecoder =
         |> Decode.map Note
 
 
-{-| Decodiert eine Frage.
+{-| Decodes a question.
 -}
 questionDecoder : Decode.Decoder Q_element
 questionDecoder =
@@ -65,12 +123,17 @@ questionDecoder =
         |> required "text" Decode.string
         |> required "answers" (Decode.list answerDecoder)
         |> required "hint" Decode.string
-        |> required "question_type" Decode.string
-        |> required "question_time" Decode.string
+        |> required "questionType" Decode.string
+        |> required "questionTime" Decode.string
+        |> required "tableSize" Decode.int
+        |> required "topText" Decode.string
+        |> required "rightText" Decode.string
+        |> required "bottomText" Decode.string
+        |> required "leftText" Decode.string
         |> Decode.map Question
 
 
-{-| Decodiert eine Antwort.
+{-| Decodes an answer.
 -}
 answerDecoder : Decode.Decoder Answer
 answerDecoder =
@@ -78,3 +141,11 @@ answerDecoder =
         (Decode.field "id" Decode.int)
         (Decode.field "text" Decode.string)
         (Decode.field "_type" Decode.string)
+
+conditionDecoder : Decode.Decoder Condition
+conditionDecoder = 
+    Decode.succeed Condition
+        |> required "parent_id" Decode.int
+        |> required "child_id" Decode.int
+        |> required "answer_id" Decode.int
+        |> hardcoded True

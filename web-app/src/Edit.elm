@@ -1,17 +1,17 @@
-module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
+module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTableSlider, showQuestionList, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal)
 
-{-| Enthält die View für das Bearbeiten von Fragebögen.
+{-| Contains the view for editing questionnaires.
 
 
-# Öffentliche Funktionen
+# Public functions
 
-@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolar, showQuestionList, showTimes, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
+@docs answersTable, getAnswerTable, getQuestionOptions, getQuestionTable, questionsTable, radio, showCreateQuestionOrNoteButtons, showEditQuestionnaire, showHeroQuestionnaireTitle, showInputBipolarUnipolarTableSlider, showQuestionList, tableHead_answers, tableHead_questions, viewEditTimeModal, viewNewAnswerModal, viewNewNoteModal, viewNewQuestionModal, viewQuestionValidation, viewTitleModal, viewValidation, viewViewingTimeModal
 
 -}
 
 import Answer exposing (Answer)
 import Condition exposing (Condition)
-import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, table, tbody, td, text, th, thead, tr)
+import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, small, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import List exposing (member, map)
@@ -22,14 +22,13 @@ import Time exposing (..)
 
 
 
-{-| Zeigt die Oberfläche bzw. die View für das Bearbeiten von Fragebögen an.
+{-| Displays the interface or view for editing questionnaires.
 -}
 showEditQuestionnaire : Model -> Html Msg
 showEditQuestionnaire model =
     div []
         [ showHeroQuestionnaireTitle model.questionnaire
         , showQuestionList model.questionnaire
-        , showTimes model.questionnaire
         , showCreateQuestionOrNoteButtons model.questionnaire
         , viewTitleModal model
         , viewEditTimeModal model
@@ -42,14 +41,14 @@ showEditQuestionnaire model =
         ]
 
 
-{-| Zeigt den Titel des Fragebogens in einem Hero (s. Bulma.io) an.
+{-| Displays the title of the questionnaire in a hero (see Bulma.io).
 -}
 showHeroQuestionnaireTitle : Questionnaire -> Html Msg
 showHeroQuestionnaireTitle questionnaire =
     section [ class "hero is-info" ]
         [ div [ class "hero-body" ]
             [ div [ class "container is-fluid" ]
-                [ h1 [ class "title" ]
+                [ h1 [ id "page-title", class "title" ]
                     [ text questionnaire.title
                     , i
                         [ class "fas fa-cog symbol"
@@ -63,7 +62,7 @@ showHeroQuestionnaireTitle questionnaire =
         ]
 
 
-{-| Zeigt eine Tabelle mit den Fragen und Anmerkungen des Fragebogens an.
+{-| Displays a table with the questions and annotations from the questionnaire.
 -}
 showQuestionList : Questionnaire -> Html Msg
 showQuestionList questionnaire =
@@ -82,22 +81,7 @@ showQuestionList questionnaire =
         ]
 
 
-{-| Zeigt die Zeiten (Bearbeitungszeiten, Erscheinungszeiten, usw.) an.
--}
-showTimes : Questionnaire -> Html Msg
-showTimes questionnaire =
-    div [ class "container is-fluid", style "margin-bottom" "10px" ]
-        [ text ("Bearbeitungszeit: " ++ Questionnaire.getViewingTime questionnaire)
-        , i
-            [ class "fas fa-cog symbol"
-            , style "margin-left" "10px"
-            , onClick (ViewOrClose EditTimeModal)
-            ]
-            []
-        ]
-
-
-{-| Zeigt die Buttons für das Erstellen von neuen Elementen (Fragen, Anmerkungen) für den Fragebogen an.
+{-| Displays the buttons for creating new items (questions, annotations) for the questionnaire.
 -}
 showCreateQuestionOrNoteButtons : Questionnaire -> Html Msg
 showCreateQuestionOrNoteButtons questionnaire =
@@ -112,12 +96,12 @@ showCreateQuestionOrNoteButtons questionnaire =
             , style "margin-right" "10px"
             , onClick (ViewOrClose NewNoteModal) ]
             [ text "Neue Anmerkung" ]
-        , button    
+        , button
             [ class "qnButton"
             , style "margin-right" "10px"
-            , onClick (ViewOrClose ConditionModal1) ]
+            , onClick (ViewOrClose ConditionModalOverview) ]
             [ text "Bedingungen" ]
-        , button    
+        , button
             [ class "qnButton"
             , onClick DownloadQuestionnaire ]
             [ text "Download" ]
@@ -216,7 +200,7 @@ viewEditTimeModal model =
     else
         div [] []
 
-{-| Zeigt das Modal für das Bearbeiten des Fragebogentitels an.
+{-| Displays the modal for editing the questionnaire title.
 -}
 viewTitleModal : Model -> Html Msg
 viewTitleModal model =
@@ -239,18 +223,31 @@ viewTitleModal model =
                             [ class "input is-medium"
                             , type_ "text"
                             , style "width" "180px"
-                            , style "margin-left" "10px"
+                            , style "margin-left" "32px"
                             , style "margin-right" "10px"
                             , value model.inputTitle
                             , onInput ChangeInputQuestionnaireTitle
                             ]
                             []
+                        , br [] []
+                        , text "Priorität: "
+                        , input 
+                            [ class "input is-medium"
+                            , type_ "text"
+                            , style "width" "180px"
+                            , style "margin-left" "10px"
+                            , style "margin-right" "10px"
+                            , value ( String.fromInt model.inputPriority ) 
+                            , onInput ChangeInputPriority
+                            ]
+                            []
+                        , small [] [ text "(0 ist die höchste Priorität)" ]
                         ]
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [ class "qnButton"
-                        , onClick SetQuestionnaireTitle
+                        , onClick SetQuestionnaireTitlePriority
                         ]
                         [ text "Übernehmen" ]
                     ]
@@ -261,7 +258,7 @@ viewTitleModal model =
         div [] []
 
 
-{-| Zeigt das Modal für das Erstellen einer Anmerkung an.
+{-| Displays the modal for creating an annotation.
 -}
 viewNewNoteModal : Model -> Html Msg
 viewNewNoteModal model =
@@ -311,7 +308,7 @@ viewNewNoteModal model =
         div [] []
 
 
-{-| Zeigt das Modal für das Erstellen einer neuen Frage an.
+{-| Displays the modal for creating a new question.
 -}
 viewNewQuestionModal : Model -> Html Msg
 viewNewQuestionModal model =
@@ -325,11 +322,11 @@ viewNewQuestionModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ table [ class "table is-striped", style "width" "100%" ] (answersTable model)
+                        [ showAnswerTable model
                         , br [] []
-                        , button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+                        , showNewAnswerButton model
                         , br [] []
-                        , showInputBipolarUnipolar model
+                        , showInputBipolarUnipolarTableSlider model
                         , br [ style "margin-top" "20px" ] []
                         , text "Fragetext: "
                         , input
@@ -353,11 +350,13 @@ viewNewQuestionModal model =
                         , br [style "margin-top" "20px"] []
                         , text ("Typ: " ++ QElement.getQuestionTyp model.newElement)
                         , br [] []
-                        , radio "Single Choice" (ChangeQuestionType "Single Choice")
+                        , selectedRadio "Single Choice" (ChangeQuestionType "Single Choice")
                         , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
                         , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
                         , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                        , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
+                        , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
                         , br [] []
                         ]
                     ]
@@ -374,28 +373,28 @@ viewNewQuestionModal model =
     else
         div [] []
 
-{-| Zeigt eine Liste von Fragen an, die zur Bedingung als "Elternfrage" oder "Kindfrage" hinzugefügt werden können.
-Siehe viewConditionModal
+{-| Displays a list of questions that can be added to the condition as "parent question" or "child question".
+See viewConditionModal
 -}
 getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
-        ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ] 
+        ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ]
             [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
 
 getAnswerOptions : Model -> Condition -> List (Html Msg)
 getAnswerOptions model newCondition =
-    let 
+    let
         parent_frage = checkFrage (get model.newCondition.parent_id model.questionnaire.elements)
         parent_antworten = (parent_frage.answers)
         list = parent_antworten
     in
         [ option [] [ text "Keine" ] ]
-            ++ List.map (\e -> option [ selected (Answer.getAnswerId e == newCondition.answer_id) ] 
+            ++ List.map (\e -> option [ selected (Answer.getAnswerId e == newCondition.answer_id) ]
                 [ text (String.fromInt(Answer.getAnswerId e) ++ "." ++ " " ++ Answer.getAnswerText e) ]) list
 
 
-{-| Zeigt ein Modal zum Erstellen neuer Antworten an.
+{-| Displays a modal for creating new answers.
 -}
 viewNewAnswerModal : Model -> Html Msg
 viewNewAnswerModal model =
@@ -444,17 +443,17 @@ viewNewAnswerModal model =
         div [] []
 
 
-{-| Zeigt ein Modal mit einer Tabelle mit vorhandenen Bedingungen an.
+{-| Displays a modal with a table of existing conditions.
 -}
 viewNewConditionModalOverview : Model -> Html Msg
 viewNewConditionModalOverview model =
-    if model.showNewConditionModal1 then
+    if model.showNewConditionModalOverview then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bedingungen" ]
-                    , button [ class "is-large delete", onClick (ViewOrClose ConditionModal1) ] []
+                    , button [ class "is-large delete", onClick (ViewOrClose ConditionModalOverview) ] []
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
@@ -464,7 +463,7 @@ viewNewConditionModalOverview model =
                 , footer [ class "modal-card-foot mediumlightblue" ]
                     [ button
                         [ class "qnButton"
-                        , onClick (ViewOrClose ConditionModal2)
+                        , onClick (ViewOrClose ConditionModalCreate)
                         ]
                         [ text "Neu" ]
                     ]
@@ -475,17 +474,17 @@ viewNewConditionModalOverview model =
         div [] []
 
 
-{-| Zeigt ein Modal zur Erstellung von Bedingungen an.
+{-| Displays a modal for creating conditions.
 -}
 viewNewConditionModalCreate : Model -> Html Msg
 viewNewConditionModalCreate model =
-    if model.showNewConditionModal2 then
+    if model.showNewConditionModalCreate then
         div [ class "modal is-active" ]
             [ div [ class "modal-background" ] []
             , div [ class "modal-card" ]
                 [ header [ class "modal-card-head mediumlightblue" ]
                     [ p [ class "modal-card-title is-size-3 has-text-centered is-italic" ] [ text "Bedingungen" ]
-                    , button [ class "is-large delete", onClick (ViewOrClose ConditionModal2) ] []
+                    , button [ class "is-large delete", onClick (ViewOrClose ConditionModalCreate) ] []
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
@@ -525,14 +524,14 @@ viewNewConditionModalCreate model =
         div [] []
 
 
-{-| Zeigt eine Tabelle mit vorhandenen Fragen an.
+{-| Displays a table of existing questions.
 -}
 questionsTable : Questionnaire -> List (Html Msg)
 questionsTable questionnaire =
     List.indexedMap getQuestionTable questionnaire.elements
 
 
-{-| Der Tabellenkopf der Tabelle mit den vorhandenen Fragen.
+{-| The table header of the table with the available questions.
 -}
 tableHead_questions : Html Msg
 tableHead_questions =
@@ -555,7 +554,7 @@ tableHead_questions =
         ]
 
 
-{-| Die Darstellung eines Elements des Fragebogens in der Tabelle.
+{-| The depiction of an element of the questionnaire in the table.
 -}
 getQuestionTable : Int -> Q_element -> Html Msg
 getQuestionTable index element =
@@ -627,19 +626,19 @@ getQuestionTable index element =
                 ]
 
 
-{-| Zeigt die Tabelle mit den Antworten der "Inputfrage" (newElement) an.
+{-| Displays the table with the answers of the "input question" (newElement).
 -}
 answersTable : Model -> List (Html Msg)
 answersTable model =
     case model.newElement of
         Question record ->
-            List.append [ tableHead_answers ] (List.indexedMap getAnswerTable (QElement.getAntworten model.newElement))
+            List.append [ tableHead_answers ] (Debug.log "test" (List.indexedMap getAnswerTable (QElement.getAntworten model.newElement)))
 
         Note record ->
             []
 
 
-{-| Der Tabellenkopf der Tabelle von Antworten.
+{-| The table header of the table of answers.
 -}
 tableHead_answers : Html Msg
 tableHead_answers =
@@ -659,7 +658,7 @@ tableHead_answers =
         ]
 
 
-{-| Darstellung einer Frage in einer Tabelle.
+{-| Depiction of a question in a table.
 -}
 getAnswerTable : Int -> Answer -> Html Msg
 getAnswerTable index answer =
@@ -695,34 +694,27 @@ getAnswerTable index answer =
         ]
 
 
-{-| Tabelle von Bedingungen der "Input-Frage" (newElement).
+{-| Table of conditions of the "input question" (newElement).
 -}
 conditionsTable : Model -> List (Html Msg)
 conditionsTable model =
-    case model.newElement of
-        Question record ->
-            List.append [ tableHead_conditions ] (List.indexedMap getConditionTable model.questionnaire.conditions)
-
-        Note record ->
-            []
+    List.append [ tableHead_conditions ] (List.indexedMap getConditionTable model.questionnaire.conditions)
+            
 
 
-{-| Tabellenkopf der Tabelle für Bedingungen.
+{-| Table header of the table for conditions.
 -}
 tableHead_conditions : Html Msg
 tableHead_conditions =
     tr []
         [ th []
-            [ text "ID"
-            ]
-        , th []
             [ text "Von"
             ]
         , th []
             [ text "Zu"
             ]
         , th []
-            [ text "Mit der Antwort/en"
+            [ text "Mit der Antwort"
             ]
         , th []
             [ text "Aktion"
@@ -730,13 +722,12 @@ tableHead_conditions =
         ]
 
 
-{-| Tabellendarstellung einer Condition.
+{-| Table representation of a condition.
 -}
 getConditionTable : Int -> Condition -> Html Msg
 getConditionTable index condition =
     tr [ id (String.fromInt index) ]
-        [ td [] [ text (String.fromInt index) ]
-        , td [] [ text (String.fromInt condition.parent_id) ]
+        [ td [] [ text (String.fromInt condition.parent_id) ]
         , td [] [ text (String.fromInt condition.child_id) ]
         , td [] [ text (String.fromInt condition.answer_id) ]
         , td []
@@ -755,7 +746,7 @@ getConditionTable index condition =
         ]
 
 
-{-| Ausgabe, ob die Eingaben gültig sind.
+{-| Output whether the inputs are valid.
 -}
 viewValidation : Model -> Html msg
 viewValidation model =
@@ -774,8 +765,7 @@ viewValidation model =
     div [ style "color" color ] [ text message ]
 
 
-{-| TODO: KOMMENTAR RICHTIG SO? WIESO NICHT MIT viewValidation LÖSEN?
-Ausgabe, ob die Eingabefrage gültig ist.
+{-| Output whether the input question is valid.
 -}
 viewQuestionValidation : ValidationResult -> Html msg
 viewQuestionValidation result =
@@ -793,11 +783,38 @@ viewQuestionValidation result =
     in
     div [ style "color" color ] [ text message ]
 
-
-{-| Eingabeoberfläche, wie viele Antworten für uni-/bipolare Fragen erstellt werden sollen.
+{- entfernt die Antworten-Tabelle wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
 -}
-showInputBipolarUnipolar : Model -> Html Msg
-showInputBipolarUnipolar model =
+showAnswerTable : Model -> Html Msg
+showAnswerTable model =
+    case model.newElement of
+        Question record ->
+            if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+                div [] []
+            else
+                table [ class "table is-striped", style "width" "100%" ] (answersTable model)
+
+        Note record ->
+            div [] []
+
+{- entfernt die "Neue Antwort"-Button wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
+-}
+showNewAnswerButton : Model -> Html Msg
+showNewAnswerButton model =
+    case model.newElement of
+        Question record ->
+            if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+                div [] []
+            else
+                button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
+
+        Note record ->
+            div [] []
+
+{-| Eingabeoberfläche, wie viele Antworten/Eingabefelder für uni-/bipolare, Raster-Auswahl und Prozentslider Fragen erstellt werden sollen.
+-}
+showInputBipolarUnipolarTableSlider : Model -> Html Msg
+showInputBipolarUnipolarTableSlider model =
     case model.newElement of
         Question record ->
             if record.typ == "Skaliert unipolar" then
@@ -828,12 +845,94 @@ showInputBipolarUnipolar model =
                         []
                     ]
 
+            else if record.typ == "Raster-Auswahl" then
+                div []
+                    [ text "Raster-Größe: "
+                    , div
+                        [class "select"]
+                        [ select
+                            [ onInput SetTableSize ]
+                            [ option [ value "3" ] [ text "3x3" ]
+                            , option [ value "5" ] [ text "5x5" ]
+                            , option [ value "7" ] [ text "7x7" ]
+                            ]
+                        ]
+                    , br [] []
+                    , text "Raster-Beschriftung oben:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "17px"
+                        , style "margin-top" "2px"
+                        , onInput SetTopText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung rechts:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetRightText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung unten:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "13px"
+                        , style "margin-top" "2px"
+                        , onInput SetBottomText
+                        ]
+                        []
+                    , br [] []
+                    , text "Raster-Beschriftung links:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "20px"
+                        , style "margin-top" "2px"
+                        , onInput SetLeftText
+                        ]
+                        []
+                    ]
+
+            else if record.typ == "Prozentslider" then
+                div []
+                    [ text "Bitte linken Grenzwert eingeben:   "
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "16px"
+                        , style "margin-top" "2px"
+                        , onInput SetLeftText
+                        ]
+                        []
+                    , br [] []
+                    , text "Bitte rechten Grenzwert eingeben:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , onInput SetRightText
+                        ]
+                        []
+                    ]
+
             else
                 div [] []
 
         Note record ->
             div [] []
-
 
 {-| Radiobutton.
 -}
@@ -850,6 +949,19 @@ radio value msg =
         , text value
         ]
 
+selectedRadio : String -> msg -> Html msg
+selectedRadio value msg =
+    label
+        [ style "padding" "20px" ]
+        [ input
+            [ type_ "radio"
+            , name "font-size"
+            , onClick msg
+            ]
+            []
+        , text value
+        ]
+        
 get : Int -> List a -> Maybe a
 get nth list =
     list
@@ -859,20 +971,24 @@ get nth list =
 checkFrage : Maybe Q_element -> QuestionRecord
 checkFrage frage =
 
-     case frage of 
+     case frage of
         Just (Question f) ->
             f
 
-        _ -> 
+        _ ->
             { id = 0
             , text = "Beispielfrage"
             , answers = []
             , hint = ""
             , typ = ""
             , questionTime = ""
+            , tableSize = 0
+            , topText = ""
+            , rightText = ""
+            , bottomText = ""
+            , leftText = ""
             }
 
 getAnswersId : List Answer -> List Int
-getAnswersId list = 
+getAnswersId list =
     map Answer.getAnswerId list
-

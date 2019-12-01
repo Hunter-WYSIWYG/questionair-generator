@@ -1,6 +1,6 @@
 module Utility exposing (swapAt)
 
-{-| Enthaelt allgemeine utility-Funktionen, die zB wegen Problemen nicht aus externen Quellen geladen werden konnten
+{-| Contains general utility functions that could not be loaded from external sources due to problems
 
 
 # Definition
@@ -8,7 +8,7 @@ module Utility exposing (swapAt)
 @docs Utility
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs swapAt
 
@@ -20,7 +20,7 @@ import List exposing (..)
 {-| Swap two values in a list by index. Return the original list if the index is out of range.
 If the same index is supplied twice the operation has no effect.
 swapAt 1 2 [ 1, 2, 3 ] = [ 1, 3, 2 ]
-Uebernommen aus List.Extra, weil es damit Probleme gab
+See List.Extra
 -}
 swapAt : Int -> Int -> List a -> List a
 swapAt index1 index2 l =
@@ -53,7 +53,7 @@ splitAt 3 [1,2,3] == ([1,2,3],[])
 splitAt 4 [1,2,3] == ([1,2,3],[])
 splitAt 0 [1,2,3] == ([],[1,2,3])
 splitAt (-1) [1,2,3] == ([],[1,2,3])
-Uebernommen aus List.Extra, weil es damit Probleme gab
+See List.extra
 -}
 splitAt : Int -> List a -> ( List a, List a )
 splitAt n xs =
@@ -63,7 +63,7 @@ splitAt n xs =
 {-| Decompose a list into its head and tail. If the list is empty, return `Nothing`. Otherwise, return `Just (x, xs)`, where `x` is head and `xs` is tail.
 uncons [1,2,3] == Just (1, [2,3])
 uncons [] = Nothing
-Uebernommen aus List.Extra, weil es damit Probleme gab
+See List.extra
 -}
 uncons : List a -> Maybe ( a, List a )
 uncons list =

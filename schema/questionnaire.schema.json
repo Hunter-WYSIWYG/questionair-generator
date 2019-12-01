@@ -22,30 +22,21 @@
             },
             "description": "An Array of questions and notes"
         },
-        "viewingTimeBegin": {
+        "viewingTime": {
             "type": "string",
-            "format": "date-time",
-            "description": "Point in time when the questionnaire begins to be viewable"
-        },
-        "viewingTimeEnd": {
-            "type": "string",
-            "format": "date-time",
             "description": "Point in time when the questionnaire stops to be viewable"
         },
         "editTime": {
             "type": "string",
-            "format": "time",
             "description": "Duration which determines the max. answering time"
         },
         "reminderTimes": {
             "type": "array",
+            "description": "List of points in time where a reminder should be sent for the questionnaire.",
             "items": {
-                "type": "string",
-                "format": "date-time",
-                "description": "List of points in time where a reminder should be sent for the questionnaire"
-
+                "type":"string",
+                "format": "datetime"
             }
-
         },
         "conditions": {
             "type": "array",
@@ -85,16 +76,35 @@
                 },
                 "questionType": {
                     "type": "string",
-                    "description": "The possible types: Single Choice, Multiple Choice, Yes-No, Scaled Unipolar, Scaled Bipolar, Raster-Buttons, Scaled Field 3x3, Scaled Field 5x5, Scaled Field 7x7, Free Input, Percent Slider"
+                    "description": "The possible types: Single Choice, Multiple Choice, Yes-No, Scaled Unipolar, Scaled Bipolar, Raster-Buttons, Scaled Field, Free Input, Percent Slider"
                 },
                 "hint": {
                     "type": "string",
                     "description": "Hint for the Question"
                 },
-                "editTime": {
+                "questionTime": {
                     "type": "string",
-                    "format": "time",
                     "description": "Duration which determines the max. answering time"
+                },
+                "tableSize": {
+                    "type": "integer",
+                    "description": "Size of the table in x*x. This is for the question type Scaled Field"
+                },
+                "topText": {
+                    "type": "string",
+                    "description": "Label on top of the table. This is for the question type Scaled Field"
+                },
+                "bottomText": {
+                    "type": "string",
+                    "description": "Label on top of the table. This is for the question type Scaled Field"
+                },
+                "leftText": {
+                    "type": "string",
+                    "description": "Label on top of the table. This is for the question types Scaled Field and Percent Slider."
+                },
+                "rightText": {
+                    "type": "string",
+                    "description": "Label on top of the table. This is for the question types Scaled Field and Percent Slider."
                 }
             }
         },

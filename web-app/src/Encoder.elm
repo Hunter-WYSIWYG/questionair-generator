@@ -1,9 +1,9 @@
 module Encoder exposing (encodeQuestionnaire, save)
 
-{-| Enthält die Decoder für Questionnaire, QElement, Answer (usw.).
+{-| Contains the encoder for Questionnaire, QElement, Answer (etc.).
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs encodeQuestionnaire, save
 
@@ -17,20 +17,25 @@ import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
 
 
-{-| Encodiert einen Fragebogen als JSON.
+{-| Encodes a questionnaire as JSON.
 -}
 encodeQuestionnaire : Questionnaire -> String
 encodeQuestionnaire questionnaire =
-    encode 4
+    encode 8
         (object
-            [ ( "title", Encode.string questionnaire.title )
+            [ ( "id", Encode.int questionnaire.id )
+            , ( "priority", Encode.int questionnaire.priority )
+            , ( "title", Encode.string questionnaire.title )
             , ( "elements", Encode.list elementEncoder questionnaire.elements )
             , ( "conditions", Encode.list conditionEncoder questionnaire.conditions )
+            , ( "viewingTime", Encode.string questionnaire.viewingTime )
+            , ( "reminderTimes", Encode.list Encode.string questionnaire.reminderTimes )
+            , ( "editTime", Encode.string questionnaire.editTime ) 
             ]
         )
 
 
-{-| Encodiert ein Fragebogenelement (Frage, Anmerkung).
+{-| Encodes a questionnaire item (question, annotation).
 -}
 elementEncoder : Q_element -> Encode.Value
 elementEncoder element =
@@ -48,13 +53,18 @@ elementEncoder element =
                 , ( "id", Encode.int record.id )
                 , ( "text", Encode.string record.text )
                 , ( "hint", Encode.string record.hint )
-                , ( "question_type", Encode.string record.typ )
+                , ( "questionType", Encode.string record.typ )
                 , ( "answers", Encode.list answerEncoder record.answers )
-                , ( "question_time", Encode.string record.questionTime )
+                , ( "questionTime", Encode.string record.questionTime )
+                , ( "tableSize", Encode.int record.tableSize )
+                , ( "topText", Encode.string record.topText )
+                , ( "rightText", Encode.string record.rightText )
+                , ( "bottomText", Encode.string record.bottomText )
+                , ( "leftText", Encode.string record.leftText )
                 ]
 
 
-{-| Encodiert eine Bedingung.
+{-| Encodes a condition.
 -}
 conditionEncoder : Condition -> Encode.Value
 conditionEncoder condition =
@@ -65,7 +75,7 @@ conditionEncoder condition =
         ]
 
 
-{-| Encodiert Antworten.
+{-| Encodes answers.
 -}
 answerEncoder : Answer -> Encode.Value
 answerEncoder answer =
@@ -76,7 +86,7 @@ answerEncoder answer =
         ]
 
 
-{-| Ermöglicht das Speichern von erstellten Fragebögen im Dateisystem des Nutzers (Downloadfunktion).
+{-| Allows saving of created questionnaires in the user's file system (download function).
 -}
 save : Questionnaire -> String -> Cmd msg
 save questionnaire export =

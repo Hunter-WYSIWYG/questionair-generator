@@ -3,6 +3,7 @@ package com.example.app.view;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.TextView;
+
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
@@ -26,45 +27,45 @@ public class PercentSliderView extends QuestionDisplayView  {
 		super (activity);
 		this.question = question;
 		
-		this.init ();
+		init();
 	}
 	
 	private void init () {
-		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.percent_slider_view, null);
+		container = (ConstraintLayout) View.inflate(getActivity(), R.layout.percent_slider_view, null);
 		
 		// set questionTypeText
-		TextView questionTypeTextView = this.container.findViewById (R.id.SliderQuestionTypeText);
-		questionTypeTextView.setText (this.question.type.name ());
+		TextView questionTypeTextView = container.findViewById(R.id.SliderQuestionTypeText);
+		questionTypeTextView.setText(question.type.name());
 		
 		// set question Number
 		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
 		questionNumber.setText("Fragenummer: " + question.questionID);
 		
 		// set questionText
-		TextView questionTextView = this.container.findViewById (R.id.SliderQuestionText);
-		questionTextView.setText (this.question.questionText);
+		TextView questionTextView = container.findViewById(R.id.SliderQuestionText);
+		questionTextView.setText(question.questionText);
 		
 		// find dividingLine
-		View dividingLine = this.container.findViewById (R.id.SliderDividingLine);
+		View dividingLine = container.findViewById(R.id.SliderDividingLine);
 		
 		// create slider
-		this.createSlider ();
+		createSlider();
 		
 		// next button always enabled
-		this.getActivity ().setNextButtonEnabled (true);
+		getActivity().setNextButtonEnabled(true);
 	}
 	
 	// create slider
 	private void createSlider () {
-		this.seekBar = this.container.findViewById (R.id.Slider);
-		this.seekBar.setMin (0);
-		this.seekBar.setMax (100);
-		this.seekBar.setIndicatorTextFormat("${PROGRESS} %");
+		seekBar = container.findViewById(R.id.Slider);
+		seekBar.setMin(0);
+		seekBar.setMax(100);
+		seekBar.setIndicatorTextFormat("${PROGRESS} %");
 	}
 	
 	@Override
 	public View getView () {
-		return this.container;
+		return container;
 	}
 	
 	@Override

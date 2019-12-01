@@ -1,39 +1,13 @@
-# Fragebogengenerator
+# Questionnaire-Toolset
 
-## Android Studio Projekt verwenden
+This repository provides tools to generate, answer and analyze questionnaires. 
 
-Ihr müsst das Android Studio Projekt neu öffnen, da sich die Ordnerstruktur verändert hat. Öffnet dazu in Android Studio das Projekt bzw. den Ordner "android-app", _nicht das Projekt "app"!_. 
+We created this toolset as part of our practical training at the Martin-Luther-University Halle-Wittenberg. 
+Our target group is the psychology institute of our university. 
 
-## CI/CD verwenden
+This is an open source project, so you are allowed to use, copy and change this project under the provided license.
+Please read the INSTALL.md to learn how to install and use this toolset. If you want to contribute to this project, you can find more information in the CONTRIBUTE.md. 
 
-Nach jedem Commit auf den master-Branch wird ein Build von der WebApp erstellt und auf 
-  [users.informatik.uni-halle.de/~anfvg](http://users.informatik.uni-halle.de/~anfvg) 
-hochgeladen.
+## Acknowledgments
 
-## Elm installieren:
-
-* [guide.elm-lang.org/install.html](https://guide.elm-lang.org/install.html)
-
-* ggf. Editor einrichten
-
-* eigenen Branch anlegen
-
-* zum Kompilieren in den Ordner fragebogengenerator/web-app/src/ 
-wechseln und elm make ausführen:
-```
-  cd web-app/src
-  elm make Main.elm --output Main.js
-```
-* um eine Vorschau zu sehen, elm reactor starten 
-```
-  elm reactor
-```
-* [localhost:8000/index.html](localhost:8000/index.html) aufrufen
-
-* regelmäßig git commit und git push ausführen
-
-## Link zur Elm-Referenz
-* [package.elm-lang.org](https://package.elm-lang.org/)
-
-## Link zum CSS-Framework Bulma:
-* [bulma.io](https://bulma.io)
+We want to thank the teams of [Bulma](https://bulma.io), [Bootstrap](https://getbootstrap.com/) and [Flatpickr](https://flatpickr.js.org/) for making there frameworks free to use. 

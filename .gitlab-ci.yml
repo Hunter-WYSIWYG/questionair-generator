@@ -1,9 +1,7 @@
-image: node:latest
+image: jmgoldacker98/questionnaire-toolset-builder
 
 stages:
-  - build
   - deploy
-  - after_script
 
 deploy:
   type: deploy
@@ -14,11 +12,9 @@ deploy:
     - mkdir build/
     - cp src/index.html build/
     - cp src/stylesheet.css build/
-    - elm make src/Main.elm --output=build/Main.js
+    - cp src/*.js build/
+    - /elm make src/Main.elm --output=build/elm.js
     - export SSHPASS=$USER_PASS 
     - cd build/
     - sshpass -e scp -o stricthostkeychecking=no -r ./* anfvg@anubis.informatik.uni-halle.de:/home/anfvg/public_html
-  only:
-    - master
-
 

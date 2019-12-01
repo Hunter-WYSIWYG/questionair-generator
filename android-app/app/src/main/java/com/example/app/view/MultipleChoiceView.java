@@ -7,12 +7,22 @@ import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.Space;
+import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
-import com.example.app.question.*;
+import com.example.app.question.ChoiceQuestion;
+import com.example.app.question.Option;
+import com.example.app.question.OptionType;
+import com.example.app.question.Question;
+import com.example.app.question.QuestionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,21 +41,20 @@ abstract class OptionView {
 	
 	// constructor
 	protected OptionView (Context context, Option option) {
-		this.container = (LinearLayout) View.inflate (context, R.layout.multiple_choice_option_view, null);
-		this.optionTextView = new TextView (context);
-		this.optionTextView.setText (option.getOptionText ());
-		this.optionTextView.setTextSize (TypedValue.COMPLEX_UNIT_SP, 24);
+		container = (LinearLayout) View.inflate(context, R.layout.multiple_choice_option_view, null);
+		optionTextView = new TextView(context);
+		optionTextView.setText(option.getOptionText());
+		optionTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 		this.option = option;
-		this.editText = this.createEditText (context);
+		editText = createEditText(context);
 	}
 	
 	private EditText createEditText (Context context) {
-		if (this.option.getType () == OptionType.EnterText) {
+		if (option.getType() == OptionType.EnterText) {
 			EditText editText = new EditText (context);
 			editText.setHint ("Hier eingeben...");
 			return editText;
-		}
-		else if (this.option.getType () == OptionType.StaticText)
+		} else if (option.getType() == OptionType.StaticText)
 			return null;
 		else
 			throw new IllegalArgumentException ();
@@ -53,23 +62,24 @@ abstract class OptionView {
 	
 	// getter
 	public LinearLayout getContainer () {
-		return this.container;
+		return container;
 	}
 	
 	public Option getOption () {
-		return this.option;
+		return option;
 	}
 	
 	public EditText getEditText () {
-		return this.editText;
+		return editText;
 	}
 	
 	// add button and everything else in the right order to the rootView
 	protected void addButton (Button button) {
-		this.container.addView (button);
-		this.container.addView (this.optionTextView);
-		if (this.editText != null)
-			this.container.addView (this.editText);
+		container.addView(button);
+		container.addView(optionTextView);
+		if (editText != null) {
+			container.addView(editText);
+		}
 	}
 	
 	// true if button is checked
@@ -97,19 +107,19 @@ class SingleChoiceOptionView extends OptionView {
 	// constructor
 	public SingleChoiceOptionView (Context context, Option option, View.OnClickListener onClickListener) {
 		super (context, option);
-		this.radioButton = new RadioButton (context);
-		this.radioButton.setOnClickListener (onClickListener);
-		this.addButton (this.radioButton);
+		radioButton = new RadioButton(context);
+		radioButton.setOnClickListener(onClickListener);
+		addButton(radioButton);
 	}
 	
 	@Override
 	public boolean isChecked () {
-		return this.radioButton.isChecked ();
+		return radioButton.isChecked();
 	}
 	
 	@Override
 	public void setChecked (boolean checked) {
-		this.radioButton.setChecked (checked);
+		radioButton.setChecked(checked);
 	}
 }
 
@@ -121,19 +131,19 @@ class MultipleChoiceOptionView extends OptionView {
 	// constructor
 	public MultipleChoiceOptionView (Context context, Option option, View.OnClickListener onClickListener) {
 		super (context, option);
-		this.checkBox = new CheckBox (context);
-		this.checkBox.setOnClickListener (onClickListener);
-		this.addButton (this.checkBox);
+		checkBox = new CheckBox(context);
+		checkBox.setOnClickListener(onClickListener);
+		addButton(checkBox);
 	}
 	
 	@Override
 	public boolean isChecked () {
-		return this.checkBox.isChecked ();
+		return checkBox.isChecked();
 	}
 	
 	@Override
 	public void setChecked (boolean checked) {
-		this.checkBox.setChecked (checked);
+		checkBox.setChecked(checked);
 	}
 }
 
@@ -156,7 +166,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	public MultipleChoiceView (QuestionDisplayActivity activity, ChoiceQuestion question) {
 		super (activity);
 		this.question = question;
-		this.init ();
+		init();
 	}
 	
 	
@@ -180,24 +190,24 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		View dividingLine = this.rootView.findViewById (R.id.MultipleChoiceDividingLine);
 		
 		// create buttons
-		this.createOptions ();
+		createOptions();
 	}
 	
 	// create option views
 	private void createOptions () {
-		for (int i = 0; i < this.question.options.size (); ++i) {
+		for (int i = 0; i < question.options.size(); ++i) {
 			// space between options
 			if (i >= 0) {
-				Space space = new Space (this.getActivity ());
+				Space space = new Space(getActivity());
 				space.setLayoutParams (new ViewGroup.LayoutParams (0, 30));
-				this.optionContainer.addView (space);
+				optionContainer.addView(space);
 			}
 			
 			Option option = this.question.options.get (i);
 			final int finalI = i;
-			OptionView view = OptionView.create (this.getActivity (), option, this.question, v -> this.buttonClicked (this.optionViews.get (finalI)));
-			this.optionContainer.addView (view.getContainer ());
-			this.optionViews.add (view);
+			OptionView view = OptionView.create(getActivity(), option, question, v -> buttonClicked(optionViews.get(finalI)));
+			optionContainer.addView(view.getContainer());
+			optionViews.add(view);
 			
 			// check if option is edit text and add listener
 			if (view.getEditText () != null) {
@@ -212,7 +222,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 					
 					@Override
 					public void afterTextChanged (final Editable s) {
-						MultipleChoiceView.this.updateNextButtonEnabled ();
+						updateNextButtonEnabled();
 					}
 				});
 			}
@@ -223,28 +233,28 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	// enable or disable 'next' button depending on whether any button is checked
 	// also disable other radio buttons if this is that kind of question
 	private void buttonClicked (OptionView view) {
-		if (this.question.isSingleChoice ()) {
-			for (OptionView otherView : this.optionViews)
+		if (question.isSingleChoice()) {
+			for (OptionView otherView : optionViews)
 				if (otherView != view)
 					otherView.setChecked (false);
 		}
-		this.updateNextButtonEnabled ();
+		updateNextButtonEnabled();
 	}
 	
 	// enable or disable 'next' button depending on whether any button is checked
 	private void updateNextButtonEnabled () {
-		boolean enabled = this.nextButtonAllowed ();
-		this.getActivity ().setNextButtonEnabled (enabled);
+		boolean enabled = nextButtonAllowed();
+		getActivity().setNextButtonEnabled(enabled);
 	}
 	
 	// true if next button should be enabled
 	private boolean nextButtonAllowed () {
-		return this.areAllCheckedValid () && this.isAnyButtonChecked ();
+		return areAllCheckedValid() && isAnyButtonChecked();
 	}
 	
 	// true if any button is checked
 	private boolean isAnyButtonChecked () {
-		for (OptionView optionView : this.optionViews) {
+		for (OptionView optionView : optionViews) {
 			if (optionView.isChecked ()) {
 				return true;
 			}
@@ -254,13 +264,13 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	
 	// true if all checked edit texts are not empty
 	private boolean areAllCheckedValid () {
-		for (OptionView optionView : this.optionViews) {
+		for (OptionView optionView : optionViews) {
 			if (optionView.isChecked ()) {
 				if (optionView.getOption ().getType () == OptionType.EnterText) {
 					Editable debug1 = optionView.getEditText ().getText ();
 					String debug2 = debug1.toString ();
 					
-					if (optionView.getEditText ().getText ().toString ().equals (""))
+					if ("".equals(optionView.getEditText().getText().toString()))
 						return false;
 				}
 			}
@@ -271,7 +281,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	// implementation of abstract method from QuestionDisplayView
 	@Override
 	public View getView () {
-		return this.rootView;
+		return rootView;
 	}
 	
 	@Override

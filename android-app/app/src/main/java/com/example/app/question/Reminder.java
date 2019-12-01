@@ -1,14 +1,9 @@
 package com.example.app.question;
 
-import com.google.gson.*;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 
 // Reminder has date and text

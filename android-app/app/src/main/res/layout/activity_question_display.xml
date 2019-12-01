@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:app="http://schemas.android.com/apk/res-auto"
-		xmlns:tools="http://schemas.android.com/tools"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:fillViewport="true"
-		tools:context=".QuestionDisplayActivity">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true"
+            tools:context=".QuestionDisplayActivity">
 
 	<LinearLayout
-			android:id="@+id/QuestionDisplayContentContainer"
-			android:orientation="vertical"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
+		android:id="@+id/QuestionDisplayContentContainer"
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
 
 		<!-- The actual content is inserted here. -->
 
 		<!-- Filler element to move the next button to the bottom. This is achieved by being the only element with a weight and a height of 0. -->
 		<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="0dp"
-				android:layout_weight="1" />
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1" />
 
 		<Button
-				android:id="@+id/QuestionDisplayNextButton"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center_horizontal"
-				android:enabled="false"
-				android:paddingLeft="20dp"
-				android:paddingRight="20dp"
-				android:text="Weiter"
-				android:textSize="14sp" />
+			android:id="@+id/QuestionDisplayNextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:enabled="false"
+			android:paddingLeft="20dp"
+			android:paddingRight="20dp"
+			android:text="Weiter"
+			android:textSize="14sp" />
 	</LinearLayout>
 </ScrollView>

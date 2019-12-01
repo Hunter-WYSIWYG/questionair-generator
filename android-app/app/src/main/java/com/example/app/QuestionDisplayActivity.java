@@ -2,10 +2,10 @@ package com.example.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.app.answer.Answer;
 import com.example.app.question.ChoiceQuestion;
@@ -25,7 +25,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	
 	// getter
 	public QuestionnaireState getState () {
-		return this.state;
+		return state;
 	}
 	
 	// displays the current question of the questionnaire state

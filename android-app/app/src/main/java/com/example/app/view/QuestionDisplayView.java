@@ -4,7 +4,13 @@ import android.view.View;
 
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.answer.Answer;
-import com.example.app.question.*;
+import com.example.app.question.ChoiceQuestion;
+import com.example.app.question.Note;
+import com.example.app.question.PercentSliderQuestion;
+import com.example.app.question.Question;
+import com.example.app.question.SliderButtonQuestion;
+import com.example.app.question.SliderQuestion;
+import com.example.app.question.TableQuestion;
 
 import java.util.List;
 
@@ -20,7 +26,7 @@ public abstract class QuestionDisplayView {
 
 	// getter
 	protected QuestionDisplayActivity getActivity () {
-		return this.activity;
+		return activity;
 	}
 
 

@@ -159,6 +159,18 @@ function resetTimesTable() {
     table.innerHTML = "";
 }
 
+//Resets the input with the given name
+function resetInput(name) {
+    var input = document.getElementById(name);
+    input.value = "";
+
+    if (name == 'rangeDate') {
+        sendToElm("", "viewingTime");
+    } else if (name == 'timePicker') {
+        sendToElm("", "editTime");
+    }
+} 
+
 //Reads the table with the reminder times an sends the array to the Elm app
 function connectReminderTimes() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
@@ -176,8 +188,13 @@ function sendToElm(value, dateTimePicker) {
 
     if (dateTimePicker == "viewingTime") {
         var parts = value.split(" ");
-        var newFormat = parts[0] + ";" + parts[2];
-        app.ports.viewingTime.send(newFormat);
+        
+        if (value != '') {
+            var newFormat = parts[0] + ";" + parts[2];
+            app.ports.viewingTime.send(newFormat);
+        } else {
+            app.ports.viewingTime.send('');
+        }
     }
 
     if (dateTimePicker == "reminderTimes") {

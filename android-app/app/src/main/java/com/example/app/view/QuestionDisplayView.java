@@ -12,6 +12,8 @@ import com.example.app.question.SliderButtonQuestion;
 import com.example.app.question.SliderQuestion;
 import com.example.app.question.TableQuestion;
 
+import java.util.List;
+
 public abstract class QuestionDisplayView {
 
 	// the corresponding activity
@@ -51,6 +53,6 @@ public abstract class QuestionDisplayView {
 
 	public abstract View getView ();
 	// get all answer
-	public abstract Answer getCurrentAnswer ();
+	public abstract List<Answer> getCurrentAnswer ();
 
 }

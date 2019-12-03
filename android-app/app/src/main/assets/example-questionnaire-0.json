@@ -1,6 +1,6 @@
 {
   "questionnaireName": "Beispiel Fragebogen",
-  "questionnaireID": 1,
+  "questionnaireID": 0,
   "reminderTimes": [
     {
       "date": "2019-11-05T22:00:00+01:00",
@@ -15,14 +15,10 @@
   ],
   "questions": [
     {
-      "questionID": 1,
-      "questionText": "BOGEN 0 IST AM START!",
-      "type": "note"
-    },
-    {
-      "questionID": 2,
+      "questionID": 0,
       "questionText": "Gab es seit der letzten Befragung ein negatives Ereignis?",
       "type": "singleChoice",
+      "conditions": [],
       "options": [
         {
           "optionID": 1,
@@ -37,9 +33,32 @@
       ]
     },
     {
+      "questionID": 1,
+      "questionText": "Sie haben JA gewählt",
+      "type": "note",
+      "conditions": [
+        {
+          "qId": 0,
+          "chosenValue": 2
+        }
+      ]
+    },
+    {
+      "questionID": 2,
+      "questionText": "Sie haben NEIN gewählt",
+      "type": "note",
+      "conditions": [
+        {
+          "qId": 0,
+          "chosenValue": 1
+        }
+      ]
+    },
+    {
       "questionID": 3,
       "questionText": "Wo sind Sie gerade?",
       "type": "multipleChoice",
+      "conditions": [],
       "options": [
         {
           "optionID": 1,
@@ -77,6 +96,7 @@
       "questionID": 4,
       "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
       "type": "slider",
+      "conditions": [],
       "minValue": 0.0,
       "maxValue": 5.0,
       "stepSize": 1.0
@@ -85,6 +105,7 @@
       "questionID": 5,
       "questionText": "Glauben Sie die momentane Situation im Griff zu haben? (-5 - gar nicht, 5 - völlig)",
       "type": "slider",
+      "conditions": [],
       "minValue": -5.0,
       "maxValue": 5.0,
       "stepSize": 2.0
@@ -93,6 +114,7 @@
       "questionID": 6,
       "questionText": "Mit wem sind Sie gerade zusammen?",
       "type": "multipleChoice",
+      "conditions": [],
       "options": [
         {
           "optionID": 1,

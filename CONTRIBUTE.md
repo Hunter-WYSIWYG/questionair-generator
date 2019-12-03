@@ -33,7 +33,7 @@ After running `build.bat` you can find the binarys inside the directory `electro
 
 ## The Android app
 
-This app is build with [Java](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html) and [Android Studio](https://developer.android.com/studio).
+This app is build with [Java](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html) and [Android Studio (3.5.2)](https://developer.android.com/studio).
 
 After installing this requirements, open the project inside Android Studio by opening the directory `android-app`. 
 

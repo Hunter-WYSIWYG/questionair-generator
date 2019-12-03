@@ -44,10 +44,15 @@ function appendToTimesTable() {
     if (!document.getElementById("täglich").checked 
         && !document.getElementById("wöchentlich").checked 
         && !document.getElementById("monatlich").checked) {
-            
+
         var row = table.insertRow(-1);
+        row.id = document.getElementById("basicDate").value;
+
         var time = row.insertCell(0);;
         time.innerHTML = document.getElementById("basicDate").value;
+
+        var deleteIcon = row.insertCell(1);
+        deleteIcon.outerHTML = "<i class=\"far fa-trash-alt\" onclick=\"deleteRow('" + document.getElementById("basicDate").value + "')\"></i>";
         return;
 
     } else if (document.getElementById('rangeDate').value == '') {

@@ -1,5 +1,7 @@
+package converter;
+
+import converter.graphical.buttons.JsonBtnEvent;
 import java.io.File;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -7,17 +9,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Parser {
-	private String sourceFile;
-	private String targetFile;
 	
-	public Parser(String source, String target) {
-		this.sourceFile = source;
-		this.targetFile = target;
-	}
+	private static StringBuilder sb;
 	
-	public void parsing() {
+	public static void parse() {
 		
-		File file = new File(sourceFile);
+		File file = JsonBtnEvent.getFile();
 		try {
 			String content = new String(Files.readAllBytes(Paths.get(file.toURI())), "UTF-8");
 			
@@ -26,11 +23,9 @@ public class Parser {
 			JSONArray currentAnswers;
 			JSONObject currentAnswer;
 			int noteCounter = 0;	//Notizanzahl wird von question_id abgezogen um Fragenummer zu erhalten
+			sb = new StringBuilder();
 			
-			PrintWriter pw = new PrintWriter(new File(targetFile));	//Tools zur CSV-Erstellung
-			StringBuilder sb = new StringBuilder();
-			
-			if (questionnaire.length()<=0) {	//leeres Array
+			if (questionnaire.length()<=0) {	//leere Fragenliste
 				sb.append("Die Liste von Fragen und Antworten ist Leer.");
 			} else {
 			
@@ -73,15 +68,17 @@ public class Parser {
 					}
 					
 				}
+				sb.delete(sb.length()-4, sb.length());	//Zeilenumsprung nach letztem Eintrag löschen, ergab Fehler
 				
 			}
-			pw.write(sb.toString());
-			pw.close();
-			System.out.println("file created");
 				
-		} catch(Exception e) {
+		} catch(Exception e1) {
 			
 		}
+	}
+	
+	public static StringBuilder getStringBuilder() {
+		return sb;
 	}
 	
 }

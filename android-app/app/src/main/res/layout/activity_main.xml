@@ -30,17 +30,6 @@
 				app:layout_constraintStart_toStartOf="parent" />
 
 
-		<Button
-				android:id="@+id/notificationButton"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:background="#03A9F4"
-				android:onClick="notifyButtonClick"
-				android:text="@string/button_notify_text"
-				android:textAppearance="@style/TextAppearance.AppCompat.Small"
-				android:textStyle="bold"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintStart_toStartOf="parent" />
 
 		<LinearLayout
 				android:id="@+id/linearLayout"
@@ -65,6 +54,7 @@
 					android:headerDividersEnabled="true" />
 		</LinearLayout>
 	</android.support.constraint.ConstraintLayout>
+
 
 	<LinearLayout
 			android:layout_width="match_parent"

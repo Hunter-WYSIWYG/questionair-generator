@@ -23,7 +23,21 @@ public class CsvTable extends JTable {
     private void setColumnWidth() {
         for (int i = 0; i < this.getColumnCount(); i++) {
             TableColumn c = this.getColumnModel().getColumn(i);
-            c.setPreferredWidth(5);
+            switch (i) {
+            case 0: 
+            	c.setMaxWidth(150);
+            	c.setMinWidth(100);
+            	c.setPreferredWidth(120);
+            	break;
+            case 1: 
+            	c.setMaxWidth(20);
+            	c.setMinWidth(10);
+            	c.setPreferredWidth(15);
+            	break;
+            default :
+            	c.setPreferredWidth(200);
+            	break;
+            }
         }
     }
     

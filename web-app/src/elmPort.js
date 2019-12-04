@@ -46,10 +46,15 @@ function appendToTimesTable() {
         && !document.getElementById("täglich").checked 
         && !document.getElementById("wöchentlich").checked 
         && !document.getElementById("monatlich").checked) {
-            
+
         var row = table.insertRow(-1);
+        row.id = document.getElementById("basicDate").value;
+
         var time = row.insertCell(0);;
         time.innerHTML = document.getElementById("basicDate").value;
+
+        var deleteIcon = row.insertCell(1);
+        deleteIcon.outerHTML = "<i class=\"far fa-trash-alt\" onclick=\"deleteRow('" + document.getElementById("basicDate").value + "')\"></i>";
         return;
 
     } else if (document.getElementById('rangeDate').value == '') {
@@ -72,8 +77,13 @@ function appendToTimesTable() {
     
     for (var i = 0; begin <= end; i++) {
         var row = table.insertRow(-1);
+        row.id = dateToEuropeanTime(begin);
+
         var time = row.insertCell(0);
         time.innerHTML = dateToEuropeanTime(begin);
+        
+        var deleteIcon = row.insertCell(1);
+        deleteIcon.outerHTML = "<i class=\"far fa-trash-alt\" onclick=\"deleteRow('" + dateToEuropeanTime(begin) + "')\"></i>";
 
         if (document.getElementById("stündlichGesamt").checked || document.getElementById("stündlichTag").checked) {
             begin = addHour(begin);
@@ -88,6 +98,12 @@ function appendToTimesTable() {
     }
 
     document.getElementById("reminderTimesForm").reset();
+}
+
+//Deletes a row in the reminder times table
+function deleteRow(id) {
+    var row = document.getElementById(id);
+    row.outerHTML = "";
 }
 
 //Parses a date like dd-mm-YYYY to a JavaScript date

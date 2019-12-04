@@ -10,4 +10,4 @@ Please read the INSTALL.md to learn how to install and use this toolset. If you 
 
 ## Acknowledgments
 
-We want to thank the teams of [Bulma](https://bulma.io), [Bootstrap](https://getbootstrap.com/) and [Flatpickr](https://flatpickr.js.org/) for making there frameworks free to use. 
+We want to thank the teams of [Bulma](https://bulma.io), [Bootstrap](https://getbootstrap.com/) and [Flatpickr](https://flatpickr.js.org/) for making their frameworks free to use. 

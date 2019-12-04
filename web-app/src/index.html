@@ -45,6 +45,7 @@
       </header>
       <section class="modal-card-body">
         <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value, 'viewingTime')"  style="width:230px; margin-right:20px">
+        <button class="qnButton" onclick="resetInput('rangeDate')">Reset</button>
         <script src="./datetimepicker.js"></script>
       </section>
       <footer class="modal-card-foot mediumlightblue">
@@ -102,6 +103,7 @@
       </header>
       <section class="modal-card-body">
         <input type="text" id="timePicker" placeholder="Bitte wählen sie eine Zeit" data-input oninput="sendToElm(this.value, 'editTime')">
+        <button class="qnButton" onclick="resetInput('timePicker')">Reset</button>
         <script src="./datetimepicker.js"></script>
       </section>
       <footer class="modal-card-foot mediumlightblue">

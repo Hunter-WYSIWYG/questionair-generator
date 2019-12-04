@@ -3,7 +3,7 @@ module Model exposing
     , initModel, isValidQuestionTime, validateQuestion
     )
 
-{-| Enthält die Typen für das Model, die Modale, die Messages und das ValidationResult. Enthällt außerdem den Anfangszustand des Models.
+{-| Contains the types for the model, the modals, the messages, and the ValidationResult. Also includes the initial state of the model.
 
 
 # Definition
@@ -11,7 +11,7 @@ module Model exposing
 @docs Model, ModalType, Msg, ValidationResult
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validateQuestion
 
@@ -26,7 +26,7 @@ import Questionnaire exposing (Questionnaire)
 import Time exposing (..)
 
 
-{-| Das Model für die Webanwendung.
+{-| The model for the WebApp.
 -}
 type alias Model =
     { questionnaire : Questionnaire
@@ -38,8 +38,8 @@ type alias Model =
     , showNewNoteModal : Bool
     , showNewQuestionModal : Bool
     , showNewAnswerModal : Bool
-    , showNewConditionModal1 : Bool
-    , showNewConditionModal2 : Bool
+    , showNewConditionModalOverview : Bool
+    , showNewConditionModalCreate : Bool
 
     --editQElement for EditQuestion and EditNote
     , editQElement : Bool
@@ -71,7 +71,7 @@ type alias Model =
     }
 
 
-{-| Das Ergebnis der Validierung des Models.
+{-| The result of the validation of the model.
 -}
 type ValidationResult
     = NotDone
@@ -79,7 +79,7 @@ type ValidationResult
     | ValidationOK
 
 
-{-| Die Modaltypen, die geöffnet werden können.
+{-| The types of models that can be opened.
 -}
 type ModalType
     = ViewingTimeModal
@@ -88,11 +88,11 @@ type ModalType
     | QuestionModal
     | TitleModal
     | AnswerModal
-    | ConditionModal1
-    | ConditionModal2
+    | ConditionModalOverview
+    | ConditionModalCreate
 
 
-{-| Die Messages der Webanwendung.
+{-| The messages of the WebApp.
 -}
 type
     Msg
@@ -111,7 +111,6 @@ type
       --Modals
     | ViewOrClose ModalType
       --Creates Condition
-    | AddCondition
     | AddAnswerToNewCondition String
     | ChangeInputParentId String
     | ChangeInputChildId String
@@ -154,7 +153,7 @@ type
     | DownloadQuestionnaire
 
 
-{-| Der Anfangszustand des Models.
+{-| The initial state of the model.
 -}
 initModel : () -> ( Model, Cmd Msg )
 initModel _ =
@@ -167,8 +166,8 @@ initModel _ =
       , showNewNoteModal = False
       , showNewQuestionModal = False
       , showNewAnswerModal = False
-      , showNewConditionModal1 = False
-      , showNewConditionModal2 = False
+      , showNewConditionModalOverview = False
+      , showNewConditionModalCreate = False
 
       --editQElement for EditQuestion and EditNote
       , editQElement = False
@@ -190,7 +189,7 @@ initModel _ =
       , newAnswerID_Condition = ""
       , newElement = QElement.initQuestion
       , newAnswer = Answer.initAnswer
-      
+
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire
       , upload = False
@@ -202,7 +201,7 @@ initModel _ =
     )
 
 
-{-| Methode zur Validierung des Fragenzeitformats.
+{-| Method for validating the question time format.
 -}
 validateQuestion : String -> ValidationResult
 validateQuestion questionTime =
@@ -213,7 +212,7 @@ validateQuestion questionTime =
         ValidationOK
 
 
-{-| Methode zur Validierung der Länge der Fragenzeit.
+{-| Method for validating the length of the question time.
 -}
 isValidQuestionTime : String -> Bool
 isValidQuestionTime questionTime =

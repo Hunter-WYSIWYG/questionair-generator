@@ -1,9 +1,9 @@
 module Encoder exposing (encodeQuestionnaire, save)
 
-{-| Enthält die Decoder für Questionnaire, QElement, Answer (usw.).
+{-| Contains the encoder for Questionnaire, QElement, Answer (etc.).
 
 
-# Öffentliche Funktionen
+# Public functions
 
 @docs encodeQuestionnaire, save
 
@@ -17,7 +17,7 @@ import QElement exposing (Q_element(..))
 import Questionnaire exposing (Questionnaire)
 
 
-{-| Encodiert einen Fragebogen als JSON.
+{-| Encodes a questionnaire as JSON.
 -}
 encodeQuestionnaire : Questionnaire -> String
 encodeQuestionnaire questionnaire =
@@ -35,7 +35,7 @@ encodeQuestionnaire questionnaire =
         )
 
 
-{-| Encodiert ein Fragebogenelement (Frage, Anmerkung).
+{-| Encodes a questionnaire item (question, annotation).
 -}
 elementEncoder : Q_element -> Encode.Value
 elementEncoder element =
@@ -64,7 +64,7 @@ elementEncoder element =
                 ]
 
 
-{-| Encodiert eine Bedingung.
+{-| Encodes a condition.
 -}
 conditionEncoder : Condition -> Encode.Value
 conditionEncoder condition =
@@ -75,7 +75,7 @@ conditionEncoder condition =
         ]
 
 
-{-| Encodiert Antworten.
+{-| Encodes answers.
 -}
 answerEncoder : Answer -> Encode.Value
 answerEncoder answer =
@@ -86,7 +86,7 @@ answerEncoder answer =
         ]
 
 
-{-| Ermöglicht das Speichern von erstellten Fragebögen im Dateisystem des Nutzers (Downloadfunktion).
+{-| Allows saving of created questionnaires in the user's file system (download function).
 -}
 save : Questionnaire -> String -> Cmd msg
 save questionnaire export =

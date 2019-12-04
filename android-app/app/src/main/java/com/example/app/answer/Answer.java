@@ -7,26 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Answer implements Serializable {
-	private final QuestionType qType;
-	private final List<Integer> chosenValues;
+	private final int qId;
+	private final int chosenValue;
 
 	public Answer () {
-		qType = null;
-		chosenValues = null;
+		// qType = null;
+		// chosenValues = null;
+		qId = -1;
+		chosenValue = -1;
 	}
 
-	public Answer (QuestionType qtyp, int chosenIndex) {
-		if (qtyp == QuestionType.SingleChoice) {
-			qType = QuestionType.SingleChoice;
-			chosenValues = new ArrayList<> (1);
-			chosenValues.add (chosenIndex);
-		}
-		else {
-			qType = QuestionType.MultipleChoice;
-			chosenValues = new ArrayList<> (1);
-		}
+	public Answer (int qid, int chosenIndex) {
+		
+		qId = qid;
+		chosenValue = chosenIndex;
+		
 	}
 
+	/*
 	public void AddAnswer (int chosenIndex) {
 		if (qType == QuestionType.SingleChoice) {
 			return;
@@ -37,12 +35,28 @@ public class Answer implements Serializable {
 		}
 
 	}
+	 */
 
-	public QuestionType getqType () {
-		return qType;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Answer answer = (Answer) o;
+		return qId == answer.qId &&
+				chosenValue == answer.chosenValue;
 	}
 
-	public List<Integer> getChosenValues () {
-		return chosenValues;
+
+	public int getQId () {
+		return qId;
+	}
+
+	public int getChosenValue () {
+		return chosenValue;
+	}
+	
+	@Override
+	public String toString () {
+		return "Answer {" + "Question-ID: " + qId + ", Answer-ID: " + chosenValue + '}';
 	}
 }

@@ -175,7 +175,9 @@ function connectReminderTimes() {
 function sendToElm(value, dateTimePicker) {
 
     if (dateTimePicker == "viewingTime") {
-        app.ports.viewingTime.send(value);
+        var parts = value.split(" ");
+        var newFormat = parts[0] + ";" + parts[2];
+        app.ports.viewingTime.send(newFormat);
     }
 
     if (dateTimePicker == "reminderTimes") {

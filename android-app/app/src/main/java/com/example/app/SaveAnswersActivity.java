@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaveAnswersActivity extends AppCompatActivity {
+	/*
 	private List<Answer> aList;
 	private int size;
 	private List<String> answers;
@@ -34,12 +35,12 @@ public class SaveAnswersActivity extends AppCompatActivity {
 		size = more.getInt ("size", 0);
 		aList = new ArrayList<> (size);
 		answers = new ArrayList<> (size);
-		/* get answers from intent */
+		// get answers from intent
 		for (int i = 0; i < size; i++) {
 			aList.add ((Answer) more.getSerializable ("a" + i));
 			answers.add ("");
 		}
-		/* save to answer list */
+		// save to answer list
 		for (int j = 0; j < aList.size (); j++) {
 			for (int k = 0; k < aList.get (j).getChosenValues ().size (); k++) {
 				if (k == 0) {
@@ -50,7 +51,7 @@ public class SaveAnswersActivity extends AppCompatActivity {
 				}
 			}
 		}
-		/*show user his answers for failsafe*/
+		// show user his answers for failsafe
 		for (int i = 0; i < answers.size (); i++) {
 			res += "Frage " + (i + 1) + " Antwort " + answers.get (i) + "\n";
 		}
@@ -106,5 +107,6 @@ public class SaveAnswersActivity extends AppCompatActivity {
 			myToast.show ();
 		}
 	}
+	*/
 }
 

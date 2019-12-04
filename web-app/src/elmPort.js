@@ -41,13 +41,20 @@ app.ports.decodedEditTime.subscribe(function(time) {
 function appendToTimesTable() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
 
-    if (!document.getElementById("täglich").checked 
+    if (!document.getElementById("stündlichTag").checked 
+        && !document.getElementById("stündlichGesamt").checked 
+        && !document.getElementById("täglich").checked 
         && !document.getElementById("wöchentlich").checked 
         && !document.getElementById("monatlich").checked) {
-            
+
         var row = table.insertRow(-1);
+        row.id = document.getElementById("basicDate").value;
+
         var time = row.insertCell(0);;
         time.innerHTML = document.getElementById("basicDate").value;
+
+        var deleteIcon = row.insertCell(1);
+        deleteIcon.outerHTML = "<i class=\"far fa-trash-alt\" onclick=\"deleteRow('" + document.getElementById("basicDate").value + "')\"></i>";
         return;
 
     } else if (document.getElementById('rangeDate').value == '') {
@@ -58,14 +65,29 @@ function appendToTimesTable() {
     var inputString = document.getElementById("rangeDate").value;
     var parts = inputString.split(' ');
     var begin = parseDateTime(document.getElementById("basicDate").value);
-    var end = parseDate(parts[2]);
+
+    if (document.getElementById("stündlichTag").checked) {
+        var end = new Date(begin.getTime());;
+        end.setHours(23,59,59);
+        console.log("begin:", begin);
+        console.log("end:", end);
+    } else {
+        var end = parseDate(parts[2]);
+    }
     
     for (var i = 0; begin <= end; i++) {
         var row = table.insertRow(-1);
+        row.id = dateToEuropeanTime(begin);
+
         var time = row.insertCell(0);
         time.innerHTML = dateToEuropeanTime(begin);
+        
+        var deleteIcon = row.insertCell(1);
+        deleteIcon.outerHTML = "<i class=\"far fa-trash-alt\" onclick=\"deleteRow('" + dateToEuropeanTime(begin) + "')\"></i>";
 
-        if (document.getElementById("täglich").checked) {
+        if (document.getElementById("stündlichGesamt").checked || document.getElementById("stündlichTag").checked) {
+            begin = addHour(begin);
+        } else if (document.getElementById("täglich").checked) {
             begin = addDay(begin);
         } else if (document.getElementById("wöchentlich").checked) {
             begin = addWeek(begin);
@@ -76,6 +98,12 @@ function appendToTimesTable() {
     }
 
     document.getElementById("reminderTimesForm").reset();
+}
+
+//Deletes a row in the reminder times table
+function deleteRow(id) {
+    var row = document.getElementById(id);
+    row.outerHTML = "";
 }
 
 //Parses a date like dd-mm-YYYY to a JavaScript date
@@ -138,6 +166,11 @@ function europeanDateToJson(dateTime) {
     return year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':00+01:00';
 }
 
+//Adds a hour to a given date
+function addHour(date) {
+    return new Date(date.setHours(date.getHours() + 1))
+}
+
 //Adds a day to a given date
 function addDay(date) {
     return new Date(date.setDate(date.getDate() + 1));      
@@ -159,6 +192,18 @@ function resetTimesTable() {
     table.innerHTML = "";
 }
 
+//Resets the input with the given name
+function resetInput(name) {
+    var input = document.getElementById(name);
+    input.value = "";
+
+    if (name == 'rangeDate') {
+        sendToElm("", "viewingTime");
+    } else if (name == 'timePicker') {
+        sendToElm("", "editTime");
+    }
+} 
+
 //Reads the table with the reminder times an sends the array to the Elm app
 function connectReminderTimes() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
@@ -176,8 +221,13 @@ function sendToElm(value, dateTimePicker) {
 
     if (dateTimePicker == "viewingTime") {
         var parts = value.split(" ");
-        var newFormat = parts[0] + ";" + parts[2];
-        app.ports.viewingTime.send(newFormat);
+        
+        if (value != '') {
+            var newFormat = parts[0] + ";" + parts[2];
+            app.ports.viewingTime.send(newFormat);
+        } else {
+            app.ports.viewingTime.send('');
+        }
     }
 
     if (dateTimePicker == "reminderTimes") {

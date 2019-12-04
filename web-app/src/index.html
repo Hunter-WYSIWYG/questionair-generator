@@ -45,6 +45,7 @@
       </header>
       <section class="modal-card-body">
         <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value, 'viewingTime')"  style="width:230px; margin-right:20px">
+        <button class="qnButton" onclick="resetInput('rangeDate')">Reset</button>
         <script src="./datetimepicker.js"></script>
       </section>
       <footer class="modal-card-foot mediumlightblue">
@@ -75,6 +76,11 @@
         <form id="reminderTimesForm">
           <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" style="margin-bottom:20px; width:200px" data-input>
           <fieldset>
+            <input type="radio" id="stündlichTag" name="Häufigkeit">
+            <label for="stündlichTag" style="margin-right:20px"> stündlich (gleicher Tag)</label>
+            <input type="radio" id="stündlichGesamt" name="Häufigkeit">
+            <label for="stündlichGesamt" style="margin-right:20px"> stündlich (gesamter Zeitraum)</label>
+            <br>
             <input type="radio" id="täglich" name="Häufigkeit">
             <label for="täglich" style="margin-right:20px"> täglich</label>
             <input type="radio" id="wöchentlich" name="Häufigkeit">
@@ -105,6 +111,7 @@
         <input id="editTimeMinutes" type="number" min="0" oninput="editTimeChanged()">
         <text>Sekunden:</text>
         <input id="editTimeSeconds" type="number" min="0" max="59" oninput="editTimeChanged()">
+        <button class="qnButton" onclick="resetInput('timePicker')">Reset</button>
         <script src="./datetimepicker.js"></script>
       </section>
       <footer class="modal-card-foot mediumlightblue">

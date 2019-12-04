@@ -189,6 +189,24 @@ function sendToElm(value, dateTimePicker) {
     }
 }
 
+//Function is called when the edit time changes
+function editTimeChanged() {
+    var minutes = document.getElementById("editTimeMinutes").value;
+    var seconds = document.getElementById("editTimeSeconds").value;
+
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    } 
+
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+
+    var time = minutes + ":" + seconds;
+
+    sendToElm(time, "editTime");
+}
+
 //Opens a modal for the given time type
 function openDTPModal(value) {
     

@@ -41,7 +41,9 @@ app.ports.decodedEditTime.subscribe(function(time) {
 function appendToTimesTable() {
     var table = document.getElementById("reminderTimesTable").getElementsByTagName('tbody')[0];
 
-    if (!document.getElementById("täglich").checked 
+    if (!document.getElementById("stündlichTag").checked 
+        && !document.getElementById("stündlichGesamt").checked 
+        && !document.getElementById("täglich").checked 
         && !document.getElementById("wöchentlich").checked 
         && !document.getElementById("monatlich").checked) {
             
@@ -58,14 +60,24 @@ function appendToTimesTable() {
     var inputString = document.getElementById("rangeDate").value;
     var parts = inputString.split(' ');
     var begin = parseDateTime(document.getElementById("basicDate").value);
-    var end = parseDate(parts[2]);
+
+    if (document.getElementById("stündlichTag").checked) {
+        var end = new Date(begin.getTime());;
+        end.setHours(23,59,59);
+        console.log("begin:", begin);
+        console.log("end:", end);
+    } else {
+        var end = parseDate(parts[2]);
+    }
     
     for (var i = 0; begin <= end; i++) {
         var row = table.insertRow(-1);
         var time = row.insertCell(0);
         time.innerHTML = dateToEuropeanTime(begin);
 
-        if (document.getElementById("täglich").checked) {
+        if (document.getElementById("stündlichGesamt").checked || document.getElementById("stündlichTag").checked) {
+            begin = addHour(begin);
+        } else if (document.getElementById("täglich").checked) {
             begin = addDay(begin);
         } else if (document.getElementById("wöchentlich").checked) {
             begin = addWeek(begin);
@@ -136,6 +148,11 @@ function europeanDateToJson(dateTime) {
     var minute = timeParts[1];
 
     return year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':00+01:00';
+}
+
+//Adds a hour to a given date
+function addHour(date) {
+    return new Date(date.setHours(date.getHours() + 1))
 }
 
 //Adds a day to a given date

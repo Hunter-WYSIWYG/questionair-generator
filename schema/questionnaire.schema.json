@@ -28,7 +28,7 @@
         },
         "editTime": {
             "type": "string",
-            "description": "Duration which determines the max. answering time"
+            "description": "Duration which determines the max. answering time. The format is 'minutes : seconds'"
         },
         "reminderTimes": {
             "type": "array",

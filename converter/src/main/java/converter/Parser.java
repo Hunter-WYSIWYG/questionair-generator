@@ -8,10 +8,21 @@ import java.nio.file.Paths;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+    /**
+    * Contains the parse-function of the converter tool.
+    *
+    * @author Marcus Gagelmann
+    */
+
 public class Parser {
 	
 	private static StringBuilder sb;
 	
+    /**
+    * The parser function of the converter tool gets a file from the JsonBtnEvent and creates a 
+    * Stringbuilder in CSV-format with the data of the file
+    */
+
 	public static void parse() {
 		
 		File file = JsonBtnEvent.getFile();
@@ -77,6 +88,12 @@ public class Parser {
 		}
 	}
 	
+    /**
+    * The getter-function of the Stringbuilder publicly returns the StringBuilder.
+    *
+    * @return sb the StringBuilder with the json-data in CSV-format
+    */
+
 	public static StringBuilder getStringBuilder() {
 		return sb;
 	}

@@ -228,7 +228,13 @@ It searches for the item in the list that has the same ID as "element".
 -}
 deleteItemFrom : Q_element -> List Q_element -> List Q_element
 deleteItemFrom element list =
-    Tuple.first (List.partition (\e -> e /= element) list)
+    let 
+        elementId = getElementId element
+        deletedList = Tuple.first (List.partition (\e -> e /= element) list)
+        firstList = Tuple.first (List.partition (\e -> getElementId e < elementId) deletedList)
+        secondList = Tuple.first (List.partition (\e -> getElementId e > elementId) deletedList)
+    in
+        List.append firstList (updateIdsAfterDelete secondList)
 
 
 {-| Deletes the specified answer "answer" from a question element.
@@ -292,3 +298,19 @@ getElementId elem =
             a.id
 {- set- und get-Funktionen für Variablen für Fragetyp Raster-Auswahl
 -}
+
+
+updateIdsAfterDelete : List Q_element -> List Q_element
+updateIdsAfterDelete list = List.map getElementIdForDelete list
+
+getElementIdForDelete : Q_element -> Q_element
+getElementIdForDelete elem =
+    case elem of
+        Question record ->
+            Question { record | id = (sub record.id)}
+
+        Note record ->
+            Note { record | id = (sub record.id) }
+
+sub: Int -> Int 
+sub id = id - 1

@@ -244,7 +244,13 @@ deleteAnswerFromItem : Answer -> Q_element -> Q_element
 deleteAnswerFromItem answer element =
     case element of
         Question record ->
-            Question { record | answers = Tuple.first (List.partition (\e -> e /= answer) record.answers) }
+            let 
+                answerId = Answer.getAnswerId answer
+                deletedList = Tuple.first (List.partition (\e -> e /= answer) record.answers)
+                firstList = Tuple.first (List.partition (\e -> Answer.getAnswerId e < answerId) deletedList)
+                secondList = Tuple.first (List.partition (\e -> Answer.getAnswerId e > answerId) deletedList)
+            in
+            Question { record | answers = List.append firstList (updateAnswersIdsAfterDelete secondList) }
 
         Note record ->
             Note record
@@ -299,10 +305,13 @@ getElementId elem =
 {- set- und get-Funktionen für Variablen für Fragetyp Raster-Auswahl
 -}
 
-
+{-| Returns Questions with right Ids after delete
+-}
 updateIdsAfterDelete : List Q_element -> List Q_element
 updateIdsAfterDelete list = List.map getElementIdForDelete list
 
+{-| subFunction for updateIdsAfterDelete (change the id)
+-}
 getElementIdForDelete : Q_element -> Q_element
 getElementIdForDelete elem =
     case elem of
@@ -310,7 +319,20 @@ getElementIdForDelete elem =
             Question { record | id = (sub record.id)}
 
         Note record ->
+
             Note { record | id = (sub record.id) }
 
+{-| Returns Answers with right Ids after delete
+-}
+updateAnswersIdsAfterDelete : List Answer -> List Answer
+updateAnswersIdsAfterDelete list = List.map getAnswerIdForDelete list
+
+{-| subFunction for updateAIdsAfterDelete (change the id)
+-}
+getAnswerIdForDelete : Answer -> Answer
+getAnswerIdForDelete elem = Answer (sub (Answer.getAnswerId elem)) (Answer.getAnswerText elem) (Answer.getAnswerTyp elem)
+
+{-| subFunction for updateIdsAfterDelete and to subtract 1 to each Id
+-}
 sub: Int -> Int 
 sub id = id - 1

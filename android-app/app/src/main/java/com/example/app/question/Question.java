@@ -1,7 +1,6 @@
 package com.example.app.question;
 
 import com.example.app.answer.Answer;
-import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
@@ -23,12 +22,15 @@ public abstract class Question implements Serializable {
 	
 	public final String questionText;
 	
+	@SerializedName("editTime") public final String editTime;
+	
 	// constructor
 	public Question (int id, QuestionType type, List<Answer> conditions, String questionText) {
 		this.questionID = id;
 		this.type = type;
 		this.conditions = conditions;
 		this.questionText = questionText;
+		editTime = null;
 	}
 	
 	

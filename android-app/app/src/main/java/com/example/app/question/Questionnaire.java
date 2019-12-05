@@ -3,6 +3,8 @@ package com.example.app.question;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,6 +22,9 @@ public class Questionnaire implements Serializable {
 	// list of all reminders
 	@SerializedName ("reminderTimes")
 	private final List<Reminder> reminderList;
+	@SerializedName("editTime")
+	@Nullable
+	private final String editTime;
 	// path to the Questionnaire file
 	@Expose (serialize = false, deserialize = false)
 	private String path;
@@ -30,6 +35,7 @@ public class Questionnaire implements Serializable {
 		questionList = null;
 		id = 0.0;
 		reminderList = null;
+		editTime = null;
 	}
 	
 	// getter
@@ -56,5 +62,10 @@ public class Questionnaire implements Serializable {
 	// setter (only needed for path)
 	public void setPath (String path) {
 		this.path = path;
+	}
+	
+	@Nullable
+	public String getEditTime() {
+		return editTime;
 	}
 }

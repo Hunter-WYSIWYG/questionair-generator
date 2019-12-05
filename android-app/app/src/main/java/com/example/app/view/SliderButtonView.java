@@ -59,6 +59,10 @@ public class SliderButtonView extends QuestionDisplayView {
 		TextView questionTypeTextView = container.findViewById(R.id.sliderButtonQuestionTypeText);
 		questionTypeTextView.setText(question.type.name());
 		
+		// set question Number
+		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
+		questionNumber.setText("Fragenummer: " + question.id);
+		
 		// set questionText
 		TextView questionTextView = container.findViewById(R.id.sliderButtonQuestionText);
 		questionTextView.setText(question.questionText);
@@ -94,7 +98,7 @@ public class SliderButtonView extends QuestionDisplayView {
 			Button button = new Button(getActivity());
 			// set color and number
 			button.setBackgroundResource (R.drawable.table_button_default);
-			button.setText ((j+1) +"");
+			button.setText ((j+1) + "");
 			// set id of button
 			button.setId(idGenerator());
 			// add button to button list
@@ -146,5 +150,6 @@ public class SliderButtonView extends QuestionDisplayView {
 		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
 		return answers;
 		
+
 	}
 }

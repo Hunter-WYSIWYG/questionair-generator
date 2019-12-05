@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class QuestionnaireFinishedActivity extends AppCompatActivity {
 	
@@ -14,8 +15,11 @@ public class QuestionnaireFinishedActivity extends AppCompatActivity {
 		super.onCreate (savedInstanceState);
 		setContentView(R.layout.activity_questionnaire_finished);
 		
-		backToStart = findViewById(R.id.backToStartButton);
-		backToStart.setOnClickListener(v -> goBackToStart());
+		String answerList = this.getIntent ().getStringExtra ("EXTRA_ANSWERS");
+		TextView text = this.findViewById (R.id.textView);
+		text.setText(answerList);
+		this.backToStart = this.findViewById (R.id.backToStartButton);
+		this.backToStart.setOnClickListener (v -> this.goBackToStart ());
 	}
 	
 	// go to main activity

@@ -11,9 +11,11 @@
   <link rel="stylesheet" href="stylesheet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/themes/dark.css">
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
   <script src="elm.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
+  <script>if (window.module) module = window.module;</script>
 </head>
 
 <body>
@@ -43,6 +45,7 @@
       </header>
       <section class="modal-card-body">
         <input type="text" id="rangeDate" placeholder="Bitte wählen sie eine Zeitspanne" data-input oninput="sendToElm(this.value, 'viewingTime')"  style="width:230px; margin-right:20px">
+        <button class="qnButton" onclick="resetInput('rangeDate')">Reset</button>
         <script src="./datetimepicker.js"></script>
       </section>
       <footer class="modal-card-foot mediumlightblue">
@@ -73,6 +76,11 @@
         <form id="reminderTimesForm">
           <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" style="margin-bottom:20px; width:200px" data-input>
           <fieldset>
+            <input type="radio" id="stündlichTag" name="Häufigkeit">
+            <label for="stündlichTag" style="margin-right:20px"> stündlich (gleicher Tag)</label>
+            <input type="radio" id="stündlichGesamt" name="Häufigkeit">
+            <label for="stündlichGesamt" style="margin-right:20px"> stündlich (gesamter Zeitraum)</label>
+            <br>
             <input type="radio" id="täglich" name="Häufigkeit">
             <label for="täglich" style="margin-right:20px"> täglich</label>
             <input type="radio" id="wöchentlich" name="Häufigkeit">
@@ -99,7 +107,11 @@
         <button class="is-large delete" onclick="closeDTPModal('editTime')"></button>  
       </header>
       <section class="modal-card-body">
-        <input type="text" id="timePicker" placeholder="Bitte wählen sie eine Zeit" data-input oninput="sendToElm(this.value, 'editTime')">
+        <text>Minuten:</text>
+        <input id="editTimeMinutes" type="number" min="0" oninput="editTimeChanged()">
+        <text>Sekunden:</text>
+        <input id="editTimeSeconds" type="number" min="0" max="59" oninput="editTimeChanged()">
+        <button class="qnButton" onclick="resetInput('timePicker')">Reset</button>
         <script src="./datetimepicker.js"></script>
       </section>
       <footer class="modal-card-foot mediumlightblue">

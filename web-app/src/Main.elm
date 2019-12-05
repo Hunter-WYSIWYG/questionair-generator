@@ -292,29 +292,6 @@ update msg model =
             in
                 ( { model | newCondition = newCondition2 }, Cmd.none )
 
-        AddCondition ->
-            let
-                parent =
-                    model.inputParentId
-
-                child =
-                    model.inputChildId
-            in
-            if parent /= -1 && child /= -1 then
-                ( { model
-                    | newCondition = Condition.setParentChildInCondition parent child model.newCondition
-                  }
-                , Cmd.none
-                )
-
-            else
-                Debug.log "Keine ausgewählt"
-                    ( { model
-                        | newCondition = Condition.setValid model.newCondition False
-                      }
-                    , Cmd.none
-                    )
-
         AddAnswerToNewCondition string ->
             ( { model | newAnswerID_Condition = string }, Cmd.none )
 
@@ -517,7 +494,7 @@ update msg model =
                         }
             in
             if model.editCondition == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, newCondition = (Condition.initCondition) }, Cmd.none )
 
             else 
                 ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, editCondition = False , newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
@@ -537,6 +514,7 @@ update msg model =
                     else
                         ( { model |
                             showNewAnswerModal = False
+                            , editAnswer = False
                             , newElement = Question { record | answers = List.map (\e -> Answer.update model.newAnswer e) record.answers }
                           }
                         , Cmd.none
@@ -678,7 +656,7 @@ update msg model =
                 oldQuestionnaire = model.questionnaire
 
                 changedQuestionnaire =
-                    { oldQuestionnaire | conditions = oldQuestionnaire.conditions }
+                    { oldQuestionnaire | conditions = Condition.deleteConditionUpdate oldQuestionnaire.conditions (QElement.getID oldElement) (Answer.getAnswerId answer) }
             in
             ( { model | questionnaire = changedQuestionnaire, newElement = QElement.deleteAnswerFromItem answer oldElement }, Cmd.none )
 

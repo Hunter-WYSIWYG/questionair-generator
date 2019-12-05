@@ -17,12 +17,14 @@
     {
       "questionID": 1,
       "questionText": "HOFFENTLICH IST DAS DER KLASSE FRAGEBOGEN 2 JUHU DA ISSER ENDLICH",
-      "type": "note"
+      "type": "note",
+      "conditions": []
     },
     {
       "questionID": 2,
       "questionText": "Gab es seit der letzten Befragung ein negatives Ereignis?",
       "type": "singleChoice",
+      "conditions": [],
       "options": [
         {
           "optionID": 1,
@@ -40,6 +42,7 @@
       "questionID": 3,
       "questionText": "Wie fuehlen Sie sich gerade?",
       "type": "tableView",
+      "conditions": [],
       "size": 5,
       "topName": "Voller Energie",
       "bottomName": "Energielos",
@@ -50,6 +53,7 @@
       "questionID": 4,
       "questionText": "Wo sind Sie gerade?",
       "type": "multipleChoice",
+      "conditions": [],
       "options": [
         {
           "optionID": 1,
@@ -86,12 +90,14 @@
     {
       "questionID": 4,
       "questionText": "Haben sie alles erledigt heute?",
-      "type": "percentslider"
+      "type": "percentslider",
+      "conditions": []
     },
     {
       "questionID": 5,
       "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
       "type": "slider",
+      "conditions": [],
       "minValue": 0.0,
       "maxValue": 5.0,
       "stepSize": 1.0
@@ -100,6 +106,7 @@
       "questionID": 6,
       "questionText": "Glauben Sie die momentane Situation im Griff zu haben? (-5 - gar nicht, 5 - völlig)",
       "type": "slider",
+      "conditions": [],
       "minValue": -5.0,
       "maxValue": 5.0,
       "stepSize": 2.0
@@ -108,6 +115,7 @@
       "questionID": 7,
       "questionText": "Mit wem sind Sie gerade zusammen?",
       "type": "multipleChoice",
+      "conditions": [],
       "options": [
         {
           "optionID": 1,
@@ -140,6 +148,7 @@
       "questionID": 8,
       "questionText": "Glauben Sie die momentane Situation im Griff zu haben?",
       "type": "buttonSlider",
+      "conditions": [],
       "size": 12,
       "leftIndex": "gar nicht",
       "rightIndex": "völlig"

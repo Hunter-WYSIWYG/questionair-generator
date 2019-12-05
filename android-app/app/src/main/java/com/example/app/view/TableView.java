@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class TableView extends QuestionDisplayView {
+
 	
 	// the corresponding question
 	private final TableQuestion question;

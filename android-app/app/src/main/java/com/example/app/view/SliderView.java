@@ -82,3 +82,4 @@ public class SliderView extends QuestionDisplayView {
 		
 	}
 }
+

@@ -65,3 +65,4 @@ public class NoteView extends QuestionDisplayView {
 		return answers;
 	}
 }
+

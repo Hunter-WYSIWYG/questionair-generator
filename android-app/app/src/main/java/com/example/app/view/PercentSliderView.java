@@ -13,7 +13,9 @@ import com.example.app.question.PercentSliderQuestion;
 import com.warkiz.widget.IndicatorSeekBar;
 
 import java.util.ArrayList;
+
 import java.util.Calendar;
+
 import java.util.List;
 
 public class PercentSliderView extends QuestionDisplayView  {
@@ -41,6 +43,10 @@ public class PercentSliderView extends QuestionDisplayView  {
 		// set questionTypeText
 		TextView questionTypeTextView = container.findViewById(R.id.SliderQuestionTypeText);
 		questionTypeTextView.setText(question.type.name());
+		
+		// set question Number
+		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
+		questionNumber.setText("Fragenummer: " + question.id);
 		
 		// set questionText
 		TextView questionTextView = container.findViewById(R.id.SliderQuestionText);

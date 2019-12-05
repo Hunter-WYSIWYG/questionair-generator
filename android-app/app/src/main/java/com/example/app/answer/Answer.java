@@ -5,12 +5,19 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Answer implements Serializable {
+
 	@SerializedName("_type")
 	public final String type;
 	@SerializedName("id")
 	public final int id;
 	@SerializedName("text")
 	public final String text;
+	
+	public Answer () {
+		this.type = null;
+		this.id = -1;
+		this.text = "Failsafe";
+	}
 	
 	public Answer(final String type, final int id, final String text) {
 		this.type = type;
@@ -28,6 +35,7 @@ public class Answer implements Serializable {
 	
 	public String getText() {
 		return text;
+
 	}
 	
 	

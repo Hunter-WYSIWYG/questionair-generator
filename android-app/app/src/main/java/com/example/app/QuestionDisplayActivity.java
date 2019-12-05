@@ -76,6 +76,14 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 	}
 	
+	public void onDestroy() {
+		
+		super.onDestroy();
+		save(state.getAnswers());
+		finish();
+		
+	}
+	
 	// set next button to enabled or disabled
 	public void setNextButtonEnabled(boolean enabled) {
 		nextButton.setEnabled(enabled);

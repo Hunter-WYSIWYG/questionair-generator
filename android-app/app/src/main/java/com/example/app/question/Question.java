@@ -1,5 +1,6 @@
 package com.example.app.question;
 
+import com.example.app.answer.Condition;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.example.app.answer.Answer;
@@ -16,11 +17,11 @@ public abstract class Question implements Serializable {
 	public static final String TYPE_JSON_NAME = "type";
 	@SerializedName (TYPE_JSON_NAME)
 	public final QuestionType type;
-	public List<Answer> conditions;
+	public List<Condition> conditions;
 	public final String questionText;
 	
 	// constructor
-	public Question (int id, QuestionType type,List<Answer> conditions, String questionText) {
+	public Question (int id, QuestionType type,List<Condition> conditions, String questionText) {
 		this.id = id;
 		this.type = type;
 		this.questionText = questionText;

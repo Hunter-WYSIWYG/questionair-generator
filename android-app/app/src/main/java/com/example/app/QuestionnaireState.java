@@ -1,8 +1,10 @@
 package com.example.app;
 
 
+import com.example.app.answer.Answer;
 import com.example.app.answer.Answers;
 
+import com.example.app.answer.Condition;
 import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
 import com.google.gson.annotations.SerializedName;
@@ -52,11 +54,25 @@ public class QuestionnaireState implements Serializable {
 
 	// test conditions and see if you can display this question
 	private boolean isCurrentQuestionPossible () {
-
-		return this.answers.containsAll(this.questionnaire.getQuestionList().get(currentIndex).conditions);
-
+		int cndcount=this.questionnaire.getQuestionList().get(currentIndex).conditions.size();
+		int counter=0;
+	for(Condition cnd:this.questionnaire.getQuestionList().get(currentIndex).conditions){
+		for(Answers ans:this.answers){
+		if(cnd.qid==ans.qid){
+			for(Answer val:ans.chosenValues){
+				if(cnd.cv==val.id){
+				counter++;
+				}
+			}
+	
+		}
+		}
+		
+	}
+		//return this.answers.containsAll(this.questionnaire.getQuestionList().get(currentIndex).conditions);
 		// TODO: test conditions
 		// TODO: what to do if you are after the last question
+		return cndcount==counter;
 	}
 
 	// getter

@@ -2,11 +2,19 @@ package converter;
 
 import converter.graphical.ui.GUI;
 
-public class Main {
-	
-	public static void main(String[] args) {
-		
-		GUI.getInstance();
-	}
+/**
+ * Contains the main-function of the converter tool.
+ *
+ * @author Maximilian Goldacker
+ */
 
+public class Main {
+    /**
+     * The main function of the converter tool starts the GUI.
+     *
+     * @param args the arguments given for the converter tool, no arguments needed
+     */
+    public static void main(String[] args) {
+        GUI.getInstance();
+    }
 }

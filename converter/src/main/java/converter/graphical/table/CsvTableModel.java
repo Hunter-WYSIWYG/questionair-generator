@@ -15,7 +15,7 @@ public class CsvTableModel extends DefaultTableModel {
     private final int ROWS = 30;
     private final int COLS = 2;
 
-    private Object[] rowData = new Object[cols];
+    private Object[] rowData = new Object[COLS];
 
     private static CsvTableModel instance;
 
@@ -32,7 +32,7 @@ public class CsvTableModel extends DefaultTableModel {
      */
     private void initColumns() {
 
-        for (int i = 0; i < cols; i++) {
+        for (int i = 0; i < COLS; i++) {
             this.addColumn(Integer.toString(i));
         }
 
@@ -78,4 +78,5 @@ public class CsvTableModel extends DefaultTableModel {
         }
 
     }
+
 }

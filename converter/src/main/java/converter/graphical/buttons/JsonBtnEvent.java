@@ -12,7 +12,9 @@ import converter.graphical.ui.Layout;
 import converter.parser.Parser;
 
 /**
- * Class that handles the event when the button for selecting the JSON-file is pressed.
+ * Handles the event when the button for selecting the JSON-file is pressed.
+ *
+ * @author Maximilian Goldacker
  */
 
 public class JsonBtnEvent implements ActionListener {
@@ -22,12 +24,9 @@ public class JsonBtnEvent implements ActionListener {
      *
      * @param e the event when the button for selecting the JSON-file is pressed
      */
-	
-	static File json;
-	
     public void actionPerformed(ActionEvent e) {
         JFileChooser jsonChooser = new JFileChooser();
-        int returnValue = jsonChooser.showOpenDialog(null);
+        int dialogOption = jsonChooser.showOpenDialog(null);
 
         if (dialogOption == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jsonChooser.getSelectedFile();
@@ -36,9 +35,5 @@ public class JsonBtnEvent implements ActionListener {
             String csv = Parser.parse(selectedFile);
             CsvTableModel.getInstance().changeTable(csv);
         }
-    }
-    
-    public static File getFile() {
-    	return json;
     }
 }

@@ -1,7 +1,5 @@
 package converter.graphical.ui;
 
-import converter.Parser;
-import converter.graphical.buttons.ConvertBtnEvent;
 import converter.graphical.buttons.JsonBtnEvent;
 import converter.graphical.buttons.SaveBtnEvent;
 import converter.graphical.table.CsvTable;
@@ -12,14 +10,14 @@ import java.io.File;
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 
 /**
- * This class represents the layout of the GUI.
+ * Represents the layout of the GUI.
+ *
+ * @author Maximilian Goldacker
  */
-
 public class Layout extends JPanel {
 
     private static JLabel fileLabel;
     private static Layout instance;
-    private static JTable table = new CsvTable();
 
     /**
      * Initiates the layout of the GUI with all elements
@@ -29,14 +27,14 @@ public class Layout extends JPanel {
         
         GridBagConstraints constraints = new GridBagConstraints();
 
-        JButton jsonButton = new JButton("JSON ausw�hlen");
+        JButton jsonButton = new JButton("JSON auswählen");
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.insets = new Insets(10,10,0,10);
         add(jsonButton, constraints);
         jsonButton.addActionListener(new JsonBtnEvent());
 
-        fileLabel = new JLabel("Keine Datei ausgew�hlt...");
+        fileLabel = new JLabel("Keine Datei ausgewählt...");
         constraints.gridx = 1;
         constraints.gridy = 0;
         add(fileLabel, constraints);
@@ -61,8 +59,6 @@ public class Layout extends JPanel {
     }
 
     /**
-     * Returns the instance of the layout GUI.
-     *
      * @return the layout of the GUI
      */
     public static Layout getInstance() {
@@ -81,4 +77,5 @@ public class Layout extends JPanel {
     public void changeFileLabel(String text) {
         fileLabel.setText(text);
     }
+
 }

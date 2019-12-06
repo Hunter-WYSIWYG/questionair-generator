@@ -9,7 +9,6 @@ import java.util.List;
  *
  * @author Maximilian Goldacker, Marcus Gagelmann
  */
-
 public class CsvTableModel extends DefaultTableModel {
 
     private final int ROWS = 30;

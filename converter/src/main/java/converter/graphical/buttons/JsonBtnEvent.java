@@ -16,7 +16,6 @@ import converter.parser.Parser;
  *
  * @author Maximilian Goldacker
  */
-
 public class JsonBtnEvent implements ActionListener {
 
     /**

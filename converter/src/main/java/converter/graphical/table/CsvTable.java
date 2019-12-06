@@ -8,7 +8,6 @@ import javax.swing.table.TableColumn;
  *
  * @author Maximilian Goldacker
  */
-
 public class CsvTable extends JTable {
 
     /**

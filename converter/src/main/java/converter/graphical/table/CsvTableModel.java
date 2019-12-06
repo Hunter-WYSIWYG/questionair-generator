@@ -1,43 +1,82 @@
 package converter.graphical.table;
 
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Initiates the table with some example data.
  *
- * @author Maximilian Goldacker
+ * @author Maximilian Goldacker, Marcus Gagelmann
  */
 
 public class CsvTableModel extends DefaultTableModel {
 
     private final int ROWS = 30;
-    private final int COLS = 3;
+    private final int COLS = 2;
 
     private Object[] rowData = new Object[COLS];
+
+    private static CsvTableModel instance;
 
     /**
      * Initiates a table with data and column headers.
      */
-    public CsvTableModel() {
+    private CsvTableModel() {
         super();
-        initModelData();
+        initColumns();
     }
 
     /**
-     * Writes some example data in the table.
+     * Prepares the columns for the table.
      */
-    private void initModelData() {
+    private void initColumns() {
 
         for (int i = 0; i < COLS; i++) {
             this.addColumn(Integer.toString(i));
         }
 
-        for (int j = 0; j < ROWS; j++) {
-            for (int i = 0; i < COLS; i++) {
-                rowData[i] = j + " | " + i;
-            }
-            this.addRow(rowData);
+    }
+
+    /**
+     * @return the instance of the table model
+     */
+    public static CsvTableModel getInstance() {
+        if (instance == null) {
+            instance = new CsvTableModel();
         }
+
+        return instance;
+    }
+
+    /**
+     * Loads the given CSV in the table model.
+     *
+     * @param data the parsed CSV
+     */
+    public void changeTable(String data) {
+        this.setRowCount(0);
+
+        data = data.replaceAll("\r\n", ";");
+        String[] values = data.split(";");
+
+        int pos = 0;
+
+        while(pos < values.length) {
+
+            if (values[pos].equals("")) {
+                rowData[0] = "";
+                rowData[1] = "";
+                pos++;
+            } else {
+                rowData[0] = values[pos];
+                rowData[1] = values[pos + 1];
+                pos += 2;
+            }
+
+            addRow(rowData);
+        }
+
     }
 
 }

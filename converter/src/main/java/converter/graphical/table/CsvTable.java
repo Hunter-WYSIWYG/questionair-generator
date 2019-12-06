@@ -13,8 +13,8 @@ public class CsvTable extends JTable {
      * Initiates the table for the CSV preview.
      */
     public CsvTable() {
-        super(new CsvTableModel());
-        setColumnWidth();
+        super(CsvTableModel.getInstance());
+        setColumnWidth(5);
     }
 
     /**

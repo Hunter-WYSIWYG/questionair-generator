@@ -7,6 +7,8 @@ import converter.graphical.buttons.SaveBtnEvent;
 import converter.graphical.table.CsvTable;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 
 /**
@@ -27,24 +29,19 @@ public class Layout extends JPanel {
         
         GridBagConstraints constraints = new GridBagConstraints();
 
-        JButton jsonButton = new JButton("JSON auswählen");
+        JButton jsonButton = new JButton("JSON auswï¿½hlen");
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.insets = new Insets(10,10,0,10);
         add(jsonButton, constraints);
         jsonButton.addActionListener(new JsonBtnEvent());
 
-        fileLabel = new JLabel("Keine Datei ausgewählt...");
+        fileLabel = new JLabel("Keine Datei ausgewï¿½hlt...");
         constraints.gridx = 1;
         constraints.gridy = 0;
         add(fileLabel, constraints);
 
-        JButton convertButton = new JButton("Konvertieren");
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        add(convertButton, constraints);
-        convertButton.addActionListener(new ConvertBtnEvent());
-
+        JTable table = new CsvTable();
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(360,200));
         constraints.gridx = 0;
@@ -68,7 +65,7 @@ public class Layout extends JPanel {
      *
      * @return the layout of the GUI
      */
-    static Layout getInstance() {
+    public static Layout getInstance() {
         if (instance == null) {
             instance = new Layout();
         }
@@ -81,11 +78,7 @@ public class Layout extends JPanel {
      *
      * @param text the text to be set for the label
      */
-    public static void changeFileLabel(String text) {
+    public void changeFileLabel(String text) {
         fileLabel.setText(text);
-    }
-    
-    public static void changeTable() {
-    	((CsvTable) table).changeTable(Parser.getStringBuilder().toString());
     }
 }

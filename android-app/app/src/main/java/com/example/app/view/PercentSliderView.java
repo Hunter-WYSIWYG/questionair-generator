@@ -8,6 +8,7 @@ import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
 import com.example.app.question.PercentSliderQuestion;
+import com.example.app.question.Question;
 import com.warkiz.widget.IndicatorSeekBar;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class PercentSliderView extends QuestionDisplayView  {
 		questionTypeTextView.setText(question.type.name());
 		
 		// set question Number
-		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
+		TextView questionNumber = container.findViewById(R.id.questionNumber);
 		questionNumber.setText("Fragenummer: " + question.questionID);
 		
 		// set questionText
@@ -71,7 +72,12 @@ public class PercentSliderView extends QuestionDisplayView  {
 	@Override
 	public List<Answer> getCurrentAnswer () {
 		List<Answer> returnList = new ArrayList<>();
-		returnList.add (new Answer (this.question.questionID, this.seekBar.getProgress ()));
+		returnList.add(new Answer(question.questionID, seekBar.getProgress()));
 		return returnList;
+	}
+	
+	@Override
+	public Question getQuestion() {
+		return question;
 	}
 }

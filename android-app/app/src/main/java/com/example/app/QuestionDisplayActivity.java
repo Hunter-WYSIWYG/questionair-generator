@@ -12,6 +12,7 @@ import com.example.app.answer.Answer;
 import com.example.app.question.Question;
 import com.example.app.view.QuestionDisplayView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,20 +35,20 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.activity_question_display);
+		setContentView(R.layout.activity_question_display);
 		
-		this.state = (QuestionnaireState) this.getIntent().getSerializableExtra("state");
-		this.nextButton = this.findViewById(R.id.QuestionDisplayNextButton);
-		this.contentContainer = this.findViewById(R.id.QuestionDisplayContentContainer);
+		state = (QuestionnaireState) getIntent().getSerializableExtra("state");
+		nextButton = findViewById(R.id.QuestionDisplayNextButton);
+		contentContainer = findViewById(R.id.QuestionDisplayContentContainer);
 		
-		this.questionView = QuestionDisplayView.create(this);
+		questionView = QuestionDisplayView.create(this);
 		
 		// insert as the new first element, before the space filler and the next button
-		this.contentContainer.addView(this.questionView.getView(), 0);
+		contentContainer.addView(questionView.getView(), 0);
 		
-		this.nextButton.setOnClickListener(v -> this.nextButtonClicked());
+		nextButton.setOnClickListener(v -> nextButtonClicked());
 		
-		Toast kek = Toast.makeText(this, this.state.getCurrentQuestion().conditions.toString(), Toast.LENGTH_LONG);
+		Toast kek = Toast.makeText(this, state.getCurrentQuestion().conditions.toString(), Toast.LENGTH_LONG);
 		kek.show();
 	}
 	
@@ -60,37 +61,38 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 				dummy.add(new Answer(q.questionID, -1));
 				state.currentQuestionAnswered(dummy);
 			} else {
-				List<Answer> answer = this.questionView.getCurrentAnswer();
-				this.state.currentQuestionAnswered(answer);
+				List<Answer> answer = questionView.getCurrentAnswer();
+				state.currentQuestionAnswered(answer);
 			}
 		} else {
-			List<Answer> answer = this.questionView.getCurrentAnswer();
-			this.state.currentQuestionAnswered(answer);
+			List<Answer> answer = questionView.getCurrentAnswer();
+			state.currentQuestionAnswered(answer);
 		}
 		
 		if (state.getEndTime() != null) {
 			final Date currentDate = new Date();
-			if (currentDate.compareTo(state.getEndTime()) > 0) {
+			if (currentDate.after(state.getEndTime())) {
 				Intent intent = new Intent(this, QuestionnaireFinishedActivity.class);
 				intent.putExtra("EXTRA_ANSWERS", answerListToString());
-				this.startActivity(intent);
-				this.finish();
+				startActivity(intent);
+				finish();
+				return;
 			}
 		}
 		
 		
-		if (!this.state.isFinished()) {
-			displayCurrentQuestion(this.state, this);
+		if (!state.isFinished()) {
+			displayCurrentQuestion(state, this);
 		} else {
 			Intent intent = new Intent(this, QuestionnaireFinishedActivity.class);
 			intent.putExtra("EXTRA_ANSWERS", answerListToString());
-			this.startActivity(intent);
-			this.finish();
+			startActivity(intent);
+			finish();
 		}
 	}
 	
 	// displays the current question of the questionnaire state
-	public static void displayCurrentQuestion(QuestionnaireState questionnaireState, Activity activity) {
+	public static void displayCurrentQuestion(Serializable questionnaireState, Activity activity) {
 		Intent intent = new Intent(activity, QuestionDisplayActivity.class);
 		intent.putExtra("state", questionnaireState);
 		activity.startActivity(intent); // starting our own activity (onCreate) with questionnaire state so we can save it
@@ -100,7 +102,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	
 	//TODO: better solution for this
 	private String answerListToString() {
-		List<Answer> answerList = this.state.getAnswers();
+		List<Answer> answerList = state.getAnswers();
 		StringBuilder returnString = new StringBuilder();
 		for (Answer answer : answerList) {
 			returnString.append(answer);
@@ -111,6 +113,6 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	
 	// set next button to enabled or disabled
 	public void setNextButtonEnabled(boolean enabled) {
-		this.nextButton.setEnabled(enabled);
+		nextButton.setEnabled(enabled);
 	}
 }

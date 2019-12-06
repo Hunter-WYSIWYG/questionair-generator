@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.question.Question;
 import com.example.app.question.SliderButtonQuestion;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class SliderButtonView extends QuestionDisplayView {
 		questionTypeTextView.setText(question.type.name());
 		
 		// set question Number
-		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
+		TextView questionNumber = container.findViewById(R.id.questionNumber);
 		questionNumber.setText("Fragenummer: " + question.questionID);
 		
 		// set questionText
@@ -141,7 +142,12 @@ public class SliderButtonView extends QuestionDisplayView {
 	public List<Answer> getCurrentAnswer () {
 		//TODO: get real value of button
 		List<Answer> returnList = new ArrayList<>();
-		returnList.add (new Answer (this.question.questionID, Integer.parseInt(this.currentButton.getText().toString())));
+		returnList.add(new Answer(question.questionID, Integer.parseInt(currentButton.getText().toString())));
 		return returnList;
+	}
+	
+	@Override
+	public Question getQuestion() {
+		return question;
 	}
 }

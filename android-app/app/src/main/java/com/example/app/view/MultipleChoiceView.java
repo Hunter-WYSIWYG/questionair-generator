@@ -160,7 +160,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	// view containing the option views
 	private LinearLayout optionContainer;
 	// list of all button views
-	private List<OptionView> optionViews = new ArrayList<> ();
+	private final List<OptionView> optionViews = new ArrayList<>();
 	
 	// constructor
 	public MultipleChoiceView (QuestionDisplayActivity activity, ChoiceQuestion question) {
@@ -171,23 +171,23 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	
 	
 	private void init () {
-		this.rootView = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.multiple_choice_view, null);
-		this.optionContainer = this.rootView.findViewById (R.id.MultipleChoiceOptionContainer);
+		rootView = (ConstraintLayout) View.inflate(getActivity(), R.layout.multiple_choice_view, null);
+		optionContainer = rootView.findViewById(R.id.MultipleChoiceOptionContainer);
 		
 		// set questionTypeText
-		TextView questionTypeTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionTypeText);
-		questionTypeTextView.setText (this.question.type.name ());
+		TextView questionTypeTextView = rootView.findViewById(R.id.MultipleChoiceQuestionTypeText);
+		questionTypeTextView.setText(question.type.name());
 		
 		// set question Number
-		TextView questionNumber = this.rootView.findViewById (R.id.questionNumber);
+		TextView questionNumber = rootView.findViewById(R.id.questionNumber);
 		questionNumber.setText("Fragenummer: " + question.questionID);
 		
 		// set questionText
-		TextView questionTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionText);
-		questionTextView.setText (this.question.questionText);
+		TextView questionTextView = rootView.findViewById(R.id.MultipleChoiceQuestionText);
+		questionTextView.setText(question.questionText);
 		
 		// find dividingLine
-		View dividingLine = this.rootView.findViewById (R.id.MultipleChoiceDividingLine);
+		View dividingLine = rootView.findViewById(R.id.MultipleChoiceDividingLine);
 		
 		// create buttons
 		createOptions();
@@ -203,7 +203,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 				optionContainer.addView(space);
 			}
 			
-			Option option = this.question.options.get (i);
+			Option option = question.options.get(i);
 			final int finalI = i;
 			OptionView view = OptionView.create(getActivity(), option, question, v -> buttonClicked(optionViews.get(finalI)));
 			optionContainer.addView(view.getContainer());
@@ -287,15 +287,18 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	@Override
 	public List<Answer> getCurrentAnswer () {
 		List<Answer> returnList = new ArrayList<> ();
-		for (OptionView optionView : this.optionViews) {
+		for (OptionView optionView : optionViews) {
 			if (optionView.isChecked ()) {
-				returnList.add(new Answer(this.question.questionID, optionView.getOption ().getId ()));
+				returnList.add(new Answer(question.questionID, optionView.getOption().getId()));
 			}
 		}
 		
 		return returnList;
 	}
 	
-	
+	@Override
+	public Question getQuestion() {
+		return question;
+	}
 }
 

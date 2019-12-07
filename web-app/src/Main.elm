@@ -484,13 +484,13 @@ update msg model =
                     if model.editCondition == False then
                         { oldQuestionnaire
                             | conditions =
-                                List.append oldQuestionnaire.conditions [ model.newCondition ]
+                                List.sortBy .parent_id  (List.sortBy .child_id  (List.sortBy .answer_id  (List.append oldQuestionnaire.conditions [ model.newCondition ])))
                         }
 
                     else
                         { oldQuestionnaire
                                     | conditions =
-                                         List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
+                                        List.sortBy .answer_id  (List.sortBy .child_id  (List.sortBy .parent_id  (List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions)))
                         }
             in
             if model.editCondition == False then

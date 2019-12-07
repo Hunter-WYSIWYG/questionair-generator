@@ -380,7 +380,7 @@ getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
         ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ]
-            [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
+            [ text (String.fromInt (QElement.getElementId e) ++ ":" ++ " " ++ QElement.getElementText e) ]) list
 
 getAnswerOptions : Model -> Condition -> List (Html Msg)
 getAnswerOptions model newCondition =
@@ -391,7 +391,7 @@ getAnswerOptions model newCondition =
     in
         [ option [] [ text "Keine" ] ]
             ++ List.map (\e -> option [ selected (Answer.getAnswerId e == newCondition.answer_id) ]
-                [ text (String.fromInt(Answer.getAnswerId e) ++ "." ++ " " ++ Answer.getAnswerText e) ]) list
+                [ text (String.fromInt(Answer.getAnswerId e) ++ ":" ++ " " ++ Answer.getAnswerText e) ]) list
 
 
 {-| Displays a modal for creating new answers.

@@ -1,6 +1,6 @@
 module QElement exposing
     ( Q_element(..), NoteRecord, QuestionRecord
-    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText )
+    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax   )
 
 
 {-| Contains the type for the elements of questionnaires (questions, annotations) and an initial state for the "input element" (newElement).
@@ -13,7 +13,7 @@ module QElement exposing
 
 # Public functions
 
-@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText 
+@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax
 
 -}
 
@@ -52,6 +52,9 @@ type alias QuestionRecord =
     , rightText : String
     , bottomText : String
     , leftText : String
+    -- Min- and max-value for uni- and bipolar Questiontype
+    , polarMin : Int
+    , polarMax : Int
     }
 
 
@@ -71,6 +74,8 @@ initQuestion =
         , rightText = ""
         , bottomText = "" 
         , leftText = ""
+        , polarMin = 0
+        , polarMax = 0
         }
 
 
@@ -345,3 +350,27 @@ getLeftText elem =
         
         Note a ->
             ""
+{- get-Funktion für polarMin 
+-}
+
+getPolarMin : Q_element -> Int
+getPolarMin elem =
+    case elem of
+        Question a ->
+            a.polarMin
+        
+        Note a ->
+            0
+
+{- get-Funktion für polarMin 
+-}
+
+getPolarMax : Q_element -> Int
+getPolarMax elem = 
+    case elem of
+        Question a ->
+            a.polarMax
+        
+        Note a ->
+            0
+

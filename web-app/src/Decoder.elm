@@ -130,6 +130,8 @@ questionDecoder =
         |> required "rightText" Decode.string
         |> required "bottomText" Decode.string
         |> required "leftText" Decode.string
+        |> required "polarMin" Decode.int
+        |> required "polarMax" Decode.int
         |> Decode.map Question
 
 

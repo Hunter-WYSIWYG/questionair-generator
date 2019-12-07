@@ -111,6 +111,8 @@ update msg model =
                         ( { model | newElement =
                             if string == "Single Choice" || string == "Multiple Choice" then
                                 Question { record | typ = string }
+                            else if string == "Skaliert unipolar" then
+                                Question { record | typ = string, polarMin = 0 }
                             else
                                 Question { record | typ = string, answers = Answer.getYesNoAnswers string }
                           }
@@ -213,6 +215,8 @@ update msg model =
                                             , rightText = ""
                                             , bottomText = ""
                                             , leftText = ""
+                                            , polarMin = 0
+                                            , polarMax = 0
                                         }
                                 , showNewQuestionModal = not model.showNewQuestionModal
                                 , questionValidationResult = NotDone    
@@ -306,16 +310,33 @@ update msg model =
             in
             ( { model | questionnaire = changedQuestionnaire, showTitleModal = not model.showTitleModal, inputTitle = "" }, Cmd.none )
 
-        SetPolarAnswers string ->
-            case model.newElement of
-                Question record ->
-                    if record.typ == "Skaliert unipolar" then
-                        ( { model | newElement = Question { record | answers = Answer.getUnipolarAnswers string } }, Cmd.none )
-                    else
-                        ( { model | newElement = Question { record | answers = Answer.getBipolarAnswers string } }, Cmd.none )
+        SetPolarMin string ->
+            let
+                newMin = Maybe.withDefault 0 (String.toInt string )
+            in
+                case model.newElement of
+                    Question record ->
+                        if record.typ == "Skaliert bipolar" then
+                            ( { model | newElement = Question { record | polarMin = newMin } }, Cmd.none )
+                        else
+                            ( { model | newElement = Question { record | polarMin = 0 } }, Cmd.none )
 
-                Note record ->
-                    ( model, Cmd.none )
+                    Note record ->
+                        ( model, Cmd.none )
+        
+        SetPolarMax string ->
+            let
+                newMax = Maybe.withDefault 0 ( String.toInt string )
+            in 
+                case model.newElement of 
+                    Question record ->
+                        if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" then
+                            ( {model | newElement = Question { record | polarMax = newMax } }, Cmd.none )
+                        else 
+                            ( {model | newElement = Question {record | polarMax = 0 } }, Cmd.none )
+                
+                    Note record ->
+                        ( model, Cmd.none )
 
         -- stellt Größe der Tabelle bei Raster-Auswahl Fragetyp ein
         SetTableSize string ->

@@ -829,6 +829,30 @@ showInputBipolarUnipolarTableSlider model =
                         , onInput SetPolarAnswers
                         ]
                         []
+                    ,br [] []
+                    ,text "Beschriftung links:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "20px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement )
+                        , onInput SetLeftText
+                        ]
+                        []
+                    , br [] []
+                    , text "Beschriftung rechts:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
+                        , onInput SetRightText
+                        ]
+                        []
                     ]
 
             else if record.typ == "Skaliert bipolar" then
@@ -843,6 +867,30 @@ showInputBipolarUnipolarTableSlider model =
                         , onInput SetPolarAnswers
                         ]
                         []
+                    ,br [] []
+                    ,text "Beschriftung links:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "20px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement )
+                        , onInput SetLeftText
+                        ]
+                        []
+                    , br [] []
+                    , text "Beschriftung rechts:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
+                        , onInput SetRightText
+                        ]
+                        []
                     ]
 
             else if record.typ == "Raster-Auswahl" then
@@ -852,9 +900,9 @@ showInputBipolarUnipolarTableSlider model =
                         [class "select"]
                         [ select
                             [ onInput SetTableSize ]
-                            [ option [ value "3" ] [ text "3x3" ]
-                            , option [ value "5" ] [ text "5x5" ]
-                            , option [ value "7" ] [ text "7x7" ]
+                            [ option [ value "3", selected ((QElement.getTableSize model.newElement) == 3) ] [ text "3x3" ]
+                            , option [ value "5", selected ((QElement.getTableSize model.newElement) == 5) ] [ text "5x5" ]
+                            , option [ value "7", selected ((QElement.getTableSize model.newElement) == 7)] [ text "7x7" ]
                             ]
                         ]
                     , br [] []
@@ -865,6 +913,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "17px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getTopText model.newElement )
                         , onInput SetTopText
                         ]
                         []
@@ -876,6 +925,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "10px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
                         , onInput SetRightText
                         ]
                         []
@@ -887,6 +937,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "13px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getBottomText model.newElement )
                         , onInput SetBottomText
                         ]
                         []
@@ -898,6 +949,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "20px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement )
                         , onInput SetLeftText
                         ]
                         []
@@ -912,6 +964,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "16px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement )
                         , onInput SetLeftText
                         ]
                         []
@@ -923,6 +976,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "10px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
                         , onInput SetRightText
                         ]
                         []

@@ -1,6 +1,6 @@
 module QElement exposing
     ( Q_element(..), NoteRecord, QuestionRecord
-    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID )
+    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText )
 
 
 {-| Contains the type for the elements of questionnaires (questions, annotations) and an initial state for the "input element" (newElement).
@@ -13,7 +13,7 @@ module QElement exposing
 
 # Public functions
 
-@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID
+@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText 
 
 -}
 
@@ -290,5 +290,58 @@ getElementId elem =
 
         Note a ->
             a.id
-{- set- und get-Funktionen für Variablen für Fragetyp Raster-Auswahl
+
+{- get-Funktion für tableSize 
 -}
+getTableSize : Q_element -> Int
+getTableSize elem = 
+    case elem of
+        Question a ->
+            a.tableSize
+        
+        Note a ->
+            0
+
+{- get-Funktion für topText
+-}
+getTopText : Q_element -> String
+getTopText elem =
+    case elem of 
+        Question a ->
+            a.topText
+        
+        Note a ->
+            ""
+
+{- get-Funktion für rightText
+-}
+getRightText : Q_element -> String
+getRightText elem =
+    case elem of 
+        Question a ->
+            a.rightText
+        
+        Note a ->
+            ""
+
+{- get-Funktion für bottomText
+-}
+getBottomText : Q_element -> String
+getBottomText elem =
+    case elem of 
+        Question a ->
+            a.bottomText
+        
+        Note a ->
+            ""
+
+{- get-Funktion für leftText
+-}
+getLeftText : Q_element -> String
+getLeftText elem =
+    case elem of 
+        Question a ->
+            a.leftText
+        
+        Note a ->
+            ""

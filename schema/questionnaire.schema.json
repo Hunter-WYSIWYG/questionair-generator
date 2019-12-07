@@ -105,6 +105,14 @@
                 "rightText": {
                     "type": "string",
                     "description": "Label on top of the table. This is for the question types Scaled Field and Percent Slider."
+                },
+                "polarMin": {
+                    "type": "integer",
+                    "description": "Minimal value for unipolar and bipolar questions. Unipolar Questions have the value 0."
+                }, 
+                "ploarMax": {
+                    "type": "integer",
+                    "description": "Maximal value for unipolar and bipolar questions."
                 }
             }
         },

@@ -12,7 +12,7 @@ module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuest
 import Answer exposing (Answer)
 import Condition exposing (Condition)
 import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, small, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
+import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value, min, max)
 import Html.Events exposing (onClick, onInput)
 import List exposing (member, map)
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
@@ -358,6 +358,30 @@ viewNewQuestionModal model =
                         , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
                         , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
                         , br [] []
+                        , text "Zeitlimit:"
+                        , br [] []
+                        , input
+                            [ class "input is-medium"
+                            , style "width" "25%"
+                            , type_ "text"
+                            , maxlength 4
+                            , onInput ChangeQuestionTimeMinutes
+                            , placeholder "Minuten"
+                            , Html.Attributes.min "0"
+                            ]
+                            []
+                        , input
+                            [ class "input is-medium"
+                            , style "width" "25%"
+                            , style "margin-left" "10px"
+                            , type_ "text"
+                            , maxlength 2
+                            , onInput ChangeQuestionTimeSeconds
+                            , placeholder "Sekunden"
+                            , Html.Attributes.min "0"
+                            , Html.Attributes.max "59"
+                            ]
+                            []
                         ]
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
@@ -545,7 +569,10 @@ tableHead_questions =
         , th [ style "width" "25%" ]
             [ text "Hinweis"
             ]
-        , th [ style "width" "20%" ]
+        , th [ style "width" "7,5%" ]
+            [ text "Zeitlimit"
+            ]
+        , th [ style "width" "12,5%" ]
             [ text "Typ"
             ]
         , th [ style "width" "10%" ]
@@ -564,7 +591,8 @@ getQuestionTable index element =
                 [ td [ style "width" "5%" ] [ text (String.fromInt index) ]
                 , td [ style "width" "40%" ] [ text a.text ]
                 , td [ style "width" "25%" ] []
-                , td [ style "width" "20%" ] []
+                , td [ style "width" "7,5%" ] []
+                , td [ style "width" "12,5%" ] []
                 , td [ style "width" "10%" ]
                     [ i
                         [ class "fas fa-arrow-up"
@@ -597,7 +625,8 @@ getQuestionTable index element =
                 [ td [ style "width" "5%" ] [ text (String.fromInt index) ]
                 , td [ style "width" "40%" ] [ text f.text ]
                 , td [ style "width" "25%" ] [ text f.hint ]
-                , td [ style "width" "20%" ] [ text f.typ ]
+                , td [ style "width" "7,5%" ] [ text (QElement.getQuestionTimePresentation f.questionTime) ]
+                , td [ style "width" "12,5%" ] [ text f.typ ]
                 , td [ style "width" "10%" ]
                     [ i
                         [ class "fas fa-arrow-up"

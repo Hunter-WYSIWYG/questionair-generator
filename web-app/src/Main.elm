@@ -166,6 +166,12 @@ update msg model =
             
                 _ ->
                     (model, Cmd.none)
+
+        ChangeQuestionTimeMinutes string ->
+            ( { model | inputQuestionTimeMinutes = string }, Cmd.none)
+
+        ChangeQuestionTimeSeconds string ->
+            ( { model | inputQuestionTimeSeconds = string }, Cmd.none)
                     
 
         --open or close modals
@@ -448,19 +454,22 @@ update msg model =
 
         SetQuestion ->
             let
+                {- Setzen der QuestionTime beim Klick auf "Uebernehmen" -}
+                newElementWithQT = (QElement.getQuestionTime model.newElement model.inputQuestionTimeMinutes model.inputQuestionTimeSeconds)
+
                 oldQuestionnaire =
                     model.questionnaire
 
                 changedQuestionnaire =
                     if model.editQElement == False then
                         { oldQuestionnaire
-                            | elements = List.append oldQuestionnaire.elements [ model.newElement ] }
+                            | elements = List.append oldQuestionnaire.elements [ newElementWithQT ] }
 
                     else
                         { oldQuestionnaire
-                            | elements = List.map (\e -> QElement.updateElement model.newElement e) oldQuestionnaire.elements
+                            | elements = List.map (\e -> QElement.updateElement newElementWithQT e) oldQuestionnaire.elements
                             , conditions =
-                                if (Condition.validateCondition model.newCondition model.newElement) then
+                                if (Condition.validateCondition model.newCondition newElementWithQT) then
                                     List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
 
                                 else
@@ -468,10 +477,18 @@ update msg model =
                         }
             in
             if model.editQElement == False && (isTypeEmpty model) == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, newCondition = Condition.initCondition }, Cmd.none )
+                ( { model   | questionnaire = changedQuestionnaire
+                            , showNewQuestionModal = False
+                            , newCondition = Condition.initCondition
+                            , inputQuestionTimeMinutes = ""
+                            , inputQuestionTimeSeconds = "" }, Cmd.none )
 
             else if (isTypeEmpty model) == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, editQElement = False }, Cmd.none )
+                ( { model   | questionnaire = changedQuestionnaire
+                            , showNewQuestionModal = False
+                            , editQElement = False
+                            , inputQuestionTimeMinutes = ""
+                            , inputQuestionTimeSeconds = "" }, Cmd.none )
 
             else (model, Cmd.none)
                 

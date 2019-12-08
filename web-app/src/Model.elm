@@ -61,6 +61,8 @@ type alias Model =
     , newCondition : Condition
     , newElement : Q_element
     , newAnswer : Answer
+    , inputQuestionTimeMinutes : String
+    , inputQuestionTimeSeconds : String
 
     --upload determines if the users wants to upload a questionnaire
     --if upload is false show UI to create new questionnaire
@@ -108,6 +110,8 @@ type
     | ChangeEditTime String
     | ChangeReminderTimes JDecode.Value
     | ChangeViewingTime String
+    | ChangeQuestionTimeMinutes String
+    | ChangeQuestionTimeSeconds String
       --Modals
     | ViewOrClose ModalType
       --Creates Condition
@@ -189,6 +193,8 @@ initModel _ =
       , newAnswerID_Condition = ""
       , newElement = QElement.initQuestion
       , newAnswer = Answer.initAnswer
+      , inputQuestionTimeMinutes = ""
+      , inputQuestionTimeSeconds = ""
 
       --upload determines if the users wants to upload a questionnaire
       --if upload is false show UI to create new questionnaire

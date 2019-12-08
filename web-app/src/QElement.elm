@@ -1,6 +1,6 @@
 module QElement exposing
     ( Q_element(..), NoteRecord, QuestionRecord
-    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID )
+    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getQuestionTime, getQuestionTimePresentation )
 
 
 {-| Contains the type for the elements of questionnaires (questions, annotations) and an initial state for the "input element" (newElement).
@@ -292,3 +292,31 @@ getElementId elem =
             a.id
 {- set- und get-Funktionen für Variablen für Fragetyp Raster-Auswahl
 -}
+
+{- build questionTime String for later usage in Android App -}
+{- does empty Minutes and empty Seconds mean no time limit for the question? Right now the questionTime String for this case would be ":" -}
+getQuestionTime : Q_element -> String -> String -> Q_element
+getQuestionTime element min sec =
+    case element of
+        Question record ->
+            Question { record | questionTime = String.concat [min,":",sec] }
+        
+        Note record ->
+            element
+
+{- build questionTime String for presentation purpose in web-app -}
+{- does empty Minutes and empty Seconds mean no time limit for the question? -}
+getQuestionTimePresentation : String -> String
+getQuestionTimePresentation time =
+    if time==":"    --leer?
+    then "kein Zeitlimit"
+    else    if String.right 1 time == ":"   --sec leer?
+            then (String.concat [(String.dropRight 1 time)," Min"])
+            else    if String.left 1 time == ":"     --min leer?
+                    then (String.concat [(String.dropLeft 1 time)," Sek"])
+                    else    if String.contains ":" (String.right 2 time)    --sec einstellig?
+                            then (String.concat [(String.dropRight 2 time)," Min ",(String.right 1 time)," Sek"])
+                            else (String.concat [(String.dropRight 3 time)," Min ",(String.right 2 time)," Sek"])
+
+
+

@@ -13,7 +13,7 @@ module QElement exposing
 
 # Public functions
 
-@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID
+@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, validateQuestionTime
 
 -}
 
@@ -294,12 +294,18 @@ getElementId elem =
 -}
 
 {- build questionTime String for later usage in Android App -}
-{- does empty Minutes and empty Seconds mean no time limit for the question? Right now the questionTime String for this case would be ":" -}
+{- does empty Minutes and empty Seconds mean no time limit for the question? Right now the questionTime String for this case would be "" -}
 getQuestionTime : Q_element -> String -> String -> Q_element
 getQuestionTime element min sec =
     case element of
         Question record ->
-            Question { record | questionTime = String.concat [min,":",sec] }
+            if min==""
+            then    if sec==""
+                    then Question { record | questionTime = "" }
+                    else Question { record | questionTime = String.concat [":",sec] }
+            else    if sec==""
+                    then Question { record | questionTime = String.concat [min,":"] }
+                    else Question { record | questionTime = String.concat [min,":",sec] }
         
         Note record ->
             element
@@ -308,7 +314,7 @@ getQuestionTime element min sec =
 {- does empty Minutes and empty Seconds mean no time limit for the question? -}
 getQuestionTimePresentation : String -> String
 getQuestionTimePresentation time =
-    if time==":"    --leer?
+    if time==""    --leer?
     then "kein Zeitlimit"
     else    if String.right 1 time == ":"   --sec leer?
             then (String.concat [(String.dropRight 1 time)," Min"])
@@ -317,6 +323,3 @@ getQuestionTimePresentation time =
                     else    if String.contains ":" (String.right 2 time)    --sec einstellig?
                             then (String.concat [(String.dropRight 2 time)," Min ",(String.right 1 time)," Sek"])
                             else (String.concat [(String.dropRight 3 time)," Min ",(String.right 2 time)," Sek"])
-
-
-

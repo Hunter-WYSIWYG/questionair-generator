@@ -1,6 +1,6 @@
 module Model exposing
     ( Model, ModalType(..), Msg(..), ValidationResult(..)
-    , initModel, isValidQuestionTime, validateQuestion
+    , initModel, validateQuestionTime
     )
 
 {-| Contains the types for the model, the modals, the messages, and the ValidationResult. Also includes the initial state of the model.
@@ -13,7 +13,7 @@ module Model exposing
 
 # Public functions
 
-@docs initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validateQuestion
+@docs initModel, isValidEditTime, isValidQuestionTime, isValidViewingTime, validateQuestionTime
 
 -}
 
@@ -55,6 +55,7 @@ type alias Model =
     , inputReminderTimes : List String
     , inputQuestionTime : String
     , questionValidationResult : ValidationResult
+    , questionTimeValidationResult : ValidationResult
     , inputParentId : Int
     , inputChildId : Int
     , newAnswerID_Condition : String
@@ -187,6 +188,7 @@ initModel _ =
       , inputReminderTimes = []
       , inputQuestionTime = ""
       , questionValidationResult = NotDone
+      , questionTimeValidationResult = NotDone
       , inputParentId = -1
       , inputChildId = -1
       , newCondition = Condition.initCondition
@@ -206,20 +208,15 @@ initModel _ =
     , Cmd.none
     )
 
-
 {-| Method for validating the question time format.
 -}
-validateQuestion : String -> ValidationResult
-validateQuestion questionTime =
-    if not (isValidQuestionTime questionTime) then
-        Error "Die Zeiten müssen das Format HH:MM:SS haben"
+validateQuestionTime : String -> String -> ValidationResult
+validateQuestionTime minutes seconds =
+    if (String.contains "-" minutes)||(String.contains "-" seconds)
+    then Error "Keine negativen Zeiten!"
+    else    case String.toInt seconds of
+                Just sec -> if sec<60
+                            then ValidationOK
+                            else Error "Zu hohe Sekundenzahl!"
+                Nothing -> ValidationOK
 
-    else
-        ValidationOK
-
-
-{-| Method for validating the length of the question time.
--}
-isValidQuestionTime : String -> Bool
-isValidQuestionTime questionTime =
-    not (String.length questionTime /= 8 && String.length questionTime /= 0)

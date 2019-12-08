@@ -457,6 +457,8 @@ update msg model =
                 {- Setzen der QuestionTime beim Klick auf "Uebernehmen" -}
                 newElementWithQT = (QElement.getQuestionTime model.newElement model.inputQuestionTimeMinutes model.inputQuestionTimeSeconds)
 
+                questionTimeValidationResultTmp = Model.validateQuestionTime model.inputQuestionTimeMinutes model.inputQuestionTimeSeconds
+
                 oldQuestionnaire =
                     model.questionnaire
 
@@ -476,21 +478,23 @@ update msg model =
                                     Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
                         }
             in
-            if model.editQElement == False && (isTypeEmpty model) == False then
+            if model.editQElement == False && (isTypeEmpty model) == False && questionTimeValidationResultTmp==ValidationOK then
                 ( { model   | questionnaire = changedQuestionnaire
                             , showNewQuestionModal = False
                             , newCondition = Condition.initCondition
                             , inputQuestionTimeMinutes = ""
-                            , inputQuestionTimeSeconds = "" }, Cmd.none )
+                            , inputQuestionTimeSeconds = ""
+                            , questionTimeValidationResult = questionTimeValidationResultTmp }, Cmd.none )
 
-            else if (isTypeEmpty model) == False then
+            else if (isTypeEmpty model) == False && questionTimeValidationResultTmp==ValidationOK then
                 ( { model   | questionnaire = changedQuestionnaire
                             , showNewQuestionModal = False
                             , editQElement = False
                             , inputQuestionTimeMinutes = ""
-                            , inputQuestionTimeSeconds = "" }, Cmd.none )
+                            , inputQuestionTimeSeconds = ""
+                            , questionTimeValidationResult = questionTimeValidationResultTmp }, Cmd.none )
 
-            else (model, Cmd.none)
+            else ( { model  | questionTimeValidationResult = questionTimeValidationResultTmp }, Cmd.none )
                 
         SetConditions ->
             let

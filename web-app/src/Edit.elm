@@ -374,6 +374,7 @@ viewNewQuestionModal model =
                             [ class "input is-medium"
                             , style "width" "25%"
                             , style "margin-left" "10px"
+                            , style "margin-bottom" "5px"
                             , type_ "text"
                             , maxlength 2
                             , onInput ChangeQuestionTimeSeconds
@@ -382,6 +383,7 @@ viewNewQuestionModal model =
                             , Html.Attributes.max "59"
                             ]
                             []
+                        , viewQuestionTimeValidation model
                         ]
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
@@ -790,6 +792,22 @@ viewValidation model =
 
                 ValidationOK ->
                     ( "green", "OK" )
+    in
+    div [ style "color" color ] [ text message ]
+
+viewQuestionTimeValidation : Model -> Html msg
+viewQuestionTimeValidation model =
+    let
+        ( color, message ) =
+            case model.questionTimeValidationResult of
+                NotDone ->
+                    ( "", "" )
+
+                Error msg ->
+                    ( "red", msg )
+
+                ValidationOK ->
+                    ( "green", "Zeiten OK" )
     in
     div [ style "color" color ] [ text message ]
 

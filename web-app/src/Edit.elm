@@ -12,7 +12,7 @@ module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuest
 import Answer exposing (Answer)
 import Condition exposing (Condition)
 import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, small, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value)
+import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value, disabled)
 import Html.Events exposing (onClick, onInput)
 import List exposing (member, map)
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
@@ -514,6 +514,7 @@ viewNewConditionModalCreate model =
                     [ button
                         [ class "qnButton"
                         , onClick SetConditions
+                        , disabled (buttonDisabled model.newCondition)
                         ]
                         [ text "Übernehmen" ]
                     ]
@@ -934,7 +935,7 @@ showInputBipolarUnipolarTableSlider model =
         Note record ->
             div [] []
 
-{-| Radiobutton.
+{-| radio button
 -}
 radio : String -> msg -> Html msg
 radio value msg =
@@ -949,6 +950,8 @@ radio value msg =
         , text value
         ]
 
+{-| the selected radio button
+-}      
 selectedRadio : String -> msg -> Html msg
 selectedRadio value msg =
     label
@@ -961,13 +964,17 @@ selectedRadio value msg =
             []
         , text value
         ]
-        
+ 
+{-| drops the nth element
+-}       
 get : Int -> List a -> Maybe a
 get nth list =
     list
         |> List.drop (nth)
         |> List.head
 
+{-| checks if frage is a question
+-}
 checkFrage : Maybe Q_element -> QuestionRecord
 checkFrage frage =
 
@@ -989,6 +996,24 @@ checkFrage frage =
             , leftText = ""
             }
 
+{-| get a List of Answer Id's
+-}
 getAnswersId : List Answer -> List Int
 getAnswersId list =
-    map Answer.getAnswerId list
+    List.map Answer.getAnswerId list
+
+
+{-| accepts only validate Condition 
+-}
+buttonDisabled : Condition -> Bool
+buttonDisabled con = 
+    if con.parent_id == -1 then
+        True
+
+    else if con.child_id == -1 then
+        True
+
+    else if con.answer_id == -1 then
+        True
+
+    else False

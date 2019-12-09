@@ -1,9 +1,11 @@
 package com.example.app;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -21,19 +23,19 @@ import java.io.FileWriter;
 import java.util.List;
 
 public class QuestionDisplayActivity extends AppCompatActivity {
-
+	
 	// xml is divided into the questionViewContainer, the questionView inside the container and the "next" button
 	private LinearLayout contentContainer;
 	private QuestionDisplayView questionView;
 	private Button nextButton;
-
+	
 	private QuestionnaireState state;
-
+	
 	// getter
 	public QuestionnaireState getState () {
 		return state;
 	}
-
+	
 	// displays the current question of the questionnaire state
 	public static void displayCurrentQuestion (QuestionnaireState questionnaireState, Activity activity) {
 		Intent intent = new Intent (activity, QuestionDisplayActivity.class);
@@ -42,7 +44,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		activity.finish (); // prevent the back button
 		// TODO: if back button pressed -> popup with "sind sie sicher dass sie den fragebogen abbrechen wollen?"
 	}
-
+	
 	// is called when this activity is started
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -54,13 +56,13 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		contentContainer = findViewById(R.id.QuestionDisplayContentContainer);
 		
 		questionView = QuestionDisplayView.create(this);
-
+		
 		// insert as the new first element, before the space filler and the next button
 		contentContainer.addView(questionView.getView(), 0);
 		
 		nextButton.setOnClickListener(v -> nextButtonClicked());
 	}
-
+	
 	// next button is clicked, update questionnaire state and go to next question
 	private void nextButtonClicked () {
 		Answers answers = questionView.getCurrentAnswer();
@@ -97,29 +99,59 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		//Checking the availability state of the External Storage.
 		String state = Environment.getExternalStorageState();
 		if (!Environment.MEDIA_MOUNTED.equals(state)) {
-				
-				//If it isn't mounted - we can't write into it.
-				return;
-			}
 			
+			//If it isn't mounted - we can't write into it.
+			return;
+		}
+		
 		//Create a new file that points to the root directory, with the given name:
 		File file = new File(getExternalFilesDir(null), this.getState().getQuestionnaire().getName() + ".json");
-			
+		
 		//This point and below is responsible for the write operation
 		try {
-				file.createNewFile();
-				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-				writer.write(textToWrite);
-				
-				writer.close();
-				Toast myToast = Toast.makeText(this, "Gespeichert!", Toast.LENGTH_SHORT);
-				myToast.show();
+			file.createNewFile();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write(textToWrite);
+			
+			writer.close();
+			Toast myToast = Toast.makeText(this, "Gespeichert!", Toast.LENGTH_SHORT);
+			myToast.show();
 		}
 		catch (Exception e) {
-				e.printStackTrace();
-				Toast myToast = Toast.makeText(this, "Nicht Gespeichert!", Toast.LENGTH_SHORT);
-				myToast.show();
+			e.printStackTrace();
+			Toast myToast = Toast.makeText(this, "Nicht Gespeichert!", Toast.LENGTH_SHORT);
+			myToast.show();
 		}
+	}
+	
+	// create popup if back button is pressed
+	public void onBackPressed() {
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+		alertDialog.setTitle("");
+		alertDialog.setMessage("Wollen Sie den Fragebogen verlassen?");
+		alertDialog.setCancelable(true);
+		
+		alertDialog.setPositiveButton(
+			"Ja",
+			new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					Intent intent = new Intent (QuestionDisplayActivity.this, MainActivity.class);
+					startActivity(intent);
+					finish();
+				}
+			});
+		
+		alertDialog.setNegativeButton(
+			"Abbrechen",
+			new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+		
+		AlertDialog alert = alertDialog.create();
+		alert.show();
 	}
 	
 }

@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.app.answer.Answer;
+import com.example.app.answer.Answers;
 import com.google.gson.Gson;
 
 import java.io.BufferedWriter;
@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaveAnswersActivity extends AppCompatActivity {
-	/*
+
+	/* deprecated
 	private List<Answer> aList;
+>>>>>>> master
 	private int size;
 	private List<String> answers;
 	private String res;
@@ -37,7 +39,7 @@ public class SaveAnswersActivity extends AppCompatActivity {
 		answers = new ArrayList<> (size);
 		// get answers from intent
 		for (int i = 0; i < size; i++) {
-			aList.add ((Answer) more.getSerializable ("a" + i));
+			aList.add((Answers) more.getSerializable("a" + i));
 			answers.add ("");
 		}
 		// save to answer list

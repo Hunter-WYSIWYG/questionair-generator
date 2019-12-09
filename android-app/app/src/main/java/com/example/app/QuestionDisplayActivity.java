@@ -3,93 +3,124 @@ package com.example.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
 import android.widget.Toast;
-
-import com.example.app.answer.Answer;
-import com.example.app.question.ChoiceQuestion;
-import com.example.app.question.QuestionType;
+import com.example.app.answer.Answers;
 import com.example.app.view.QuestionDisplayView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 
 public class QuestionDisplayActivity extends AppCompatActivity {
-	
+
 	// xml is divided into the questionViewContainer, the questionView inside the container and the "next" button
 	private LinearLayout contentContainer;
 	private QuestionDisplayView questionView;
 	private Button nextButton;
-	
+
 	private QuestionnaireState state;
-	
+
 	// getter
 	public QuestionnaireState getState () {
 		return state;
 	}
-	
+
 	// displays the current question of the questionnaire state
 	public static void displayCurrentQuestion (QuestionnaireState questionnaireState, Activity activity) {
 		Intent intent = new Intent (activity, QuestionDisplayActivity.class);
 		intent.putExtra ("state", questionnaireState);
 		activity.startActivity (intent); // starting our own activity (onCreate) with questionnaire state so we can save it
 		activity.finish (); // prevent the back button
-		// TODO: if back button pressed -> popup with "Sind Sie sicher, dass Sie den Fragebogen abbrechen wollen?"
+		// TODO: if back button pressed -> popup with "sind sie sicher dass sie den fragebogen abbrechen wollen?"
 	}
-	
+
 	// is called when this activity is started
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate (savedInstanceState);
-		this.setContentView (R.layout.activity_question_display);
+		setContentView(R.layout.activity_question_display);
 		
-		this.state = (QuestionnaireState) this.getIntent ().getSerializableExtra ("state");
-		this.nextButton = this.findViewById (R.id.QuestionDisplayNextButton);
-		this.contentContainer = this.findViewById (R.id.QuestionDisplayContentContainer);
+		state = (QuestionnaireState) getIntent().getSerializableExtra("state");
+		nextButton = findViewById(R.id.QuestionDisplayNextButton);
+		contentContainer = findViewById(R.id.QuestionDisplayContentContainer);
 		
-		this.questionView = QuestionDisplayView.create (this);
-		
-		// insert as the new first element, before the space filler and the next button
-		this.contentContainer.addView (this.questionView.getView (), 0);
-		
-		this.nextButton.setOnClickListener (v -> this.nextButtonClicked ());
+		questionView = QuestionDisplayView.create(this);
 
-		Toast kek = Toast.makeText(this, this.state.getCurrentQuestion().conditions.toString(), Toast.LENGTH_LONG);
-		kek.show();
+		// insert as the new first element, before the space filler and the next button
+		contentContainer.addView(questionView.getView(), 0);
+		
+		nextButton.setOnClickListener(v -> nextButtonClicked());
 	}
-	
-	
-	// set next button to enabled or disabled
-	public void setNextButtonEnabled (boolean enabled) {
-		this.nextButton.setEnabled (enabled);
-	}
-	
+
 	// next button is clicked, update questionnaire state and go to next question
 	private void nextButtonClicked () {
-		List<Answer> answer = this.questionView.getCurrentAnswer ();
-		this.state.currentQuestionAnswered (answer);
-		
-		if (!this.state.isFinished ()) {
-			displayCurrentQuestion (this.state, this);
+		Answers answers = questionView.getCurrentAnswer();
+		state.currentQuestionAnswered(answers);
+		if (!state.isFinished()) {
+			displayCurrentQuestion(state, this);
 		}
 		else {
+			save(state.getAnswers());
 			Intent intent = new Intent (this, QuestionnaireFinishedActivity.class);
-			intent.putExtra("EXTRA_ANSWERS", answerListToString ());
-			this.startActivity (intent);
-			this.finish ();
+			startActivity(intent);
+			finish();
 		}
 	}
 	
-	//TODO: better solution for this
-	private String answerListToString () {
-		List<Answer> answerList = this.state.getAnswers ();
-		StringBuilder returnString = new StringBuilder ();
-		for (Answer answer : answerList) {
-			returnString.append (answer);
-			returnString.append("\n");
+	public void onDestroy() {
+		
+		super.onDestroy();
+		save(state.getAnswers());
+		finish();
+		
+	}
+	
+	// set next button to enabled or disabled
+	public void setNextButtonEnabled(boolean enabled) {
+		nextButton.setEnabled(enabled);
+		
+		// TODO: color 'next' button depending on enabled or not
+	}
+	public void save(List<Answers> answers) {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		//Text of the Document
+		String textToWrite = gson.toJson(answers);
+		//Checking the availability state of the External Storage.
+		String state = Environment.getExternalStorageState();
+		if (!Environment.MEDIA_MOUNTED.equals(state)) {
+				
+				//If it isn't mounted - we can't write into it.
+				return;
+			}
+			
+		//Create a new file that points to the root directory, with the given name:
+		File file = new File(getExternalFilesDir(null), this.getState().getQuestionnaire().getName() + ".json");
+			
+		//This point and below is responsible for the write operation
+		try {
+				file.createNewFile();
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+				writer.write(textToWrite);
+				
+				writer.close();
+				Toast myToast = Toast.makeText(this, "Gespeichert!", Toast.LENGTH_SHORT);
+				myToast.show();
 		}
-		return returnString.toString ();
+		catch (Exception e) {
+				e.printStackTrace();
+				Toast myToast = Toast.makeText(this, "Nicht Gespeichert!", Toast.LENGTH_SHORT);
+				myToast.show();
+		}
 	}
 	
 }
+

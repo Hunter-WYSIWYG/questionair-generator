@@ -1,6 +1,7 @@
 package com.example.app.question;
 
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class PercentSliderQuestion extends Question {
 	@SerializedName ("stepSize")
 	public final double stepSize;
 	// constructor
-	public PercentSliderQuestion (int id, String questionText, List<Answer> conditions, double minValue, double maxValue, double stepSize) {
+	public PercentSliderQuestion(int id, String questionText, List<Condition> conditions, double minValue, double maxValue, double stepSize) {
 		super (id, QuestionType.PercentSlider, conditions, questionText);
 		
 		if (minValue > maxValue)

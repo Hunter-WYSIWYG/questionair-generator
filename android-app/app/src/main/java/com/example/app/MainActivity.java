@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				}
 			}
 		}
+
 		Toast toast = Toast.makeText(this, " Notifications initiated", Toast.LENGTH_SHORT);
 		toast.show();
 	}

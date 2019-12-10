@@ -7,6 +7,7 @@ import com.example.app.answer.Answers;
 import com.example.app.answer.Condition;
 import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
+import com.example.app.question.QuestionnaireCondition;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -27,6 +28,7 @@ public class QuestionnaireState implements Serializable {
 		this.questionnaire = questionnaire;
 		currentIndex = 0;
 		
+		fixQuestionConditions();
 		goToNextPossibleQuestion();
 	}
 
@@ -90,6 +92,12 @@ public class QuestionnaireState implements Serializable {
 	
 	public List<Answers> getAnswers() {
 		return answers;
+	}
+	
+	private void fixQuestionConditions() {
+		for (QuestionnaireCondition currentCondition : this.questionnaire.getQuestionnaireConditions()){
+			this.questionnaire.getQuestionList().get(currentCondition.getChild_id()).addCondition(currentCondition.getParent_id(), currentCondition.getAnswer_id());
+		}
 	}
 	
 

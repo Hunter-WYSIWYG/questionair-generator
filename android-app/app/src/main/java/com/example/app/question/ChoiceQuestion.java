@@ -13,7 +13,7 @@ public class ChoiceQuestion extends Question {
 
 	// constructor
 	private ChoiceQuestion(int id, QuestionType type, List<Condition> conditions, String questionText, List<Option> options) {
-		super (id, type, conditions, questionText);
+		super (id, type, questionText);
 		this.options = options;
 	}
 

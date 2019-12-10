@@ -12,7 +12,7 @@ public class Note extends Question {
 	
 	// constructor
 	public Note(int id, String questionText, List<Condition> conditions, String text) {
-		super (id, QuestionType.Note, conditions, text);
+		super (id, QuestionType.Note, text);
 		
 		noteText = text;
 	}

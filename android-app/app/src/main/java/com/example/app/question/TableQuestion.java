@@ -20,7 +20,7 @@ public class TableQuestion extends Question {
 	
 	//constructor
 	public TableQuestion(int id, String questionText, List<Condition> conditions, int size, String topName, String bottomName, String rightName, String leftName) {
-		super (id, QuestionType.Table, conditions, questionText);
+		super (id, QuestionType.Table, questionText);
 		
 		this.size = size;
 		this.topName = topName;

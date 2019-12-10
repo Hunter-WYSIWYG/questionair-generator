@@ -16,7 +16,7 @@ public class SliderButtonQuestion extends Question {
 	
 	//constructor
 	public SliderButtonQuestion(int id, String questionText, List<Condition> conditions, int size, String leftIndex, String rightIndex) {
-		super (id, QuestionType.SliderButton, conditions, questionText);
+		super (id, QuestionType.SliderButton, questionText);
 		
 		this.size = size;
 		this.leftIndex = leftIndex;

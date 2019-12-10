@@ -2,7 +2,6 @@ package com.example.app.question;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,6 +16,9 @@ public class Questionnaire implements Serializable {
 	// list of all questions
 	@SerializedName ("questions")
 	private final List<Question> questionList;
+	// list of condition triples
+	@SerializedName("questionnaireConditions")
+	private final List<QuestionnaireCondition> questionnaireConditions;
 	// list of all reminders
 	@SerializedName ("reminderTimes")
 	private final List<Reminder> reminderList;
@@ -30,6 +32,7 @@ public class Questionnaire implements Serializable {
 		questionList = null;
 		id = 0.0;
 		reminderList = null;
+		questionnaireConditions = null;
 	}
 	
 	// getter
@@ -47,6 +50,10 @@ public class Questionnaire implements Serializable {
 	
 	public List<Reminder> getReminderList () {
 		return reminderList;
+	}
+	
+	public List<QuestionnaireCondition> getQuestionnaireConditions () {
+		return questionnaireConditions;
 	}
 	
 	public String getPath () {

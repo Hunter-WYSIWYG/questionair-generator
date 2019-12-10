@@ -16,7 +16,7 @@ public class SliderQuestion extends Question {
 
 	// constructor
 	public SliderQuestion(int id, String questionText, List<Condition> conditions, double minValue, double maxValue, double stepSize) {
-		super (id, QuestionType.Slider, conditions, questionText);
+		super (id, QuestionType.Slider, questionText);
 		
 		if (minValue > maxValue)
 			throw new IllegalArgumentException ();

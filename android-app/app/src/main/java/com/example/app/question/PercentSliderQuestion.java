@@ -15,7 +15,7 @@ public class PercentSliderQuestion extends Question {
 	public final double stepSize;
 	// constructor
 	public PercentSliderQuestion(int id, String questionText, List<Condition> conditions, double minValue, double maxValue, double stepSize) {
-		super (id, QuestionType.PercentSlider, conditions, questionText);
+		super (id, QuestionType.PercentSlider, questionText);
 		
 		if (minValue > maxValue)
 			throw new IllegalArgumentException ();

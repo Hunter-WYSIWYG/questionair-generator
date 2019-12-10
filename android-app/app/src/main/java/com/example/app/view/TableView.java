@@ -21,7 +21,6 @@ import java.util.Calendar;
 import java.util.List;
 
 public class TableView extends QuestionDisplayView {
-
 	
 	// the corresponding question
 	private final TableQuestion question;
@@ -64,6 +63,10 @@ public class TableView extends QuestionDisplayView {
 		// set questionText
 		TextView questionTextView = container.findViewById(R.id.tableQuestionText);
 		questionTextView.setText(question.questionText);
+		
+		// set hint
+	    TextView hintTextView = this.container.findViewById(R.id.hint);
+	    hintTextView.setText(this.question.hint);
 		
 		// find dividingLine
 		View dividingLine = container.findViewById(R.id.tableDividingLine);

@@ -188,6 +188,10 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		TextView questionTypeTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionTypeText);
 		questionTypeTextView.setText (this.question.type.name ());
 		
+		// set hint
+		TextView hintTextView = this.rootView.findViewById(R.id.hint);
+		hintTextView.setText(this.question.hint);
+		
 		// set question Number
 		TextView questionNumber = this.rootView.findViewById (R.id.questionNumber);
 		questionNumber.setText("Fragenummer: " + question.id);

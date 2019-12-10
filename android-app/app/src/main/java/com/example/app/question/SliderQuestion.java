@@ -13,10 +13,15 @@ public class SliderQuestion extends Question {
 	public final double maxValue;
 	@SerializedName ("stepSize")
 	public final double stepSize;
+	@SerializedName ("leftText")
+	public final String leftText;
+	@SerializedName ("rightText")
+	public final String rightText;
+	
 
 	// constructor
-	public SliderQuestion(int id, String questionText, List<Condition> conditions, double minValue, double maxValue, double stepSize) {
-		super (id, QuestionType.Slider, conditions, questionText);
+	public SliderQuestion(int id, String questionText, List<Condition> conditions, double minValue, double maxValue, double stepSize, String leftText, String rightText,String hint) {
+		super (id, QuestionType.Slider, conditions, questionText, hint);
 		
 		if (minValue > maxValue)
 			throw new IllegalArgumentException ();
@@ -30,6 +35,8 @@ public class SliderQuestion extends Question {
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.stepSize = stepSize;
+		this.leftText = leftText;
+		this.rightText = rightText;
 	}
 	
 }

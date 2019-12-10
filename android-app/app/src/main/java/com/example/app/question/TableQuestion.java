@@ -19,8 +19,8 @@ public class TableQuestion extends Question {
 	public final String leftName;
 	
 	//constructor
-	public TableQuestion(int id, String questionText, List<Condition> conditions, int size, String topName, String bottomName, String rightName, String leftName) {
-		super (id, QuestionType.Table, conditions, questionText);
+	public TableQuestion(int id, String questionText, List<Condition> conditions, int size, String topName, String bottomName, String rightName, String leftName, String hint) {
+		super (id, QuestionType.Table, conditions, questionText, hint);
 		
 		this.size = size;
 		this.topName = topName;

@@ -382,6 +382,9 @@ getQuestionOptions list newCondition =
         ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ]
             [ text (String.fromInt (QElement.getElementId e) ++ ":" ++ " " ++ QElement.getElementText e) ]) list
 
+{-| Displays a list of answers that can be added to the condition as answer.
+See viewConditionModal
+-}
 getAnswerOptions : Model -> Condition -> List (Html Msg)
 getAnswerOptions model newCondition =
     let

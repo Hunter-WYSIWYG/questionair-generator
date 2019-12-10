@@ -783,7 +783,7 @@ viewQuestionValidation result =
     in
     div [ style "color" color ] [ text message ]
 
-{- entfernt die Antworten-Tabelle wenn Skaliert bi/unipolar oder Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
+{- Displays the answer-table when "Skaliert bi/unipolar" or "Raster-Auswahl" or "Prozentslider" questiontype is not selected
 -}
 showAnswerTable : Model -> Html Msg
 showAnswerTable model =
@@ -797,7 +797,7 @@ showAnswerTable model =
         Note record ->
             div [] []
 
-{- entfernt die "Neue Antwort"-Button wenn Skaliert bi/unipolar oder Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
+{- Displays "Neue Antowrt"-button when "Skaliert bi/unipolar" or "Raster-Auswahl" or "Prozentslider" questiontype is not selected
 -}
 showNewAnswerButton : Model -> Html Msg
 showNewAnswerButton model =

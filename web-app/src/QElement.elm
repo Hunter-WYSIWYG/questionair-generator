@@ -45,9 +45,9 @@ type alias QuestionRecord =
     , hint : String
     , typ : String
     , questionTime : String
-    -- Größe der Tabelle bei Fragetyp Raster-Auswahl
+    -- Size of the table for questiontype "Raster-Auswahl"
     , tableSize : Int 
-    -- Beschriftung der Tabelle bei Fragetyp Raster-Auswahl oder Prozentslider
+    -- Labels for the scales for questiontype "Skaliert uni/bipolar", "Prozentslider", "Raster-Auswahl"
     , topText : String
     , rightText : String
     , bottomText : String
@@ -296,7 +296,7 @@ getElementId elem =
         Note a ->
             a.id
 
-{- get-Funktion für tableSize 
+{- get-function for tableSize 
 -}
 getTableSize : Q_element -> Int
 getTableSize elem = 
@@ -307,7 +307,7 @@ getTableSize elem =
         Note a ->
             0
 
-{- get-Funktion für topText
+{- get-function for topText
 -}
 getTopText : Q_element -> String
 getTopText elem =
@@ -318,7 +318,7 @@ getTopText elem =
         Note a ->
             ""
 
-{- get-Funktion für rightText
+{- get-funktion for rightText
 -}
 getRightText : Q_element -> String
 getRightText elem =
@@ -329,7 +329,7 @@ getRightText elem =
         Note a ->
             ""
 
-{- get-Funktion für bottomText
+{- get-function for bottomText
 -}
 getBottomText : Q_element -> String
 getBottomText elem =
@@ -340,7 +340,7 @@ getBottomText elem =
         Note a ->
             ""
 
-{- get-Funktion für leftText
+{- get-function for leftText
 -}
 getLeftText : Q_element -> String
 getLeftText elem =
@@ -350,7 +350,7 @@ getLeftText elem =
         
         Note a ->
             ""
-{- get-Funktion für polarMin 
+{- get-function for polarMin 
 -}
 
 getPolarMin : Q_element -> Int
@@ -362,7 +362,7 @@ getPolarMin elem =
         Note a ->
             0
 
-{- get-Funktion für polarMin 
+{- get-function for polarMin 
 -}
 
 getPolarMax : Q_element -> Int

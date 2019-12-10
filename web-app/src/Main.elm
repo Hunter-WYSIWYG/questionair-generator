@@ -338,7 +338,7 @@ update msg model =
                     Note record ->
                         ( model, Cmd.none )
 
-        -- stellt Größe der Tabelle bei Raster-Auswahl Fragetyp ein
+        -- Set-function for size of table for questiontype "Raster-Auswahl"
         SetTableSize string ->
             let 
                 size = Maybe.withDefault 0 ( String.toInt string ) 
@@ -361,7 +361,7 @@ update msg model =
                     Note record ->
                         ( model, Cmd.none )
         
-        -- stellt obere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        -- Set-function for label on the top of the table for questiontype "Raster-Auswahl"
         SetTopText string ->
             let
                 changedElement =  
@@ -382,7 +382,7 @@ update msg model =
                     Note record ->
                         ( model, Cmd.none )
         
-        -- stellt rechte Beschriftung des Rasters bei Fragetyp Raster-Auswahl oder Prozentslider ein 
+        -- Set-function for label on the right of the table/scale for questiontype "Skaliert uni/bipolar", "Prozentslider, ""Raster-Auswahl"
         SetRightText string ->
             let
                 changedElement =  
@@ -404,7 +404,7 @@ update msg model =
                     Note record ->
                         ( model, Cmd.none )
         
-        -- stellt untere Beschriftung des Rasters bei Fragetyp Raster-Auswahl ein 
+        -- Set-function for label on the bottom of the table for questiontype "Raster-Auswahl"
         SetBottomText string ->
             let
                 changedElement =  
@@ -425,7 +425,7 @@ update msg model =
                     Note record ->
                         ( model, Cmd.none )
         
-        -- stellt linke Beschriftung des Rasters bei Fragetyp Raster-Auswahl oder Prozentslider ein 
+        -- Set-function for label on the left of the table/scale for questiontype "Skaliert uni/bipolar", "Prozentslider", "Raster-Auswahl"
         SetLeftText string ->
             let
                 changedElement =  

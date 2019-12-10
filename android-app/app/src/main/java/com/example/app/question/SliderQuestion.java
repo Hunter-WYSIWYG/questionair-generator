@@ -1,6 +1,7 @@
 package com.example.app.question;
 
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -19,8 +20,13 @@ public class SliderQuestion extends Question {
 	
 
 	// constructor
+<<<<<<< android-app/app/src/main/java/com/example/app/question/SliderQuestion.java
 	public SliderQuestion(int id, String questionText, List<Answer> conditions, double minValue, double maxValue, double stepSize, String leftText, String rightText,String hint) {
 		super (id, QuestionType.Slider, conditions, questionText, hint);
+=======
+	public SliderQuestion(int id, String questionText, List<Condition> conditions, double minValue, double maxValue, double stepSize) {
+		super (id, QuestionType.Slider, conditions, questionText);
+>>>>>>> android-app/app/src/main/java/com/example/app/question/SliderQuestion.java
 		
 		if (minValue > maxValue)
 			throw new IllegalArgumentException ();

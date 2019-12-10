@@ -7,8 +7,8 @@ import converter.graphical.ui.GUI;
  *
  * @author Maximilian Goldacker
  */
-
 public class Main {
+
     /**
      * The main function of the converter tool starts the GUI.
      *

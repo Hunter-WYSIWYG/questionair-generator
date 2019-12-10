@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
  *
  * @author Maximilian Goldacker
  */
-
 public class SaveBtnEvent implements ActionListener {
 
     /**

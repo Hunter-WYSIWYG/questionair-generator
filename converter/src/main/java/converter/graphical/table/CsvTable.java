@@ -8,14 +8,13 @@ import javax.swing.table.TableColumn;
  *
  * @author Maximilian Goldacker
  */
-
 public class CsvTable extends JTable {
 
     /**
      * Initiates the table for the CSV preview.
      */
     public CsvTable() {
-        super(new CsvTableModel());
+        super(CsvTableModel.getInstance());
         setColumnWidth(5);
     }
 

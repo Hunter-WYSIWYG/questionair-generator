@@ -5,6 +5,8 @@ import converter.graphical.buttons.SaveBtnEvent;
 import converter.graphical.table.CsvTable;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 
 /**
@@ -37,11 +39,6 @@ public class Layout extends JPanel {
         constraints.gridy = 0;
         add(fileLabel, constraints);
 
-        JButton convertButton = new JButton("Konvertieren");
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        add(convertButton, constraints);
-
         JTable table = new CsvTable();
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(360,200));
@@ -64,7 +61,7 @@ public class Layout extends JPanel {
     /**
      * @return the layout of the GUI
      */
-    static Layout getInstance() {
+    public static Layout getInstance() {
         if (instance == null) {
             instance = new Layout();
         }
@@ -77,7 +74,8 @@ public class Layout extends JPanel {
      *
      * @param text the text to be set for the label
      */
-    public static void changeFileLabel(String text) {
+    public void changeFileLabel(String text) {
         fileLabel.setText(text);
     }
+
 }

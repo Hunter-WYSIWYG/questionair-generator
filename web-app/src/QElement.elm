@@ -1,6 +1,6 @@
 module QElement exposing
     ( Q_element(..), NoteRecord, QuestionRecord
-    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID )
+    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax   )
 
 
 {-| Contains the type for the elements of questionnaires (questions, annotations) and an initial state for the "input element" (newElement).
@@ -13,7 +13,7 @@ module QElement exposing
 
 # Public functions
 
-@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID
+@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax
 
 -}
 
@@ -45,13 +45,16 @@ type alias QuestionRecord =
     , hint : String
     , typ : String
     , questionTime : String
-    -- Größe der Tabelle bei Fragetyp Raster-Auswahl
+    -- Size of the table for questiontype "Raster-Auswahl"
     , tableSize : Int 
-    -- Beschriftung der Tabelle bei Fragetyp Raster-Auswahl oder Prozentslider
+    -- Labels for the scales for questiontype "Skaliert uni/bipolar", "Prozentslider", "Raster-Auswahl"
     , topText : String
     , rightText : String
     , bottomText : String
     , leftText : String
+    -- Min- and max-value for uni- and bipolar Questiontype
+    , polarMin : Int
+    , polarMax : Int
     }
 
 
@@ -71,6 +74,8 @@ initQuestion =
         , rightText = ""
         , bottomText = "" 
         , leftText = ""
+        , polarMin = 0
+        , polarMax = 0
         }
 
 
@@ -290,5 +295,82 @@ getElementId elem =
 
         Note a ->
             a.id
-{- set- und get-Funktionen für Variablen für Fragetyp Raster-Auswahl
+
+{- get-function for tableSize 
 -}
+getTableSize : Q_element -> Int
+getTableSize elem = 
+    case elem of
+        Question a ->
+            a.tableSize
+        
+        Note a ->
+            0
+
+{- get-function for topText
+-}
+getTopText : Q_element -> String
+getTopText elem =
+    case elem of 
+        Question a ->
+            a.topText
+        
+        Note a ->
+            ""
+
+{- get-funktion for rightText
+-}
+getRightText : Q_element -> String
+getRightText elem =
+    case elem of 
+        Question a ->
+            a.rightText
+        
+        Note a ->
+            ""
+
+{- get-function for bottomText
+-}
+getBottomText : Q_element -> String
+getBottomText elem =
+    case elem of 
+        Question a ->
+            a.bottomText
+        
+        Note a ->
+            ""
+
+{- get-function for leftText
+-}
+getLeftText : Q_element -> String
+getLeftText elem =
+    case elem of 
+        Question a ->
+            a.leftText
+        
+        Note a ->
+            ""
+{- get-function for polarMin 
+-}
+
+getPolarMin : Q_element -> Int
+getPolarMin elem =
+    case elem of
+        Question a ->
+            a.polarMin
+        
+        Note a ->
+            0
+
+{- get-function for polarMin 
+-}
+
+getPolarMax : Q_element -> Int
+getPolarMax elem = 
+    case elem of
+        Question a ->
+            a.polarMax
+        
+        Note a ->
+            0
+

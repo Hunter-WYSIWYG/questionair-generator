@@ -61,6 +61,8 @@ elementEncoder element =
                 , ( "rightText", Encode.string record.rightText )
                 , ( "bottomText", Encode.string record.bottomText )
                 , ( "leftText", Encode.string record.leftText )
+                , ( "polarMin", Encode.int record.polarMin )
+                , ( "polarMax", Encode.int record.polarMax )
                 ]
 
 

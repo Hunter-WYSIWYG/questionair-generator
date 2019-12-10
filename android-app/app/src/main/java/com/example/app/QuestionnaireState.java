@@ -1,8 +1,10 @@
 package com.example.app;
 
-import android.widget.Toast;
 
 import com.example.app.answer.Answer;
+import com.example.app.answer.Answers;
+
+import com.example.app.answer.Condition;
 import com.example.app.question.Question;
 import com.example.app.question.Questionnaire;
 import com.google.gson.annotations.SerializedName;
@@ -18,7 +20,7 @@ public class QuestionnaireState implements Serializable {
 	private final Questionnaire questionnaire;
 	@SerializedName ("currentIndex")
 	private int currentIndex;
-	@SerializedName ("answers") private final List<Answer> answers = new ArrayList<>();
+	@SerializedName ("answers") private final List<Answers> answers = new ArrayList<>();
 
 	// constructor, creates a new QuestionnaireState that starts at the first question
 	public QuestionnaireState (Questionnaire questionnaire) {
@@ -37,10 +39,12 @@ public class QuestionnaireState implements Serializable {
 	}
 
 	// next button clicked -> current question answered and go to next question
-	public void currentQuestionAnswered (List<Answer> answer) {
-		this.answers.addAll (answer);
-		this.currentIndex++;
-		this.goToNextPossibleQuestion ();
+
+	public void currentQuestionAnswered(Answers answers) {
+		this.answers.add(answers);
+		currentIndex++;
+		goToNextPossibleQuestion();
+
 	}
 
 	// return true if there is no question left
@@ -50,11 +54,25 @@ public class QuestionnaireState implements Serializable {
 
 	// test conditions and see if you can display this question
 	private boolean isCurrentQuestionPossible () {
-
-		return this.answers.containsAll(this.questionnaire.getQuestionList().get(currentIndex).conditions);
-
+		int cndcount=this.questionnaire.getQuestionList().get(currentIndex).conditions.size();
+		int counter=0;
+	for(Condition cnd:this.questionnaire.getQuestionList().get(currentIndex).conditions){
+		for(Answers ans:this.answers){
+		if(cnd.qid==ans.qid){
+			for(Answer val:ans.chosenValues){
+				if(cnd.cv==val.id){
+				counter++;
+				}
+			}
+	
+		}
+		}
+		
+	}
+		//return this.answers.containsAll(this.questionnaire.getQuestionList().get(currentIndex).conditions);
 		// TODO: test conditions
 		// TODO: what to do if you are after the last question
+		return cndcount==counter;
 	}
 
 	// getter
@@ -70,10 +88,10 @@ public class QuestionnaireState implements Serializable {
 		return questionnaire.getQuestionList().get(currentIndex);
 	}
 	
-	public List<Answer> getAnswers () {
-		return this.answers;
+	public List<Answers> getAnswers() {
+		return answers;
 	}
-
+	
 
 	// TODO: method saveCurrentState
 }

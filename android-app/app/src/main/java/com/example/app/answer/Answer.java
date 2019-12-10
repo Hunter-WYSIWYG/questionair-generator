@@ -1,62 +1,42 @@
 package com.example.app.answer;
 
-import com.example.app.question.QuestionType;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Answer implements Serializable {
-	private final int qId;
-	private final int chosenValue;
 
+	@SerializedName("_type")
+	public final String type;
+	@SerializedName("id")
+	public final int id;
+	@SerializedName("text")
+	public final String text;
+	
 	public Answer () {
-		// qType = null;
-		// chosenValues = null;
-		qId = -1;
-		chosenValue = -1;
-	}
-
-	public Answer (int qid, int chosenIndex) {
-		
-		qId = qid;
-		chosenValue = chosenIndex;
-		
-	}
-
-	/*
-	public void AddAnswer (int chosenIndex) {
-		if (qType == QuestionType.SingleChoice) {
-			return;
-		}
-		else {
-			chosenValues.add (chosenIndex);
-			return;
-		}
-
-	}
-	 */
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Answer answer = (Answer) o;
-		return qId == answer.qId &&
-				chosenValue == answer.chosenValue;
-	}
-
-
-	public int getQId () {
-		return qId;
-	}
-
-	public int getChosenValue () {
-		return chosenValue;
+		this.type = null;
+		this.id = -1;
+		this.text = "Failsafe";
 	}
 	
-	@Override
-	public String toString () {
-		return "Answer {" + "Question-ID: " + qId + ", Answer-ID: " + chosenValue + '}';
+	public Answer(final String type, final int id, final String text) {
+		this.type = type;
+		this.id = id;
+		this.text = text;
 	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public String getText() {
+		return text;
+
+	}
+	
+	
 }

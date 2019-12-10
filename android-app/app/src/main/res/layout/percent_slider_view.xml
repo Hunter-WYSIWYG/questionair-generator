@@ -132,6 +132,7 @@
 		android:layout_marginStart="8dp"
 		android:layout_marginLeft="8dp"
 		android:text="TextView"
+		android:textSize="24sp"
 		app:layout_constraintBottom_toTopOf="@+id/SliderDividingLine"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/SliderQuestionText" />

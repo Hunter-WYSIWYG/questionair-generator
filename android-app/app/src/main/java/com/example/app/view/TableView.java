@@ -9,15 +9,11 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
-import com.example.app.QuestionnaireState;
 import com.example.app.R;
-import com.example.app.answer.Answers;
 import com.example.app.answer.Answer;
-import com.example.app.question.Questionnaire;
 import com.example.app.question.TableQuestion;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class TableView extends QuestionDisplayView {

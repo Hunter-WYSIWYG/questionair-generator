@@ -16,10 +16,8 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
-import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
-import com.example.app.answer.Answers;
 import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Option;
 import com.example.app.question.OptionType;
@@ -27,7 +25,6 @@ import com.example.app.question.Question;
 import com.example.app.question.QuestionType;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 // TODO: allow clicking on the text next to the radio button or checkbox
@@ -41,17 +38,14 @@ abstract class OptionView {
 	private final Option option;
 	// edit text is null if there is no edit text
 	private final EditText editText;
-
-	//current State
-	private final QuestionnaireState qState;
+	
 	// constructor
-	protected OptionView (Context context, Option option, QuestionnaireState state) {
+	protected OptionView (Context context, Option option) {
 		container = (LinearLayout) View.inflate(context, R.layout.multiple_choice_option_view, null);
 		optionTextView = new TextView(context);
 		optionTextView.setText(option.getOptionText());
 		optionTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 		this.option = option;
-		qState=state;
 		editText = createEditText(context);
 	}
 	
@@ -94,11 +88,11 @@ abstract class OptionView {
 	public abstract void setChecked (boolean checked);
 	
 	// creates new option view depending on the question type
-	public static OptionView create (Context context, Option option, Question question, View.OnClickListener onClickListener, QuestionnaireState state) {
+	public static OptionView create (Context context, Option option, Question question, View.OnClickListener onClickListener) {
 		if (question.type == QuestionType.SingleChoice)
-			return new SingleChoiceOptionView (context, option, onClickListener,state);
+			return new SingleChoiceOptionView (context, option, onClickListener);
 		else if (question.type == QuestionType.MultipleChoice)
-			return new MultipleChoiceOptionView (context, option, onClickListener,state);
+			return new MultipleChoiceOptionView (context, option, onClickListener);
 		else
 			throw new IllegalArgumentException ();
 	}
@@ -111,8 +105,8 @@ class SingleChoiceOptionView extends OptionView {
 	
 	
 	// constructor
-	public SingleChoiceOptionView (Context context, Option option, View.OnClickListener onClickListener, QuestionnaireState state) {
-		super (context, option,state);
+	public SingleChoiceOptionView (Context context, Option option, View.OnClickListener onClickListener) {
+		super (context, option);
 		radioButton = new RadioButton(context);
 		radioButton.setOnClickListener(onClickListener);
 		addButton(radioButton);
@@ -135,8 +129,8 @@ class MultipleChoiceOptionView extends OptionView {
 	private final CheckBox checkBox;
 	
 	// constructor
-	public MultipleChoiceOptionView (Context context, Option option, View.OnClickListener onClickListener, QuestionnaireState state) {
-		super (context, option, state);
+	public MultipleChoiceOptionView (Context context, Option option, View.OnClickListener onClickListener) {
+		super (context, option);
 		checkBox = new CheckBox(context);
 		checkBox.setOnClickListener(onClickListener);
 		addButton(checkBox);
@@ -166,16 +160,12 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	// view containing the option views
 	private LinearLayout optionContainer;
 	// list of all button views
-
-	private final List<OptionView> optionViews = new ArrayList<>();
-	//current State
-	private final QuestionnaireState qState;
-
+	private List<OptionView> optionViews = new ArrayList<> ();
+	
 	// constructor
-	public MultipleChoiceView (QuestionDisplayActivity activity, ChoiceQuestion question,QuestionnaireState state) {
+	public MultipleChoiceView (QuestionDisplayActivity activity, ChoiceQuestion question) {
 		super (activity);
 		this.question = question;
-		qState=state;
 		init();
 	}
 	
@@ -194,7 +184,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		
 		// set question Number
 		TextView questionNumber = this.rootView.findViewById (R.id.questionNumber);
-		questionNumber.setText("Fragenummer: " + question.id);
+		questionNumber.setText("Fragenummer: " + question.questionID);
 		
 		// set questionText
 		TextView questionTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionText);
@@ -219,7 +209,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 			
 			Option option = this.question.options.get (i);
 			final int finalI = i;
-			OptionView view = OptionView.create(getActivity(), option, question, v -> buttonClicked(optionViews.get(finalI)),qState);
+			OptionView view = OptionView.create(getActivity(), option, question, v -> buttonClicked(optionViews.get(finalI)));
 			optionContainer.addView(view.getContainer());
 			optionViews.add(view);
 			
@@ -299,36 +289,15 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	}
 	
 	@Override
-
-	public Answers getCurrentAnswer() {
-		
-		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
-		if(this.question.isSingleChoice()){
-			for (OptionView optionView : optionViews) {
-				if (optionView.isChecked ()) {
-					Answer ans=new Answer(question.type.toString(),optionView.getOption().getId()  , optionView.getOption().getOptionText());
-					List<Answer> answerList=new ArrayList<Answer>();
-					answerList.add(ans);
-					Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
-					return answers;
-				}
+	public List<Answer> getCurrentAnswer () {
+		List<Answer> returnList = new ArrayList<> ();
+		for (OptionView optionView : this.optionViews) {
+			if (optionView.isChecked ()) {
+				returnList.add(new Answer(this.question.questionID, optionView.getOption ().getId ()));
 			}
-			return null;
-			
-		}else{
-			List<Answer> answerList=new ArrayList<Answer>();
-			for (OptionView optionView : optionViews) {
-				if (optionView.isChecked ()) {
-					Answer ans=new Answer(question.type.toString(),optionView.getOption().getId()  , optionView.getOption().getOptionText());
-					answerList.add(ans);
-				}
-			}
-			Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
-			return answers;
-			
 		}
 		
-
+		return returnList;
 	}
 	
 	

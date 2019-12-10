@@ -109,12 +109,44 @@ update msg model =
             case model.newElement of
                     Question record ->
                         ( { model | newElement =
-                            if string == "Single Choice" || string == "Multiple Choice" then
-                                Question { record | typ = string }
-                            else if string == "Skaliert unipolar" then
-                                Question { record | typ = string, polarMin = 0 }
+                            if string == "Ja/Nein Frage" then
+                                Question 
+                                    { record 
+                                        | typ = string
+                                        , answers = Answer.getYesNoAnswers string
+                                        , tableSize = 0
+                                        , topText = ""
+                                        , rightText = ""
+                                        , leftText = ""
+                                        , bottomText = ""
+                                        , polarMin = 0
+                                        , polarMax = 0  
+                                    }
+                            else if string == "Single Choice" || string == "Multiple Choice" then
+                                Question
+                                    { record
+                                        | typ = string 
+                                        , tableSize = 0
+                                        , topText = ""
+                                        , rightText = ""
+                                        , leftText = ""
+                                        , bottomText = ""
+                                        , polarMin = 0
+                                        , polarMax = 0 
+                                    }
                             else
-                                Question { record | typ = string, answers = Answer.getYesNoAnswers string }
+                                Question 
+                                    { record 
+                                        | typ = string 
+                                        , answers = []
+                                        , tableSize = 0
+                                        , topText = ""
+                                        , rightText = ""
+                                        , bottomText = ""
+                                        , leftText = ""
+                                        , polarMin = 0
+                                        , polarMax = 0
+                                    }
                           }
                         , Cmd.none
                         )

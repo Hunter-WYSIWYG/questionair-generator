@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
@@ -123,13 +125,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		return true;
 	}
 	
+	// create popup if back button is pressed
 	public void onBackPressed() {
 		if (drawerlayout.isDrawerOpen(GravityCompat.START)) {
 			drawerlayout.closeDrawer(GravityCompat.START);
 			return;
 		}
-		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
-		myToast.show();
+		
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+		alertDialog.setTitle("");
+		alertDialog.setMessage("Wollen Sie die App verlassen?");
+		alertDialog.setCancelable(true);
+		
+		alertDialog.setPositiveButton(
+			"Ja",
+			new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					finish();
+				}
+			});
+		
+		alertDialog.setNegativeButton(
+			"Abbrechen",
+			new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+		
+		AlertDialog alert = alertDialog.create();
+		alert.show();
 	}
 	
 	public void startButtonClick(View view) {
@@ -175,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				}
 			}
 		}
+
 		Toast toast = Toast.makeText(this, " Notifications initiated", Toast.LENGTH_SHORT);
 		toast.show();
 	}

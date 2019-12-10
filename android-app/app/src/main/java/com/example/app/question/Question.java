@@ -19,21 +19,20 @@ public abstract class Question implements Serializable {
 	@SerializedName (TYPE_JSON_NAME)
 	public final QuestionType type;
 	
-	public final List<Answer> conditions;
+	public final List<Condition> conditions;
 	
 	public final String questionText;
 	
 	public final String hint;
 	
 	// constructor
-	public Question (int id, QuestionType type, List<Answer> conditions, String questionText, String hint) {
-		this.questionID = id;
+	public Question (int id, QuestionType type, List<Condition> conditions, String questionText, String hint) {
+		this.id = id;
 		this.type = type;
-		this.conditions = conditions;
 		this.questionText = questionText;
+		this.conditions = conditions;
 		this.hint = hint;
 	}
 	
 	
 }
-

@@ -21,8 +21,8 @@ deploy:
   type: deploy
   environment:
     name: staging
-  only:
-    - master
+  ## only:
+    ## - master
   script:
     ## Zip the binaries
     - zip -r Questionnaire_Toolset.zip web-app/build

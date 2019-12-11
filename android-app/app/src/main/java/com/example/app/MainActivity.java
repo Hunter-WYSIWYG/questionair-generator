@@ -4,10 +4,8 @@ import android.app.ActionBar;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Build;
@@ -19,7 +17,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
@@ -32,7 +29,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.app.question.Questionnaire;
-import com.example.app.question.Reminder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -40,7 +36,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 	// list of all questionnaires
@@ -71,8 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		for (int i = 0; i <= x; i++) {
 			questionnaireList.add(importQuestions(i));
 		}
-		this.notifystart ();
-		this.init ();
+		init();
 	}
 	
 	// init list
@@ -125,37 +123,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		return true;
 	}
 	
-	// create popup if back button is pressed
 	public void onBackPressed() {
 		if (drawerlayout.isDrawerOpen(GravityCompat.START)) {
 			drawerlayout.closeDrawer(GravityCompat.START);
 			return;
 		}
-		
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-		alertDialog.setTitle("");
-		alertDialog.setMessage("Wollen Sie die App verlassen?");
-		alertDialog.setCancelable(true);
-		
-		alertDialog.setPositiveButton(
-			"Ja",
-			new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					finish();
-				}
-			});
-		
-		alertDialog.setNegativeButton(
-			"Abbrechen",
-			new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-		
-		AlertDialog alert = alertDialog.create();
-		alert.show();
+		Toast myToast = Toast.makeText(this, "Vergiss es!", Toast.LENGTH_SHORT);
+		myToast.show();
 	}
 	
 	public void startButtonClick(View view) {
@@ -180,29 +154,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		return null;
 	}
 	
-	public void notifystart () {
-		//use all reminders
-		int reminder_number = 0;
-		Date datecheck = new Date(System.currentTimeMillis());
-		for (Questionnaire questionnaire : this.questionnaireList) {
-			for (Reminder reminder : questionnaire.getReminderList()) {
-				if (reminder.date.after(datecheck)) {
-					Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-					alarmIntent.putExtra("questionnaire", questionnaire.getName());
-					alarmIntent.putExtra("reminder", reminder.reminderText);
-					alarmIntent.putExtra("remindernmb", reminder_number);
-					PendingIntent pendingIntent = PendingIntent.getBroadcast(this, reminder_number, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-					AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-					
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(reminder.date);
-					manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-					reminder_number++;
-				}
-			}
+	public void notifyButtonClick(View view) {
+		// notifications
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		
+		NotificationCompat.Builder builder;
+		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentApiVersion <= Build.VERSION_CODES.N_MR1) {
+			//noinspection deprecation
+			builder = new NotificationCompat.Builder(this);
+		} else {
+			String channelId = "Fragebogen";
+			NotificationChannel notificationChannel = new NotificationChannel(channelId, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+			notificationManager.createNotificationChannel(notificationChannel);
+			builder = new NotificationCompat.Builder(this, channelId);
 		}
-
-		Toast toast = Toast.makeText(this, " Notifications initiated", Toast.LENGTH_SHORT);
+		Notification notify = builder.setContentTitle("title").setContentText("text").setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent).build();
+		
+		assert (notificationManager != null);
+		notificationManager.notify(0, notify);
+		
+		// testing
+		Toast toast = Toast.makeText(this, "API " + currentApiVersion, Toast.LENGTH_SHORT);
 		toast.show();
 	}
 	
@@ -221,5 +198,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		drawerlayout.closeDrawer(GravityCompat.START);
 		return true;
 	}
-	
 }

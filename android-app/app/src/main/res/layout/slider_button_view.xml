@@ -44,77 +44,41 @@
 			app:layout_constraintTop_toTopOf="parent" />
 
 	<View
-		android:id="@+id/sliderButtonDividingLine"
-		android:layout_width="match_parent"
-		android:layout_height="2dp"
-		android:background="?android:attr/listDivider"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="1.0"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/hint" />
-
+			android:id="@+id/sliderButtonDividingLine"
+			android:layout_width="match_parent"
+			android:layout_height="2dp"
+			android:background="?android:attr/listDivider"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/sliderButtonQuestionText"/>
 	<TableLayout
-		android:id="@+id/sliderButtonView"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="80dp"
-		android:gravity="center"
-		android:scrollbarAlwaysDrawHorizontalTrack="true"
-		android:scrollbarAlwaysDrawVerticalTrack="true"
-		android:scrollbarTrackVertical="@null"
-		android:shrinkColumns="*"
-		android:visibility="visible"
-		app:layout_constrainedHeight="false"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="1.0"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/sliderButtonQuestionText"
-		app:layout_constraintVertical_bias="0.5"
-		tools:visibility="visible"></TableLayout>
-
+			android:id="@+id/sliderButtonView"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:scrollbarAlwaysDrawHorizontalTrack="true"
+			android:scrollbarAlwaysDrawVerticalTrack="true" android:scrollbarTrackVertical="@null"
+			android:shrinkColumns="*" android:visibility="visible"
+			app:layout_constrainedHeight="false"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/sliderButtonQuestionText"
+			app:layout_constraintVertical_bias="0.0" tools:visibility="visible">
+	</TableLayout>
 	<TextView
-		android:id="@+id/leftIndex"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="8dp"
-		android:layout_marginLeft="8dp"
-		android:layout_marginEnd="24dp"
-		android:layout_marginRight="24dp"
-		android:gravity="left"
-		android:text="leftIndex"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@+id/rightIndex"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/sliderButtonView" />
-
+			android:id="@+id/leftIndex"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="leftIndex"
+			app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/sliderButtonView"/>
 	<TextView
-		android:id="@+id/rightIndex"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="24dp"
-		android:layout_marginLeft="24dp"
-		android:layout_marginEnd="8dp"
-		android:layout_marginRight="8dp"
-		android:gravity="right"
-		android:text="rightIndex"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toEndOf="@+id/leftIndex"
-		app:layout_constraintTop_toBottomOf="@+id/sliderButtonView" />
-
-	<TextView
-		android:id="@+id/hint"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="8dp"
-		android:layout_marginLeft="8dp"
-		android:text="TextView"
-		android:textSize="24sp"
-		app:layout_constraintBottom_toTopOf="@+id/sliderButtonDividingLine"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/sliderButtonQuestionText"
-		app:layout_constraintVertical_bias="0.0" />
+			android:id="@+id/rightIndex"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="rightIndex"
+			app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/sliderButtonView"/>
 
 
 </android.support.constraint.ConstraintLayout>

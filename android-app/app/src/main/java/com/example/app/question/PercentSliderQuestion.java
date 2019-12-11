@@ -1,7 +1,6 @@
 package com.example.app.question;
 
 import com.example.app.answer.Answer;
-import com.example.app.answer.Condition;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -13,13 +12,9 @@ public class PercentSliderQuestion extends Question {
 	public final double maxValue;
 	@SerializedName ("stepSize")
 	public final double stepSize;
-	@SerializedName ("rightText")
-	public final String rightText;
-	@SerializedName ("leftText")
-	public final String leftText;
 	// constructor
-	public PercentSliderQuestion (int id, String questionText, List<Condition> conditions, double minValue, double maxValue, double stepSize, String leftText, String rightText, String hint) {
-		super (id, QuestionType.PercentSlider, conditions, questionText, hint);
+	public PercentSliderQuestion (int id, String questionText, List<Answer> conditions, double minValue, double maxValue, double stepSize) {
+		super (id, QuestionType.PercentSlider, conditions, questionText);
 		
 		if (minValue > maxValue)
 			throw new IllegalArgumentException ();
@@ -33,8 +28,6 @@ public class PercentSliderQuestion extends Question {
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.stepSize = stepSize;
-		this.leftText = leftText;
-		this.rightText = rightText;
 	}
 	
 }

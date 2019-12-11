@@ -16,14 +16,12 @@
   "questions": [
     {
       "questionID": 1,
-      "hint": "help",
       "questionText": "HOFFENTLICH IST DAS DER KLASSE FRAGEBOGEN 2 JUHU DA ISSER ENDLICH",
       "type": "note",
       "conditions": []
     },
     {
       "questionID": 2,
-      "hint": "help",
       "questionText": "Gab es seit der letzten Befragung ein negatives Ereignis?",
       "type": "singleChoice",
       "conditions": [],
@@ -42,7 +40,6 @@
     },
     {
       "questionID": 3,
-      "hint": "help",
       "questionText": "Wie fuehlen Sie sich gerade?",
       "type": "tableView",
       "conditions": [],
@@ -54,7 +51,6 @@
     },
     {
       "questionID": 4,
-      "hint": "help",
       "questionText": "Wo sind Sie gerade?",
       "type": "multipleChoice",
       "conditions": [],
@@ -93,40 +89,30 @@
     },
     {
       "questionID": 4,
-      "hint": "help",
       "questionText": "Haben sie alles erledigt heute?",
       "type": "percentslider",
-      "conditions": [],
-      "leftText": "leftText",
-      "rightText": "rightText"
+      "conditions": []
     },
     {
       "questionID": 5,
-      "hint": "help",
       "questionText": "Wie fühlen Sie sich gerade? (0 - Energielos, 5 - voller Energie)",
       "type": "slider",
       "conditions": [],
       "minValue": 0.0,
       "maxValue": 5.0,
-      "stepSize": 1.0,
-      "leftText": "leftText",
-      "rightText": "rightText"
+      "stepSize": 1.0
     },
     {
       "questionID": 6,
-      "hint": "help",
       "questionText": "Glauben Sie die momentane Situation im Griff zu haben? (-5 - gar nicht, 5 - völlig)",
       "type": "slider",
       "conditions": [],
       "minValue": -5.0,
       "maxValue": 5.0,
-      "stepSize": 2.0,
-      "leftText": "leftText und das hier dann auch noch ?????",
-      "rightText": "rightText was passiert wenn das lang ist"
+      "stepSize": 2.0
     },
     {
       "questionID": 7,
-      "hint": "help und jetzt teste ich das mal mit ganz viel test um zu schauen ob das dann richtig dumm aussieht",
       "questionText": "Mit wem sind Sie gerade zusammen?",
       "type": "multipleChoice",
       "conditions": [],
@@ -160,7 +146,6 @@
     },
     {
       "questionID": 8,
-      "hint": "help",
       "questionText": "Glauben Sie die momentane Situation im Griff zu haben?",
       "type": "buttonSlider",
       "conditions": [],

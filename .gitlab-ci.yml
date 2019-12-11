@@ -6,6 +6,9 @@ stages:
 
 build:
   type: build
+  artifacts:
+    paths:
+        - build/
   script:
     - cd web-app/
     - mkdir build/

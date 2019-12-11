@@ -8,7 +8,7 @@ build:
   type: build
   artifacts:
     paths:
-        - build/
+        - web-app/build/
   script:
     - cd web-app/
     - mkdir build/

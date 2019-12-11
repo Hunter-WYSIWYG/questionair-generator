@@ -64,6 +64,10 @@ public class TableView extends QuestionDisplayView {
         // set questionText
         TextView questionTextView = this.container.findViewById(R.id.tableQuestionText);
         questionTextView.setText(this.question.questionText);
+        
+        // set hint
+	    TextView hintTextView = this.container.findViewById(R.id.hint);
+	    hintTextView.setText(this.question.hint);
 
         // find dividingLine
         View dividingLine = this.container.findViewById(R.id.tableDividingLine);

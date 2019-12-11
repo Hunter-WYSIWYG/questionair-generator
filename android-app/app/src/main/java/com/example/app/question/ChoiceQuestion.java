@@ -11,18 +11,18 @@ public class ChoiceQuestion extends Question {
 	public final List<Option> options;
 
 	// constructor
-	private ChoiceQuestion (int id, QuestionType type, List<Answer> conditions, String questionText, List<Option> options) {
-		super (id, type, conditions, questionText);
+	private ChoiceQuestion (int id, QuestionType type, List<Answer> conditions, String questionText, List<Option> options,String hint) {
+		super (id, type, conditions, questionText, hint);
 		this.options = options;
 	}
 
 	// ChoiceQuestion can only be MultipleChoice or SingleChoice
-	public static ChoiceQuestion createSingleChoice (int id, QuestionType type, List<Answer> conditions, String questionText, List<Option> options) {
-		return new ChoiceQuestion (id, QuestionType.SingleChoice, conditions,  questionText, options);
+	public static ChoiceQuestion createSingleChoice (int id, QuestionType type, List<Answer> conditions, String questionText, List<Option> options,String hint) {
+		return new ChoiceQuestion (id, QuestionType.SingleChoice, conditions,  questionText, options, hint);
 	}
 
-	public static ChoiceQuestion createMultipleChoice (int id, QuestionType type, List<Answer> conditions, String questionText, List<Option> options) {
-		return new ChoiceQuestion (id, QuestionType.MultipleChoice, conditions, questionText, options);
+	public static ChoiceQuestion createMultipleChoice (int id, QuestionType type, List<Answer> conditions, String questionText, List<Option> options,String hint) {
+		return new ChoiceQuestion (id, QuestionType.MultipleChoice, conditions, questionText, options, hint);
 	}
 
 	// test if singleChoice

@@ -45,11 +45,24 @@ public class PercentSliderView extends QuestionDisplayView  {
 		TextView questionTextView = container.findViewById(R.id.SliderQuestionText);
 		questionTextView.setText(question.questionText);
 		
+		// set hint
+		TextView hintTextView = this.container.findViewById(R.id.hint);
+		hintTextView.setText(this.question.hint);
+		
 		// find dividingLine
 		View dividingLine = container.findViewById(R.id.SliderDividingLine);
 		
 		// create slider
 		createSlider();
+		
+		// set leftText
+		TextView leftText = container.findViewById(R.id.leftText);
+		leftText.setText(question.leftText);
+		
+		// set rightText
+		TextView rightText = container.findViewById(R.id.rightText);
+		rightText.setText(question.rightText);
+		
 		
 		// next button always enabled
 		getActivity().setNextButtonEnabled(true);

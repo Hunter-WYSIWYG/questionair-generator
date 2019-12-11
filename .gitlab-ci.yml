@@ -1,4 +1,4 @@
-image: jmgoldacker98/questionnaire-toolset-builder:1.1
+image: jmgoldacker98/questionnaire-toolset-builder:1.2
 
 stages:
   - build

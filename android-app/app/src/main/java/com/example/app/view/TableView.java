@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.example.app.question.Question;
 import com.example.app.question.TableQuestion;
 
@@ -156,14 +157,18 @@ public class TableView extends QuestionDisplayView {
     }
 
     @Override
-    public List<Answer> getCurrentAnswer() {
-        //TODO: get the real value of the answer!
-        //TODO: does such a question even need such a specific evaluation?
-        List<Answer> returnList = new ArrayList<>();
-	    returnList.add(new Answer(question.questionID, currentButton.getId()));
+    public List<Condition> getCurrentCondition() {
+        List<Condition> returnList = new ArrayList<>();
+	    returnList.add(new Condition(question.questionID, currentButton.getId()));
         return returnList;
     }
 	
+    @Override
+    public List<Answer> getCurrentAnswer() {
+    	return new ArrayList<>();
+    }
+	   
+    
 	@Override
 	public Question getQuestion() {
 		return question;

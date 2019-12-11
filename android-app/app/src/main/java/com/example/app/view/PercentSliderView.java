@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.example.app.question.PercentSliderQuestion;
 import com.example.app.question.Question;
 import com.warkiz.widget.IndicatorSeekBar;
@@ -83,10 +84,15 @@ public class PercentSliderView extends QuestionDisplayView  {
 	}
 	
 	@Override
-	public List<Answer> getCurrentAnswer () {
-		List<Answer> returnList = new ArrayList<>();
-		returnList.add(new Answer(question.questionID, seekBar.getProgress()));
+	public List<Condition> getCurrentCondition() {
+		List<Condition> returnList = new ArrayList<>();
+		returnList.add(new Condition(question.questionID, seekBar.getProgress()));
 		return returnList;
+	}
+	
+	@Override
+	public List<Answer> getCurrentAnswer() {
+		return new ArrayList<>();
 	}
 	
 	@Override

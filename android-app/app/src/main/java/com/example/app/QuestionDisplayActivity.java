@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.example.app.question.Question;
 import com.example.app.view.QuestionDisplayView;
 
@@ -54,26 +55,36 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	
 	// next button is clicked, update questionnaire state and go to next question
 	private void nextButtonClicked() {
-		final Question q = questionView.getQuestion();
-		if (q.editTime != null) {
+		// init current question
+		final Question currentQuestion = questionView.getQuestion();
+		
+		// check edit time
+		if (currentQuestion.editTime != null) {
+			// TODO: comment this completely
+			// if the time for the question is up, return a dummy as answer
 			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime()) {
-				List<Answer> dummy = new ArrayList<>(1);
-				dummy.add(new Answer(q.questionID, -1));
-				state.currentQuestionAnswered(dummy);
+				List<Condition> dummyCondition = new ArrayList<>(1);
+				List <Answer> dummyAnswer = new ArrayList<>(1);
+				dummyCondition.add(new Condition(currentQuestion.questionID, -1));
+				// TODO: complete the dummy answer
+				dummyAnswer.add(new Answer());
+				state.currentQuestionAnswered(dummyAnswer, dummyCondition);
 			} else {
-				List<Answer> answer = questionView.getCurrentAnswer();
-				state.currentQuestionAnswered(answer);
+				List<Condition> conditions = questionView.getCurrentCondition();
+				List<Answer> answers = questionView.getCurrentAnswer();
+				state.currentQuestionAnswered(answers, conditions);
 			}
 		} else {
-			List<Answer> answer = questionView.getCurrentAnswer();
-			state.currentQuestionAnswered(answer);
+			List<Condition> conditions = questionView.getCurrentCondition();
+			List<Answer> answers = questionView.getCurrentAnswer();
+			state.currentQuestionAnswered(answers, conditions);
 		}
 		
 		if (state.getEndTime() != null) {
 			final Date currentDate = new Date();
 			if (currentDate.after(state.getEndTime())) {
 				Intent intent = new Intent(this, QuestionnaireFinishedActivity.class);
-				intent.putExtra("EXTRA_ANSWERS", answerListToString());
+				intent.putExtra("EXTRA_ANSWERS", conditionListToString());
 				startActivity(intent);
 				finish();
 				return;
@@ -85,7 +96,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			displayCurrentQuestion(state, this);
 		} else {
 			Intent intent = new Intent(this, QuestionnaireFinishedActivity.class);
-			intent.putExtra("EXTRA_ANSWERS", answerListToString());
+			intent.putExtra("EXTRA_ANSWERS", conditionListToString());
 			startActivity(intent);
 			finish();
 		}
@@ -101,11 +112,11 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	}
 	
 	//TODO: better solution for this
-	private String answerListToString() {
-		List<Answer> answerList = state.getAnswers();
+	private String conditionListToString() {
+		List<Condition> conditionList = state.getConditions();
 		StringBuilder returnString = new StringBuilder();
-		for (Answer answer : answerList) {
-			returnString.append(answer);
+		for (Condition condition : conditionList) {
+			returnString.append(condition);
 			returnString.append("\n");
 		}
 		return returnString.toString();

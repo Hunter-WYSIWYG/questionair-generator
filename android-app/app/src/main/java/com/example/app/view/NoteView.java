@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.example.app.question.Note;
 import com.example.app.question.Question;
 
@@ -57,10 +58,15 @@ public class NoteView extends QuestionDisplayView {
 	}
 	
 	@Override
-	public List<Answer> getCurrentAnswer () {
-		List<Answer> returnList = new ArrayList<>();
-		returnList.add(new Answer(question.questionID, 0));
+	public List<Condition> getCurrentCondition() {
+		List<Condition> returnList = new ArrayList<>();
+		returnList.add(new Condition(question.questionID, -1));
 		return returnList;
+	}
+	
+	@Override
+	public List<Answer> getCurrentAnswer() {
+		return new ArrayList<>();
 	}
 	
 	@Override

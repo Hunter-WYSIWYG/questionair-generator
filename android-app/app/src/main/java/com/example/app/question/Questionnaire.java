@@ -1,5 +1,7 @@
 package com.example.app.question;
 
+import com.example.app.answer.Condition;
+import com.example.app.answer.QuestionnaireCondition;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -19,6 +21,9 @@ public class Questionnaire implements Serializable {
 	// list of all questions
 	@SerializedName ("questions")
 	private final List<Question> questionList;
+	// list of conditions
+	@SerializedName("conditions")
+	private final List<QuestionnaireCondition> conditionList;
 	// list of all reminders
 	@SerializedName ("reminderTimes")
 	private final List<Reminder> reminderList;
@@ -36,6 +41,7 @@ public class Questionnaire implements Serializable {
 		id = 0.0;
 		reminderList = null;
 		editTime = null;
+		conditionList = null;
 	}
 	
 	// getter
@@ -51,6 +57,9 @@ public class Questionnaire implements Serializable {
 		return questionList;
 	}
 	
+	public List<QuestionnaireCondition> getConditionList() {
+		return conditionList;
+	}
 	public List<Reminder> getReminderList () {
 		return reminderList;
 	}
@@ -67,5 +76,13 @@ public class Questionnaire implements Serializable {
 	@Nullable
 	public String getEditTime() {
 		return editTime;
+	}
+	
+	// TODO: get this to work when there is no condition list for questions in the json
+	public void splitConditionsToQuestions() {
+		if (this.conditionList != null){
+			for (QuestionnaireCondition questionnaireCondition : this.conditionList)
+				this.questionList.get(questionnaireCondition.getChild_id()).conditions.add(new Condition(questionnaireCondition.getParent_id(), questionnaireCondition.getAnswer_id()));
+		}
 	}
 }

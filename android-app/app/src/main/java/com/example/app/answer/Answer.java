@@ -1,62 +1,52 @@
 package com.example.app.answer;
 
-import com.example.app.question.QuestionType;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Answer implements Serializable {
-	private final int qId;
-	private final int chosenValue;
-
-	public Answer () {
-		// qType = null;
-		// chosenValues = null;
-		qId = -1;
-		chosenValue = -1;
-	}
-
-	public Answer (int qid, int chosenIndex) {
+	// class completely defining answers for questions
+	// TODO: complete this class using the scheme!!!
+	
+	// ID of the question this answer depends on
+	private final int questionID;
+	// ID of the specific answer chosen
+	private final int answerID;
+	// verbal text of the chosen answer
+	private final String answerText;
+	// TODO: add more data from the scheme
+	
+	public Answer() {
 		
-		qId = qid;
-		chosenValue = chosenIndex;
+		// constructing an empty answer
+		this.questionID = -1;
+		this.answerID = -1;
+		this.answerText = "dummy";
+	}
+	
+	public Answer(int questionID, int answerID, String answerText) {
+		
+		// constructing the answer object with input
+		this.questionID = questionID;
+		this.answerID = answerID;
+		this.answerText = answerText;
 		
 	}
-
-	/*
-	public void AddAnswer (int chosenIndex) {
-		if (qType == QuestionType.SingleChoice) {
-			return;
-		}
-		else {
-			chosenValues.add (chosenIndex);
-			return;
-		}
-
+	
+	public int getQuestionID() {
+		return questionID;
 	}
-	 */
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Answer answer = (Answer) o;
-		return qId == answer.qId &&
-				chosenValue == answer.chosenValue;
+	
+	public int getAnswerID() {
+		return answerID;
 	}
-
-
-	public int getQId () {
-		return qId;
-	}
-
-	public int getChosenValue () {
-		return chosenValue;
+	
+	public String getAnswerText() {
+		return answerText;
 	}
 	
 	@Override
-	public String toString () {
-		return "Answer {" + "Question-ID: " + qId + ", Answer-ID: " + chosenValue + '}';
+	public String toString() {
+		// TODO: maybe ignore, maybe add more info once its gathered
+		return "{ questionID = " + questionID + ", answerID = " + answerID + ", answerText = " + answerText + " }";
 	}
+	
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.example.app.question.Question;
 import com.example.app.question.SliderButtonQuestion;
 
@@ -143,11 +144,15 @@ public class SliderButtonView extends QuestionDisplayView {
 	}
 	
 	@Override
-	public List<Answer> getCurrentAnswer () {
-		//TODO: get real value of button
-		List<Answer> returnList = new ArrayList<>();
-		returnList.add(new Answer(question.questionID, Integer.parseInt(currentButton.getText().toString())));
+	public List<Condition> getCurrentCondition() {
+		List<Condition> returnList = new ArrayList<>();
+		returnList.add(new Condition(question.questionID, Integer.parseInt(currentButton.getText().toString())));
 		return returnList;
+	}
+	
+	@Override
+	public List<Answer> getCurrentAnswer() {
+		return new ArrayList<>();
 	}
 	
 	@Override

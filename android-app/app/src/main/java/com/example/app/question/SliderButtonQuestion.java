@@ -1,6 +1,6 @@
 package com.example.app.question;
 
-import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -14,8 +14,8 @@ public class SliderButtonQuestion extends Question {
 	public final String rightIndex;
 	
 	//constructor
-	public SliderButtonQuestion(int id, String questionText, List<Answer> conditions, int size, String leftIndex, String rightIndex, String hint) {
-		super (id, QuestionType.SliderButton, conditions, questionText, hint);
+	public SliderButtonQuestion(int id, String questionText, int size, String leftIndex, String rightIndex, String hint) {
+		super (id, QuestionType.SliderButton, questionText, hint);
 		
 		this.size = size;
 		this.leftIndex = leftIndex;

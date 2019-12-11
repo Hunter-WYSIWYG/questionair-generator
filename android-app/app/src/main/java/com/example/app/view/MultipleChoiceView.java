@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Option;
 import com.example.app.question.OptionType;
@@ -289,15 +290,20 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	}
 	
 	@Override
-	public List<Answer> getCurrentAnswer () {
-		List<Answer> returnList = new ArrayList<> ();
+	public List<Condition> getCurrentCondition() {
+		List<Condition> returnList = new ArrayList<> ();
 		for (OptionView optionView : optionViews) {
 			if (optionView.isChecked ()) {
-				returnList.add(new Answer(question.questionID, optionView.getOption().getId()));
+				returnList.add(new Condition(question.questionID, optionView.getOption().getId()));
 			}
 		}
 		
 		return returnList;
+	}
+	
+	@Override
+	public List<Answer> getCurrentAnswer() {
+		return new ArrayList<>();
 	}
 	
 	@Override

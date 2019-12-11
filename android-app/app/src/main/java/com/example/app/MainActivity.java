@@ -60,11 +60,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		toggle.syncState();
 
 		// number of questionnaires
-		int x = 3;
+		int x = 4;
 
 		// import all questionnaires - just for testing
 		// TODO how many questionnaires do we import???
-		for (int i = 0; i <= x; i++) {
+		for (int i = 0; i < x; i++) {
 			questionnaireList.add(importQuestions(i));
 		}
 		notifystart();
@@ -77,7 +77,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		List<String> data = new ArrayList<>();
 		for (Questionnaire questionnaire : questionnaireList) {
 			data.add(questionnaire.getName());
+			questionnaire.splitConditionsToQuestions();
 		}
+		
 		// list view
 		listView = findViewById(R.id.listView);
 		// adapter for handling list view

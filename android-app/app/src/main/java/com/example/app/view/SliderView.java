@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.example.app.question.Question;
 import com.example.app.question.SliderQuestion;
 import com.warkiz.widget.IndicatorSeekBar;
@@ -84,10 +85,15 @@ public class SliderView extends QuestionDisplayView {
 	}
 	
 	@Override
-	public List<Answer> getCurrentAnswer () {
-		List<Answer> returnList = new ArrayList<>();
-		returnList.add (new Answer (this.question.questionID, this.seekBar.getProgress ()));
+	public List<Condition> getCurrentCondition() {
+		List<Condition> returnList = new ArrayList<>();
+		returnList.add(new Condition(this.question.questionID, this.seekBar.getProgress()));
 		return returnList;
+	}
+	
+	@Override
+	public List<Answer> getCurrentAnswer() {
+		return new ArrayList<>();
 	}
 	
 	@Override

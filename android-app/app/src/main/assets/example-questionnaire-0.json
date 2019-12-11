@@ -36,23 +36,13 @@
       "questionID": 1,
       "questionText": "Sie haben JA gewählt",
       "type": "note",
-      "conditions": [
-        {
-          "qId": 0,
-          "chosenValue": 2
-        }
-      ]
+      "conditions": []
     },
     {
       "questionID": 2,
       "questionText": "Sie haben NEIN gewählt",
       "type": "note",
-      "conditions": [
-        {
-          "qId": 0,
-          "chosenValue": 1
-        }
-      ]
+      "conditions": []
     },
     {
       "questionID": 3,
@@ -144,6 +134,18 @@
           "optionType": "text"
         }
       ]
+    }
+  ],
+  "conditions": [
+    {
+      "parent_id": 0,
+      "child_id": 2,
+      "answer_id": 1
+    },
+    {
+      "parent_id": 0,
+      "child_id": 1,
+      "answer_id": 2
     }
   ]
 }

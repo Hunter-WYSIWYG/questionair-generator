@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Note;
 import com.example.app.question.PercentSliderQuestion;
@@ -53,7 +54,11 @@ public abstract class QuestionDisplayView {
 	
 	public abstract View getView();
 	
-	// get all answer
+	// get all conditions
+	public abstract List<Condition> getCurrentCondition();
+	
+	// get answers
+	// TODO: implement this
 	public abstract List<Answer> getCurrentAnswer();
 	
 	public abstract Question getQuestion();

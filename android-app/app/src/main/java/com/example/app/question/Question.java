@@ -1,10 +1,13 @@
 package com.example.app.question;
 
-import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
+import com.example.app.answer.QuestionnaireCondition;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,7 +21,7 @@ public abstract class Question implements Serializable {
 	@SerializedName (TYPE_JSON_NAME)
 	public final QuestionType type;
 	
-	public final List<Answer> conditions;
+	public List<Condition> conditions;
 	
 	public final String questionText;
 	
@@ -28,14 +31,17 @@ public abstract class Question implements Serializable {
 	public final String hint;
 	
 	// constructor
-	public Question (int id, QuestionType type, List<Answer> conditions, String questionText, String hint) {
+	public Question(int id, QuestionType type, String questionText, String hint) {
 		this.questionID = id;
 		this.type = type;
-		this.conditions = conditions;
+		// this.conditions = conditions;
+		this.conditions = new ArrayList<>();
 		this.questionText = questionText;
 		this.editTime = null;
 		this.hint = hint;
 	}
+	
+	
 	
 	
 }

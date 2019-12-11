@@ -294,32 +294,52 @@ getElementId elem =
 -}
 
 {- build questionTime String for later usage in Android App -}
-{- does empty Minutes and empty Seconds mean no time limit for the question? Right now the questionTime String for this case would be "" -}
 getQuestionTime : Q_element -> String -> String -> Q_element
 getQuestionTime element min sec =
     case element of
         Question record ->
-            if min==""
-            then    if sec==""
-                    then Question { record | questionTime = "" }
-                    else Question { record | questionTime = String.concat [":",sec] }
-            else    if sec==""
-                    then Question { record | questionTime = String.concat [min,":"] }
-                    else Question { record | questionTime = String.concat [min,":",sec] }
-        
+            case String.length min of
+                0 -> case String.length sec of
+                        0 -> Question { record | questionTime = "0000:00" }
+                        1 -> Question { record | questionTime = String.concat ["0000:0",sec] }
+                        2 -> Question { record | questionTime = String.concat ["0000:",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                1 -> case String.length sec of
+                        0 -> Question { record | questionTime = String.concat ["000",min,":00"] }
+                        1 -> Question { record | questionTime = String.concat ["000",min,":0",sec] }
+                        2 -> Question { record | questionTime = String.concat ["000",min,":",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                2 -> case String.length sec of
+                        0 -> Question { record | questionTime = String.concat ["00",min,":00"] }
+                        1 -> Question { record | questionTime = String.concat ["00",min,":0",sec] }
+                        2 -> Question { record | questionTime = String.concat ["00",min,":",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                3 -> case String.length sec of
+                        0 -> Question { record | questionTime = String.concat ["0",min,":00"] }
+                        1 -> Question { record | questionTime = String.concat ["0",min,":0",sec] }
+                        2 -> Question { record | questionTime = String.concat ["0",min,":",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                4 -> case String.length sec of
+                        0 -> Question { record | questionTime = String.concat [min,":00"] }
+                        1 -> Question { record | questionTime = String.concat [min,":0",sec] }
+                        2 -> Question { record | questionTime = String.concat [min,":",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                _ -> Question { record | questionTime = "building error" }
         Note record ->
             element
 
 {- build questionTime String for presentation purpose in web-app -}
-{- does empty Minutes and empty Seconds mean no time limit for the question? -}
+{- right now empty minutes and empty seconds mean no time limitation -}
 getQuestionTimePresentation : String -> String
 getQuestionTimePresentation time =
-    if time==""    --leer?
-    then "kein Zeitlimit"
-    else    if String.right 1 time == ":"   --sec leer?
-            then (String.concat [(String.dropRight 1 time)," Min"])
-            else    if String.left 1 time == ":"     --min leer?
-                    then (String.concat [(String.dropLeft 1 time)," Sek"])
-                    else    if String.contains ":" (String.right 2 time)    --sec einstellig?
-                            then (String.concat [(String.dropRight 2 time)," Min ",(String.right 1 time)," Sek"])
-                            else (String.concat [(String.dropRight 3 time)," Min ",(String.right 2 time)," Sek"])
+    case String.toInt (String.left 4 time) of
+        Nothing -> "presentation error"
+        Just minutes -> case String.toInt (String.right 2 time) of
+                            Nothing -> "presentation error"
+                            Just seconds -> if minutes==0 && seconds==0
+                                            then "kein Zeitlimit"
+                                            else    if minutes==0
+                                                    then String.concat [(String.fromInt seconds)," Sek"]
+                                                    else    if seconds==0
+                                                            then String.concat [(String.fromInt minutes)," Min"]
+                                                            else String.concat [(String.fromInt minutes)," Min ",(String.fromInt seconds)," Sek"]

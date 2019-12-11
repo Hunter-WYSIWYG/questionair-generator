@@ -19,7 +19,6 @@ deploy:
   environment:
     name: staging
   script:
-    - apt install zip
     - zip -r Questionnaire_Toolset.zip build
     - apt install zip
     - zip -r Questionnaire_Toolset.zip build

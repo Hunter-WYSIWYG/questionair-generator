@@ -1,4 +1,5 @@
 image: jmgoldacker98/questionnaire-toolset-builder
+pull: always
 
 stages:
   - build

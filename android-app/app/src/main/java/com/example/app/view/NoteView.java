@@ -8,6 +8,7 @@ import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
 import com.example.app.question.Note;
+import com.example.app.question.Question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class NoteView extends QuestionDisplayView {
 		questionTypeTextView.setText ("Notiz");
 		
 		// set question Number
-		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
+		TextView questionNumber = container.findViewById(R.id.questionNumber);
 		questionNumber.setText("Fragenummer: " + question.questionID);
 		
 		// set questionText
@@ -58,7 +59,12 @@ public class NoteView extends QuestionDisplayView {
 	@Override
 	public List<Answer> getCurrentAnswer () {
 		List<Answer> returnList = new ArrayList<>();
-		returnList.add(new Answer(this.question.questionID,0));
+		returnList.add(new Answer(question.questionID, 0));
 		return returnList;
+	}
+	
+	@Override
+	public Question getQuestion() {
+		return question;
 	}
 }

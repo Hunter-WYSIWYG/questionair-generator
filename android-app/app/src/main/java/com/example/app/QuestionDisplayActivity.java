@@ -9,10 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.app.answer.Answer;
-import com.example.app.question.ChoiceQuestion;
-import com.example.app.question.QuestionType;
+import com.example.app.question.Question;
 import com.example.app.view.QuestionDisplayView;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class QuestionDisplayActivity extends AppCompatActivity {
@@ -25,71 +27,92 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	private QuestionnaireState state;
 	
 	// getter
-	public QuestionnaireState getState () {
+	public QuestionnaireState getState() {
 		return state;
-	}
-	
-	// displays the current question of the questionnaire state
-	public static void displayCurrentQuestion (QuestionnaireState questionnaireState, Activity activity) {
-		Intent intent = new Intent (activity, QuestionDisplayActivity.class);
-		intent.putExtra ("state", questionnaireState);
-		activity.startActivity (intent); // starting our own activity (onCreate) with questionnaire state so we can save it
-		activity.finish (); // prevent the back button
-		// TODO: if back button pressed -> popup with "Sind Sie sicher, dass Sie den Fragebogen abbrechen wollen?"
 	}
 	
 	// is called when this activity is started
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
-		super.onCreate (savedInstanceState);
-		this.setContentView (R.layout.activity_question_display);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_question_display);
 		
-		this.state = (QuestionnaireState) this.getIntent ().getSerializableExtra ("state");
-		this.nextButton = this.findViewById (R.id.QuestionDisplayNextButton);
-		this.contentContainer = this.findViewById (R.id.QuestionDisplayContentContainer);
+		state = (QuestionnaireState) getIntent().getSerializableExtra("state");
+		nextButton = findViewById(R.id.QuestionDisplayNextButton);
+		contentContainer = findViewById(R.id.QuestionDisplayContentContainer);
 		
-		this.questionView = QuestionDisplayView.create (this);
+		questionView = QuestionDisplayView.create(this);
 		
 		// insert as the new first element, before the space filler and the next button
-		this.contentContainer.addView (this.questionView.getView (), 0);
+		contentContainer.addView(questionView.getView(), 0);
 		
-		this.nextButton.setOnClickListener (v -> this.nextButtonClicked ());
-
-		Toast kek = Toast.makeText(this, this.state.getCurrentQuestion().conditions.toString(), Toast.LENGTH_LONG);
+		nextButton.setOnClickListener(v -> nextButtonClicked());
+		
+		Toast kek = Toast.makeText(this, state.getCurrentQuestion().conditions.toString(), Toast.LENGTH_LONG);
 		kek.show();
 	}
 	
-	
-	// set next button to enabled or disabled
-	public void setNextButtonEnabled (boolean enabled) {
-		this.nextButton.setEnabled (enabled);
+	// next button is clicked, update questionnaire state and go to next question
+	private void nextButtonClicked() {
+		final Question q = questionView.getQuestion();
+		if (q.editTime != null) {
+			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime()) {
+				List<Answer> dummy = new ArrayList<>(1);
+				dummy.add(new Answer(q.questionID, -1));
+				state.currentQuestionAnswered(dummy);
+			} else {
+				List<Answer> answer = questionView.getCurrentAnswer();
+				state.currentQuestionAnswered(answer);
+			}
+		} else {
+			List<Answer> answer = questionView.getCurrentAnswer();
+			state.currentQuestionAnswered(answer);
+		}
+		
+		if (state.getEndTime() != null) {
+			final Date currentDate = new Date();
+			if (currentDate.after(state.getEndTime())) {
+				Intent intent = new Intent(this, QuestionnaireFinishedActivity.class);
+				intent.putExtra("EXTRA_ANSWERS", answerListToString());
+				startActivity(intent);
+				finish();
+				return;
+			}
+		}
+		
+		
+		if (!state.isFinished()) {
+			displayCurrentQuestion(state, this);
+		} else {
+			Intent intent = new Intent(this, QuestionnaireFinishedActivity.class);
+			intent.putExtra("EXTRA_ANSWERS", answerListToString());
+			startActivity(intent);
+			finish();
+		}
 	}
 	
-	// next button is clicked, update questionnaire state and go to next question
-	private void nextButtonClicked () {
-		List<Answer> answer = this.questionView.getCurrentAnswer ();
-		this.state.currentQuestionAnswered (answer);
-		
-		if (!this.state.isFinished ()) {
-			displayCurrentQuestion (this.state, this);
-		}
-		else {
-			Intent intent = new Intent (this, QuestionnaireFinishedActivity.class);
-			intent.putExtra("EXTRA_ANSWERS", answerListToString ());
-			this.startActivity (intent);
-			this.finish ();
-		}
+	// displays the current question of the questionnaire state
+	public static void displayCurrentQuestion(Serializable questionnaireState, Activity activity) {
+		Intent intent = new Intent(activity, QuestionDisplayActivity.class);
+		intent.putExtra("state", questionnaireState);
+		activity.startActivity(intent); // starting our own activity (onCreate) with questionnaire state so we can save it
+		activity.finish(); // prevent the back button
+		// TODO: if back button pressed -> popup with "Sind Sie sicher, dass Sie den Fragebogen abbrechen wollen?"
 	}
 	
 	//TODO: better solution for this
-	private String answerListToString () {
-		List<Answer> answerList = this.state.getAnswers ();
-		StringBuilder returnString = new StringBuilder ();
+	private String answerListToString() {
+		List<Answer> answerList = state.getAnswers();
+		StringBuilder returnString = new StringBuilder();
 		for (Answer answer : answerList) {
-			returnString.append (answer);
+			returnString.append(answer);
 			returnString.append("\n");
 		}
-		return returnString.toString ();
+		return returnString.toString();
 	}
 	
+	// set next button to enabled or disabled
+	public void setNextButtonEnabled(boolean enabled) {
+		nextButton.setEnabled(enabled);
+	}
 }

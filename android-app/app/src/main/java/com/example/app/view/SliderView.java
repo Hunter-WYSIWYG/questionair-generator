@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.question.Question;
 import com.example.app.question.SliderQuestion;
 import com.warkiz.widget.IndicatorSeekBar;
 
@@ -87,5 +88,10 @@ public class SliderView extends QuestionDisplayView {
 		List<Answer> returnList = new ArrayList<>();
 		returnList.add (new Answer (this.question.questionID, this.seekBar.getProgress ()));
 		return returnList;
+	}
+	
+	@Override
+	public Question getQuestion() {
+		return question;
 	}
 }

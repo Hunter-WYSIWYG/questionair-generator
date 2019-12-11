@@ -11,20 +11,20 @@ public class QuestionnaireFinishedActivity extends AppCompatActivity {
 	private Button backToStart;
 	
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
-		super.onCreate (savedInstanceState);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_questionnaire_finished);
 		
-		String answerList = this.getIntent ().getStringExtra ("EXTRA_ANSWERS");
-		TextView text = this.findViewById (R.id.textView);
+		String answerList = getIntent().getStringExtra("EXTRA_ANSWERS");
+		TextView text = findViewById(R.id.textView);
 		text.setText(answerList);
-		this.backToStart = this.findViewById (R.id.backToStartButton);
-		this.backToStart.setOnClickListener (v -> this.goBackToStart ());
+		backToStart = findViewById(R.id.backToStartButton);
+		backToStart.setOnClickListener(v -> goBackToStart());
 	}
 	
 	// go to main activity
-	private void goBackToStart () {
-		Intent intent = new Intent (this, MainActivity.class);
+	private void goBackToStart() {
+		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 		finish();
 	}

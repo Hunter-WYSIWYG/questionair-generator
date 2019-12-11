@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.R;
 import com.example.app.answer.Answer;
+import com.example.app.question.Question;
 import com.example.app.question.TableQuestion;
 
 import java.util.ArrayList;
@@ -25,9 +26,9 @@ public class TableView extends QuestionDisplayView {
     // table
     private TableLayout table;
     // size of table
-    private double size;
+    private final double size;
     // list of all buttons
-    private List<Button> buttons = new ArrayList<>();
+    private final List<Button> buttons = new ArrayList<>();
     // id of button
     private int buttonID;
     // current pressed button
@@ -38,27 +39,27 @@ public class TableView extends QuestionDisplayView {
     public TableView(QuestionDisplayActivity activity, TableQuestion question) {
         super(activity);
         this.question = question;
-        this.size = this.question.size;
-        this.currentButton = null;
+	    size = this.question.size;
+	    currentButton = null;
 
 
         // start with button id = -1
         // this.buttonID = -1;
         // why not start with 0
-        this.buttonID = 0;
-
-        this.init();
+	    buttonID = 0;
+	
+	    init();
     }
 
     private void init() {
-        this.container = (ConstraintLayout) View.inflate(this.getActivity(), R.layout.table_view, null);
+	    container = (ConstraintLayout) View.inflate(getActivity(), R.layout.table_view, null);
 
         // set questionTypeText
-        TextView questionTypeTextView = this.container.findViewById(R.id.tableQuestionTypeText);
-        questionTypeTextView.setText(this.question.type.name());
+	    TextView questionTypeTextView = container.findViewById(R.id.tableQuestionTypeText);
+	    questionTypeTextView.setText(question.type.name());
 
         // set question Number
-        TextView questionNumber = this.container.findViewById(R.id.questionNumber);
+	    TextView questionNumber = container.findViewById(R.id.questionNumber);
         questionNumber.setText("Fragenummer: " + question.questionID);
 
         // set questionText
@@ -70,51 +71,51 @@ public class TableView extends QuestionDisplayView {
 	    hintTextView.setText(this.question.hint);
 
         // find dividingLine
-        View dividingLine = this.container.findViewById(R.id.tableDividingLine);
+	    View dividingLine = container.findViewById(R.id.tableDividingLine);
 
         // set leftName
-        VerticalTextView leftName = this.container.findViewById(R.id.leftName);
-        leftName.setText(this.question.leftName);
+	    VerticalTextView leftName = container.findViewById(R.id.leftName);
+	    leftName.setText(question.leftName);
 
         // set rightName
-        VerticalTextView rightName = this.container.findViewById(R.id.rightName);
-        rightName.setText(this.question.rightName);
+	    VerticalTextView rightName = container.findViewById(R.id.rightName);
+	    rightName.setText(question.rightName);
 
         // set topName
-        TextView topName = this.container.findViewById(R.id.topName);
-        topName.setText(this.question.topName);
+	    TextView topName = container.findViewById(R.id.topName);
+	    topName.setText(question.topName);
 
         // set bottomName
-        TextView bottomName = this.container.findViewById(R.id.bottomName);
-        bottomName.setText(this.question.bottomName);
+	    TextView bottomName = container.findViewById(R.id.bottomName);
+	    bottomName.setText(question.bottomName);
 
         // create table
-        this.createTable();
+	    createTable();
     }
 
 
     // create table
     private void createTable() {
-        this.table = this.container.findViewById(R.id.tableView);
-        this.table.setMinimumHeight(this.table.getWidth());
-        for (int i = 0; i < this.size; i++) {
-            TableRow tableRow = new TableRow(this.getActivity());
+	    table = container.findViewById(R.id.tableView);
+	    table.setMinimumHeight(table.getWidth());
+	    for (int i = 0; i < size; i++) {
+		    TableRow tableRow = new TableRow(getActivity());
 
             // row set in the middle
             tableRow.setGravity(Gravity.CENTER);
             // add table row to table
-            this.table.addView(tableRow);
-
-            for (int j = 0; j < this.size; j++) {
-                Button button = new Button(this.getActivity());
+		    table.addView(tableRow);
+		
+		    for (int j = 0; j < size; j++) {
+			    Button button = new Button(getActivity());
                 // set color
                 button.setBackgroundResource(R.drawable.table_button_default);
                 // set id of button
-                button.setId(this.idGenerator());
+			    button.setId(idGenerator());
                 // add button to button list
-                this.buttons.add(button);
+			    buttons.add(button);
                 // set a colour button if clicked
-                button.setOnClickListener(v -> this.buttonClicked(button));
+			    button.setOnClickListener(v -> buttonClicked(button));
                 // add button to table row
                 tableRow.addView(button);
             }
@@ -124,7 +125,7 @@ public class TableView extends QuestionDisplayView {
     // enable or disable 'next' button depending on whether any button is checked
     // also disable other radio buttons if this is that kind of question
     private void buttonClicked(Button button) {
-        this.currentButton = button;
+	    currentButton = button;
         button.setBackgroundResource(R.drawable.table_button_pressed);
         for (Button b : buttons) {
             if (b.getId() != button.getId()) {
@@ -132,26 +133,26 @@ public class TableView extends QuestionDisplayView {
             }
 
         }
-        this.updateNextButtonEnabled();
+	    updateNextButtonEnabled();
     }
 
     // enable or disable 'next' button depending on whether any button is checked
     private void updateNextButtonEnabled() {
         boolean enabled = false;
-        if (this.currentButton != null)
+	    if (currentButton != null)
             enabled = true;
-        this.getActivity().setNextButtonEnabled(enabled);
+	    getActivity().setNextButtonEnabled(enabled);
     }
 
     // return button id
     private int idGenerator() {
-        this.buttonID++;
+	    buttonID++;
         return buttonID;
     }
 
     @Override
     public View getView() {
-        return this.container;
+	    return container;
     }
 
     @Override
@@ -159,7 +160,12 @@ public class TableView extends QuestionDisplayView {
         //TODO: get the real value of the answer!
         //TODO: does such a question even need such a specific evaluation?
         List<Answer> returnList = new ArrayList<>();
-        returnList.add(new Answer(this.question.questionID, this.currentButton.getId()));
+	    returnList.add(new Answer(question.questionID, currentButton.getId()));
         return returnList;
     }
+	
+	@Override
+	public Question getQuestion() {
+		return question;
+	}
 }

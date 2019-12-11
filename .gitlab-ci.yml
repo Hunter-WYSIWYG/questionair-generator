@@ -19,4 +19,8 @@ deploy:
   environment:
     name: staging
   script:
-    - echo 'foo'
+    - apt install zip
+    - zip -r Questionnaire_Toolset.zip build
+    - export SSHPASS=$USER_PASS 
+    - cd build/
+    - sshpass -e scp -o stricthostkeychecking=no -r ./* anfvg@anubis.informatik.uni-halle.de:/home/anfvg/public_html

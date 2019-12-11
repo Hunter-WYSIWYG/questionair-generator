@@ -19,9 +19,4 @@ deploy:
   environment:
     name: staging
   script:
-    - apt install zip
-    - zip -r Questionnaire_Toolset.zip build
-    - curl --request POST --header 'PRIVATE-TOKEN: C6mw_oz3AezQRp5Q-ywX' --form 'file=@Questionnaire_Toolset.zip' https://gitlab.informatik.uni-halle.de/api/v4/projects/916/uploads
-    - export SSHPASS=$USER_PASS 
-    - cd build/
-    - sshpass -e scp -o stricthostkeychecking=no -r ./* anfvg@anubis.informatik.uni-halle.de:/home/anfvg/public_html
+    - echo 'foo'

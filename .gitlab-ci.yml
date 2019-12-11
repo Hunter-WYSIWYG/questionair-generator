@@ -1,5 +1,4 @@
-image: jmgoldacker98/questionnaire-toolset-builder
-pull: always
+image: jmgoldacker98/questionnaire-toolset-builder:latest
 
 stages:
   - build

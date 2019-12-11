@@ -10,8 +10,8 @@ public class Note extends Question {
 	public final String noteText;
 	
 	// constructor
-	public Note(int id, String questionText, List<Answer> conditions, String text) {
-		super (id, QuestionType.Note, conditions, text);
+	public Note(int id, String questionText, List<Answer> conditions, String text, String hint) {
+		super (id, QuestionType.Note, conditions, text, hint);
 		
 		noteText = text;
 	}

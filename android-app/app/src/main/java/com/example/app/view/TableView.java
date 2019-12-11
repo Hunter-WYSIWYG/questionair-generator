@@ -63,8 +63,12 @@ public class TableView extends QuestionDisplayView {
         questionNumber.setText("Fragenummer: " + question.questionID);
 
         // set questionText
-	    TextView questionTextView = container.findViewById(R.id.tableQuestionText);
-	    questionTextView.setText(question.questionText);
+        TextView questionTextView = this.container.findViewById(R.id.tableQuestionText);
+        questionTextView.setText(this.question.questionText);
+        
+        // set hint
+	    TextView hintTextView = this.container.findViewById(R.id.hint);
+	    hintTextView.setText(this.question.hint);
 
         // find dividingLine
 	    View dividingLine = container.findViewById(R.id.tableDividingLine);

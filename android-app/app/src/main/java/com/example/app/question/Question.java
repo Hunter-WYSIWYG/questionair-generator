@@ -22,15 +22,19 @@ public abstract class Question implements Serializable {
 	
 	public final String questionText;
 	
-	@SerializedName("editTime") public final String editTime;
+	@SerializedName("editTime") 
+	public final String editTime;
+	
+	public final String hint;
 	
 	// constructor
-	public Question (int id, QuestionType type, List<Answer> conditions, String questionText) {
+	public Question (int id, QuestionType type, List<Answer> conditions, String questionText, String hint) {
 		this.questionID = id;
 		this.type = type;
 		this.conditions = conditions;
 		this.questionText = questionText;
-		editTime = null;
+		this.editTime = null;
+		this.hint = hint;
 	}
 	
 	

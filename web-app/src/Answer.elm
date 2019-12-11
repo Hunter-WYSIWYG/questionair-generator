@@ -1,6 +1,6 @@
 module Answer exposing
     ( Answer
-    , getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText
+    , getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText, getAnswerTyp
     )
 
 {-| Contains the answer type used for questions and conditions.
@@ -13,7 +13,7 @@ module Answer exposing
 
 # Public functions
 
-@docs getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update
+@docs getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText, getAnswerTyp
 
 -}
 
@@ -122,8 +122,17 @@ update answerToUpdate answer =
     else
         answer
 
+{-| getter for answer id
+-}
 getAnswerId : Answer -> Int
 getAnswerId answer = answer.id
 
+{-| getter for answer text
+-}
 getAnswerText : Answer -> String
 getAnswerText answer = answer.text
+
+{-| getter for answer typ
+-}
+getAnswerTyp : Answer -> String
+getAnswerTyp answer = answer.typ

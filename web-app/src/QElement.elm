@@ -1,6 +1,6 @@
 module QElement exposing
     ( Q_element(..), NoteRecord, QuestionRecord
-    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID )
+    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax   )
 
 
 {-| Contains the type for the elements of questionnaires (questions, annotations) and an initial state for the "input element" (newElement).
@@ -13,7 +13,7 @@ module QElement exposing
 
 # Public functions
 
-@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID
+@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax
 
 -}
 
@@ -45,13 +45,16 @@ type alias QuestionRecord =
     , hint : String
     , typ : String
     , questionTime : String
-    -- Größe der Tabelle bei Fragetyp Raster-Auswahl
+    -- Size of the table for questiontype "Raster-Auswahl"
     , tableSize : Int 
-    -- Beschriftung der Tabelle bei Fragetyp Raster-Auswahl oder Prozentslider
+    -- Labels for the scales for questiontype "Skaliert uni/bipolar", "Prozentslider", "Raster-Auswahl"
     , topText : String
     , rightText : String
     , bottomText : String
     , leftText : String
+    -- Min- and max-value for uni- and bipolar Questiontype
+    , polarMin : Int
+    , polarMax : Int
     }
 
 
@@ -71,6 +74,8 @@ initQuestion =
         , rightText = ""
         , bottomText = "" 
         , leftText = ""
+        , polarMin = 0
+        , polarMax = 0
         }
 
 
@@ -228,7 +233,13 @@ It searches for the item in the list that has the same ID as "element".
 -}
 deleteItemFrom : Q_element -> List Q_element -> List Q_element
 deleteItemFrom element list =
-    Tuple.first (List.partition (\e -> e /= element) list)
+    let 
+        elementId = getElementId element
+        deletedList = Tuple.first (List.partition (\e -> e /= element) list)
+        firstList = Tuple.first (List.partition (\e -> getElementId e < elementId) deletedList)
+        secondList = Tuple.first (List.partition (\e -> getElementId e > elementId) deletedList)
+    in
+        List.append firstList (updateIdsAfterDelete secondList)
 
 
 {-| Deletes the specified answer "answer" from a question element.
@@ -238,7 +249,13 @@ deleteAnswerFromItem : Answer -> Q_element -> Q_element
 deleteAnswerFromItem answer element =
     case element of
         Question record ->
-            Question { record | answers = Tuple.first (List.partition (\e -> e /= answer) record.answers) }
+            let 
+                answerId = Answer.getAnswerId answer
+                deletedList = Tuple.first (List.partition (\e -> e /= answer) record.answers)
+                firstList = Tuple.first (List.partition (\e -> Answer.getAnswerId e < answerId) deletedList)
+                secondList = Tuple.first (List.partition (\e -> Answer.getAnswerId e > answerId) deletedList)
+            in
+            Question { record | answers = List.append firstList (updateAnswersIdsAfterDelete secondList) }
 
         Note record ->
             Note record
@@ -290,5 +307,112 @@ getElementId elem =
 
         Note a ->
             a.id
-{- set- und get-Funktionen für Variablen für Fragetyp Raster-Auswahl
+
+{- get-function for tableSize 
 -}
+getTableSize : Q_element -> Int
+getTableSize elem = 
+    case elem of
+        Question a ->
+            a.tableSize
+        
+        Note a ->
+            0
+
+{- get-function for topText
+-}
+getTopText : Q_element -> String
+getTopText elem =
+    case elem of 
+        Question a ->
+            a.topText
+        
+        Note a ->
+            ""
+
+{- get-funktion for rightText
+-}
+getRightText : Q_element -> String
+getRightText elem =
+    case elem of 
+        Question a ->
+            a.rightText
+        
+        Note a ->
+            ""
+
+{- get-function for bottomText
+-}
+getBottomText : Q_element -> String
+getBottomText elem =
+    case elem of 
+        Question a ->
+            a.bottomText
+        
+        Note a ->
+            ""
+
+{- get-function for leftText
+-}
+getLeftText : Q_element -> String
+getLeftText elem =
+    case elem of 
+        Question a ->
+            a.leftText
+        
+        Note a ->
+            ""
+{- get-function for polarMin 
+-}
+
+getPolarMin : Q_element -> Int
+getPolarMin elem =
+    case elem of
+        Question a ->
+            a.polarMin
+        
+        Note a ->
+            0
+
+{- get-function for polarMax
+-}
+getPolarMax : Q_element -> Int
+getPolarMax elem = 
+    case elem of
+        Question a ->
+            a.polarMax
+        
+        Note a ->
+            0
+
+{-| Returns Questions with right Ids after delete
+-}
+updateIdsAfterDelete : List Q_element -> List Q_element
+updateIdsAfterDelete list = List.map getElementIdForDelete list
+
+{-| subFunction for updateIdsAfterDelete (change the id)
+-}
+getElementIdForDelete : Q_element -> Q_element
+getElementIdForDelete elem =
+    case elem of
+        Question record ->
+            Question { record | id = (sub record.id)}
+
+        Note record ->
+
+            Note { record | id = (sub record.id) }
+
+{-| Returns Answers with right Ids after delete
+-}
+updateAnswersIdsAfterDelete : List Answer -> List Answer
+updateAnswersIdsAfterDelete list = List.map getAnswerIdForDelete list
+
+{-| subFunction for updateAIdsAfterDelete (change the id)
+-}
+getAnswerIdForDelete : Answer -> Answer
+getAnswerIdForDelete elem = Answer (sub (Answer.getAnswerId elem)) (Answer.getAnswerText elem) (Answer.getAnswerTyp elem)
+
+{-| subFunction for updateIdsAfterDelete and to subtract 1 to each Id
+-}
+sub: Int -> Int 
+sub id = id - 1

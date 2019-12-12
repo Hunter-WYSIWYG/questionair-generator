@@ -20,6 +20,7 @@ build:
     - cp build/* ../electron-app/questionnaire_gen_win64/resources/app
     - cd ..
     - cd android-app
+    - chmod +x ./gradlew
     - ./gradlew assembleDebug
     - cd ..
     - zip -r -D Questionnaire_Toolset.zip electron-app/questionnaire_gen_win32 electron-app/questionnaire_gen_win64 android-app/app/build/outputs/apk/debug/app-debug.apk

@@ -1,4 +1,4 @@
-image: jmgoldacker98/questionnaire-toolset-builder:1.4
+image: jmgoldacker98/questionnaire-toolset-builder:1.5
 
 stages:
   - build
@@ -10,6 +10,7 @@ build:
     paths:
         - url.txt
   script:
+    ## Build web app and electron app
     - cd web-app/
     - mkdir build/
     - cp src/index.html build/
@@ -19,11 +20,19 @@ build:
     - cp build/* ../electron-app/questionnaire_gen_win32/resources/app
     - cp build/* ../electron-app/questionnaire_gen_win64/resources/app
     - cd ..
+    ## Build android app
     - cd android-app
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
+    - mv app/build/outputs/apk/debug/app-debug.apk app.apk
     - cd ..
-    - zip -r -D Questionnaire_Toolset.zip electron-app/questionnaire_gen_win32 electron-app/questionnaire_gen_win64 android-app/app/build/outputs/apk/debug/app-debug.apk
+    ## Build converter
+    - cd converter
+    - mvn clean install
+    - mv target/*.jar .
+    - cd ..
+    ## Zip binaries
+    - zip -r -D Questionnaire_Toolset.zip electron-app/questionnaire_gen_win32 electron-app/questionnaire_gen_win64 android-app/app.apk converter/*.jar
     ## Upload binaries and get url
     - url=$(curl --request POST --header 'PRIVATE-TOKEN:C6mw_oz3AezQRp5Q-ywX' --form 'file=@Questionnaire_Toolset.zip' https://gitlab.informatik.uni-halle.de/api/v4/projects/916/uploads | jq '.url')
     - url=$(echo "$url" | sed -e 's/^"//' -e 's/"$//')

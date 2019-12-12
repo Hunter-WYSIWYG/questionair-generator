@@ -9,14 +9,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
-import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
 import com.example.app.answer.AnswerCollection;
+import com.example.app.question.Question;
 import com.example.app.question.SliderButtonQuestion;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class SliderButtonView extends QuestionDisplayView {
@@ -39,7 +38,7 @@ public class SliderButtonView extends QuestionDisplayView {
 	private QuestionnaireState questionnaireState;
 	
 	// constructor
-	public SliderButtonView (QuestionDisplayActivity activity, SliderButtonQuestion question, QuestionnaireState state) {
+	public SliderButtonView (QuestionDisplayActivity activity, SliderButtonQuestion question) {
 		super (activity);
 		this.question = question;
 		this.size = this.question.size;
@@ -150,5 +149,10 @@ public class SliderButtonView extends QuestionDisplayView {
 		answerList.add (answer);
 		AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
 		return answerCollection;
+	}
+
+	@Override
+	public Question getQuestion() {
+		return this.question;
 	}
 }

@@ -1,8 +1,10 @@
 package com.example.app.answer;
 
-import com.google.gson.annotations.SerializedName;
+import com.example.app.question.QuestionType;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Answer implements Serializable {
 	@SerializedName("_type")
@@ -14,13 +16,7 @@ public class Answer implements Serializable {
 	@SerializedName("text")
 	public final String text;
 	
-	// constructors
-	public Answer () {
-		this.type = null;
-		this.id = -1;
-		this.text = "Failsafe";
-	}
-	
+	// constructor	
 	public Answer (final String type, final int id, final String text) {
 		this.type = type;
 		this.id = id;

@@ -9,45 +9,42 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
-import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.AnswerCollection;
 import com.example.app.answer.Answer;
+import com.example.app.question.Question;
 import com.example.app.question.TableQuestion;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class TableView extends QuestionDisplayView {
-	
-	// the corresponding question
-	private final TableQuestion question;
-	// container of slider
-	private ConstraintLayout container;
-	// table
-	private TableLayout table;
-	// size of table
-	private final double size;
-	// list of all buttons
-	private final List<Button> buttons = new ArrayList<>();
-	// id of button
-	private int buttonID;
-	// current pressed button
-	private Button currentButton;
-	//current State
-	private QuestionnaireState questionnaireState;
-	
-	// constructor
-	public TableView (QuestionDisplayActivity activity, TableQuestion question, QuestionnaireState state) {
-		super (activity);
-		this.question = question;
-		this.size = this.question.size;
-		this.currentButton = null;
-		this.questionnaireState = state;
+
+    // the corresponding question
+    private final TableQuestion question;
+    // container of slider
+    private ConstraintLayout container;
+    // table
+    private TableLayout table;
+    // size of table
+    private final double size;
+    // list of all buttons
+    private final List<Button> buttons = new ArrayList<>();
+    // id of button
+    private int buttonID;
+    // current pressed button
+    private Button currentButton;
+
+
+    // constructor
+    public TableView(QuestionDisplayActivity activity, TableQuestion question) {
+        super (activity);
+        this.question = question;
+	    size = this.question.size;
+	    currentButton = null;
 		// start with button id = -1
 		buttonID = -1;
-		init();
+		init ();
 	}
 	
 	private void init () {
@@ -62,9 +59,9 @@ public class TableView extends QuestionDisplayView {
 		questionTextView.setText (this.question.questionText);
 		
 		// set hint
-	    TextView hintTextView = this.container.findViewById (R.id.hint);
-	    hintTextView.setText(this.question.hint);
-		
+		TextView hintTextView = this.container.findViewById (R.id.hint);
+		hintTextView.setText(this.question.hint);
+
 		// find dividingLine
 		View dividingLine = this.container.findViewById (R.id.tableDividingLine);
 		
@@ -86,8 +83,8 @@ public class TableView extends QuestionDisplayView {
 		
 		// create table
 		this.createTable();
-	}
-	
+    }
+
 	// create table
 	private void createTable () {
 		this.table = this.container.findViewById (R.id.tableView);
@@ -146,7 +143,7 @@ public class TableView extends QuestionDisplayView {
 	public View getView () {
 		return this.container;
 	}
-	
+
 	@Override
 	public AnswerCollection getCurrentAnswer () {
 		Calendar calendar = Calendar.getInstance (); // gets current instance of the calendar

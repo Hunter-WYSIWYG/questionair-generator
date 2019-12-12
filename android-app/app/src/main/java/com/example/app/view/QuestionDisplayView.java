@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.answer.AnswerCollection;
+import com.example.app.answer.Answer;
 import com.example.app.question.ChoiceQuestion;
 import com.example.app.question.Note;
 import com.example.app.question.PercentSliderQuestion;
@@ -15,11 +16,6 @@ import com.example.app.question.TableQuestion;
 public abstract class QuestionDisplayView {
 	// the corresponding activity
 	private final QuestionDisplayActivity activity;
-
-	// constructor
-	protected QuestionDisplayView (QuestionDisplayActivity activity) {
-		this.activity = activity;
-	}
 	
 	// create new view for the current question of the activity
 	public static QuestionDisplayView create (QuestionDisplayActivity activity) {
@@ -41,6 +37,11 @@ public abstract class QuestionDisplayView {
 			throw new IllegalArgumentException ();
 	}
 	
+	// constructor
+	protected QuestionDisplayView(QuestionDisplayActivity activity) {
+		this.activity = activity;
+	}
+
 	// getter
 	protected QuestionDisplayActivity getActivity () {
 		return this.activity;
@@ -48,4 +49,6 @@ public abstract class QuestionDisplayView {
 	public abstract View getView ();
 	// get all answer
 	public abstract AnswerCollection getCurrentAnswer();
+
+	public abstract Question getQuestion ();
 }

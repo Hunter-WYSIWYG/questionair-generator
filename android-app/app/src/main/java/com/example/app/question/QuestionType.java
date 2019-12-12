@@ -3,18 +3,21 @@ package com.example.app.question;
 import com.google.gson.annotations.SerializedName;
 
 public enum QuestionType {
-	@SerializedName ("singleChoice") SingleChoice,
+	@SerializedName ("Single Choice") SingleChoice,
 
-	@SerializedName ("multipleChoice") MultipleChoice,
+	@SerializedName ("Ja/Nein Frage") BinaryChoice,
 
-	@SerializedName ("slider") Slider,
+	@SerializedName ("Multiple Choice") MultipleChoice,
+
+	@SerializedName ("Skaliert unipolar") UnipolarSlider,
 	
-	@SerializedName ("percentslider") PercentSlider,
+	@SerializedName ("Skaliert bipolar") BipolarSlider,
 	
-	@SerializedName ("note") Note,
+	@SerializedName ("Prozentslider") PercentSlider,
 	
-	@SerializedName ("tableView") Table,
+	@SerializedName ("Notiz") Note,
 	
-	@SerializedName ("buttonSlider") SliderButton,
+	@SerializedName ("Raster-Auswahl") Table,
+	
+	@SerializedName ("Button Slider") SliderButton,
 }
-

@@ -5,20 +5,19 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Condition implements Serializable {
-	@SerializedName("qId")
-	public final int qid;
-	@SerializedName("chosenValue")
-	public final int cv;
+	@SerializedName("parent_id")
+	public final int parentId;
 	
-	public Condition(){
-		qid=-1;
-		cv=-1;
-		
-	}
-	public Condition(int id,int val){
-		qid=id;
-		cv=val;
-		
-		
+	@SerializedName("child_id")
+	public final int childId;
+	
+	@SerializedName("answer_id")
+	public final int answerId;
+	
+	// constructor
+	public Condition (int parentId, int childId, int answerId) {
+		this.parentId = parentId;
+		this.childId = childId;
+		this.answerId = answerId;
 	}
 }

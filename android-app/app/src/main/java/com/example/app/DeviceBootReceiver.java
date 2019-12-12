@@ -9,17 +9,17 @@ import android.support.v4.app.NotificationCompat;
 
 public class DeviceBootReceiver extends BroadcastReceiver {
 	@Override
-	public void onReceive(Context context, Intent intent) {
-		if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+	public void onReceive (Context context, Intent intent) {
+		if (intent.getAction ().equals ("android.intent.action.BOOT_COMPLETED")) {
 			// on device boot complete, reset the alarm
-			notifynow (context,intent);
+			notifyNow(context, intent);
 		}
 	}
-	public void notifynow(Context context,Intent recintent) {
+	public void notifyNow(Context context, Intent recintent) {
 		//set intent for click
-		Intent intent = new Intent(context, MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent intent = new Intent (context, MainActivity.class);
+		intent.addFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+		PendingIntent pendingIntent = PendingIntent.getActivity (context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
 		//build notification preparation
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService (Context.NOTIFICATION_SERVICE);

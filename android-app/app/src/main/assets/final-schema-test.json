@@ -1,0 +1,240 @@
+{
+  "id": 0,
+  "priority": 0,
+  "title": "Umfangreicher Fragebogen",
+  "elements": [
+    {
+      "_type": "Question",
+      "id": 0,
+      "text": "Single Choice Frage",
+      "hint": "Hinweis SCF",
+      "questionType": "Single Choice",
+      "answers": [
+        {
+          "id": 0,
+          "text": "A",
+          "_type": "regular"
+        },
+        {
+          "id": 1,
+          "text": "B",
+          "_type": "free"
+        }
+      ],
+      "questionTime": "",
+      "tableSize": 0,
+      "topText": "",
+      "rightText": "",
+      "bottomText": "",
+      "leftText": ""
+    },
+    {
+      "_type": "Question",
+      "id": 1,
+      "text": "Mutliple Choice Frage",
+      "hint": "Hinwei MCF",
+      "questionType": "Multiple Choice",
+      "answers": [
+        {
+          "id": 0,
+          "text": "Multiple 1",
+          "_type": "regular"
+        },
+        {
+          "id": 1,
+          "text": "Multiple 2",
+          "_type": "free"
+        }
+      ],
+      "questionTime": "",
+      "tableSize": 0,
+      "topText": "",
+      "rightText": "",
+      "bottomText": "",
+      "leftText": ""
+    },
+    {
+      "_type": "Question",
+      "id": 2,
+      "text": "Ja/Nein",
+      "hint": "Hinweis JN",
+      "questionType": "Ja/Nein Frage",
+      "answers": [
+        {
+          "id": 0,
+          "text": "Ja",
+          "_type": "regular"
+        },
+        {
+          "id": 1,
+          "text": "Nein",
+          "_type": "regular"
+        }
+      ],
+      "questionTime": "",
+      "tableSize": 0,
+      "topText": "",
+      "rightText": "",
+      "bottomText": "",
+      "leftText": ""
+    },
+    {
+      "_type": "Question",
+      "id": 3,
+      "text": "Skaliert Unipolare Frage",
+      "hint": "Hinweis SUF",
+      "questionType": "Skaliert unipolar",
+      "answers": [
+        {
+          "id": 0,
+          "text": "1",
+          "_type": "regular"
+        },
+        {
+          "id": 1,
+          "text": "2",
+          "_type": "regular"
+        },
+        {
+          "id": 2,
+          "text": "3",
+          "_type": "regular"
+        },
+        {
+          "id": 3,
+          "text": "4",
+          "_type": "regular"
+        }
+      ],
+      "questionTime": "",
+      "tableSize": 0,
+      "topText": "",
+      "rightText": "",
+      "bottomText": "",
+      "leftText": ""
+    },
+    {
+      "_type": "Question",
+      "id": 4,
+      "text": "Skalierte bipolare Frage",
+      "hint": "Hinweis SBF ",
+      "questionType": "Skaliert bipolar",
+      "answers": [
+        {
+          "id": 0,
+          "text": "-3",
+          "_type": "regular"
+        },
+        {
+          "id": 1,
+          "text": "-2",
+          "_type": "regular"
+        },
+        {
+          "id": 2,
+          "text": "-1",
+          "_type": "regular"
+        },
+        {
+          "id": 3,
+          "text": "0",
+          "_type": "regular"
+        },
+        {
+          "id": 4,
+          "text": "1",
+          "_type": "regular"
+        },
+        {
+          "id": 5,
+          "text": "2",
+          "_type": "regular"
+        },
+        {
+          "id": 6,
+          "text": "3",
+          "_type": "regular"
+        }
+      ],
+      "questionTime": "",
+      "tableSize": 0,
+      "topText": "",
+      "rightText": "",
+      "bottomText": "",
+      "leftText": ""
+    },
+    {
+      "_type": "Question",
+      "id": 5,
+      "text": "Rasterauwahl-Frage",
+      "hint": "Hinweis RAF",
+      "questionType": "Raster-Auswahl",
+      "answers": [],
+      "questionTime": "",
+      "tableSize": 3,
+      "topText": "oben ",
+      "rightText": "rechts",
+      "bottomText": "unten",
+      "leftText": "links"
+    },
+    {
+      "_type": "Note",
+      "id": 6,
+      "text": "Das ist eine Notiz"
+    },
+    {
+      "_type": "Question",
+      "id": 7,
+      "text": "Prozentslider Frage",
+      "hint": "Hinweis PF",
+      "questionType": "Prozentslider",
+      "answers": [],
+      "questionTime": "",
+      "tableSize": 0,
+      "topText": "",
+      "rightText": "rechter GW",
+      "bottomText": "",
+      "leftText": "linker GW"
+    },
+    {
+      "_type": "Question",
+      "id": 8,
+      "text": "Button Slider",
+      "hint": "Hinweis Button Slider",
+      "questionType": "Button Slider",
+      "answers": [],
+      "questionTime": "",
+      "tableSize": 10,
+      "topText": "",
+      "rightText": "rechts",
+      "bottomText": "",
+      "leftText": "links"
+    }
+  ],
+  "conditions": [
+    {
+      "parent_id": 0,
+      "child_id": 1,
+      "answer_id": 0
+    }
+  ],
+  "viewingTime": "01-12-2019;31-12-2019",
+  "reminderTimes": [
+    "2019-12-16T12:00:00+01:00",
+    "2019-12-17T12:00:00+01:00",
+    "2019-12-18T12:00:00+01:00",
+    "2019-12-19T12:00:00+01:00",
+    "2019-12-20T12:00:00+01:00",
+    "2019-12-21T12:00:00+01:00",
+    "2019-12-22T12:00:00+01:00",
+    "2019-12-23T12:00:00+01:00",
+    "2019-12-24T12:00:00+01:00",
+    "2019-12-25T12:00:00+01:00",
+    "2019-12-26T12:00:00+01:00",
+    "2019-12-27T12:00:00+01:00",
+    "2019-12-28T12:00:00+01:00",
+    "2019-12-29T12:00:00+01:00",
+    "2019-12-30T12:00:00+01:00"
+  ],
+  "editTime": "10:00"
+}

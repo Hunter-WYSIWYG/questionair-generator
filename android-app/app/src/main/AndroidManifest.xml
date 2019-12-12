@@ -17,8 +17,6 @@
 		</activity>
 		<activity android:name=".QuestionnaireFinishedActivity">
 		</activity>
-		<activity android:name=".SaveAnswersActivity">
-		</activity>
 		<activity android:name=".QuestionDisplayActivity">
 		</activity>
 		<activity android:name=".MainActivity">

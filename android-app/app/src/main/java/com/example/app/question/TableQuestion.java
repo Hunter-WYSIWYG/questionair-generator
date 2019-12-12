@@ -7,21 +7,24 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class TableQuestion extends Question {
-	@SerializedName ("size")
+	@SerializedName ("tableSize")
 	public final double size;
-	@SerializedName ("topName")
+	
+	@SerializedName ("topText")
 	public final String topName;
-	@SerializedName ("bottomName")
+	
+	@SerializedName ("bottomText")
 	public final String bottomName;
-	@SerializedName ("rightName")
+	
+	@SerializedName ("rightText")
 	public final String rightName;
-	@SerializedName ("leftName")
+	
+	@SerializedName ("leftText")
 	public final String leftName;
 	
 	//constructor
-	public TableQuestion(int id, String questionText, List<Condition> conditions, int size, String topName, String bottomName, String rightName, String leftName, String hint) {
-		super (id, QuestionType.Table, conditions, questionText, hint);
-		
+	public TableQuestion(int id, String questionText, int size, String topName, String bottomName, String rightName, String leftName, String hint) {
+		super (id, QuestionType.Table, questionText, hint);
 		this.size = size;
 		this.topName = topName;
 		this.bottomName = bottomName;

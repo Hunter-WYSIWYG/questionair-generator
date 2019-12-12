@@ -43,8 +43,8 @@ deploy:
   type: deploy
   environment:
     name: staging
-  ## only:
-    ## - master
+   only:
+     - master
   script:
     ## Set version 
     - url=$(cat url.txt)

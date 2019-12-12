@@ -1,6 +1,7 @@
 package com.example.app.question;
 
 import com.example.app.answer.Answer;
+import com.example.app.answer.Condition;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

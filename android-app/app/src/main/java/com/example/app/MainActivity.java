@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -30,12 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 	// list of all questionnaires
@@ -44,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private DrawerLayout drawerlayout;
 	// list view of all questionnaires
 	private ListView listView;
-
+	
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate (savedInstanceState);
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		this.notifyStart ();
 		this.init ();
 	}
-
+	
 	// init list
 	public void init () {
 		// questionnaires have to be sorted before the list view of them is generated
@@ -109,12 +106,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		/*try {
 			AssetManager assetManager = getAssets();
 			InputStream ims = assetManager.open("example-questionnaire-" + index + ".json");
-
+			
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create();
 			Reader reader = new InputStreamReader(ims);
-
+			
 			return gson.fromJson(reader, Questionnaire.class);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 			// test if failed to read file :
 			final StackTraceElement[] stackTrace = e.getStackTrace();
@@ -209,14 +207,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	public boolean onNavigationItemSelected (@NonNull final MenuItem menuItem) {
 		switch (menuItem.getItemId ()) {
 			case R.id.nav_home:
-				for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-					getSupportFragmentManager().popBackStackImmediate();
-				}
+				getSupportFragmentManager ().popBackStackImmediate ();
 				break;
 			case R.id.nav_licence:
-				if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LicenceFragment()).addToBackStack(null).commit();
-				}
+				getSupportFragmentManager ().beginTransaction ().replace (R.id.fragment_container, new LicenceFragment ()).addToBackStack (null).commit ();
 				break;
 			default:
 				break;

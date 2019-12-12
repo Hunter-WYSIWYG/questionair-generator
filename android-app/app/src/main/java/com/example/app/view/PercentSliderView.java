@@ -5,14 +5,17 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
+import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
 import com.example.app.answer.AnswerCollection;
 import com.example.app.question.PercentSliderQuestion;
-import com.example.app.question.Question;
 import com.warkiz.widget.IndicatorSeekBar;
 
 import java.util.ArrayList;
+
+import java.util.Calendar;
+
 import java.util.List;
 
 public class PercentSliderView extends QuestionDisplayView  {
@@ -84,7 +87,6 @@ public class PercentSliderView extends QuestionDisplayView  {
 	public View getView () {
 		return this.container;
 	}
-	
 	@Override
 	public AnswerCollection getCurrentAnswer () {
 		Calendar calendar = Calendar.getInstance (); // gets current instance of the calendar
@@ -93,10 +95,5 @@ public class PercentSliderView extends QuestionDisplayView  {
 		answerList.add (answer);
 		AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
 		return answerCollection;
-	}
-
-	@Override
-	public Question getQuestion() {
-		return question;
 	}
 }

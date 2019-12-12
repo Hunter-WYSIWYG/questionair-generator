@@ -1,18 +1,24 @@
 package com.example.app;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
 import android.widget.Toast;
 import com.example.app.answer.AnswerCollection;
 import com.example.app.view.QuestionDisplayView;
-import com.example.app.question.Question;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 
 public class QuestionDisplayActivity extends AppCompatActivity {
@@ -25,7 +31,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	private QuestionnaireState state;
 	
 	// getter
-	public QuestionnaireState getState() {
+	public QuestionnaireState getState () {
 		return state;
 	}
 	
@@ -51,6 +57,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		// insert as the new first element, before the space filler and the next button
 		contentContainer.addView (questionView.getView (), 0);
+		
 		nextButton.setOnClickListener (v -> nextButtonClicked ());
 	}
 	
@@ -69,7 +76,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 	}
 	
-	// TODO what does it do? comment your functions!
+	// TODO what does it do? comment your functions boys!
 	public void onDestroy () {
 		super.onDestroy ();
 		save (state.getAnswerCollectionList ());
@@ -107,36 +114,9 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			e.printStackTrace ();
 			Toast myToast = Toast.makeText (this, "Error. Antworten nicht Gespeichert!", Toast.LENGTH_SHORT);
 			myToast.show ();
+		}
 	}
 	
-	// next button is clicked, update questionnaire state and go to next question
-	private void nextButtonClicked() {
-		final Question q = questionView.getQuestion();
-		if (q.editTime != null) {
-			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime()) {
-				AnswerCollection dummy = new AnswerCollection();
-				dummy.add(new Answer("Zeit überschritten", -1, ""));
-				state.currentQuestionAnswered (dummy);
-			} else {
-				AnswerCollection answerCollection = questionView.getCurrentAnswer ();
-				state.currentQuestionAnswered (answerCollection);
-			}
-		} else {
-			AnswerCollection answerCollection = questionView.getCurrentAnswer ();
-			state.currentQuestionAnswered (answerCollection);
-		}
-
-		if (!state.isFinished ()) {
-			displayCurrentQuestion (state, this);
-		} 
-		else {
-			save(state.getAnswerCollectionList ());
-			Intent intent = new Intent (this, QuestionnaireFinishedActivity.class);
-			startActivity (intent);
-			finish ();
-		}
-	}
-
 	// create popup if back button is pressed
 	public void onBackPressed () {
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder (this);
@@ -167,3 +147,4 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		alert.show ();
 	}
 }
+

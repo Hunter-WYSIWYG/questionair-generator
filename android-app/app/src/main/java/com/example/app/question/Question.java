@@ -23,9 +23,6 @@ public abstract class Question implements Serializable {
 	
 	@SerializedName ("hint")
 	public final String hint;
-
-	@SerializedName("editTime") 
-	public final String editTime;
 	
 	// constructor
 	public Question(int id, QuestionType type, String questionText, String hint) {
@@ -33,6 +30,5 @@ public abstract class Question implements Serializable {
 		this.type = type;
 		this.questionText = questionText;
 		this.hint = hint;
-		this.editTime = null;
 	}
 }

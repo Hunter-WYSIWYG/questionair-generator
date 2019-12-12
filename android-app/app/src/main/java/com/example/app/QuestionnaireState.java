@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 // current state of questionnaire with answerCollectionList
@@ -21,30 +20,19 @@ public class QuestionnaireState implements Serializable {
 	private int currentIndex;
 	@SerializedName ("answerCollectionList")
 	private final List<AnswerCollection> answerCollectionList = new ArrayList<> ();
-
-	private long currentQuestionEndTime;
 	
 	// constructor, creates a new QuestionnaireState that starts at the first question
-	public QuestionnaireState(Questionnaire questionnaire) {
+	public QuestionnaireState (Questionnaire questionnaire) {
 		this.questionnaire = questionnaire;
 		this.currentIndex = 0;
 		this.goToNextPossibleQuestion ();
-
-		final String editTime = questionnaire.getEditTime();
-		if (editTime != null) {
-			final String[] parts = editTime.split(":");
-			endTime = new Date(System.currentTimeMillis() + 60000 * Long.parseLong(parts[0]) + 1000 * Long.parseLong(parts[1]));
-		} else {
-			endTime = null;
-		}
-		currentQuestionEndTime = 0L;
 	}
 	
 	// goes to next question, skip zero or more questions if necessary (conditions)
 	private void goToNextPossibleQuestion () {
 		if (!this.isFinished () && !this.isCurrentQuestionPossible ()) {
 			this.currentIndex++;
-			this.goToNextPossibleQuestion();
+			this.goToNextPossibleQuestion ();
 		}
 	}
 	
@@ -82,34 +70,16 @@ public class QuestionnaireState implements Serializable {
 	}
 	
 	// getter
-	public int getCurrentIndex() {
+	public int getCurrentIndex () {
 		return currentIndex;
 	}
-	
-	public Questionnaire getQuestionnaire() {
+	public Questionnaire getQuestionnaire () {
 		return questionnaire;
 	}
-	
-	public Question getCurrentQuestion() {
-		final Question q = questionnaire.getQuestionList().get(currentIndex);
-		if (q.editTime != null) {
-			final String[] parts = q.editTime.split(":");
-			currentQuestionEndTime = System.currentTimeMillis() + 60000 * Long.parseLong(parts[0]) + 1000 * Long.parseLong(parts[1]);
-		}
-		return q;
+	public Question getCurrentQuestion () {
+		return questionnaire.getQuestionList ().get (currentIndex);
 	}
-	
 	public List<AnswerCollection> getAnswerCollectionList () {
 		return answerCollectionList;
 	}
-	
-	public Date getEndTime() {
-		return endTime;
-	}
-	
-	public long getCurrentQuestionEndTime() {
-		return currentQuestionEndTime;
-	}
-	
-	// TODO: method saveCurrentState
 }

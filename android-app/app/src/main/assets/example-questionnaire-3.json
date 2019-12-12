@@ -1,7 +1,6 @@
 {
   "questionnaireName": "Fragebogen 3",
   "questionnaireID": 3.0,
-  "editTime": "00:10",
   "reminderTimes": [
     {
       "date": "2019-11-05T22:00:00+01:00",
@@ -19,8 +18,7 @@
       "questionID": 1,
       "questionText": "ZACK MENSCH NUMMER 3 HAT´S AUCH GESCHAFFT",
       "type": "note",
-      "conditions": [],
-      "editTime": "00:01"
+      "conditions": []
     },
     {
       "questionID": 2,

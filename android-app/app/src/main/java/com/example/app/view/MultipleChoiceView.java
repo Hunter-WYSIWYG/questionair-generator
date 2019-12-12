@@ -16,6 +16,7 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import com.example.app.QuestionDisplayActivity;
+import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
 import com.example.app.answer.AnswerCollection;
@@ -26,6 +27,7 @@ import com.example.app.question.Question;
 import com.example.app.question.QuestionType;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 // OptionView is the view of one option (button + text)
@@ -89,7 +91,7 @@ abstract class OptionView {
 	public abstract void setChecked (boolean checked);
 	
 	// creates new option view depending on the question type
-	public static OptionView create (Context context, Option option, Question question, View.OnClickListener onClickListener) {
+	public static OptionView create (Context context, Option option, Question question, View.OnClickListener onClickListener, QuestionnaireState state) {
 		if (question.type == QuestionType.SingleChoice)
 			return new SingleChoiceOptionView (context, option, onClickListener, state);
 		else if (question.type == QuestionType.MultipleChoice)
@@ -169,7 +171,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	private final QuestionnaireState questionnaireState;
 
 	// constructor
-	public MultipleChoiceView (QuestionDisplayActivity activity, ChoiceQuestion question) {
+	public MultipleChoiceView (QuestionDisplayActivity activity, ChoiceQuestion question,QuestionnaireState state) {
 		super (activity);
 		this.question = question;
 		this.questionnaireState = state;
@@ -177,12 +179,12 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	}
 	
 	private void init () {
-		rootView = (ConstraintLayout) View.inflate(getActivity(), R.layout.multiple_choice_view, null);
-		optionContainer = rootView.findViewById(R.id.MultipleChoiceOptionContainer);
+		this.rootView = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.multiple_choice_view, null);
+		this.optionContainer = this.rootView.findViewById (R.id.MultipleChoiceOptionContainer);
 		
 		// set questionTypeText
-		TextView questionTypeTextView = rootView.findViewById(R.id.MultipleChoiceQuestionTypeText);
-		questionTypeTextView.setText(question.type.name());
+		TextView questionTypeTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionTypeText);
+		questionTypeTextView.setText (this.question.type.name ());
 		
 		// set hint
 		TextView hintTextView = this.rootView.findViewById (R.id.hint);
@@ -193,11 +195,11 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		questionNumber.setText ("Fragenummer: " + question.id);
 		
 		// set questionText
-		TextView questionTextView = rootView.findViewById(R.id.MultipleChoiceQuestionText);
-		questionTextView.setText(question.questionText);
+		TextView questionTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionText);
+		questionTextView.setText (this.question.questionText);
 		
 		// find dividingLine
-		View dividingLine = rootView.findViewById(R.id.MultipleChoiceDividingLine);
+		View dividingLine = this.rootView.findViewById (R.id.MultipleChoiceDividingLine);
 		
 		// create buttons
 		this.createOptions();
@@ -213,7 +215,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 				this.optionContainer.addView (space);
 			}
 			
-			Option option = question.options.get(i);
+			Option option = this.question.options.get (i);
 			final int finalI = i;
 			OptionView view = OptionView.create (getActivity (), option, this.question, v -> this.buttonClicked (this.optionViews.get (finalI)), this.questionnaireState);
 			this.optionContainer.addView (view.getContainer ());
@@ -315,10 +317,5 @@ public class MultipleChoiceView extends QuestionDisplayView {
 			AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
 			return answerCollection;
 		}
-	}
-
-	@Override
-	public Question getQuestion() {
-		return question;
 	}
 }

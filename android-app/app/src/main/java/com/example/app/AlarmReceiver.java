@@ -32,9 +32,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 		//build notification
 					builder = new NotificationCompat.Builder (context, channelId);
 					Notification notify = builder
-							.setContentTitle("Es wartet " + recintent.getStringExtra("questionnaire") +" auf dich!")
-							.setContentText(recintent.getStringExtra("reminder"))
-							.setSmallIcon(R.drawable.smiley)
+							.setContentTitle("Es wartet " + recintent.getStringExtra ("questionnaire") +" auf dich!")
+							.setSmallIcon (R.drawable.smiley)
 							.setContentIntent (pendingIntent)
 							.build ();
 					//send notification

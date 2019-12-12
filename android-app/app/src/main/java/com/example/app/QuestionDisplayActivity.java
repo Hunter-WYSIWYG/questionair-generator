@@ -108,14 +108,11 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			file.createNewFile ();
 			BufferedWriter writer = new BufferedWriter (new FileWriter(file));
 			writer.write (textToWrite);
-			
 			writer.close ();
-			Toast myToast = Toast.makeText (this, "Gespeichert!", Toast.LENGTH_SHORT);
-			myToast.show ();
 		}
 		catch (Exception e) {
 			e.printStackTrace ();
-			Toast myToast = Toast.makeText (this, "Nicht Gespeichert!", Toast.LENGTH_SHORT);
+			Toast myToast = Toast.makeText (this, "Error. Antworten nicht Gespeichert!", Toast.LENGTH_SHORT);
 			myToast.show ();
 		}
 	}

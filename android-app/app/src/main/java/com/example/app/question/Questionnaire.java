@@ -27,7 +27,7 @@ public class Questionnaire implements Serializable {
 	
 	// list of all reminders
 	@SerializedName ("reminderTimes")
-	private final List<String> reminderList;
+	private final List<Date> reminderList;
 	
 	// path to the Questionnaire file
 	@Expose (serialize = false, deserialize = false)
@@ -64,7 +64,7 @@ public class Questionnaire implements Serializable {
 		return this.questionList;
 	}
 	
-	public List<String> getReminderList () {
+	public List<Date> getReminderList () {
 		return this.reminderList;
 	}
 	

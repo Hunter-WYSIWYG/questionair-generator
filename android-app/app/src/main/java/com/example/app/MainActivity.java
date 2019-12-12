@@ -1,7 +1,11 @@
 package com.example.app;
 
 import android.app.ActionBar;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -57,13 +61,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			if (questionnaire != null)
 				this.questionnaireList.add (questionnaire);
 		}
-		this.sortQuestionnaires();
 		this.notifyStart ();
 		this.init ();
 	}
 	
 	// init list
 	public void init () {
+		// questionnaires have to be sorted before the list view of them is generated
+		this.sortQuestionnaires ();
+
 		// list of string needed for arrayAdapter
 		List<String> data = new ArrayList<> ();
 		for (Questionnaire questionnaire : this.questionnaireList) {
@@ -74,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		// adapter for handling list view
 		final ListAdapter adapter = new ArrayAdapter<> (this, android.R.layout.simple_list_item_activated_1, data);
 		this.listView.setAdapter (adapter);
-		// on click listener
-		this.listView.setOnItemClickListener ((parent, view, position, id) -> Toast.makeText (getApplicationContext (), "Click ListItem Number " + position, Toast.LENGTH_LONG).show ());
 	}
 	
 	private Questionnaire importQuestionnaire (int index) {
@@ -159,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	
 	public void startButtonClick (View view) {
 		// chosen questionnaire that the user will answer
-		final Questionnaire currentQuestionnaire = setCurrentQuestionnaire ();
+		final Questionnaire currentQuestionnaire = getCurrentQuestionnaire();
 		if (currentQuestionnaire == null) {
 			Toast toast = Toast.makeText (this, "Kein Fragebogen eingelesen.", Toast.LENGTH_SHORT);
 			toast.show ();
@@ -169,40 +173,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		QuestionDisplayActivity.displayCurrentQuestion (questionnaireState, this);
 	}
 	
-	public Questionnaire setCurrentQuestionnaire () {
+	public Questionnaire getCurrentQuestionnaire() {
 		int position = this.listView.getCheckedItemPosition ();
-		for (Questionnaire questionnaire : this.questionnaireList) {
-			if ((int) questionnaire.getID () == position) {
-				return questionnaire;
-			}
-		}
-		return null;
+		if (position >= 0 && position < this.questionnaireList.size())
+			return this.questionnaireList.get (position);
+		else
+			return null;
 	}
 	
 	public void notifyStart () {
 		//use all reminders
-		int reminder_number = 0;
-		Date datecheck = new Date(System.currentTimeMillis());
-		/*for (Questionnaire questionnaire : this.questionnaireList) {
-			for (Reminder reminder : questionnaire.getReminderList()) {
-				if (reminder.date.after(datecheck)) {
-					Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+		int reminderNumber = 0;
+		Date now = new Date (System.currentTimeMillis ());
+		for (Questionnaire questionnaire : this.questionnaireList) {
+			for (Date reminderDate : questionnaire.getReminderList ()) {
+				if (reminderDate.after (now)) {
+					Intent alarmIntent = new Intent (this, AlarmReceiver.class);
 					alarmIntent.putExtra("questionnaire", questionnaire.getName());
-					alarmIntent.putExtra("reminder", reminder.reminderText);
-					alarmIntent.putExtra("remindernmb", reminder_number);
-					PendingIntent pendingIntent = PendingIntent.getBroadcast(this, reminder_number, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-					AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-					
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(reminder.date);
-					manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-					reminder_number++;
+					alarmIntent.putExtra("remindernmb", reminderNumber);
+					PendingIntent pendingIntent = PendingIntent.getBroadcast (this, reminderNumber, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+					AlarmManager manager = (AlarmManager) getSystemService (Context.ALARM_SERVICE);
+
+					Calendar calendar = Calendar.getInstance ();
+					calendar.setTime (reminderDate);
+					manager.set (AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis (), pendingIntent);
+					reminderNumber++;
 				}
 			}
-		}*/
-
-		Toast toast = Toast.makeText(this, "Debugging: Notifications initiated", Toast.LENGTH_SHORT);
-		toast.show ();
+		}
 	}
 	
 	@Override
@@ -223,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	
 	// sort questionnaires by priority
 	public void sortQuestionnaires () {
-		Collections.sort(this.questionnaireList, new Comparator<Questionnaire>() {
+		Collections.sort(this.questionnaireList, new Comparator<Questionnaire> () {
 			@Override
 			public int compare(Questionnaire q1, Questionnaire q2) {
 				return q1.getPriority () - q2.getPriority ();

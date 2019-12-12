@@ -34,6 +34,7 @@ deploy:
     ## - master
   script:
     ## Set version 
+    - url=$(cat url.txt)
     - MAJOR=0
     - MINOR=8
     - REVISION=$(curl --header "PRIVATE-TOKEN:C6mw_oz3AezQRp5Q-ywX" https://gitlab.informatik.uni-halle.de/api/v4/projects/916/variables | jq '.[0].value|tonumber')

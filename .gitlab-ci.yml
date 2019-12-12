@@ -45,6 +45,8 @@ deploy:
     name: staging
   only:
     - master
+  except:
+    - tags
   script:
     ## Set version 
     - url=$(cat url.txt)

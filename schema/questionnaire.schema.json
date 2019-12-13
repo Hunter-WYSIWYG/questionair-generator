@@ -110,7 +110,7 @@
                     "type": "integer",
                     "description": "Minimal value for unipolar and bipolar questions. Unipolar Questions have the value 0."
                 }, 
-                "ploarMax": {
+                "polarMax": {
                     "type": "integer",
                     "description": "Maximal value for unipolar and bipolar questions."
                 }

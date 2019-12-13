@@ -12,7 +12,7 @@ module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuest
 import Answer exposing (Answer)
 import Condition exposing (Condition)
 import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, small, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value, min, max)
+import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value, disabled, min, max)
 import Html.Events exposing (onClick, onInput)
 import List exposing (member, map)
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
@@ -406,8 +406,11 @@ getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
         ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ]
-            [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
+            [ text (String.fromInt (QElement.getElementId e) ++ ":" ++ " " ++ QElement.getElementText e) ]) list
 
+{-| Displays a list of answers that can be added to the condition as answer.
+See viewConditionModal
+-}
 getAnswerOptions : Model -> Condition -> List (Html Msg)
 getAnswerOptions model newCondition =
     let
@@ -417,7 +420,7 @@ getAnswerOptions model newCondition =
     in
         [ option [] [ text "Keine" ] ]
             ++ List.map (\e -> option [ selected (Answer.getAnswerId e == newCondition.answer_id) ]
-                [ text (String.fromInt(Answer.getAnswerId e) ++ "." ++ " " ++ Answer.getAnswerText e) ]) list
+                [ text (String.fromInt(Answer.getAnswerId e) ++ ":" ++ " " ++ Answer.getAnswerText e) ]) list
 
 
 {-| Displays a modal for creating new answers.
@@ -540,6 +543,7 @@ viewNewConditionModalCreate model =
                     [ button
                         [ class "qnButton"
                         , onClick SetConditions
+                        , disabled (buttonDisabled model.newCondition)
                         ]
                         [ text "Übernehmen" ]
                     ]
@@ -830,13 +834,13 @@ viewQuestionValidation result =
     in
     div [ style "color" color ] [ text message ]
 
-{- entfernt die Antworten-Tabelle wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
+{- Displays the answer-table when "Skaliert bi/unipolar" or "Raster-Auswahl" or "Prozentslider" questiontype is not selected
 -}
 showAnswerTable : Model -> Html Msg
 showAnswerTable model =
     case model.newElement of
         Question record ->
-            if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+            if  record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
                 div [] []
             else
                 table [ class "table is-striped", style "width" "100%" ] (answersTable model)
@@ -844,13 +848,13 @@ showAnswerTable model =
         Note record ->
             div [] []
 
-{- entfernt die "Neue Antwort"-Button wenn Raster-Auswahl oder Prozentslider Fragetyp gewählt wurde
+{- Displays "Neue Antowrt"-button when "Skaliert bi/unipolar" or "Raster-Auswahl" or "Prozentslider" questiontype is not selected
 -}
 showNewAnswerButton : Model -> Html Msg
 showNewAnswerButton model =
     case model.newElement of
         Question record ->
-            if record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
                 div [] []
             else
                 button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
@@ -866,32 +870,93 @@ showInputBipolarUnipolarTableSlider model =
         Question record ->
             if record.typ == "Skaliert unipolar" then
                 div []
-                    [ text "Bitte Anzahl Antworten (insgesamt) eingeben"
+                    [ text "Anzahl Antwortmöglichkeiten:"
                     , input
-                        [ class "input is-medium"
+                        [ class "input"
                         , type_ "text"
                         , style "width" "100px"
                         , style "margin-left" "10px"
                         , style "margin-top" "2px"
-                        , onInput SetPolarAnswers
+                        , value ( String.fromInt ( QElement.getPolarMax model.newElement ) )
+                        , onInput SetPolarMax
+                        ]
+                        []
+                    , br [] []
+                    , text "Beschriftung links:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "20px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement ) 
+                        , onInput SetLeftText
+                        ]
+                        []
+                    , br [] []
+                    , text "Beschriftung rechts:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
+                        , onInput SetRightText
                         ]
                         []
                     ]
 
             else if record.typ == "Skaliert bipolar" then
                 div []
-                    [ text "Bitte Anzahl Antworten (pro Skalenrichtung) eingeben"
+                    [ text "Anzahl Antwortmöglichkeiten links:"
                     , input
-                        [ class "input is-medium"
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "20px"
+                        , style "margin-top" "2px"
+                        , value ( String.fromInt ( QElement.getPolarMin model.newElement ) )
+                        , onInput SetPolarMin
+                        ]
+                        []
+                    , br [] []
+                    , text "Anzahl Antwortmöglichkeiten rechts:"
+                    , input
+                        [ class "input"
                         , type_ "text"
                         , style "width" "100px"
                         , style "margin-left" "10px"
                         , style "margin-top" "2px"
-                        , onInput SetPolarAnswers
+                        , value ( String.fromInt ( QElement.getPolarMax model.newElement ) )
+                        , onInput SetPolarMax
+                        ]
+                        []
+                    , br [] []
+                    , text "Beschriftung links:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "20px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement )
+                        , onInput SetLeftText
+                        ]
+                        []
+                    , br [] []
+                    , text "Beschriftung rechts:"
+                    , input
+                        [ class "input"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
+                        , onInput SetRightText
                         ]
                         []
                     ]
-
             else if record.typ == "Raster-Auswahl" then
                 div []
                     [ text "Raster-Größe: "
@@ -899,9 +964,9 @@ showInputBipolarUnipolarTableSlider model =
                         [class "select"]
                         [ select
                             [ onInput SetTableSize ]
-                            [ option [ value "3" ] [ text "3x3" ]
-                            , option [ value "5" ] [ text "5x5" ]
-                            , option [ value "7" ] [ text "7x7" ]
+                            [ option [ value "3", selected ((QElement.getTableSize model.newElement) == 3) ] [ text "3x3" ]
+                            , option [ value "5", selected ((QElement.getTableSize model.newElement) == 5) ] [ text "5x5" ]
+                            , option [ value "7", selected ((QElement.getTableSize model.newElement) == 7)] [ text "7x7" ]
                             ]
                         ]
                     , br [] []
@@ -912,6 +977,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "17px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getTopText model.newElement )
                         , onInput SetTopText
                         ]
                         []
@@ -923,6 +989,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "10px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
                         , onInput SetRightText
                         ]
                         []
@@ -934,6 +1001,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "13px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getBottomText model.newElement )
                         , onInput SetBottomText
                         ]
                         []
@@ -945,6 +1013,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "20px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement )
                         , onInput SetLeftText
                         ]
                         []
@@ -959,6 +1028,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "16px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement )
                         , onInput SetLeftText
                         ]
                         []
@@ -970,6 +1040,7 @@ showInputBipolarUnipolarTableSlider model =
                         , style "width" "100px"
                         , style "margin-left" "10px"
                         , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
                         , onInput SetRightText
                         ]
                         []
@@ -981,7 +1052,7 @@ showInputBipolarUnipolarTableSlider model =
         Note record ->
             div [] []
 
-{-| Radiobutton.
+{-| radio button
 -}
 radio : String -> msg -> Html msg
 radio value msg =
@@ -996,6 +1067,8 @@ radio value msg =
         , text value
         ]
 
+{-| the selected radio button
+-}      
 selectedRadio : String -> msg -> Html msg
 selectedRadio value msg =
     label
@@ -1008,13 +1081,17 @@ selectedRadio value msg =
             []
         , text value
         ]
-        
+ 
+{-| drops the nth element
+-}       
 get : Int -> List a -> Maybe a
 get nth list =
     list
         |> List.drop (nth)
         |> List.head
 
+{-| checks if frage is a question
+-}
 checkFrage : Maybe Q_element -> QuestionRecord
 checkFrage frage =
 
@@ -1034,8 +1111,28 @@ checkFrage frage =
             , rightText = ""
             , bottomText = ""
             , leftText = ""
+            , polarMin = 0
+            , polarMax = 0
             }
 
+{-| get a List of Answer Id's
+-}
 getAnswersId : List Answer -> List Int
 getAnswersId list =
-    map Answer.getAnswerId list
+    List.map Answer.getAnswerId list
+
+
+{-| accepts only validate Condition 
+-}
+buttonDisabled : Condition -> Bool
+buttonDisabled con = 
+    if con.parent_id == -1 then
+        True
+
+    else if con.child_id == -1 then
+        True
+
+    else if con.answer_id == -1 then
+        True
+
+    else False

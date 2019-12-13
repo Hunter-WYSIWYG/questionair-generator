@@ -126,7 +126,8 @@ type
     | SetQuestion
     | SetAnswer
     | SetConditions
-    | SetPolarAnswers String
+    | SetPolarMin String
+    | SetPolarMax String
     | SetTableSize String
     | SetTopText String
     | SetRightText String

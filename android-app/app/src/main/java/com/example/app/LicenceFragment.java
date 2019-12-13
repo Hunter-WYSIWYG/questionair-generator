@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 public class LicenceFragment extends Fragment {
 	@Nullable
 	@Override
-	public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_licence, container, false);
+	public View onCreateView (@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
+		return inflater.inflate (R.layout.fragment_licence, container, false);
 	}
 }

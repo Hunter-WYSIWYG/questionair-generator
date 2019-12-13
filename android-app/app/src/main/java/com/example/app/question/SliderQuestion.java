@@ -7,36 +7,20 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class SliderQuestion extends Question {
-	@SerializedName ("minValue")
-	public final double minValue;
-	@SerializedName ("maxValue")
-	public final double maxValue;
-	@SerializedName ("stepSize")
-	public final double stepSize;
 	@SerializedName ("leftText")
 	public final String leftText;
+	
 	@SerializedName ("rightText")
 	public final String rightText;
 	
-
+	@SerializedName ("answers")
+	public final List<SliderOption> sliderSteps;
+	
 	// constructor
-	public SliderQuestion(int id, String questionText, List<Condition> conditions, double minValue, double maxValue, double stepSize, String leftText, String rightText,String hint) {
-		super (id, QuestionType.Slider, conditions, questionText, hint);
-		
-		if (minValue > maxValue)
-			throw new IllegalArgumentException ();
-		
-		// check if difference is multiple of stepSize
-		double difference = maxValue - minValue;
-		double modulo = difference % stepSize;
-		if (modulo > 0.01 && modulo < difference - 0.01)
-			throw new IllegalArgumentException ();
-		
-		this.minValue = minValue;
-		this.maxValue = maxValue;
-		this.stepSize = stepSize;
+	public SliderQuestion(int id, QuestionType type, List<SliderOption> sliderSteps, String questionText, double minValue, double maxValue, double stepSize, String leftText, String rightText, String hint) {
+		super (id, type, questionText, hint);
+		this.sliderSteps = sliderSteps;
 		this.leftText = leftText;
 		this.rightText = rightText;
 	}
-	
 }

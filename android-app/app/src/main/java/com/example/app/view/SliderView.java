@@ -8,7 +8,7 @@ import com.example.app.QuestionDisplayActivity;
 import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
-import com.example.app.answer.Answers;
+import com.example.app.answer.AnswerCollection;
 import com.example.app.question.SliderQuestion;
 import com.warkiz.widget.IndicatorSeekBar;
 
@@ -25,72 +25,74 @@ public class SliderView extends QuestionDisplayView {
 	// slider
 	private IndicatorSeekBar seekBar;
 	//current State
-	private QuestionnaireState qState;
+	private QuestionnaireState questionnaireState;
 	
 	// constructor
 	public SliderView (QuestionDisplayActivity activity, SliderQuestion question, QuestionnaireState state ) {
 		super (activity);
 		this.question = question;
-		qState=state;
-		init();
+		this.questionnaireState =state;
+		this.init();
 	}
 	
 	private void init () {
-		container = (ConstraintLayout) View.inflate(getActivity(), R.layout.slider_view, null);
+		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.slider_view, null);
 		
 		// set questionTypeText
-		TextView questionTypeTextView = container.findViewById(R.id.SliderQuestionTypeText);
-		questionTypeTextView.setText(question.type.name());
+		TextView questionTypeTextView = this.container.findViewById (R.id.SliderQuestionTypeText);
+		questionTypeTextView.setText (this.question.type.name ());
 		
 		// set questionText
-		TextView questionTextView = container.findViewById(R.id.SliderQuestionText);
-		questionTextView.setText(question.questionText);
+		TextView questionTextView = this.container.findViewById (R.id.SliderQuestionText);
+		questionTextView.setText (this.question.questionText);
 		
 		// set hint
-		TextView hintTextView = this.container.findViewById(R.id.hint);
-		hintTextView.setText(this.question.hint);
+		TextView hintTextView = this.container.findViewById (R.id.hint);
+		hintTextView.setText (this.question.hint);
 		
 		// find dividingLine
-		View dividingLine = container.findViewById(R.id.SliderDividingLine);
+		View dividingLine = this.container.findViewById (R.id.SliderDividingLine);
 		
 		// set leftText
-		TextView leftText = container.findViewById(R.id.leftText);
-		leftText.setText(question.leftText);
+		TextView leftText = this.container.findViewById (R.id.leftText);
+		leftText.setText (this.question.leftText);
 		
 		// set rightText
-		TextView rightText = container.findViewById(R.id.rightText);
-		rightText.setText(question.rightText);
+		TextView rightText = this.container.findViewById (R.id.rightText);
+		rightText.setText (this.question.rightText);
 		
 		// create slider
-		createSlider();
+		this.createSlider ();
 		
 		// next button always enabled
-		getActivity().setNextButtonEnabled(true);
+		this.getActivity ().setNextButtonEnabled (true);
 	}
 	
 	// create slider
 	private void createSlider () {
-		seekBar = container.findViewById(R.id.Slider);
-		seekBar.setMin((float) question.minValue);
-		seekBar.setMax((float) question.maxValue);
-		seekBar.setProgress((float) question.stepSize);
-		int ticks = 1 + (int) Math.round ((question.maxValue - question.minValue) / question.stepSize);
-		seekBar.setTickCount(ticks);
+		int min = Integer.parseInt (this.question.sliderSteps.get (0).getOptionText ());
+		int max = Integer.parseInt (this.question.sliderSteps.get (question.sliderSteps.size () - 1).getOptionText ());
+		this.seekBar = this.container.findViewById (R.id.Slider);
+		this.seekBar.setMin (min);
+		this.seekBar.setMax (max);
+		this.seekBar.setProgress (1);
+		int ticks = 1 + (max - min);
+		this.seekBar.setTickCount (ticks);
 	}
 	
+	// getter
 	@Override
 	public View getView () {
 		return container;
 	}
 	
 	@Override
-	public Answers getCurrentAnswer() {
-		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
-		Answer ans=new Answer(question.type.toString(), seekBar.getProgress() , "");
-		List<Answer> answerList=new ArrayList<Answer>();
-		answerList.add(ans);
-		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
-		return answers;
-		
+	public AnswerCollection getCurrentAnswer () {
+		Calendar calendar = Calendar.getInstance (); // gets current instance of the calendar
+		Answer answer = new Answer (this.question.type.toString(), this.seekBar.getProgress(), "");
+		List<Answer> answerList = new ArrayList<Answer> ();
+		answerList.add(answer);
+		AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
+		return answerCollection;
 	}
 }

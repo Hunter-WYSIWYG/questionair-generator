@@ -8,8 +8,9 @@ import com.example.app.QuestionDisplayActivity;
 import com.example.app.QuestionnaireState;
 import com.example.app.R;
 import com.example.app.answer.Answer;
-import com.example.app.answer.Answers;
+import com.example.app.answer.AnswerCollection;
 import com.example.app.question.Note;
+import com.example.app.question.QuestionType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,48 +22,45 @@ public class NoteView extends QuestionDisplayView {
 	private final Note question;
 	// container of slider
 	private ConstraintLayout container;
-	// actual note
-	//current State
-	private QuestionnaireState qState;
+	// current state
+	private QuestionnaireState questionnaireState;
 	
 	// constructor
-	public NoteView(QuestionDisplayActivity activity, Note question, QuestionnaireState state) {
+	public NoteView (QuestionDisplayActivity activity, Note question, QuestionnaireState state) {
 		super (activity);
 		this.question = question;
-		qState=state;
-		init();
+		this.questionnaireState = state;
+		this.init ();
 	}
 	
 	private void init () {
-		container = (ConstraintLayout) View.inflate(getActivity(), R.layout.note_view, null);
+		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.note_view, null);
 		
 		// set questionTypeText
-		TextView questionTypeTextView = container.findViewById(R.id.NoteTypeText);
+		TextView questionTypeTextView = this.container.findViewById (R.id.NoteTypeText);
 		questionTypeTextView.setText ("Notiz");
 		
 		// set questionText
-		TextView questionTextView = container.findViewById(R.id.NoteViewText);
-		questionTextView.setText(question.questionText);
+		TextView questionTextView = this.container.findViewById (R.id.NoteViewText);
+		questionTextView.setText (this.question.questionText);
 		
 		// next button always enabled
-		getActivity().setNextButtonEnabled(true);
+		this.getActivity ().setNextButtonEnabled (true);
 	}
 	
-	
-	
+	// getter
 	@Override
 	public View getView () {
-		return container;
+		return this.container;
 	}
 	
 	@Override
-	public Answers getCurrentAnswer() {
-		Calendar calendar = Calendar.getInstance(); // gets current instance of the calendar
-		Answer ans=new Answer(question.type.toString(),-1 , "");
-		List<Answer> answerList=new ArrayList<Answer>();
-		answerList.add(ans);
-		Answers answers=new Answers(qState.getQuestionnaire().getName(),calendar.getTime(),(int) (qState.getQuestionnaire().getID()),question.type,question.id,question.questionText,answerList);
-		return answers;
+	public AnswerCollection getCurrentAnswer () {
+		Calendar calendar = Calendar.getInstance (); // gets current instance of the calendar
+		Answer answer = new Answer (QuestionType.Note.toString (), -1 , "");
+		List<Answer> answerList = new ArrayList<Answer> ();
+		answerList.add (answer);
+		AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
+		return answerCollection;
 	}
 }
-

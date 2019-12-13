@@ -5,13 +5,12 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 public class Questionnaire implements Serializable {
 	// id of Questionnaire
-	@SerializedName ("id")
-	private final double id;
+	@SerializedName("id") private final int id;
 	
 	// name of Questionnaire
 	@SerializedName ("title")
@@ -39,41 +38,41 @@ public class Questionnaire implements Serializable {
 	
 	// constructor only for java compiler reasons
 	private Questionnaire () {
-		this.name = null;
-		this.questionList = null;
-		this.id = 0.0;
-		this.reminderList = null;
-		this.conditionList = null;
-		this.priority = 0;
+		name = null;
+		questionList = null;
+		id = -1;
+		reminderList = null;
+		conditionList = null;
+		priority = 0;
 	}
 	
 	// getter
 	public String getName () {
-		return this.name;
+		return name;
 	}
 	
-	public double getID () {
-		return this.id;
+	public int getID() {
+		return id;
 	}
 	
 	public int getPriority () {
-		return this.priority;
+		return priority;
 	}
 	
 	public List<Question> getQuestionList () {
-		return this.questionList;
+		return questionList;
 	}
 	
 	public List<Date> getReminderList () {
-		return this.reminderList;
+		return reminderList;
 	}
 	
 	public String getPath () {
-		return this.path;
+		return path;
 	}
 	
 	public List<Condition> getConditionList () {
-		return this.conditionList;
+		return conditionList;
 	}
 	
 	// setter (only needed for path)

@@ -5,12 +5,14 @@ var app = Elm.Main.init({
 
 //Hide footer if the user wants to upload a questionnaire
 app.ports.enterUpload.subscribe(function() {
+    console.log("leave");
     var footer = document.getElementById('footer');
     footer.style.display = 'none';
 });
 
 //Show footer if the user wants to edit a questionnaire
 app.ports.leaveUpload.subscribe(function() {
+    console.log("enter");
     var footer = document.getElementById('footer');
     footer.style.display = 'block';
 });
@@ -33,8 +35,9 @@ app.ports.decodedReminderTime.subscribe(function(time) {
 });
 
 app.ports.decodedEditTime.subscribe(function(time) {
-    var input = document.getElementById("timePicker");
-    input.value = time;
+    var parts = time.split(":");
+    document.getElementById("editTimeMinutes").value = parts[0];
+    document.getElementById("editTimeSeconds").value = parts[1];
 });
 
 //Adds the given reminder time to the table of reminder times inside a modal

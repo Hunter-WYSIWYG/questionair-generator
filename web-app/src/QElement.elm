@@ -45,7 +45,7 @@ type alias QuestionRecord =
     , hint : String
     , typ : String
     , questionTime : String
-    -- Size of the table for questiontype "Raster-Auswahl"
+    -- Size of the table for questiontype "Raster-Auswahl and "Buttonslider"
     , tableSize : Int 
     -- Labels for the scales for questiontype "Skaliert uni/bipolar", "Prozentslider", "Raster-Auswahl"
     , topText : String

@@ -357,6 +357,7 @@ viewNewQuestionModal model =
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
                         , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
                         , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
+                        , radio "Buttonslider" (ChangeQuestionType "Buttonslider")
                         , br [] []
                         ]
                     ]
@@ -793,7 +794,7 @@ showAnswerTable : Model -> Html Msg
 showAnswerTable model =
     case model.newElement of
         Question record ->
-            if  record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+            if  record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" || record.typ == "Buttonslider" then
                 div [] []
             else
                 table [ class "table is-striped", style "width" "100%" ] (answersTable model)
@@ -807,7 +808,7 @@ showNewAnswerButton : Model -> Html Msg
 showNewAnswerButton model =
     case model.newElement of
         Question record ->
-            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" || record.typ == "Buttonslider" then
                 div [] []
             else
                 button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
@@ -999,8 +1000,54 @@ showInputBipolarUnipolarTableSlider model =
                         []
                     ]
 
-            else
-                div [] []
+            else if record.typ == "Buttonslider" then
+                div []
+                    [ text "Tabellengröße:"
+                    , div
+                        [class "select"
+                        , style "margin-left" "5px"]
+                        [ select
+                            [ onInput SetTableSize ]
+                            [ option [ value "1", selected ((QElement.getTableSize model.newElement) == 1) ] [ text "1" ]
+                            , option [ value "2", selected ((QElement.getTableSize model.newElement) == 2) ] [ text "2" ]
+                            , option [ value "3", selected ((QElement.getTableSize model.newElement) == 3)] [ text "3" ]
+                            , option [ value "4", selected ((QElement.getTableSize model.newElement) == 4)] [ text "4" ]
+                            , option [ value "5", selected ((QElement.getTableSize model.newElement) == 5)] [ text "5" ]
+                            , option [ value "6", selected ((QElement.getTableSize model.newElement) == 6)] [ text "6" ]
+                            , option [ value "7", selected ((QElement.getTableSize model.newElement) == 7)] [ text "7" ]
+                            , option [ value "8", selected ((QElement.getTableSize model.newElement) == 8)] [ text "8" ]
+                            , option [ value "9", selected ((QElement.getTableSize model.newElement) == 9)] [ text "9" ]
+                            , option [ value "10", selected ((QElement.getTableSize model.newElement) == 10)] [ text "10" ]
+                            , option [ value "11", selected ((QElement.getTableSize model.newElement) == 11)] [ text "11" ]
+                            , option [ value "12", selected ((QElement.getTableSize model.newElement) == 12)] [ text "12" ]
+                            ]
+                        ]
+                    , br [] []
+                    , text "linker Grenzwert:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "16px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getLeftText model.newElement )
+                        , onInput SetLeftText
+                        ]
+                        []
+                    , br [] []
+                    , text "rechter Grenzwert:"
+                    , input
+                        [ class "input is-medium"
+                        , type_ "text"
+                        , style "width" "100px"
+                        , style "margin-left" "10px"
+                        , style "margin-top" "2px"
+                        , value ( QElement.getRightText model.newElement )
+                        , onInput SetRightText
+                        ]
+                        []
+                    ]
+            else div [] []
 
         Note record ->
             div [] []

@@ -11,7 +11,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import android.widget.Toast;
+
+import com.example.app.answer.Answer;
 import com.example.app.answer.AnswerCollection;
+import com.example.app.question.Question;
 import com.example.app.view.QuestionDisplayView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,6 +22,8 @@ import com.google.gson.GsonBuilder;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class QuestionDisplayActivity extends AppCompatActivity {
@@ -63,8 +68,50 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	
 	// next button is clicked, update questionnaire state and go to next question
 	private void nextButtonClicked () {
-		AnswerCollection answerCollection = questionView.getCurrentAnswer ();
-		state.currentQuestionAnswered (answerCollection);
+		final Question q = state.getCurrentQuestion();
+		// if question has edit time
+		if (q.editTime != null) {
+			// if time is up
+			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime()) {
+				// create invalid answer and add it to the answer list
+				AnswerCollection answerCollection = questionView.getCurrentAnswer ();
+				List<Answer> dummyList = new ArrayList<>();
+				dummyList.add(new Answer());
+				AnswerCollection dummy = new AnswerCollection(
+																answerCollection.getTitle(),
+																answerCollection.getQuestionnaireAnswerTime(),
+																answerCollection.getQuestionnaireId(),
+																answerCollection.getQuestionType(),
+																answerCollection.getQuestionId(),
+																answerCollection.getText(),
+																dummyList
+											);
+				state.currentQuestionAnswered(dummy);
+			} else {
+				// else, add the actual answer
+				AnswerCollection answerCollection = questionView.getCurrentAnswer ();
+				state.currentQuestionAnswered (answerCollection);
+			}
+		} else {
+			// else, add the actual answer
+			AnswerCollection answerCollection = questionView.getCurrentAnswer ();
+			state.currentQuestionAnswered (answerCollection);
+		}
+		
+		// if questionnaire has time limit
+		if (state.getEndTime() != null) {
+			final Date currentDate = new Date();
+			if (currentDate.after(state.getEndTime())) {
+				// if time is up, mark as finished
+				save(state.getAnswerCollectionList ());
+				Intent intent = new Intent (this, QuestionnaireFinishedActivity.class);
+				startActivity (intent);
+				finish ();
+				return;
+			}
+		}
+		
+		
 		if (!state.isFinished ()) {
 			displayCurrentQuestion (state, this);
 		}
@@ -74,6 +121,8 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			startActivity (intent);
 			finish ();
 		}
+		
+		
 	}
 	
 	// TODO what does it do? comment your functions boys!

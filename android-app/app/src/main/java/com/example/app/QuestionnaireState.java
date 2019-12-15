@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 // current state of questionnaire with answerCollectionList
@@ -18,13 +19,27 @@ public class QuestionnaireState implements Serializable {
 	private final Questionnaire questionnaire;
 	@SerializedName ("currentIndex")
 	private int currentIndex;
+	@SerializedName("endTime")
+	private final Date endTime;
 	@SerializedName ("answerCollectionList")
 	private final List<AnswerCollection> answerCollectionList = new ArrayList<> ();
+	private long currentQuestionEndTime;
 	
 	// constructor, creates a new QuestionnaireState that starts at the first question
 	public QuestionnaireState (Questionnaire questionnaire) {
 		this.questionnaire = questionnaire;
 		this.currentIndex = 0;
+		
+		final String editTime = questionnaire.getEditTime();
+		if (editTime != null && !editTime.isEmpty()) {
+			final String[] parts = editTime.split(":");
+			endTime = new Date(System.currentTimeMillis() + 60000 * Long.parseLong(parts[0]) + 1000 * Long.parseLong(parts[1]));
+		} else {
+			endTime = null;
+		}
+		currentQuestionEndTime = 0L;
+		
+		
 		this.goToNextPossibleQuestion ();
 	}
 	
@@ -79,6 +94,16 @@ public class QuestionnaireState implements Serializable {
 	public Question getCurrentQuestion () {
 		return questionnaire.getQuestionList ().get (currentIndex);
 	}
+	
+	public Date getEndTime() {
+		return endTime;
+	}
+	
+	public long getCurrentQuestionEndTime() {
+		return currentQuestionEndTime;
+	}
+	
+	
 	public List<AnswerCollection> getAnswerCollectionList () {
 		return answerCollectionList;
 	}

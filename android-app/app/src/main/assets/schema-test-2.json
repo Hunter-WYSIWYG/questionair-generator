@@ -1,0 +1,733 @@
+{
+        "id": 0,
+        "priority": 0,
+        "title": "ConditionTest",
+        "elements": [
+                {
+                        "_type": "Question",
+                        "id": 0,
+                        "text": "In diesem Moment fühle ich mich...",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "wach",
+                        "bottomText": "",
+                        "leftText": "müde",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 1,
+                        "text": "In diesem Moment fühle ich mich...",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "unzufrieden",
+                        "bottomText": "",
+                        "leftText": "zufrieden",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 2,
+                        "text": "In diesem Moment fühle ich mich...",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "ruhig",
+                        "bottomText": "",
+                        "leftText": "unruhig",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 3,
+                        "text": "In diesem Moment fühle ich mich...",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "energielos",
+                        "bottomText": "",
+                        "leftText": "energiegeladen",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 4,
+                        "text": "In diesem Moment fühle ich mich...",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "wohl",
+                        "bottomText": "",
+                        "leftText": "unwohl",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 5,
+                        "text": "In diesem Moment fühle ich mich...",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "angespannt",
+                        "bottomText": "",
+                        "leftText": "entspannt",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 6,
+                        "text": "Hast du seit der letzten Abfrage für die Prüfung gelernt",
+                        "hint": "",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 7,
+                        "text": "Hättest du mit de Bearbeitung der Aufgabe früher beginnen wollen?",
+                        "hint": "",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 8,
+                        "text": "Hättest du eine Aufgabe bearbeiten wollen ?",
+                        "hint": "",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 9,
+                        "text": "Welche Aufgabe hast du seit der letzten Abfrage bearbeitet?",
+                        "hint": "",
+                        "questionType": "Single Choice",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Abschreiben fremde/eigene Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Auswendig lernen eigene Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 2,
+                                        "text": "Auswendig lernen fremde Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 3,
+                                        "text": "Fehlende Informationen recherchieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 4,
+                                        "text": "Fremde Inhalte in eigenen Worten zusammenfassen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 5,
+                                        "text": "Klausuraufgaben und -antworten ausdenken",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 6,
+                                        "text": "Lesen mit Rausschreiben (Informationen markieren)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 7,
+                                        "text": "Lesen ohne Rausschrieben",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 8,
+                                        "text": "Prüfungssituation simulieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 9,
+                                        "text": "Sortieren (fremde/eigene Inhalte)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 10,
+                                        "text": "Testklausuren beantworten",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 11,
+                                        "text": "Wissen mündlich wiederholen (eigene Unterlagen)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 12,
+                                        "text": "Wissen mündlich wiederholen (fremde Unterlagen)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 13,
+                                        "text": "Sonstiges ",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 14,
+                                        "text": "Kopieren/Tackern",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 15,
+                                        "text": "Wissen kritisch diskutieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 16,
+                                        "text": "Verschiedene Inhalte verknüpfen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 17,
+                                        "text": "Schaubild für Sachverhalte erstellen",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 10,
+                        "text": "Welche Aufgabe hast du seit der letzten Abfrage noch bearbeitet",
+                        "hint": "",
+                        "questionType": "Single Choice",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Keine weiteren Angaben",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Abschreiben fremde/eigene Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 2,
+                                        "text": "Auswendig lernen eigene Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 3,
+                                        "text": "Auswendig lernen fremde Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 4,
+                                        "text": "Fehlende Informationen recherchieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 5,
+                                        "text": "Fremde Inhalte in eigenen Worten zusammenfassen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 6,
+                                        "text": "Klausuraufgaben und -antworten ausdenken",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 7,
+                                        "text": "Lesen mit Rausschreiben (Informationen markieren)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 8,
+                                        "text": "Lesen ohne Rausschreiben",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 9,
+                                        "text": "Prüfungssituation simulieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 10,
+                                        "text": "Sortieren (fremde/eigene Inhalte)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 11,
+                                        "text": "Testklausuren beantworten",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 12,
+                                        "text": "Wissen mündlich wiederholen (eigene Unterlagen)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 13,
+                                        "text": "Wissen mündlich wiederholen (fremde  Unterlagen)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 14,
+                                        "text": "Sonstiges",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 15,
+                                        "text": "Kopieren/Tackern",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 16,
+                                        "text": "Wissen kritisch diskutieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 17,
+                                        "text": "Verschiedene Inhalte verküpfen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 18,
+                                        "text": "Schaubild für Sachverhalte erstellen",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 11,
+                        "text": "Welche Aufgabe hast du seit der letzten Abfrage noch bearbeitet?",
+                        "hint": "",
+                        "questionType": "Single Choice",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Keine weitere Aufgabe",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Abschreiben fremde/eigene Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 2,
+                                        "text": "Auswendig lernen eigene Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 3,
+                                        "text": "Auswendig lernen fremde Unterlagen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 4,
+                                        "text": "Fehlende Informationen recherchieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 5,
+                                        "text": "Fremde Inhalte in eigenen Worten zusammenfassen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 6,
+                                        "text": "Klausuraufgaben und -antworten ausdenken",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 7,
+                                        "text": "Lesen mit Rausschreiben (Informationen markieren)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 8,
+                                        "text": "Lesen ohne Rausschreiben",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 9,
+                                        "text": "Prüfungssituation simulieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 10,
+                                        "text": "Sortieren (fremde/eigene Inhalte)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 11,
+                                        "text": "Testklausuren beantworten",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 12,
+                                        "text": "Wissen mündlich wiederholen (eigene Unterlagen)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 13,
+                                        "text": "Wissen mündlich wiederholen (fremde Unterlagen)",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 14,
+                                        "text": "Sonstiges",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 15,
+                                        "text": "Kopieren/Tackern",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 16,
+                                        "text": "Wissen kritisch diskutieren",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 17,
+                                        "text": "Verschiedene Inhalte verknüpfen",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 18,
+                                        "text": "Schaubild für Sachverhalte erstellen",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Note",
+                        "id": 12,
+                        "text": "Hinsichtlich der Aufgabe, die ich seit der letzten Abfrage bearbeitet habe/bearbeiten wollte..."
+                },
+                {
+                        "_type": "Question",
+                        "id": 13,
+                        "text": "...weiß ich genau, welche die beste Vorgehensweise bei deren Erledigung ist.",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "stimme völlig zu",
+                        "bottomText": "",
+                        "leftText": "stimme gar nicht zu",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 14,
+                        "text": "... weiß ich genau, auf welche Art und Weise ich diese zu erledigen habe.",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "stimme völlig zu",
+                        "bottomText": "",
+                        "leftText": "stimme gar nicht zu",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 15,
+                        "text": "weiß ich genau, in welcher zeitlichen Abfolge ich sie zu erledigen habe.",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "stimme völlig zu",
+                        "bottomText": "",
+                        "leftText": "stimme gar nicht zu",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 16,
+                        "text": "weiß ich genau, was ich tun muss, um die Prüfung erfolgreich zu bestehen.",
+                        "hint": "",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "stimme völlig zu",
+                        "bottomText": "",
+                        "leftText": "stimme gar nicht zu",
+                        "polarMin": 0,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Note",
+                        "id": 17,
+                        "text": "E-MAPS"
+                },
+                {
+                        "_type": "Question",
+                        "id": 18,
+                        "text": "Wenn ich ehrlich bin, ist es unnötig, die Bearbeitung dieser Aufgabe aufzuschieben.",
+                        "hint": "",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 19,
+                        "text": "Ich schiebe die Bearbeitung der Aufgabe auf, weil mir eine andere wichtigere Aufgabe dazwischengekommen ist.",
+                        "hint": "",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 20,
+                        "text": "Das Aufschieben der Aufgabe ist durch äußere Umstände begründet, auf die ich keinen Einfluss habe.",
+                        "hint": "",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 21,
+                        "text": "Es ist im Grunde unvernünftig, die Bearbeitung dieser Aufgabe aufzuschieben.",
+                        "hint": "",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 22,
+                        "text": "Wenn ich darüber nachdenke, löst es ein gewisses Unbehagen in mir aus, dass ich die Bearbeitung dieser Aufgabe aufschiebe.",
+                        "hint": "",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Note",
+                        "id": 23,
+                        "text": "Ende"
+                }
+        ],
+        "conditions": [],
+        "viewingTime": "",
+        "reminderTimes": [],
+        "editTime": ""
+}

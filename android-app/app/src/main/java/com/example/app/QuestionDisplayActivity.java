@@ -70,7 +70,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	private void nextButtonClicked () {
 		final Question q = state.getCurrentQuestion();
 		// if question has edit time
-		if (q.editTime != null) {
+		if (q.questionTime != null) {
 			// if time is up
 			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime()) {
 				// create invalid answer and add it to the answer list

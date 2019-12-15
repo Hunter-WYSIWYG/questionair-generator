@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		// TODO: invalid JSON still crashes the app!!!
 		try {
 			AssetManager assetManager = getAssets ();
-			InputStream ims = assetManager.open ("schema-test-2.json");
+			InputStream ims = assetManager.open ("schema-test-3.json");
 			Gson gson = new GsonBuilder ().setDateFormat ("yyyy-MM-dd'T'HH:mm:ssXXX").create ();
 			Reader reader = new InputStreamReader (ims);
 			return gson.fromJson (reader, Questionnaire.class);

@@ -822,13 +822,12 @@ showInputBipolarUnipolarTableSlider model =
     case model.newElement of
         Question record ->
             if record.typ == "Skaliert unipolar" then
-                div []
+                div [class "grid-container"]
                     [ text "Anzahl Antwortmöglichkeiten:"
                     , input
                         [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
                         , style "margin-top" "2px"
                         , value ( String.fromInt ( QElement.getPolarMax model.newElement ) )
                         , onInput SetPolarMax
@@ -840,7 +839,6 @@ showInputBipolarUnipolarTableSlider model =
                         [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "20px"
                         , style "margin-top" "2px"
                         , value ( QElement.getLeftText model.newElement ) 
                         , onInput SetLeftText
@@ -852,7 +850,6 @@ showInputBipolarUnipolarTableSlider model =
                         [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
                         , style "margin-top" "2px"
                         , value ( QElement.getRightText model.newElement )
                         , onInput SetRightText
@@ -861,13 +858,12 @@ showInputBipolarUnipolarTableSlider model =
                     ]
 
             else if record.typ == "Skaliert bipolar" then
-                div []
+                div [class "grid-container"]
                     [ text "Anzahl Antwortmöglichkeiten links:"
                     , input
                         [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "20px"
                         , style "margin-top" "2px"
                         , value ( String.fromInt ( QElement.getPolarMin model.newElement ) )
                         , onInput SetPolarMin
@@ -879,7 +875,6 @@ showInputBipolarUnipolarTableSlider model =
                         [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
                         , style "margin-top" "2px"
                         , value ( String.fromInt ( QElement.getPolarMax model.newElement ) )
                         , onInput SetPolarMax
@@ -891,7 +886,6 @@ showInputBipolarUnipolarTableSlider model =
                         [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "20px"
                         , style "margin-top" "2px"
                         , value ( QElement.getLeftText model.newElement )
                         , onInput SetLeftText
@@ -903,7 +897,6 @@ showInputBipolarUnipolarTableSlider model =
                         [ class "input"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
                         , style "margin-top" "2px"
                         , value ( QElement.getRightText model.newElement )
                         , onInput SetRightText
@@ -914,7 +907,9 @@ showInputBipolarUnipolarTableSlider model =
                 div []
                     [ text "Raster-Größe: "
                     , div
-                        [class "select"]
+                        [class "select"
+                        , style "margin-left" "162px"
+                        , style "margin-bottom" "5px"]
                         [ select
                             [ onInput SetTableSize ]
                             [ option [ value "3", selected ((QElement.getTableSize model.newElement) == 3) ] [ text "3x3" ]
@@ -923,63 +918,60 @@ showInputBipolarUnipolarTableSlider model =
                             ]
                         ]
                     , br [] []
-                    , text "Raster-Beschriftung oben:"
-                    , input
-                        [ class "input"
-                        , type_ "text"
-                        , style "width" "100px"
-                        , style "margin-left" "17px"
-                        , style "margin-top" "2px"
-                        , value ( QElement.getTopText model.newElement )
-                        , onInput SetTopText
+                    , div[class "grid-container"]
+                        [ text "Raster-Beschriftung oben:"
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "100px"
+                            , style "margin-top" "2px"
+                            , value ( QElement.getTopText model.newElement )
+                            , onInput SetTopText
+                            ]
+                            []
+                        , br [] []
+                        , text "Raster-Beschriftung rechts:"
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "100px"
+                            , style "margin-top" "2px"
+                            , value ( QElement.getRightText model.newElement )
+                            , onInput SetRightText
+                            ]
+                            []
+                        , br [] []
+                        , text "Raster-Beschriftung unten:"
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "100px"
+                            , style "margin-top" "2px"
+                            , value ( QElement.getBottomText model.newElement )
+                            , onInput SetBottomText
+                            ]
+                            []
+                        , br [] []
+                        , text "Raster-Beschriftung links:"
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , style "width" "100px"
+                            , style "margin-top" "2px"
+                            , value ( QElement.getLeftText model.newElement )
+                            , onInput SetLeftText
+                            ]
+                            []
                         ]
-                        []
-                    , br [] []
-                    , text "Raster-Beschriftung rechts:"
-                    , input
-                        [ class "input"
-                        , type_ "text"
-                        , style "width" "100px"
-                        , style "margin-left" "10px"
-                        , style "margin-top" "2px"
-                        , value ( QElement.getRightText model.newElement )
-                        , onInput SetRightText
-                        ]
-                        []
-                    , br [] []
-                    , text "Raster-Beschriftung unten:"
-                    , input
-                        [ class "input"
-                        , type_ "text"
-                        , style "width" "100px"
-                        , style "margin-left" "13px"
-                        , style "margin-top" "2px"
-                        , value ( QElement.getBottomText model.newElement )
-                        , onInput SetBottomText
-                        ]
-                        []
-                    , br [] []
-                    , text "Raster-Beschriftung links:"
-                    , input
-                        [ class "input"
-                        , type_ "text"
-                        , style "width" "100px"
-                        , style "margin-left" "20px"
-                        , style "margin-top" "2px"
-                        , value ( QElement.getLeftText model.newElement )
-                        , onInput SetLeftText
-                        ]
-                        []
                     ]
 
             else if record.typ == "Prozentslider" then
-                div []
+                div [class "grid-container"]
                     [ text "Bitte linken Grenzwert eingeben:   "
                     , input
                         [ class "input is-medium"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "16px"
                         , style "margin-top" "2px"
                         , value ( QElement.getLeftText model.newElement )
                         , onInput SetLeftText
@@ -991,7 +983,6 @@ showInputBipolarUnipolarTableSlider model =
                         [ class "input is-medium"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "10px"
                         , style "margin-top" "2px"
                         , value ( QElement.getRightText model.newElement )
                         , onInput SetRightText

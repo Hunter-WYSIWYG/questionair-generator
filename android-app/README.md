@@ -13,11 +13,11 @@ In diesem Menü können Sie:
 1.  Zurück zum Hauptmenü springen
 2.  die Lizenzen ansehen
 
-Desweiteren können Sie im Hauptmenü einen Fragebogen auswählen und ihn starten. Zu Beginn des Fragebogens erhalten Sie noch einmal Rückmeldung welcher Fragebogen geladen wurde.
+Desweiteren können Sie im Hauptmenü einen Fragebogen auswählen und ihn starten.
 
 Wie es von hier aus weiter geht hängt jetzt vom Aufbau des Fragebogens ab, die Bedienung ist schlicht und intuitiv gehalten um jedoch Missverständnisse zu vermeiden folgt jetzt eine Liste der Möglichen Fragetypen.
 
-1. SingleChoice     
+1. SingleChoice und Ja/Nein Fragen     
     ![SingleChoice example](img/singlechoice.PNG)       
     Wählen Sie eine Antwortmöglichkeit aus.
 
@@ -41,5 +41,10 @@ Wie es von hier aus weiter geht hängt jetzt vom Aufbau des Fragebogens ab, die 
     ![Table View example](img/tableview.PNG)   
     Wählen Sie ein Feld der Tabelle aus. Sie können sich dabei an den Beschriftungen der Tabelle orientieren. 
 
+7. Notiz  
+    ![Notiz](img/notiz.PNG)   
+    Lesen Sie sich die Notiz durch und drücken Sie auf weiter.    
 
-Wenn Sie Ihre letzte Frage beantwortet haben erhalten Sie eine Rückmeldung und haben die Möglichkeit zur Startseite zurück zu kehren.
+Während der Beantwortung der Fragen haben Sie jederzeit die Möglichkeit durch klicken auf den Zurück-Button des Smartphones aus dem Fragebogen heraus, zurück zum Hauptmenü, zu gelangen.  
+
+Wenn Sie Ihre letzte Frage beantwortet haben erhalten Sie eine Rückmeldung und haben die Möglichkeit zum Hauptmenü zurück zu kehren.

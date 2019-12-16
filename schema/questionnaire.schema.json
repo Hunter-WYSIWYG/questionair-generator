@@ -76,7 +76,7 @@
                 },
                 "questionType": {
                     "type": "string",
-                    "description": "The possible types: Single Choice, Multiple Choice, Yes-No, Scaled Unipolar, Scaled Bipolar, Raster-Buttons, Scaled Field, Free Input, Percent Slider, Button Slider"
+                    "description": "The possible types: Single Choice, Multiple Choice, Yes-No, Scaled Unipolar, Scaled Bipolar, Raster-Buttons, Scaled Field, Free Input, Percent Slider"
                 },
                 "hint": {
                     "type": "string",

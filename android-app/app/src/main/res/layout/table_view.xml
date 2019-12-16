@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:app="http://schemas.android.com/apk/res-auto"
-		xmlns:tools="http://schemas.android.com/tools"
-		android:layout_width="match_parent" android:layout_height="match_parent"
-		android:scrollbars="horizontal|none">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:scrollbars="horizontal|none">
 
 	<TextView
-			android:id="@+id/tableQuestionText"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginLeft="16dp"
-			android:layout_marginTop="16dp"
-			android:layout_marginEnd="16dp"
-			android:layout_marginRight="16dp"
-			android:layout_marginBottom="16dp"
-			android:text="test frage"
-			android:textAppearance="@style/TextAppearance.AppCompat.Large"
-			android:textColor="#000000"
-			android:textSize="30sp"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintVertical_bias="0.0"/>
+		android:id="@+id/tableQuestionText"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginLeft="16dp"
+		android:layout_marginTop="16dp"
+		android:layout_marginEnd="16dp"
+		android:layout_marginRight="16dp"
+		android:layout_marginBottom="16dp"
+		android:text="test frage"
+		android:textAppearance="@style/TextAppearance.AppCompat.Large"
+		android:textColor="#000000"
+		android:textSize="30sp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.0" />
 
 	<TextView
-			android:id="@+id/tableQuestionTypeText"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Fragetyp"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"/>
+		android:id="@+id/tableQuestionTypeText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Fragetyp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
 	<TextView
-			android:id="@+id/questionNumber"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Fragenummer"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+		android:id="@+id/questionNumber"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Fragenummer"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
 	<View
 		android:id="@+id/tableDividingLine"
@@ -54,51 +54,81 @@
 		app:layout_constraintTop_toBottomOf="@id/hint" />
 
 	<TableLayout
-			android:id="@+id/tableView"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:scrollbarAlwaysDrawHorizontalTrack="true"
-			android:scrollbarAlwaysDrawVerticalTrack="true" android:scrollbarTrackVertical="@null"
-			android:shrinkColumns="*" android:visibility="visible"
-			app:layout_constrainedHeight="false" app:layout_constraintBottom_toTopOf="@+id/bottomName"
-			app:layout_constraintEnd_toStartOf="@+id/rightName"
-			app:layout_constraintStart_toEndOf="@+id/leftName" app:layout_constraintTop_toBottomOf="@+id/topName"
-			tools:visibility="visible">
-	</TableLayout>
+		android:id="@+id/tableView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:scrollbarAlwaysDrawHorizontalTrack="true"
+		android:scrollbarAlwaysDrawVerticalTrack="true"
+		android:scrollbarTrackVertical="@null"
+		android:shrinkColumns="*"
+		android:visibility="visible"
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBottom_toTopOf="@+id/bottomName"
+		app:layout_constraintEnd_toStartOf="@+id/rightPlaceholder"
+		app:layout_constraintStart_toEndOf="@+id/leftPlaceholder"
+		app:layout_constraintTop_toBottomOf="@+id/topName"
+		app:layout_constraintWidth_default="wrap"
+		tools:visibility="visible" />
+
 	<com.example.app.view.VerticalTextView
-			android:id="@+id/leftName"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:text="TextView"
-			android:rotation="180"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/tableDividingLine"/>
+		android:id="@+id/leftName"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="bottom"
+		android:rotation="0"
+		android:text="TextView"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@+id/tableView"
+		app:layout_constraintTop_toBottomOf="@+id/tableDividingLine" />
+
 	<com.example.app.view.VerticalTextView
-			android:id="@+id/rightName"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:text="TextView"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toTopOf="@+id/tableDividingLine"/>
+		android:id="@+id/rightName"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="bottom"
+		android:rotation="180"
+		android:text="TextView"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toEndOf="@+id/tableView"
+		app:layout_constraintTop_toTopOf="@+id/tableDividingLine" />
+
+	<com.example.app.view.VerticalTextView
+		android:id="@+id/rightPlaceholder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="@+id/tableDividingLine" />
+
+	<com.example.app.view.VerticalTextView
+		android:id="@+id/leftPlaceholder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="@+id/tableDividingLine" />
+
 	<TextView
-			android:id="@+id/topName"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:text="TextView" app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/tableDividingLine"/>
+		android:id="@+id/topName"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="80dp"
+		android:gravity="center"
+		android:text="TextView"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/tableDividingLine" />
+
 	<TextView
-			android:id="@+id/bottomName"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="center" android:text="TextView"
-			app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"/>
+		android:id="@+id/bottomName"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:text="TextView"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent" />
 
 	<TextView
 		android:id="@+id/hint"
@@ -111,5 +141,12 @@
 		app:layout_constraintBottom_toTopOf="@+id/tableDividingLine"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/tableQuestionText" />
+
+	<android.support.constraint.Guideline
+		android:id="@+id/guideline3"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		app:layout_constraintGuide_begin="20dp" />
 
 </android.support.constraint.ConstraintLayout>

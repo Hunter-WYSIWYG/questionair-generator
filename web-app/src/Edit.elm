@@ -359,6 +359,32 @@ viewNewQuestionModal model =
                         , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
                         , radio "Button Slider" (ChangeQuestionType "Button Slider")
                         , br [] []
+                        , text "Zeitlimit:"
+                        , br [] []
+                        , input
+                            [ class "input is-medium"
+                            , style "width" "25%"
+                            , type_ "text"
+                            , maxlength 4
+                            , onInput ChangeQuestionTimeMinutes
+                            , placeholder "Minuten"
+                            , Html.Attributes.min "0"
+                            ]
+                            []
+                        , input
+                            [ class "input is-medium"
+                            , style "width" "25%"
+                            , style "margin-left" "10px"
+                            , style "margin-bottom" "5px"
+                            , type_ "text"
+                            , maxlength 2
+                            , onInput ChangeQuestionTimeSeconds
+                            , placeholder "Sekunden"
+                            , Html.Attributes.min "0"
+                            , Html.Attributes.max "59"
+                            ]
+                            []
+                        , viewQuestionTimeValidation model
                         ]
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]
@@ -550,7 +576,10 @@ tableHead_questions =
         , th [ style "width" "25%" ]
             [ text "Hinweis"
             ]
-        , th [ style "width" "20%" ]
+        , th [ style "width" "7,5%" ]
+            [ text "Zeitlimit"
+            ]
+        , th [ style "width" "12,5%" ]
             [ text "Typ"
             ]
         , th [ style "width" "10%" ]
@@ -569,7 +598,8 @@ getQuestionTable index element =
                 [ td [ style "width" "5%" ] [ text (String.fromInt index) ]
                 , td [ style "width" "40%" ] [ text a.text ]
                 , td [ style "width" "25%" ] []
-                , td [ style "width" "20%" ] []
+                , td [ style "width" "7,5%" ] []
+                , td [ style "width" "12,5%" ] []
                 , td [ style "width" "10%" ]
                     [ i
                         [ class "fas fa-arrow-up"
@@ -602,7 +632,8 @@ getQuestionTable index element =
                 [ td [ style "width" "5%" ] [ text (String.fromInt index) ]
                 , td [ style "width" "40%" ] [ text f.text ]
                 , td [ style "width" "25%" ] [ text f.hint ]
-                , td [ style "width" "20%" ] [ text f.typ ]
+                , td [ style "width" "7,5%" ] [ text (QElement.getQuestionTimePresentation f.questionTime) ]
+                , td [ style "width" "12,5%" ] [ text f.typ ]
                 , td [ style "width" "10%" ]
                     [ i
                         [ class "fas fa-arrow-up"
@@ -766,6 +797,22 @@ viewValidation model =
 
                 ValidationOK ->
                     ( "green", "OK" )
+    in
+    div [ style "color" color ] [ text message ]
+
+viewQuestionTimeValidation : Model -> Html msg
+viewQuestionTimeValidation model =
+    let
+        ( color, message ) =
+            case model.questionTimeValidationResult of
+                NotDone ->
+                    ( "", "" )
+
+                Error msg ->
+                    ( "red", msg )
+
+                ValidationOK ->
+                    ( "green", "Zeiten OK" )
     in
     div [ style "color" color ] [ text message ]
 

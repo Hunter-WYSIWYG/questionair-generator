@@ -1,6 +1,6 @@
 module QElement exposing
     ( Q_element(..), NoteRecord, QuestionRecord
-    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax   )
+    , deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax, getQuestionTime, getQuestionTimePresentation   )
 
 
 {-| Contains the type for the elements of questionnaires (questions, annotations) and an initial state for the "input element" (newElement).
@@ -13,7 +13,7 @@ module QElement exposing
 
 # Public functions
 
-@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax
+@docs deleteAnswerFromItem, deleteItemFrom, getAnswerWithID, getAntworten, getElementId, getElementText, getID, getQuestionHinweis, getQuestionTyp, getText, initQuestion, putAnswerDown, putAnswerUp, putElementDown, putElementUp, setNewID, updateAnsID, updateElement, updateElementList, updateID, getTableSize, getTopText, getRightText, getBottomText, getLeftText, getPolarMin, getPolarMax, getQuestionTime, getQuestionTimePresentation
 
 -}
 
@@ -416,3 +416,55 @@ getAnswerIdForDelete elem = Answer (sub (Answer.getAnswerId elem)) (Answer.getAn
 -}
 sub: Int -> Int 
 sub id = id - 1
+
+
+{- build questionTime String for later usage in Android App -}
+getQuestionTime : Q_element -> String -> String -> Q_element
+getQuestionTime element min sec =
+    case element of
+        Question record ->
+            case String.length min of
+                0 -> case String.length sec of
+                        0 -> Question { record | questionTime = "0000:00" }
+                        1 -> Question { record | questionTime = String.concat ["0000:0",sec] }
+                        2 -> Question { record | questionTime = String.concat ["0000:",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                1 -> case String.length sec of
+                        0 -> Question { record | questionTime = String.concat ["000",min,":00"] }
+                        1 -> Question { record | questionTime = String.concat ["000",min,":0",sec] }
+                        2 -> Question { record | questionTime = String.concat ["000",min,":",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                2 -> case String.length sec of
+                        0 -> Question { record | questionTime = String.concat ["00",min,":00"] }
+                        1 -> Question { record | questionTime = String.concat ["00",min,":0",sec] }
+                        2 -> Question { record | questionTime = String.concat ["00",min,":",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                3 -> case String.length sec of
+                        0 -> Question { record | questionTime = String.concat ["0",min,":00"] }
+                        1 -> Question { record | questionTime = String.concat ["0",min,":0",sec] }
+                        2 -> Question { record | questionTime = String.concat ["0",min,":",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                4 -> case String.length sec of
+                        0 -> Question { record | questionTime = String.concat [min,":00"] }
+                        1 -> Question { record | questionTime = String.concat [min,":0",sec] }
+                        2 -> Question { record | questionTime = String.concat [min,":",sec] }
+                        _ -> Question { record | questionTime = "building error" }
+                _ -> Question { record | questionTime = "building error" }
+        Note record ->
+            element
+
+{- build questionTime String for presentation purpose in web-app -}
+{- right now empty minutes and empty seconds mean no time limitation -}
+getQuestionTimePresentation : String -> String
+getQuestionTimePresentation time =
+    case String.toInt (String.left 4 time) of
+        Nothing -> "presentation error"
+        Just minutes -> case String.toInt (String.right 2 time) of
+                            Nothing -> "presentation error"
+                            Just seconds -> if minutes==0 && seconds==0
+                                            then "kein Zeitlimit"
+                                            else    if minutes==0
+                                                    then String.concat [(String.fromInt seconds)," Sek"]
+                                                    else    if seconds==0
+                                                            then String.concat [(String.fromInt minutes)," Min"]
+                                                            else String.concat [(String.fromInt minutes)," Min ",(String.fromInt seconds)," Sek"]

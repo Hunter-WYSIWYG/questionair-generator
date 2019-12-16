@@ -636,7 +636,7 @@ answersTable : Model -> List (Html Msg)
 answersTable model =
     case model.newElement of
         Question record ->
-            List.append [ tableHead_answers ] (Debug.log "test" (List.indexedMap getAnswerTable (QElement.getAntworten model.newElement)))
+            List.append [ tableHead_answers ] (List.indexedMap getAnswerTable (QElement.getAntworten model.newElement))
 
         Note record ->
             []

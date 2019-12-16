@@ -322,13 +322,7 @@ viewNewQuestionModal model =
                     ]
                 , section [ class "modal-card-body" ]
                     [ div []
-                        [ showAnswerTable model
-                        , br [] []
-                        , showNewAnswerButton model
-                        , br [] []
-                        , showInputBipolarUnipolarTableSlider model
-                        , br [ style "margin-top" "20px" ] []
-                        , text "Fragetext: "
+                        [ text "Fragetext: "
                         , input
                             [ class "input is-medium"
                             , type_ "text"
@@ -358,6 +352,10 @@ viewNewQuestionModal model =
                         , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
                         , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
                         , br [] []
+                        , showInputBipolarUnipolarTableSlider model
+                        , showNewAnswerButton model
+                        , br [] []
+                        , showAnswerTable model
                         ]
                     ]
                 , footer [ class "modal-card-foot mediumlightblue" ]

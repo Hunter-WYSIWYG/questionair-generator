@@ -78,3 +78,20 @@
   height: 18px;
 }
 
+#viewingTimeButton {
+	margin-top:15px;
+	margin-left:78px;
+	margin-bottom:21px
+}
+
+#editTimeButton {
+	margin-top:15px;
+	margin-left:6px
+}
+
+#reminderTimesButton{
+	margin-top:15px;
+	margin-left:6px
+}
+
+

@@ -823,7 +823,7 @@ showInputBipolarUnipolarTableSlider model =
         Question record ->
             if record.typ == "Skaliert unipolar" then
                 div [class "grid-container"]
-                    [ text "Anzahl Antwortmöglichkeiten:"
+                    [ div[style "margin-top" "3px"][text "Anzahl Antwortmöglichkeiten:"]
                     , input
                         [ class "input"
                         , type_ "text"
@@ -833,8 +833,7 @@ showInputBipolarUnipolarTableSlider model =
                         , onInput SetPolarMax
                         ]
                         []
-                    , br [] []
-                    , text "Beschriftung links:"
+                    , div[style "margin-top" "3px"][text "Beschriftung links:"]
                     , input
                         [ class "input"
                         , type_ "text"
@@ -844,8 +843,7 @@ showInputBipolarUnipolarTableSlider model =
                         , onInput SetLeftText
                         ]
                         []
-                    , br [] []
-                    , text "Beschriftung rechts:"
+                    , div[style "margin-top" "3px"][text "Beschriftung rechts:"]
                     , input
                         [ class "input"
                         , type_ "text"
@@ -859,7 +857,7 @@ showInputBipolarUnipolarTableSlider model =
 
             else if record.typ == "Skaliert bipolar" then
                 div [class "grid-container"]
-                    [ text "Anzahl Antwortmöglichkeiten links:"
+                    [ div[style "margin-top" "3px"][text "Anzahl Antwortmöglichkeiten links:"]
                     , input
                         [ class "input"
                         , type_ "text"
@@ -869,8 +867,7 @@ showInputBipolarUnipolarTableSlider model =
                         , onInput SetPolarMin
                         ]
                         []
-                    , br [] []
-                    , text "Anzahl Antwortmöglichkeiten rechts:"
+                    , div[style "margin-top" "3px"][text "Anzahl Antwortmöglichkeiten rechts:"]
                     , input
                         [ class "input"
                         , type_ "text"
@@ -880,8 +877,7 @@ showInputBipolarUnipolarTableSlider model =
                         , onInput SetPolarMax
                         ]
                         []
-                    , br [] []
-                    , text "Beschriftung links:"
+                    , div[style "margin-top" "3px"][text "Beschriftung links:"]
                     , input
                         [ class "input"
                         , type_ "text"
@@ -891,8 +887,7 @@ showInputBipolarUnipolarTableSlider model =
                         , onInput SetLeftText
                         ]
                         []
-                    , br [] []
-                    , text "Beschriftung rechts:"
+                    , div[style "margin-top" "3px"][text "Beschriftung rechts:"]
                     , input
                         [ class "input"
                         , type_ "text"
@@ -905,21 +900,21 @@ showInputBipolarUnipolarTableSlider model =
                     ]
             else if record.typ == "Raster-Auswahl" then
                 div []
-                    [ text "Raster-Größe: "
-                    , div
-                        [class "select"
-                        , style "margin-left" "162px"
-                        , style "margin-bottom" "5px"]
-                        [ select
-                            [ onInput SetTableSize ]
-                            [ option [ value "3", selected ((QElement.getTableSize model.newElement) == 3) ] [ text "3x3" ]
-                            , option [ value "5", selected ((QElement.getTableSize model.newElement) == 5) ] [ text "5x5" ]
-                            , option [ value "7", selected ((QElement.getTableSize model.newElement) == 7)] [ text "7x7" ]
-                            ]
-                        ]
+                    [ div[class "flex-container"]
+                        [ div [style "margin-top" "8px"][text "Raster-Größe: "]
+                            , div
+                                [class "select"
+                                , style "margin-left" "166px"]
+                                [ select
+                                    [ onInput SetTableSize ]
+                                    [ option [ value "3", selected ((QElement.getTableSize model.newElement) == 3) ] [ text "3x3" ]
+                                    , option [ value "5", selected ((QElement.getTableSize model.newElement) == 5) ] [ text "5x5" ]
+                                    , option [ value "7", selected ((QElement.getTableSize model.newElement) == 7)] [ text "7x7" ]
+                                    ]
+                                ]]
                     , br [] []
                     , div[class "grid-container"]
-                        [ text "Raster-Beschriftung oben:"
+                        [ div[style "margin-top" "3px"][text "Raster-Beschriftung oben:"]
                         , input
                             [ class "input"
                             , type_ "text"
@@ -929,8 +924,7 @@ showInputBipolarUnipolarTableSlider model =
                             , onInput SetTopText
                             ]
                             []
-                        , br [] []
-                        , text "Raster-Beschriftung rechts:"
+                        , div[style "margin-top" "3px"][text "Raster-Beschriftung rechts:"]
                         , input
                             [ class "input"
                             , type_ "text"
@@ -940,8 +934,7 @@ showInputBipolarUnipolarTableSlider model =
                             , onInput SetRightText
                             ]
                             []
-                        , br [] []
-                        , text "Raster-Beschriftung unten:"
+                        , div[style "margin-top" "3px"][text "Raster-Beschriftung unten:"]
                         , input
                             [ class "input"
                             , type_ "text"
@@ -951,8 +944,7 @@ showInputBipolarUnipolarTableSlider model =
                             , onInput SetBottomText
                             ]
                             []
-                        , br [] []
-                        , text "Raster-Beschriftung links:"
+                        , div[style "margin-top" "3px"][text "Raster-Beschriftung links:"]
                         , input
                             [ class "input"
                             , type_ "text"
@@ -967,7 +959,7 @@ showInputBipolarUnipolarTableSlider model =
 
             else if record.typ == "Prozentslider" then
                 div [class "grid-container"]
-                    [ text "Bitte linken Grenzwert eingeben:   "
+                    [ div[style "margin-top" "8px"][text "Bitte linken Grenzwert eingeben:   "]
                     , input
                         [ class "input is-medium"
                         , type_ "text"
@@ -977,8 +969,7 @@ showInputBipolarUnipolarTableSlider model =
                         , onInput SetLeftText
                         ]
                         []
-                    , br [] []
-                    , text "Bitte rechten Grenzwert eingeben:"
+                    , div[style "margin-top" "8px"][text "Bitte rechten Grenzwert eingeben:"]
                     , input
                         [ class "input is-medium"
                         , type_ "text"

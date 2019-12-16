@@ -108,9 +108,9 @@
       </header>
       <section class="modal-card-body">
         <text>Minuten:</text>
-        <input id="editTimeMinutes" oninput="editTimeChanged()">
+        <input id="editTimeMinutes" type="number" min="0" oninput="editTimeChanged()">
         <text>Sekunden:</text>
-        <input id="editTimeSeconds" oninput="editTimeChanged()">
+        <input id="editTimeSeconds" type="number" min="0" max="59" oninput="editTimeChanged()">
         <button class="qnButton" onclick="resetInput('timePicker')">Reset</button>
         <script src="./datetimepicker.js"></script>
       </section>

@@ -5,14 +5,12 @@ var app = Elm.Main.init({
 
 //Hide footer if the user wants to upload a questionnaire
 app.ports.enterUpload.subscribe(function() {
-    console.log("leave");
     var footer = document.getElementById('footer');
     footer.style.display = 'none';
 });
 
 //Show footer if the user wants to edit a questionnaire
 app.ports.leaveUpload.subscribe(function() {
-    console.log("enter");
     var footer = document.getElementById('footer');
     footer.style.display = 'block';
 });
@@ -72,13 +70,9 @@ function appendToTimesTable() {
     if (document.getElementById("stündlichTag").checked) {
         var end = new Date(begin.getTime());;
         end.setHours(23,59,59);
-        console.log("begin:", begin);
-        console.log("end:", end);
     } else if (document.getElementById("stündlichGesamt").checked) {
         var end = parseDate(parts[2]);
         end.setHours(23,59,59);
-        console.log("begin:", begin);
-        console.log("end:", end);
     } else {
         var end = parseDate(parts[2]);
     }

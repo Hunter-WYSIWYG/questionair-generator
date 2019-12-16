@@ -35,6 +35,10 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	
 	private QuestionnaireState state;
 	
+	// current question for end time calculation
+	private Question q;
+	
+	
 	// getter
 	public QuestionnaireState getState () {
 		return state;
@@ -64,11 +68,19 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		contentContainer.addView (questionView.getView (), 0);
 		
 		nextButton.setOnClickListener (v -> nextButtonClicked ());
+		
+		// get question now so the time limit can be checked later
+		q = state.getCurrentQuestion();
 	}
 	
 	// next button is clicked, update questionnaire state and go to next question
 	private void nextButtonClicked () {
-		final Question q = state.getCurrentQuestion();
+		
+		// for testing show question time
+		// Toast test = Toast.makeText(this, "" + (state.getCurrentQuestionEndTime()-System.currentTimeMillis()), Toast.LENGTH_LONG);
+		// test.show();
+		
+		
 		// if question has edit time
 		if (q.questionTime != null) {
 			// if time is up

@@ -391,7 +391,7 @@ update msg model =
             in
                 case model.newElement of 
                     Question record ->
-                        if record.typ == "Raster-Auswahl" then
+                        if record.typ == "Raster-Auswahl" || record.typ == "Button Slider" then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -434,7 +434,8 @@ update msg model =
                 case model.newElement of 
                     Question record ->
                         if ( record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" 
-                        || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar" ) then
+                        || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar"
+                        || record.typ == "Button Slider" )  then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -477,7 +478,8 @@ update msg model =
                 case model.newElement of 
                     Question record ->
                         if ( record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" 
-                        || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar" )  then
+                        || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar"
+                        || record.typ == "Button Slider" )  then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -573,7 +575,7 @@ update msg model =
                 ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, newCondition = (Condition.initCondition) }, Cmd.none )
 
             else 
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, editCondition = False , newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, editCondition = False , newCondition = Condition.initCondition }, Cmd.none )
 
         SetAnswer ->
             case model.newElement of

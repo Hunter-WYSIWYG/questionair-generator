@@ -6,7 +6,9 @@ Von hier aus haben Sie die Möglichkeit in die Sidebar(Seitenmenü) zu gelangen.
 
 ![Hamburger menu example](img/hamburger_menu.PNG)
 
-In diesem Menü ![Sidebar example](img/sidebar.PNG) können Sie: 
+In diesem Menü können Sie:      
+
+![Sidebar example](img/sidebar.PNG)
 
 1.  Zurück zum Hauptmenü springen
 2.  die Lizenzen ansehen

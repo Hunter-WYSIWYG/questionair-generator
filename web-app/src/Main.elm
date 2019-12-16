@@ -385,7 +385,7 @@ update msg model =
             in
                 case model.newElement of 
                     Question record ->
-                        if record.typ == "Raster-Auswahl" || record.typ == "Buttonslider" then
+                        if record.typ == "Raster-Auswahl" || record.typ == "Button Slider" then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -429,7 +429,7 @@ update msg model =
                     Question record ->
                         if ( record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" 
                         || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar"
-                        || record.typ == "Buttonslider" )  then
+                        || record.typ == "Button Slider" )  then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -473,7 +473,7 @@ update msg model =
                     Question record ->
                         if ( record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" 
                         || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar"
-                        || record.typ == "Buttonslider" )  then
+                        || record.typ == "Button Slider" )  then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )

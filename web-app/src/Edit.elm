@@ -12,7 +12,7 @@ module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuest
 import Answer exposing (Answer)
 import Condition exposing (Condition)
 import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, small, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value, disabled)
+import Html.Attributes exposing (class, disabled, hidden, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value, disabled)
 import Html.Events exposing (onClick, onInput)
 import List exposing (member, map)
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
@@ -357,7 +357,7 @@ viewNewQuestionModal model =
                         , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
                         , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
                         , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
-                        , radio "Buttonslider" (ChangeQuestionType "Buttonslider")
+                        , radio "Button Slider" (ChangeQuestionType "Button Slider")
                         , br [] []
                         ]
                     ]
@@ -794,7 +794,7 @@ showAnswerTable : Model -> Html Msg
 showAnswerTable model =
     case model.newElement of
         Question record ->
-            if  record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" || record.typ == "Buttonslider" then
+            if  record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" || record.typ == "Button Slider" then
                 div [] []
             else
                 table [ class "table is-striped", style "width" "100%" ] (answersTable model)
@@ -808,7 +808,7 @@ showNewAnswerButton : Model -> Html Msg
 showNewAnswerButton model =
     case model.newElement of
         Question record ->
-            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" || record.typ == "Buttonslider" then
+            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" || record.typ == "Button Slider" then
                 div [] []
             else
                 button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]
@@ -1000,7 +1000,7 @@ showInputBipolarUnipolarTableSlider model =
                         []
                     ]
 
-            else if record.typ == "Buttonslider" then
+            else if record.typ == "Button Slider" then
                 div []
                     [ text "Tabellengröße:"
                     , div
@@ -1008,7 +1008,8 @@ showInputBipolarUnipolarTableSlider model =
                         , style "margin-left" "5px"]
                         [ select
                             [ onInput SetTableSize ]
-                            [ option [ value "1", selected ((QElement.getTableSize model.newElement) == 1) ] [ text "1" ]
+                            [ option [ value "?", selected ((QElement.getTableSize model.newElement) == 0), disabled True, hidden True] []
+                            , option [ value "1", selected ((QElement.getTableSize model.newElement) == 1) ] [ text "1" ]
                             , option [ value "2", selected ((QElement.getTableSize model.newElement) == 2) ] [ text "2" ]
                             , option [ value "3", selected ((QElement.getTableSize model.newElement) == 3)] [ text "3" ]
                             , option [ value "4", selected ((QElement.getTableSize model.newElement) == 4)] [ text "4" ]

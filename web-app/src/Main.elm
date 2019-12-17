@@ -200,6 +200,12 @@ update msg model =
             
                 _ ->
                     (model, Cmd.none)
+
+        ChangeQuestionTimeMinutes string ->
+            ( { model | inputQuestionTimeMinutes = string }, Cmd.none)
+
+        ChangeQuestionTimeSeconds string ->
+            ( { model | inputQuestionTimeSeconds = string }, Cmd.none)
                     
 
         --open or close modals
@@ -385,7 +391,7 @@ update msg model =
             in
                 case model.newElement of 
                     Question record ->
-                        if record.typ == "Raster-Auswahl" then
+                        if record.typ == "Raster-Auswahl" || record.typ == "Button Slider" then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -428,7 +434,8 @@ update msg model =
                 case model.newElement of 
                     Question record ->
                         if ( record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" 
-                        || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar" ) then
+                        || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar"
+                        || record.typ == "Button Slider" )  then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -471,7 +478,8 @@ update msg model =
                 case model.newElement of 
                     Question record ->
                         if ( record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" 
-                        || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar" )  then
+                        || record.typ == "Skaliert bipolar" || record.typ == "Skaliert unipolar"
+                        || record.typ == "Button Slider" )  then
                             ( { model | newElement = changedElement }, Cmd.none )
                         else 
                             ( model, Cmd.none )
@@ -503,32 +511,47 @@ update msg model =
 
         SetQuestion ->
             let
+                {- Setzen der QuestionTime beim Klick auf "Uebernehmen" -}
+                newElementWithQT = (QElement.getQuestionTime model.newElement model.inputQuestionTimeMinutes model.inputQuestionTimeSeconds)
+
+                questionTimeValidationResultTmp = Model.validateQuestionTime model.inputQuestionTimeMinutes model.inputQuestionTimeSeconds
+
                 oldQuestionnaire =
                     model.questionnaire
 
                 changedQuestionnaire =
                     if model.editQElement == False then
                         { oldQuestionnaire
-                            | elements = List.append oldQuestionnaire.elements [ model.newElement ] }
+                            | elements = List.append oldQuestionnaire.elements [ newElementWithQT ] }
 
                     else
                         { oldQuestionnaire
-                            | elements = List.map (\e -> QElement.updateElement model.newElement e) oldQuestionnaire.elements
+                            | elements = List.map (\e -> QElement.updateElement newElementWithQT e) oldQuestionnaire.elements
                             , conditions =
-                                if (Condition.validateCondition model.newCondition model.newElement) then
+                                if (Condition.validateCondition model.newCondition newElementWithQT) then
                                     List.map (\e -> Condition.updateCondition model.newCondition e) oldQuestionnaire.conditions
 
                                 else
                                     Condition.removeConditionFromCondList model.newCondition oldQuestionnaire.conditions
                         }
             in
-            if model.editQElement == False && (isTypeEmpty model) == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, newCondition = Condition.initCondition }, Cmd.none )
+            if model.editQElement == False && (isTypeEmpty model) == False && questionTimeValidationResultTmp==ValidationOK then
+                ( { model   | questionnaire = changedQuestionnaire
+                            , showNewQuestionModal = False
+                            , newCondition = Condition.initCondition
+                            , inputQuestionTimeMinutes = ""
+                            , inputQuestionTimeSeconds = ""
+                            , questionTimeValidationResult = questionTimeValidationResultTmp }, Cmd.none )
 
-            else if (isTypeEmpty model) == False then
-                ( { model | questionnaire = changedQuestionnaire, showNewQuestionModal = False, editQElement = False }, Cmd.none )
+            else if (isTypeEmpty model) == False && questionTimeValidationResultTmp==ValidationOK then
+                ( { model   | questionnaire = changedQuestionnaire
+                            , showNewQuestionModal = False
+                            , editQElement = False
+                            , inputQuestionTimeMinutes = ""
+                            , inputQuestionTimeSeconds = ""
+                            , questionTimeValidationResult = questionTimeValidationResultTmp }, Cmd.none )
 
-            else (model, Cmd.none)
+            else ( { model  | questionTimeValidationResult = questionTimeValidationResultTmp }, Cmd.none )
                 
         SetConditions ->
             let
@@ -552,7 +575,7 @@ update msg model =
                 ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, newCondition = (Condition.initCondition) }, Cmd.none )
 
             else 
-                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, editCondition = False , newCondition = (Debug.log "foo" Condition.initCondition) }, Cmd.none )
+                ( { model | questionnaire = changedQuestionnaire, showNewConditionModalCreate = False, editCondition = False , newCondition = Condition.initCondition }, Cmd.none )
 
         SetAnswer ->
             case model.newElement of

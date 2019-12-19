@@ -93,6 +93,8 @@ public class QuestionnaireState implements Serializable {
 	}
 	public Question getCurrentQuestion () {
 		final Question q = questionnaire.getQuestionList().get(currentIndex);
+		
+		// if question time is defined
 		if (q.questionTime != null) {
 			final String[] parts = q.questionTime.split(":");
 			currentQuestionEndTime = System.currentTimeMillis() + 60000 * Long.parseLong(parts[0]) + 1000 * Long.parseLong(parts[1]);

@@ -82,7 +82,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		
 		// if question has edit time
-		if (q.questionTime != null) {
+		if (q.questionTime != null && !"0000:00".equals(q.questionTime)) {
 			// if time is up
 			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime()) {
 				// create invalid answer and add it to the answer list

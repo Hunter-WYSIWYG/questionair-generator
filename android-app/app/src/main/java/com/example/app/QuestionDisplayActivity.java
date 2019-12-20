@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.example.app.answer.Answer;
 import com.example.app.answer.AnswerCollection;
 import com.example.app.question.Question;
 import com.example.app.view.QuestionDisplayView;
@@ -33,12 +35,6 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 	
 	// current question for end time calculation
 	private Question q;
-	
-	
-	// getter
-	public QuestionnaireState getState () {
-		return state;
-	}
 	
 	// displays the current question of the questionnaire state
 	public static void displayCurrentQuestion (QuestionnaireState questionnaireState, Activity activity) {

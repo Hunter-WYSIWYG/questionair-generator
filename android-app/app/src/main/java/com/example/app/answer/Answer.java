@@ -18,7 +18,7 @@ public class Answer implements Serializable {
 	public Answer () {
 		this.type = null;
 		this.id = -1;
-		this.text = "Failsafe";
+		this.text = "invalid";
 	}
 	
 	public Answer (final String type, final int id, final String text) {

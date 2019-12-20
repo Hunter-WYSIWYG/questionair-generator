@@ -1,5 +1,7 @@
 package com.example.app.question;
 
+import android.support.annotation.Nullable;
+
 import com.example.app.answer.Condition;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -28,6 +30,10 @@ public class Questionnaire implements Serializable {
 	@SerializedName ("reminderTimes")
 	private final List<Date> reminderList;
 	
+	@SerializedName("editTime")
+	@Nullable
+	private final String editTime;
+	
 	// path to the Questionnaire file
 	@Expose (serialize = false, deserialize = false)
 	private String path;
@@ -44,6 +50,7 @@ public class Questionnaire implements Serializable {
 		reminderList = null;
 		conditionList = null;
 		priority = 0;
+		this.editTime = null;
 	}
 	
 	// getter
@@ -74,6 +81,12 @@ public class Questionnaire implements Serializable {
 	public List<Condition> getConditionList () {
 		return conditionList;
 	}
+	
+	@Nullable
+	public String getEditTime() {
+		return editTime;
+	}
+	
 	
 	// setter (only needed for path)
 	public void setPath (String path) {

@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements
 		//noinspection AssignmentToStaticFieldFromInstanceMethod
 		FILES_DIR = getExternalFilesDir(null);
 		
-		//assign path to variables, check if already assigned variable a good
+		//assign path to variables, check if already assigned variable is good
 		if (QUESTIONNAIRE_DIR == null) {
 			//noinspection AssignmentToStaticFieldFromInstanceMethod
 			QUESTIONNAIRE_DIR = new File(FILES_DIR, questionnaireDirName);
@@ -150,29 +150,6 @@ public class MainActivity extends AppCompatActivity implements
 				// could not create folder, something went wrong
 				return -1;
 			}
-			/*
-			try {
-				// test write to the folder to make it appear
-				final File testFile = new File(QUESTIONNAIRE_DIR, "test.txt");
-				boolean writeSuccess = testFile.createNewFile();
-				if (!writeSuccess) {
-					// could not create file
-					return -1;
-				}
-				try (BufferedWriter testWriter = new BufferedWriter(new FileWriter(testFile))) {
-					testWriter.write("test");
-				}
-				boolean deleteSuccess = testFile.delete();
-				if (!deleteSuccess) {
-					// could not delete test file, after writing to it, very weird
-					return -1;
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				return -1;
-			}
-			
-			 */
 		}
 		if (!aExists) {
 			boolean createSuccess = ANSWERS_DIR.mkdir();
@@ -180,29 +157,6 @@ public class MainActivity extends AppCompatActivity implements
 				// could not create folder, something went wrong
 				return -1;
 			}
-			/*
-			// test write to the folder to make it appear
-			final File testFile = new File(ANSWERS_DIR, "test.txt");
-			try {
-				boolean writeSuccess = testFile.createNewFile();
-				if (!writeSuccess) {
-					// could not create file
-					return -1;
-				}
-				try (BufferedWriter testWriter = new BufferedWriter(new FileWriter(testFile))) {
-					testWriter.write("test");
-				}
-				boolean deleteSuccess = testFile.delete();
-				if (!deleteSuccess) {
-					//could not delete test file, after writing to it, very weird
-					return -1;
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				return -1;
-			}
-			
-			 */
 		}
 		
 		// newly created folders, return status for success
@@ -293,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements
 		                 (q1, q2) -> Integer.compare(q1.getPriority(), q2.getPriority()));
 	}
 	
-	@Nullable private void importQuestionnaires() {
+	private void importQuestionnaires() {
 		try {
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create();
 			// look at all files in the questionnaire directory

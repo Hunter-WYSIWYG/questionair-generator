@@ -21,6 +21,9 @@ public abstract class Question implements Serializable {
 	@SerializedName ("text")
 	public final String questionText;
 	
+	@SerializedName("questionTime")
+	public final String questionTime;
+	
 	@SerializedName ("hint")
 	public final String hint;
 	
@@ -29,6 +32,7 @@ public abstract class Question implements Serializable {
 		this.id = id;
 		this.type = type;
 		this.questionText = questionText;
+		this.questionTime = null;
 		this.hint = hint;
 	}
 }

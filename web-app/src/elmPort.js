@@ -33,8 +33,9 @@ app.ports.decodedReminderTime.subscribe(function(time) {
 });
 
 app.ports.decodedEditTime.subscribe(function(time) {
-    var input = document.getElementById("timePicker");
-    input.value = time;
+    var parts = time.split(":");
+    document.getElementById("editTimeMinutes").value = parts[0];
+    document.getElementById("editTimeSeconds").value = parts[1];
 });
 
 //Adds the given reminder time to the table of reminder times inside a modal
@@ -69,13 +70,9 @@ function appendToTimesTable() {
     if (document.getElementById("stündlichTag").checked) {
         var end = new Date(begin.getTime());;
         end.setHours(23,59,59);
-        console.log("begin:", begin);
-        console.log("end:", end);
     } else if (document.getElementById("stündlichGesamt").checked) {
         var end = parseDate(parts[2]);
         end.setHours(23,59,59);
-        console.log("begin:", begin);
-        console.log("end:", end);
     } else {
         var end = parseDate(parts[2]);
     }

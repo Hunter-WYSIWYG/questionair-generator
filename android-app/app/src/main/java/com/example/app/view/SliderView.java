@@ -70,8 +70,8 @@ public class SliderView extends QuestionDisplayView {
 	
 	// create slider
 	private void createSlider () {
-		int min = Integer.parseInt (this.question.sliderSteps.get (0).getOptionText ());
-		int max = Integer.parseInt (this.question.sliderSteps.get (question.sliderSteps.size () - 1).getOptionText ());
+		int min = this.question.polarMin;
+		int max = this.question.polarMax;
 		this.seekBar = this.container.findViewById (R.id.Slider);
 		this.seekBar.setMin (min);
 		this.seekBar.setMax (max);

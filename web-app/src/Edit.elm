@@ -1170,7 +1170,7 @@ getAnswersId list =
     List.map Answer.getAnswerId list
 
 
-{-| accepts only validate Condition 
+{-| accepts only valid Condition
 -}
 buttonDisabled : Condition -> Bool
 buttonDisabled con = 
@@ -1181,6 +1181,9 @@ buttonDisabled con =
         True
 
     else if con.answer_id == -1 then
+        True
+
+    else if con.parent_id > con.child_id then
         True
 
     else False

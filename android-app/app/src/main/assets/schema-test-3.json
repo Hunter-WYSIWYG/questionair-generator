@@ -1,43 +1,43 @@
 {
-        "id": 0,
-        "priority": 0,
-        "title": "ConditionTest 2",
-        "elements": [
-                {
-                        "_type": "Question",
-                        "id": 0,
-                        "text": "In diesem Moment fühle ich mich...",
-                        "hint": "Hierfür sind 20 Sekunden Zeit",
-                        "questionType": "Skaliert unipolar",
-                        "answers": [],
-                        "questionTime": "00:01",
-                        "tableSize": 0,
-                        "topText": "",
-                        "rightText": "wach",
-                        "bottomText": "",
-                        "leftText": "müde",
-                        "polarMin": 0,
-                        "polarMax": 6
-                },
-                {
-                        "_type": "Question",
-                        "id": 1,
-                        "text": "In diesem Moment fühle ich mich...",
-                        "hint": "Hierfür ist eine Minute Zeit",
-                        "questionType": "Skaliert unipolar",
-                        "answers": [],
-                        "questionTime": "01:00",
-                        "tableSize": 0,
-                        "topText": "",
-                        "rightText": "unzufrieden",
-                        "bottomText": "",
-                        "leftText": "zufrieden",
-                        "polarMin": 0,
-                        "polarMax": 6
-                }
-        ],
-        "conditions": [],
-        "viewingTime": "",
-        "reminderTimes": [],
-        "editTime": ""
+  "id": 1,
+  "priority": 0,
+  "title": "schema test 3",
+  "elements": [
+    {
+      "_type": "Question",
+      "id": 0,
+      "text": "In diesem Moment fühle ich mich...",
+      "hint": "Hierfür sind 20 Sekunden Zeit",
+      "questionType": "Skaliert unipolar",
+      "answers": [],
+      "questionTime": "00:20",
+      "tableSize": 0,
+      "topText": "",
+      "rightText": "wach",
+      "bottomText": "",
+      "leftText": "müde",
+      "polarMin": 0,
+      "polarMax": 6
+    },
+    {
+      "_type": "Question",
+      "id": 1,
+      "text": "In diesem Moment fühle ich mich...",
+      "hint": "Hierfür ist eine Minute Zeit",
+      "questionType": "Skaliert unipolar",
+      "answers": [],
+      "questionTime": "01:00",
+      "tableSize": 0,
+      "topText": "",
+      "rightText": "unzufrieden",
+      "bottomText": "",
+      "leftText": "zufrieden",
+      "polarMin": 0,
+      "polarMax": 6
+    }
+  ],
+  "conditions": [],
+  "viewingTime": "",
+  "reminderTimes": [],
+  "editTime": ""
 }

@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +30,11 @@ import com.example.app.question.Questionnaire;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,6 +48,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private DrawerLayout drawerlayout;
 	// list view of all questionnaires
 	private ListView listView;
+
+	public static final String questionnaireDirName = "fragebogen";
+	public static final String answersDirName = "antworten";
+	@Nullable
+	@SuppressWarnings("StaticNonFinalField")
+	public static File FILES_DIR;
+	@Nullable
+	@SuppressWarnings("StaticNonFinalField")
+	public static File QUESTIONNAIRE_DIR;
+	@Nullable
+	@SuppressWarnings("StaticNonFinalField")
+	public static File ANSWERS_DIR;
 	
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -54,17 +73,146 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle (this, drawerlayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		this.drawerlayout.addDrawerListener (toggle);
 		toggle.syncState ();
-		
-		// TODO import all questionnaires and not just a given number of them
-		for (int i = 0; i <= 3; i++) {
-			Questionnaire questionnaire = this.importQuestionnaire (i);
-			if (questionnaire != null)
-				this.questionnaireList.add (questionnaire);
+
+		switch (this.firstTimeSetup ()) {
+			case 0:
+				// first time setup files already exist, skip
+				break;
+			case 1:
+				// first time setup files have been created
+				// move questionnaires from asset folder to new folder on the phone
+				if (!this.moveQuestionnaires ()) {
+					Toast.makeText (this,
+						"Willkommen zu der Umfragebogen-App! Die Speicherordner wurden erzeugt, aber nicht beschrieben",
+						Toast.LENGTH_LONG).show ();
+				} else {
+					Toast.makeText (this,
+						"Willkommen zu der Umfragebogen-App! Die Speicherordner wurden erzeugt und beschrieben",
+						Toast.LENGTH_LONG).show ();
+				}
+				break;
+			case -1:
+				// first time setup files have not been created, something went wrong
+				Toast.makeText (this,
+					"Die Speicherordner wurden nicht erzeugt! Bitte versuchen sie es erneut",
+					Toast.LENGTH_LONG).show ();
+				break;
+			default:
+				break;
 		}
+
+		this.importQuestionnaires ();
 		this.notifyStart ();
 		this.init ();
 	}
-	
+
+	// first time stting up the answers and questionnaires directories
+	private int firstTimeSetup () {
+		// Checking the availability state of the External Storage.
+		String state = Environment.getExternalStorageState ();
+		if (!Environment.MEDIA_MOUNTED.equals (state)) {
+			//If it isn't mounted - we can't write into it.
+			return -1;
+		}
+
+		// get current files path
+		// noinspection AssignmentToStaticFieldFromInstanceMethod
+		FILES_DIR = getExternalFilesDir (null);
+
+		// assign path to variables, check if already assigned variable is good
+		if (QUESTIONNAIRE_DIR == null) {
+			//noinspection AssignmentToStaticFieldFromInstanceMethod
+			QUESTIONNAIRE_DIR = new File (FILES_DIR, questionnaireDirName);
+		}
+
+		if (ANSWERS_DIR == null) {
+			// noinspection AssignmentToStaticFieldFromInstanceMethod
+			ANSWERS_DIR = new File (FILES_DIR, answersDirName);
+		}
+
+		// check if both directories exist
+		boolean qExists = QUESTIONNAIRE_DIR.exists ();
+		boolean aExists = ANSWERS_DIR.exists ();
+
+		if (qExists && aExists) {
+			// both exist, exit fast
+			return 0;
+		}
+
+		// one or both do not exist, create new
+		if (!qExists) {
+			boolean createSuccess = QUESTIONNAIRE_DIR.mkdir ();
+			if (!createSuccess) {
+				// could not create folder, something went wrong
+				return -1;
+			}
+		}
+		if (!aExists) {
+			boolean createSuccess = ANSWERS_DIR.mkdir ();
+			if (!createSuccess) {
+				// could not create folder, something went wrong
+				return -1;
+			}
+		}
+
+		// newly created folders, return status for success
+		return 1;
+	}
+
+	// moves all questionnaires from the asset folder to the questionnaire folder on the phone
+	private boolean moveQuestionnaires () {
+		// do NOT close() the assetManager, causes app crash
+		AssetManager assetManager = getAssets ();
+		try {
+			final String[] arr = assetManager.list ("");
+			if (arr == null) {
+				//no files found, nothing to do
+				return true;
+			}
+			// for each file...
+			for (String str : arr) {
+				// must end on .json
+				if (!str.endsWith (".json")) {
+					// just go to the next one
+					continue;
+				}
+				// result file location
+				final File destFile = new File (QUESTIONNAIRE_DIR, str);
+				if (!destFile.createNewFile ()) {
+					if (!destFile.isFile ()) {
+						return false;
+					}
+					if (destFile.delete ()) {
+						if (!destFile.createNewFile ()) {
+							return false;
+						}
+					} else {
+						return false;
+					}
+				}
+				// reader and writer
+				try (BufferedReader reader = new BufferedReader (new InputStreamReader (assetManager.open (str, AssetManager.ACCESS_STREAMING)))) {
+					try (BufferedWriter writer = new BufferedWriter (new FileWriter (destFile))) {
+						// reading to StringBuilder
+						// see https://www.baeldung.com/java-write-reader-to-file
+						final StringBuilder builder = new StringBuilder ();
+						int intValueOfChar = reader.read ();
+						while (intValueOfChar != -1) {
+							builder.append ((char) intValueOfChar);
+							intValueOfChar = reader.read ();
+						}
+						// write to file
+						writer.write (builder.toString ());
+					}
+				}
+			}
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace ();
+			return false;
+		}
+	}
+
 	// init list
 	public void init () {
 		// questionnaires have to be sorted before the list view of them is generated
@@ -72,8 +220,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 		// list of string needed for arrayAdapter
 		List<String> data = new ArrayList<> ();
-		for (Questionnaire questionnaire : this.questionnaireList) {
-			data.add (questionnaire.getName ());
+		for (Questionnaire questionnaire : questionnaireList) {
+			final String name = questionnaire.getName ();
+			if (name == null) {
+				data.add ("null");
+			} else {
+				data.add (name);
+			}
 		}
 		// list view
 		this.listView = findViewById (R.id.listView);
@@ -81,45 +234,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		final ListAdapter adapter = new ArrayAdapter<> (this, android.R.layout.simple_list_item_activated_1, data);
 		this.listView.setAdapter (adapter);
 	}
-	
-	private Questionnaire importQuestionnaire (int index) {
-		// read JSON file with GSON library
-		// you have to add the dependency for gson
-		// File > Project Structure > Add Dependency
-		// TODO: invalid JSON still crashes the app!!!
+
+	private void importQuestionnaires () {
 		try {
-			AssetManager assetManager = getAssets ();
-			InputStream ims = assetManager.open ("ConditionTest.json");
 			Gson gson = new GsonBuilder ().setDateFormat ("yyyy-MM-dd'T'HH:mm:ssXXX").create ();
-			Reader reader = new InputStreamReader (ims);
-			return gson.fromJson (reader, Questionnaire.class);
-		}
-		catch (IOException e) {
-			e.printStackTrace ();
-			// test if failed to read file :
-			final StackTraceElement[] stackTrace = e.getStackTrace ();
-			Toast failure = Toast.makeText (this, "Fehler beim Einlesen.\n" + Arrays.toString (stackTrace), Toast.LENGTH_LONG);
-			failure.show ();
-			return null;
-		}
-		
-		/*try {
-			AssetManager assetManager = getAssets();
-			InputStream ims = assetManager.open("example-questionnaire-" + index + ".json");
-			
-			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").create();
-			Reader reader = new InputStreamReader(ims);
-			
-			return gson.fromJson(reader, Questionnaire.class);
-		}
-		catch (IOException e) {
+			// look at all files in the questionnaire directory
+			assert QUESTIONNAIRE_DIR != null;
+			final File[] foundFiles = QUESTIONNAIRE_DIR.listFiles ();
+			for (File file : foundFiles) {
+				// only look at .json files
+				if (!file.isFile () || !file.getPath ().endsWith (".json")) {
+					continue;
+				}
+				// read files and add to list
+				try (BufferedReader reader = new BufferedReader (new FileReader (file))) {
+					Questionnaire questionnaire;
+					try {
+						questionnaire = gson.fromJson (reader, Questionnaire.class);
+					} catch (Exception e) {
+						continue;
+					}
+					// questionnaires must have positive id, otherwise error is assumed (default constructor writes -1)
+					if (questionnaire.getID () >= 0) {
+						questionnaireList.add (questionnaire);
+					}
+				}
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
-			// test if failed to read file :
-			final StackTraceElement[] stackTrace = e.getStackTrace();
-			Toast failure = Toast.makeText(this, "Fehler beim Einlesen.\n" + Arrays.toString(stackTrace), Toast.LENGTH_LONG);
-			failure.show();
-			return null;
-		} */
+		}
 	}
 	
 	public boolean onCreateOptionsMenu (Menu menu) {
@@ -142,21 +285,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		alertDialog.setTitle ("");
 		alertDialog.setMessage ("Wollen Sie die App verlassen?");
 		alertDialog.setCancelable (true);
-		alertDialog.setPositiveButton (
-			"Ja",
-			new DialogInterface.OnClickListener () {
-				public void onClick (DialogInterface dialog, int id) {
-					dialog.cancel ();
-					finish ();
-				}
-			});
-		alertDialog.setNegativeButton (
-			"Abbrechen",
-			new DialogInterface.OnClickListener () {
-				public void onClick (DialogInterface dialog, int id) {
-					dialog.cancel ();
-				}
-			});
+		alertDialog.setPositiveButton ("Ja", (dialog, id) -> {
+			dialog.cancel ();
+			finish ();
+		});
+		alertDialog.setNegativeButton ("Abbrechen", (dialog, id) -> dialog.cancel ());
 		AlertDialog alert = alertDialog.create ();
 		alert.show ();
 	}

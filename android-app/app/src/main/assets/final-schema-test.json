@@ -90,36 +90,15 @@
       "text": "Skaliert Unipolare Frage",
       "hint": "Hinweis SUF",
       "questionType": "Skaliert unipolar",
-      "answers": [
-        {
-          "id": 0,
-          "text": "1",
-          "_type": "regular"
-        },
-        {
-          "id": 1,
-          "text": "2",
-          "_type": "regular"
-        },
-        {
-          "id": 2,
-          "text": "3",
-          "_type": "regular"
-        },
-        {
-          "id": 3,
-          "text": "4",
-          "_type": "regular"
-        }
-      ],
+      "answers": [],
       "questionTime": "0000:00",
       "tableSize": 0,
       "topText": "",
-      "rightText": "",
+      "rightText": "rechts",
       "bottomText": "",
-      "leftText": "",
-      "polarMin": 0,
-      "polarMax": 0
+      "leftText": "links",
+      "polarMin": 1,
+      "polarMax": 4
     },
     {
       "_type": "Question",
@@ -127,51 +106,15 @@
       "text": "Skalierte bipolare Frage",
       "hint": "Hinweis SBF ",
       "questionType": "Skaliert bipolar",
-      "answers": [
-        {
-          "id": 0,
-          "text": "-3",
-          "_type": "regular"
-        },
-        {
-          "id": 1,
-          "text": "-2",
-          "_type": "regular"
-        },
-        {
-          "id": 2,
-          "text": "-1",
-          "_type": "regular"
-        },
-        {
-          "id": 3,
-          "text": "0",
-          "_type": "regular"
-        },
-        {
-          "id": 4,
-          "text": "1",
-          "_type": "regular"
-        },
-        {
-          "id": 5,
-          "text": "2",
-          "_type": "regular"
-        },
-        {
-          "id": 6,
-          "text": "3",
-          "_type": "regular"
-        }
-      ],
+      "answers": [],
       "questionTime": "0000:00",
       "tableSize": 0,
       "topText": "",
-      "rightText": "",
+      "rightText": "rechts",
       "bottomText": "",
-      "leftText": "",
+      "leftText": "links",
       "polarMin": 0,
-      "polarMax": 0
+      "polarMax": 6
     },
     {
       "_type": "Question",

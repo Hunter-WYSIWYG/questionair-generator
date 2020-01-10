@@ -1,7 +1,7 @@
 {
-  "id": 0,
+  "id": 1,
   "priority": 0,
-  "title": "Umfangreicher Fragebogen",
+  "title": "final schema test",
   "elements": [
     {
       "_type": "Question",
@@ -21,12 +21,14 @@
           "_type": "free"
         }
       ],
-      "questionTime": "",
+      "questionTime": "0000:00",
       "tableSize": 0,
       "topText": "",
       "rightText": "",
       "bottomText": "",
-      "leftText": ""
+      "leftText": "",
+      "polarMin": 0,
+      "polarMax": 0
     },
     {
       "_type": "Question",
@@ -46,12 +48,14 @@
           "_type": "free"
         }
       ],
-      "questionTime": "",
+      "questionTime": "0000:00",
       "tableSize": 0,
       "topText": "",
       "rightText": "",
       "bottomText": "",
-      "leftText": ""
+      "leftText": "",
+      "polarMin": 0,
+      "polarMax": 0
     },
     {
       "_type": "Question",
@@ -71,12 +75,14 @@
           "_type": "regular"
         }
       ],
-      "questionTime": "",
+      "questionTime": "0000:00",
       "tableSize": 0,
       "topText": "",
       "rightText": "",
       "bottomText": "",
-      "leftText": ""
+      "leftText": "",
+      "polarMin": 0,
+      "polarMax": 0
     },
     {
       "_type": "Question",
@@ -106,12 +112,14 @@
           "_type": "regular"
         }
       ],
-      "questionTime": "",
+      "questionTime": "0000:00",
       "tableSize": 0,
       "topText": "",
       "rightText": "",
       "bottomText": "",
-      "leftText": ""
+      "leftText": "",
+      "polarMin": 0,
+      "polarMax": 0
     },
     {
       "_type": "Question",
@@ -156,12 +164,14 @@
           "_type": "regular"
         }
       ],
-      "questionTime": "",
+      "questionTime": "0000:00",
       "tableSize": 0,
       "topText": "",
       "rightText": "",
       "bottomText": "",
-      "leftText": ""
+      "leftText": "",
+      "polarMin": 0,
+      "polarMax": 0
     },
     {
       "_type": "Question",
@@ -170,7 +180,7 @@
       "hint": "Hinweis RAF",
       "questionType": "Raster-Auswahl",
       "answers": [],
-      "questionTime": "",
+      "questionTime": "0000:00",
       "tableSize": 2,
       "topText": "oben ",
       "rightText": "rechts",
@@ -189,7 +199,7 @@
       "hint": "Hinweis PF",
       "questionType": "Prozentslider",
       "answers": [],
-      "questionTime": "",
+      "questionTime": "0000:00",
       "tableSize": 0,
       "topText": "",
       "rightText": "rechter GW",
@@ -203,7 +213,7 @@
       "hint": "Hinweis Button Slider",
       "questionType": "Button Slider",
       "answers": [],
-      "questionTime": "",
+      "questionTime": "0000:00",
       "tableSize": 10,
       "topText": "",
       "rightText": "rechts",

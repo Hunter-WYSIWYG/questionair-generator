@@ -1022,19 +1022,19 @@ showInputBipolarUnipolarTableSlider model =
 
             else if record.typ == "Prozentslider" then
                 div []
-                    [ text "Beschriftung links:"
+                    [ text "Bitte linken Grenzwert eingeben:   "
                     , input
                         [ class "input is-medium"
                         , type_ "text"
                         , style "width" "100px"
-                        , style "margin-left" "20px"
+                        , style "margin-left" "16px"
                         , style "margin-top" "2px"
                         , value ( QElement.getLeftText model.newElement )
                         , onInput SetLeftText
                         ]
                         []
                     , br [] []
-                    , text "Beschriftung rechts:"
+                    , text "Bitte rechten Grenzwert eingeben:"
                     , input
                         [ class "input is-medium"
                         , type_ "text"

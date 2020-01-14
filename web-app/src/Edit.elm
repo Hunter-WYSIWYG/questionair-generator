@@ -352,7 +352,34 @@ viewNewQuestionModal model =
                             , radio " Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
                             , radio " Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
                             , radio " Prozentslider" (ChangeQuestionType "Prozentslider")
+                            , radio " Button Slider" (ChangeQuestionType "Button Slider")
                         ]
+                        , text "Zeitlimit:"
+                        , br [] []
+                        , input
+                            [ class "input is-medium"
+                            , style "width" "25%"
+                            , style "margin-bottom" "20px"
+                            , type_ "text"
+                            , maxlength 4
+                            , onInput ChangeQuestionTimeMinutes
+                            , placeholder "Minuten"
+                            , Html.Attributes.min "0"
+                            ]
+                            []
+                        , input
+                            [ class "input is-medium"
+                            , style "width" "25%"
+                            , style "margin-left" "10px"
+                            , style "margin-bottom" "20px"
+                            , type_ "text"
+                            , maxlength 2
+                            , onInput ChangeQuestionTimeSeconds
+                            , placeholder "Sekunden"
+                            , Html.Attributes.min "0"
+                            , Html.Attributes.max "59"
+                            ]
+                            []
                         , showInputBipolarUnipolarTableSlider model
                         , showNewAnswerButton model
                         , br [] []
@@ -379,7 +406,7 @@ getQuestionOptions : List Q_element -> Condition -> List (Html Msg)
 getQuestionOptions list newCondition =
     [ option [] [ text "Keine" ] ]
         ++ List.map (\e -> option [ selected (QElement.getElementId e == newCondition.parent_id) ]
-            [ text (String.fromInt (QElement.getElementId e) ++ ":" ++ " " ++ QElement.getElementText e) ]) list
+            [ text (String.fromInt (QElement.getElementId e) ++ "." ++ " " ++ QElement.getElementText e) ]) list
 
 {-| Displays a list of answers that can be added to the condition as answer.
 See viewConditionModal
@@ -393,7 +420,7 @@ getAnswerOptions model newCondition =
     in
         [ option [] [ text "Keine" ] ]
             ++ List.map (\e -> option [ selected (Answer.getAnswerId e == newCondition.answer_id) ]
-                [ text (String.fromInt(Answer.getAnswerId e) ++ ":" ++ " " ++ Answer.getAnswerText e) ]) list
+                [ text (String.fromInt(Answer.getAnswerId e) ++ "." ++ " " ++ Answer.getAnswerText e) ]) list
 
 
 {-| Displays a modal for creating new answers.
@@ -635,7 +662,7 @@ answersTable : Model -> List (Html Msg)
 answersTable model =
     case model.newElement of
         Question record ->
-            List.append [ tableHead_answers ] (Debug.log "test" (List.indexedMap getAnswerTable (QElement.getAntworten model.newElement)))
+            List.append [ tableHead_answers ] (List.indexedMap getAnswerTable (QElement.getAntworten model.newElement))
 
         Note record ->
             []
@@ -792,7 +819,7 @@ showAnswerTable : Model -> Html Msg
 showAnswerTable model =
     case model.newElement of
         Question record ->
-            if  record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+              if  record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" || record.typ == "Button Slider" then
                 div [] []
             else
                 table [ class "table is-striped", style "width" "100%" ] (answersTable model)
@@ -806,7 +833,7 @@ showNewAnswerButton : Model -> Html Msg
 showNewAnswerButton model =
     case model.newElement of
         Question record ->
-            if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" then
+             if record.typ == "Skaliert unipolar" || record.typ == "Skaliert bipolar" || record.typ == "Raster-Auswahl" || record.typ == "Prozentslider" || record.typ == "Button Slider" then
                 div [] []
             else
                 button [ class "qnButton", style "margin-bottom" "10px", onClick (ViewOrClose AnswerModal) ] [ text "Neue Antwort" ]

@@ -344,14 +344,15 @@ viewNewQuestionModal model =
                         , br [style "margin-top" "20px"] []
                         , text ("Typ: " ++ QElement.getQuestionTyp model.newElement)
                         , br [] []
-                        , selectedRadio "Single Choice" (ChangeQuestionType "Single Choice")
-                        , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
-                        , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
-                        , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
-                        , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
-                        , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
-                        , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
-                        , br [] []
+                        , div [class "grid-container2"] [
+                            selectedRadio " Single Choice" (ChangeQuestionType "Single Choice")
+                            , radio " Multiple Choice" (ChangeQuestionType "Multiple Choice")
+                            , radio " Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
+                            , radio " Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
+                            , radio " Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                            , radio " Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
+                            , radio " Prozentslider" (ChangeQuestionType "Prozentslider")
+                        ]
                         , showInputBipolarUnipolarTableSlider model
                         , showNewAnswerButton model
                         , br [] []

@@ -86,6 +86,12 @@
   grid-template-columns: 250px auto;
 }
 
+.grid-container2{
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: auto auto auto;
+}
+
 .flex-container {
   display: flex;
   height: 18px;

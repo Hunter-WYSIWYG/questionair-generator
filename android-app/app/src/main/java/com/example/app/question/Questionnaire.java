@@ -13,7 +13,7 @@ import java.util.Date;
 public class Questionnaire implements Serializable {
 	// id of Questionnaire
 	@SerializedName ("id")
-	private final double id;
+	private final int id;
 	
 	// name of Questionnaire
 	@SerializedName ("title")
@@ -47,7 +47,7 @@ public class Questionnaire implements Serializable {
 	private Questionnaire () {
 		this.name = null;
 		this.questionList = null;
-		this.id = 0.0;
+		this.id = -1;
 		this.reminderList = null;
 		this.conditionList = null;
 		this.priority = 0;
@@ -59,7 +59,7 @@ public class Questionnaire implements Serializable {
 		return this.name;
 	}
 	
-	public double getID () {
+	public int getID () {
 		return this.id;
 	}
 	

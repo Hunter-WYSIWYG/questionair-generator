@@ -240,7 +240,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	// enable or disable 'next' button depending on whether any button is checked
 	// also disable other radio buttons if this is that kind of question
 	private void buttonClicked (OptionView view) {
-		if (this.question.isSingleChoice ()) {
+		if (this.question.isSingleChoice () || this.question.isBinaryChoice ()) {
 			for (OptionView otherView : this.optionViews)
 				if (otherView != view)
 					otherView.setChecked (false);
@@ -294,7 +294,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 	@Override
 	public AnswerCollection getCurrentAnswer() {
 		Calendar calendar = Calendar.getInstance (); // gets current instance of the calendar
-		if(this.question.isSingleChoice ()) {
+		if(this.question.isSingleChoice () || this.question.isBinaryChoice ()) {
 			for (OptionView optionView : this.optionViews) {
 				if (optionView.isChecked ()) {
 					Answer answer = new Answer(this.question.type.toString (), optionView.getOption ().getId (), optionView.getOption ().getOptionText ());

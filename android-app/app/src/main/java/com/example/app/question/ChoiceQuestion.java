@@ -21,4 +21,8 @@ public class ChoiceQuestion extends Question {
 	public boolean isSingleChoice () {
 		return this.type == QuestionType.SingleChoice;
 	}
+	// test if binaryChoice
+	public boolean isBinaryChoice () {
+		return this.type == QuestionType.BinaryChoice;
+	}
 }

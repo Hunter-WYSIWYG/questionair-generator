@@ -82,7 +82,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		
 		// if question has edit time
-		if (q.questionTime != null) {
+		if (q.questionTime != null && !"0000:00".equals(q.questionTime)) {
 			// if time is up
 			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime()) {
 				// create invalid answer and add it to the answer list
@@ -160,20 +160,27 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 			//If it isn't mounted - we can't write into it.
 			return;
 		}
-		
-		//Create a new file that points to the root directory, with the given name:
-		File file = new File (getExternalFilesDir(null), this.getState ().getQuestionnaire ().getName () + ".json");
-		
-		//This point and below is responsible for the write operation
+
+		// Create a new file that points to the root directory, with the given name:
+		File file = new File (MainActivity.ANSWERS_DIR, getState ().getQuestionnaire ().getName () + ".json");
+
+		// This point and below is responsible for the write operation
 		try {
-			file.createNewFile ();
-			BufferedWriter writer = new BufferedWriter (new FileWriter(file));
+			if (!file.createNewFile ()) {
+				if (file.delete ()) {
+					if (!file.createNewFile ()) {
+						throw new Exception ("text");
+					}
+				} else {
+					throw new Exception ("text");
+				}
+			}
+			BufferedWriter writer = new BufferedWriter (new FileWriter (file));
 			writer.write (textToWrite);
 			writer.close ();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace ();
-			Toast myToast = Toast.makeText (this, "Error. Antworten nicht Gespeichert!", Toast.LENGTH_SHORT);
+			Toast myToast =	Toast.makeText(this, "Error. Antworten nicht Gespeichert!", Toast.LENGTH_SHORT);
 			myToast.show ();
 		}
 	}
@@ -184,26 +191,15 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		alertDialog.setTitle ("");
 		alertDialog.setMessage ("Wollen Sie den Fragebogen verlassen?");
 		alertDialog.setCancelable (true);
-		
-		alertDialog.setPositiveButton (
-			"Ja",
-			new DialogInterface.OnClickListener () {
-				public void onClick (DialogInterface dialog, int id) {
-					dialog.cancel ();
-					Intent intent = new Intent (QuestionDisplayActivity.this, MainActivity.class);
-					startActivity (intent);
-					finish ();
-				}
-			});
-		
-		alertDialog.setNegativeButton (
-			"Abbrechen",
-			new DialogInterface.OnClickListener () {
-				public void onClick (DialogInterface dialog, int id) {
-					dialog.cancel ();
-				}
-			});
-		
+
+		alertDialog.setPositiveButton ("Ja", (dialog, id) -> {
+			dialog.cancel ();
+			Intent intent = new Intent (this, MainActivity.class);
+			startActivity (intent);
+			finish ();
+		});
+
+		alertDialog.setNegativeButton ("Abbrechen", (dialog, id) -> dialog.cancel ());
 		AlertDialog alert = alertDialog.create ();
 		alert.show ();
 	}

@@ -162,7 +162,7 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 
 		// Create a new file that points to the root directory, with the given name:
-		File file = new File (MainActivity.ANSWERS_DIR, getState ().getQuestionnaire ().getName () + ".json");
+		File file = new File (MainActivity.ANSWERS_DIR, getState ().getQuestionnaire ().getName ()+ " " + this.state.getStarttime() + ".json");
 
 		// This point and below is responsible for the write operation
 		try {

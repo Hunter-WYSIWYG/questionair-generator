@@ -10,7 +10,7 @@
 			android:layout_height="wrap_content"
 			android:paddingLeft="40dp"
 			android:paddingRight="40dp"
-			android:text="Vielen Dank für Ihre Zeit! Ihre Antworten wurden gespeichert."
+			android:text="Vielen Dank für Ihre Teilnahme."
 			android:textSize="18sp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"

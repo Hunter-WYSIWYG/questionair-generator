@@ -448,12 +448,13 @@ viewNewAnswerModal model =
                             , type_ "text"
                             , style "width" "100%"
                             , onInput ChangeAnswerText
+                            , value (Answer.getAnswerText model.newAnswer)
                             ]
                             []
                         ]
                     , br [] []
                     , div []
-                        [ text ("Typ: " ++ model.newAnswer.typ)
+                        [ text ("Ausgewählt: " ++ Answer.getDisplayAnswerTyp (model.newAnswer))
                         , br [] []
                         , radio "Fester Wert" (ChangeAnswerType "regular")
                         , radio "Freie Eingabe" (ChangeAnswerType "free")
@@ -701,7 +702,7 @@ getAnswerTable index answer =
     tr [ id (String.fromInt index) ]
         [ td [] [ text (String.fromInt index) ]
         , td [] [ text answer.text ]
-        , td [] [ text answer.typ ]
+        , td [] [ text (Answer.getDisplayAnswerTyp answer) ]
         , td []
             [ i
                 [ class "fas fa-arrow-up"

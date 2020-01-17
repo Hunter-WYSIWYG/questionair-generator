@@ -1,0 +1,188 @@
+{
+        "id": 0,
+        "priority": 0,
+        "title": "Testfragebogen",
+        "elements": [
+                {
+                        "_type": "Question",
+                        "id": 0,
+                        "text": "Ja/Nein Frage",
+                        "hint": "Hinweis 3",
+                        "questionType": "Ja/Nein Frage",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "Ja",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "Nein",
+                                        "_type": "regular"
+                                }
+                        ],
+                        "questionTime": "0000:00",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 1,
+                        "text": "Multiple Chioce ",
+                        "hint": "Hinweis 2",
+                        "questionType": "Multiple Choice",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "MC Antwort 1",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "MC Antwort 2",
+                                        "_type": "free"
+                                }
+                        ],
+                        "questionTime": "0000:00",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 2,
+                        "text": "Prozentslider",
+                        "hint": "Hinweis 7",
+                        "questionType": "Prozentslider",
+                        "answers": [],
+                        "questionTime": "0000:00",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "rechts",
+                        "bottomText": "",
+                        "leftText": "links",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 3,
+                        "text": "Skaliert unipolar",
+                        "hint": "Hinweis 4",
+                        "questionType": "Skaliert unipolar",
+                        "answers": [],
+                        "questionTime": "0000:00",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "Rechts",
+                        "bottomText": "",
+                        "leftText": "Links",
+                        "polarMin": 0,
+                        "polarMax": 5
+                },
+                {
+                        "_type": "Question",
+                        "id": 4,
+                        "text": "Skaliert bipolar",
+                        "hint": "Hinweis 5",
+                        "questionType": "Skaliert bipolar",
+                        "answers": [],
+                        "questionTime": "0000:00",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "Rechts",
+                        "bottomText": "",
+                        "leftText": "Links",
+                        "polarMin": 1,
+                        "polarMax": 6
+                },
+                {
+                        "_type": "Question",
+                        "id": 5,
+                        "text": "Raster-Auswahl",
+                        "hint": "Hinweis 6",
+                        "questionType": "Raster-Auswahl",
+                        "answers": [],
+                        "questionTime": "0000:00",
+                        "tableSize": 5,
+                        "topText": "oben",
+                        "rightText": "rechts",
+                        "bottomText": "unten",
+                        "leftText": "links",
+                        "polarMin": 0,
+                        "polarMax": 0
+                },
+                {
+                        "_type": "Question",
+                        "id": 6,
+                        "text": "Single Choice",
+                        "hint": "Hinweis 1",
+                        "questionType": "Single Choice",
+                        "answers": [
+                                {
+                                        "id": 0,
+                                        "text": "SC Antwort 1",
+                                        "_type": "regular"
+                                },
+                                {
+                                        "id": 1,
+                                        "text": "SC Antwort 2",
+                                        "_type": "free"
+                                }
+                        ],
+                        "questionTime": "0000:00",
+                        "tableSize": 0,
+                        "topText": "",
+                        "rightText": "",
+                        "bottomText": "",
+                        "leftText": "",
+                        "polarMin": 0,
+                        "polarMax": 0
+                }
+        ],
+        "conditions": [
+                {
+                        "parent_id": 0,
+                        "child_id": 5,
+                        "answer_id": 0
+                },
+                {
+                        "parent_id": 1,
+                        "child_id": 6,
+                        "answer_id": 1
+                }
+        ],
+        "viewingTime": "24-12-2019;31-12-2020",
+        "reminderTimes": [
+                "2019-12-10T12:00:00+01:00",
+                "2019-12-10T13:00:00+01:00",
+                "2019-12-10T14:00:00+01:00",
+                "2019-12-10T15:00:00+01:00",
+                "2019-12-10T16:00:00+01:00",
+                "2019-12-10T17:00:00+01:00",
+                "2019-12-10T18:00:00+01:00",
+                "2019-12-10T19:00:00+01:00",
+                "2019-12-10T20:00:00+01:00",
+                "2019-12-10T21:00:00+01:00",
+                "2019-12-10T22:00:00+01:00",
+                "2019-12-10T23:00:00+01:00",
+                "2019-12-24T12:00:00+01:00",
+                "2019-12-25T12:00:00+01:00",
+                "2019-12-26T12:00:00+01:00",
+                "2019-12-27T12:00:00+01:00",
+                "2019-12-28T12:00:00+01:00",
+                "2019-12-29T12:00:00+01:00",
+                "2019-12-30T12:00:00+01:00",
+                "2019-12-24T12:00:00+01:00"
+        ],
+        "editTime": "05:23"
+}

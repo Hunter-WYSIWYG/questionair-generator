@@ -18,8 +18,8 @@ public class QuestionnaireFinishedActivity extends AppCompatActivity {
 		setContentView (R.layout.activity_questionnaire_finished);
 		
 		String answerList = this.getIntent ().getStringExtra ("EXTRA_ANSWERS");
-		TextView text = this.findViewById (R.id.textView);
-		text.setText (answerList);
+		// TextView text = this.findViewById (R.id.textView);
+		// text.setText (answerList);
 		this.backToStart = this.findViewById (R.id.backToStartButton);
 		this.backToStart.setOnClickListener (v -> this.goBackToStart ());
 	}

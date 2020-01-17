@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		this.init ();
 	}
 
-	// first time stting up the answers and questionnaires directories
+	// first time setting up the answers and questionnaires directories
 	private int firstTimeSetup () {
 		// Checking the availability state of the External Storage.
 		String state = Environment.getExternalStorageState ();

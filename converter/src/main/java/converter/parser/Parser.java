@@ -38,54 +38,31 @@ public class Parser {
             } else {
 
                 currentQuestion = questionnaire.getJSONObject(0);
-
-                sb.append("Fragebogen;");
-                //Titel des Fragebogens
-                sb.append(currentQuestion.getString("title_of_questionnaire"));
-                sb.append("\r\n");
-                sb.append("\r\n");
-
-                for (int i=0;i<questionnaire.length();i++) {
+                
+		for (int i=0;i<questionnaire.length();i++) {
                     //alle Fragen nacheinander auslesen
                     currentQuestion = questionnaire.getJSONObject(i);
                     currentAnswers = currentQuestion.getJSONArray("answers");
 
-                    if (currentQuestion.getString("type_of_question").equals("note")) { //Notiz? else Frage
-                        noteCounter++;
-                        //Notiz schreiben
-                        sb.append("Notiz;");
-                        sb.append(currentQuestion.getString("question_text"));
-                        sb.append("\r\n");
-                        sb.append("\r\n");
-                    } else {
-                        //Frage + Antworten  + Antwortzeit schreiben
-                        sb.append("Frage "+(currentQuestion.getInt("question_id")-noteCounter) + ";");
-                        //Notizanzahl wird von question_id abgezogen um Fragenummer zu erhalten
-                        sb.append(currentQuestion.getString("question_text"));
-                        sb.append(";");
-
-                        for (int j=0; j<currentAnswers.length();j++) {
-                            currentAnswer = currentAnswers.getJSONObject(j);
-                            sb.append("Antwort "+currentAnswer.getInt("id") + ";");
-                            if (currentQuestion.getString("type_of_question").equals("slider")) {
-                                sb.append(currentAnswer.getInt("id"));
-                            } else {
-                                sb.append(currentAnswer.getString("text"));
-                            }
-                            sb.append(";");
-                        }
-                        sb.append("Antwortzeit;");
-                        sb.append(currentQuestion.getString("answerTime"));
-                        sb.append("\r\n");
-                        sb.append("\r\n");
+                    sb.append(currentQuestion.getString("userid") + ";");
+                    sb.append(currentQuestion.getString("answerTime") + ";");
+                    sb.append(currentQuestion.getInt("question_id") + ";");
+                    sb.append(currentQuestion.getString("question_text") + ";");
+                    
+                    for (int j=0; j<currentAnswers.length();j++) {
+                    	//alle Antworten nacheinander auslesen
+                        currentAnswer = currentAnswers.getJSONObject(j);
+                        if (currentQuestion.getString("type_of_question").equals("slider")) {
+				sb.append(currentAnswer.getInt("id"));
+			} else {
+				sb.append(currentAnswer.getString("text") + ";");
+			}
                     }
-
+                    
+                    sb.append("\r\n");
                 }
-                //Zeilenumsprung nach letztem Eintrag löschen, ergab Fehler
-                sb.delete(sb.length()-4, sb.length());
-
             }
-
+            
             return sb.toString();
 
         } catch(Exception e1) {

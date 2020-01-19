@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -162,7 +163,9 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 
 		// Create a new file that points to the root directory, with the given name:
-		File file = new File (MainActivity.ANSWERS_DIR, getState ().getQuestionnaire ().getName ()+ " " + this.state.getStarttime() + ".json");
+		String pattern = "yyyy_MM_dd_HH_mm_ss";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		File file = new File (MainActivity.ANSWERS_DIR, getState ().getQuestionnaire ().getName ()+ "_" + simpleDateFormat.format(this.state.getStarttime()) + ".json");
 
 		// This point and below is responsible for the write operation
 		try {

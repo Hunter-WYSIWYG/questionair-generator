@@ -25,7 +25,7 @@ public class QuestionnaireState implements Serializable {
 	@SerializedName ("answerCollectionList")
 	private final List<AnswerCollection> answerCollectionList = new ArrayList<> ();
 	private long currentQuestionEndTime;
-	private String starttime;
+	private Date starttime;
 	
 	// constructor, creates a new QuestionnaireState that starts at the first question
 	public QuestionnaireState (Questionnaire questionnaire) {
@@ -41,8 +41,7 @@ public class QuestionnaireState implements Serializable {
 		}
 		currentQuestionEndTime = 0L;
 		Calendar cal= Calendar.getInstance();
-		Date date=cal.getTime();
-		starttime = date.toString();
+		starttime=cal.getTime();
 		
 		this.goToNextPossibleQuestion ();
 	}
@@ -115,7 +114,7 @@ public class QuestionnaireState implements Serializable {
 		return currentQuestionEndTime;
 	}
 	
-	public String getStarttime() { return starttime; }
+	public Date getStarttime() { return starttime; }
 	
 	public List<AnswerCollection> getAnswerCollectionList() {
 		return answerCollectionList;

@@ -14,7 +14,7 @@ public class ADB {
      * @return the list of json-files/answered questionnaires
      */
     public static Object[] listJsonFiles() {
-        ArrayList<String> jsonFiles = new ArrayList<>();
+        ArrayList<String> jsonFiles = new ArrayList();
 
         try {
             Process process = Runtime.getRuntime().exec("adb shell ls /sdcard/Android/data/com.example.app/files/antworten");

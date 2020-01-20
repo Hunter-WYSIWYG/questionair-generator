@@ -1,6 +1,9 @@
 package com.example.app.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.example.app.MainActivity;
 import com.example.app.QuestionDisplayActivity;
 import com.example.app.QuestionnaireState;
 import com.example.app.R;
@@ -29,6 +33,8 @@ import com.example.app.question.QuestionType;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static com.example.app.MainActivity.username;
 
 // OptionView is the view of one option (button + text)
 abstract class OptionView {
@@ -300,7 +306,7 @@ public class MultipleChoiceView extends QuestionDisplayView {
 					Answer answer = new Answer(this.question.type.toString (), optionView.getOption ().getId (), optionView.getOption ().getOptionText ());
 					List<Answer> answerList = new ArrayList<Answer> ();
 					answerList.add(answer);
-					AnswerCollection answerCollection = new AnswerCollection(this.questionnaireState.getQuestionnaire ().getName (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
+					AnswerCollection answerCollection = new AnswerCollection(this.questionnaireState.getQuestionnaire ().getName (), getPreferenceValue (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
 					return answerCollection;
 				}
 			}
@@ -314,8 +320,15 @@ public class MultipleChoiceView extends QuestionDisplayView {
 					answerList.add (answer);
 				}
 			}
-			AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
+			AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), getPreferenceValue (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
 			return answerCollection;
 		}
+	}
+
+	// get shared preference username
+	public String getPreferenceValue ()	{
+		SharedPreferences sp = this.getActivity().getSharedPreferences(username, 0);
+		String str = sp.getString("key","");
+		return str;
 	}
 }

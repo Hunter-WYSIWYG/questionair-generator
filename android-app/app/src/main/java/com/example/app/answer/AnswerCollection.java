@@ -11,6 +11,9 @@ import java.util.List;
 public class AnswerCollection implements Serializable {
 	@SerializedName("title_of_questionnaire")
 	public final String title;
+
+	@SerializedName("username")
+	public final String username;
 	
 	@SerializedName("answerTime")
 	public final Date questionnaireAnswerTime;
@@ -31,8 +34,9 @@ public class AnswerCollection implements Serializable {
 	public List<Answer> answerList = new ArrayList<Answer> ();
 
 	// constructor
-	public AnswerCollection (final String title, final Date questionnaireAnswerTime, final int questionnaireId, final QuestionType questionType, final int questionId, final String text, final List<Answer> answerList) {
+	public AnswerCollection (final String title, final String username, final Date questionnaireAnswerTime, final int questionnaireId, final QuestionType questionType, final int questionId, final String text, final List<Answer> answerList) {
 		this.title = title;
+		this.username = username;
 		this.questionnaireAnswerTime = questionnaireAnswerTime;
 		this.questionnaireId = questionnaireId;
 		this.questionType = questionType;
@@ -44,6 +48,10 @@ public class AnswerCollection implements Serializable {
 	// getter
 	public String getTitle () {
 		return title;
+	}
+
+	public String getUsername () {
+		return username;
 	}
 	
 	public Date getQuestionnaireAnswerTime () {

@@ -1,12 +1,6 @@
 package converter.graphical.ui;
 
-import converter.devices.Device;
-import converter.devices.Devices;
-
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /**
  * Implements the GUI of the converter tool.
@@ -29,7 +23,7 @@ public class GUI extends JFrame {
         setSize(400,400);
         setResizable(false);
         setLocationRelativeTo(null);
-        setJMenuBar(Menu.getMenuBar());
+        //setJMenuBar(Menu.getMenuBar());
         setContentPane(Layout.getInstance());
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

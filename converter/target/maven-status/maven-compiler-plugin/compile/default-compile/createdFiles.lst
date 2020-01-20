@@ -1,8 +1,0 @@
-converter\graphical\buttons\SaveBtnEvent.class
-converter\graphical\ui\GUI.class
-converter\graphical\table\CsvTable.class
-converter\graphical\ui\Layout.class
-converter\graphical\table\CsvTableModel.class
-converter\parser\Parser.class
-converter\Main.class
-converter\graphical\buttons\JsonBtnEvent.class

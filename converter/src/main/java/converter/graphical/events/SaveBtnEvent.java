@@ -1,4 +1,4 @@
-package converter.graphical.buttons;
+package converter.graphical.events;
 
 import converter.graphical.ui.GUI;
 

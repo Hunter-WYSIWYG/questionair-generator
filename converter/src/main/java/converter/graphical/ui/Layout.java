@@ -1,11 +1,13 @@
 package converter.graphical.ui;
 
-import converter.graphical.buttons.JsonBtnEvent;
-import converter.graphical.buttons.SaveBtnEvent;
+import converter.adb.ADB;
+import converter.graphical.events.ComboBoxChanged;
+import converter.graphical.events.RefreshBtnClick;
+import converter.graphical.events.SaveBtnEvent;
 import converter.graphical.table.CsvTable;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 
@@ -16,8 +18,9 @@ import static java.awt.GridBagConstraints.FIRST_LINE_START;
  */
 public class Layout extends JPanel {
 
-    private static JLabel fileLabel;
+    private static boolean alreadyInstantiated;
     private static Layout instance;
+    private static JComboBox jsonComboBox;
 
     /**
      * Initiates the layout of the GUI with all elements
@@ -27,17 +30,19 @@ public class Layout extends JPanel {
         
         GridBagConstraints constraints = new GridBagConstraints();
 
-        JButton jsonButton = new JButton("JSON auswählen");
+        jsonComboBox = new JComboBox();
+        jsonComboBox.addActionListener(new ComboBoxChanged());
+        updateJsonComboBox();
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.insets = new Insets(10,10,0,10);
-        add(jsonButton, constraints);
-        jsonButton.addActionListener(new JsonBtnEvent());
+        add(jsonComboBox, constraints);
 
-        fileLabel = new JLabel("Keine Datei ausgewählt...");
-        constraints.gridx = 1;
-        constraints.gridy = 0;
-        add(fileLabel, constraints);
+        JButton refresh = new JButton("Aktualisieren");
+        refresh.addActionListener(new RefreshBtnClick());
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        add(refresh, constraints);
 
         JTable table = new CsvTable();
         JScrollPane scrollPane = new JScrollPane(table);
@@ -58,6 +63,27 @@ public class Layout extends JPanel {
         add(saveButton, constraints);
     }
 
+    public static boolean isNotInstantiated() {
+        return (instance == null);
+    }
+
+    /**
+     * Updates the combobox with the JSON-files.
+     */
+    public void updateJsonComboBox() {
+        jsonComboBox.removeAllItems();
+
+        jsonComboBox.addItem("Beantworteten Bogen auswählen");
+
+        for (Object s : ADB.listJsonFiles()) {
+            jsonComboBox.addItem(s);
+        }
+    }
+
+    public String getSelectedJsonFile() {
+        return (String)jsonComboBox.getSelectedItem();
+    }
+
     /**
      * @return the layout of the GUI
      */
@@ -67,15 +93,6 @@ public class Layout extends JPanel {
         }
 
         return instance;
-    }
-
-    /**
-     * Changes the label of the current selected file.
-     *
-     * @param text the text to be set for the label
-     */
-    public void changeFileLabel(String text) {
-        fileLabel.setText(text);
     }
 
 }

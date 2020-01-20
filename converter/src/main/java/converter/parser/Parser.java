@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.*;
+
 /**
  * Contains the parse-function of the converter tool.
  *
@@ -50,7 +52,7 @@ public class Parser {
                     currentQuestion = questionnaire.getJSONObject(i);
                     currentAnswers = currentQuestion.getJSONArray("answers");
 
-                    if (currentQuestion.getString("type_of_question").equals("note")) { //Notiz? else Frage
+                    if (currentQuestion.has("type_of_question") && currentQuestion.getString("type_of_question").equals("note")) { //Notiz? else Frage
                         noteCounter++;
                         //Notiz schreiben
                         sb.append("Notiz;");
@@ -67,7 +69,7 @@ public class Parser {
                         for (int j=0; j<currentAnswers.length();j++) {
                             currentAnswer = currentAnswers.getJSONObject(j);
                             sb.append("Antwort "+currentAnswer.getInt("id") + ";");
-                            if (currentQuestion.getString("type_of_question").equals("slider")) {
+                            if (currentQuestion.has("type_of_question") && currentQuestion.getString("type_of_question").equals("slider")) {
                                 sb.append(currentAnswer.getInt("id"));
                             } else {
                                 sb.append(currentAnswer.getString("text"));
@@ -88,9 +90,11 @@ public class Parser {
 
             return sb.toString();
 
-        } catch(Exception e1) {
-            e1.printStackTrace();
-            return null;
+        } catch(Exception exc) {
+            String message = "Der Fragebogen konnte nicht gefunden werden. Wurde die Verbindung zum Handy unterbrochen?";
+            JOptionPane.showMessageDialog(null, message,"Fehler", JOptionPane.CANCEL_OPTION);
+            System.err.println(exc);
+            return "";
         }
     }
 

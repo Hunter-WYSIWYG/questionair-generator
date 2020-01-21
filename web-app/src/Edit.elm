@@ -346,13 +346,13 @@ viewNewQuestionModal model =
                         , br [] []
                         , div [class "grid-container2"] [
                             selectedRadio " Single Choice" (ChangeQuestionType "Single Choice")
-                            , radio " Multiple Choice" (ChangeQuestionType "Multiple Choice")
-                            , radio " Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
-                            , radio " Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
-                            , radio " Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
-                            , radio " Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
-                            , radio " Prozentslider" (ChangeQuestionType "Prozentslider")
-                            , radio " Button Slider" (ChangeQuestionType "Button Slider")
+                            , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
+                            , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
+                            , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
+                            , radio "Skaliert bipolar" (ChangeQuestionType "Skaliert bipolar")
+                            , radio "Raster-Auswahl" (ChangeQuestionType "Raster-Auswahl")
+                            , radio "Prozentslider" (ChangeQuestionType "Prozentslider")
+                            , radio "Button Slider" (ChangeQuestionType "Button Slider")
                         ]
                         , text "Zeitlimit:"
                         , br [] []
@@ -453,12 +453,13 @@ viewNewAnswerModal model =
                     , br [] []
                     , div []
                         [ text ("Typ: " ++ model.newAnswer.typ)
-                        , br [] []
-                        , radio "Fester Wert" (ChangeAnswerType "regular")
-                        , radio "Freie Eingabe" (ChangeAnswerType "free")
+                        , div [class "grid-container2"] [
+                            radio "Fester Wert" (ChangeAnswerType "regular")
+                            , radio "Freie Eingabe" (ChangeAnswerType "free")
+                        ]
                         ]
                     ]
-                , footer [ class "modal-card-foot mediumlightblue" ]
+                , footer [ class "modal-card-foot mediumlightblue"]
                     [ button
                         [ class "qnButton"
                         , onClick SetAnswer

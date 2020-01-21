@@ -92,6 +92,12 @@
   grid-template-columns: auto auto auto;
 }
 
+input[type=radio] {
+  margin: 7px;
+  position: relative;
+  top: 2px;
+}
+
 .flex-container {
   display: flex;
   height: 18px;

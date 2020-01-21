@@ -11,10 +11,8 @@ import java.util.List;
  */
 public class CsvTableModel extends DefaultTableModel {
 
-    private final int ROWS = 30;
-    private final int COLS = 2;
-
-    private Object[] rowData = new Object[COLS];
+    private final int ROWS = 1;
+    private final int COLS = 1;
 
     private static CsvTableModel instance;
 
@@ -57,24 +55,8 @@ public class CsvTableModel extends DefaultTableModel {
         this.setRowCount(0);
 
         data = data.replaceAll("\r\n", ";");
-        String[] values = data.split(";");
 
-        int pos = 0;
-
-        while(pos < values.length) {
-
-            if (values[pos].equals("")) {
-                rowData[0] = "";
-                rowData[1] = "";
-                pos++;
-            } else {
-                rowData[0] = values[pos];
-                rowData[1] = values[pos + 1];
-                pos += 2;
-            }
-
-            addRow(rowData);
-        }
+        addRow(new Object[] {data});
 
     }
 

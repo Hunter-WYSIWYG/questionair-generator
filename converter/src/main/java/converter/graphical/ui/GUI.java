@@ -20,7 +20,7 @@ public class GUI extends JFrame {
     private GUI() {
 
         setTitle("Converter");
-        setSize(400,400);
+        setSize(400,200);
         setResizable(false);
         setLocationRelativeTo(null);
         setContentPane(Layout.getInstance());

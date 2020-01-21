@@ -44,6 +44,7 @@ public class Parser {
                     currentQuestion = questionnaire.getJSONObject(i);
                     currentAnswers = currentQuestion.getJSONArray("answers");
 
+                    sb.append(currentQuestion.getString("title_of_questionnaire") + ";");
                     sb.append(currentQuestion.getString("userid") + ";");
                     sb.append(currentQuestion.getString("answerTime") + ";");
                     sb.append(currentQuestion.getInt("question_id") + ";");
@@ -53,13 +54,11 @@ public class Parser {
                     	//alle Antworten nacheinander auslesen
                         currentAnswer = currentAnswers.getJSONObject(j);
                         if (currentQuestion.getString("type_of_question").equals("slider")) {
-				sb.append(currentAnswer.getInt("id"));
-			} else {
-				sb.append(currentAnswer.getString("text") + ";");
-			}
+                        	sb.append(currentAnswer.getInt("id"));
+                        } else {
+                        	sb.append(currentAnswer.getString("text") + ";");
+                        }
                     }
-                    
-                    sb.append("\r\n");
                 }
             }
             

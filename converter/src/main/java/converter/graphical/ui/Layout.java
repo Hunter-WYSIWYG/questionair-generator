@@ -40,8 +40,9 @@ public class Layout extends JPanel {
         add(fileLabel, constraints);
 
         JTable table = new CsvTable();
+        table.setTableHeader(null);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setPreferredSize(new Dimension(360,200));
+        scrollPane.setPreferredSize(new Dimension(360,19));
         constraints.gridx = 0;
         constraints.gridy = 2;
         constraints.gridwidth = 3;

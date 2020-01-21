@@ -1,6 +1,6 @@
 module Answer exposing
     ( Answer
-    , getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText, getAnswerTyp
+    , getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText, getAnswerTyp, getDisplayAnswerTyp
     )
 
 {-| Contains the answer type used for questions and conditions.
@@ -13,7 +13,7 @@ module Answer exposing
 
 # Public functions
 
-@docs getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText, getAnswerTyp
+@docs getBipolarAnswers, getUnipolarAnswers, initAnswer, getYesNoAnswers, update, getAnswerId, getAnswerText, getAnswerTyp, getDisplayAnswerTyp
 
 -}
 
@@ -136,3 +136,15 @@ getAnswerText answer = answer.text
 -}
 getAnswerTyp : Answer -> String
 getAnswerTyp answer = answer.typ
+
+{- getter for answer type for displaying in german 
+-}
+getDisplayAnswerTyp : Answer -> String
+getDisplayAnswerTyp answer =
+    if answer.typ == "regular" then
+        "Fester Wert "
+    else
+        if answer.typ == "free" then
+            "Freie Eingabe"
+        else 
+            ""

@@ -40,7 +40,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -367,23 +366,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 	// sort questionnaires by priority
 	public void sortQuestionnaires () {
-		Collections.sort(this.questionnaireList, new Comparator<Questionnaire> () {
-			@Override
-			public int compare(Questionnaire q1, Questionnaire q2) {
-				return q1.getPriority () - q2.getPriority ();
-			}
-		});
+		Collections.sort(this.questionnaireList, (q1, q2) -> Integer.compare(q1.getPriority(), q2.getPriority()));
 	}
 
 	// change shared preference settings
 	public String getPreferenceValue ()	{
 		SharedPreferences sp = getSharedPreferences(username,0);
-		String str = sp.getString("key","");
-		return str;
+		return sp.getString("key", "");
 	}
 	public void writeToPreference (String thePreference) {
 		SharedPreferences.Editor editor = getSharedPreferences(username,0).edit();
 		editor.putString("key", thePreference);
-		editor.commit();
+		editor.apply();
 	}
 }

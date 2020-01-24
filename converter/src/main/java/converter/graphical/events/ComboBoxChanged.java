@@ -40,7 +40,7 @@ public class ComboBoxChanged implements ActionListener {
         String path = "/sdcard/Android/data/com.example.app/files/antworten/" + selectedJsonFile;
 
         ADB.pullFile(path);
-        File downloadedJson = new File(System.getProperty("user.dir") + "\\" + selectedJsonFile);
+        File downloadedJson = new File(System.getProperty("user.dir") + "/" + selectedJsonFile);
         String csv = Parser.parse(downloadedJson);
         CsvTableModel.getInstance().changeTable(csv);
     }

@@ -22,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,7 +37,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 	// list of all questionnaires
@@ -341,45 +344,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			}
 		}
 	}
-
+	
 	@Override
-	public boolean onNavigationItemSelected (@NonNull final MenuItem menuItem) {
-		switch (menuItem.getItemId ()) {
-			case R.id.nav_home:
-				getSupportFragmentManager ().popBackStackImmediate ();
-				break;
+	public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
+		while (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+			getSupportFragmentManager().popBackStackImmediate();
+		}
+		switch (menuItem.getItemId()) {
 			case R.id.nav_username:
-				getSupportFragmentManager ().beginTransaction ().replace (R.id.fragment_container, new UsernameFragment ()).addToBackStack (null).commit ();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UsernameFragment()).addToBackStack(null).commit();
 				break;
 			case R.id.nav_licence:
-				getSupportFragmentManager ().beginTransaction ().replace (R.id.fragment_container, new LicenceFragment ()).addToBackStack (null).commit ();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LicenceFragment()).addToBackStack(null).commit();
 				break;
 			default:
 				break;
 		}
-		this.drawerlayout.closeDrawer (GravityCompat.START);
+		this.drawerlayout.closeDrawer(GravityCompat.START);
 		return true;
 	}
 
 	// sort questionnaires by priority
 	public void sortQuestionnaires () {
-		Collections.sort(this.questionnaireList, new Comparator<Questionnaire> () {
-			@Override
-			public int compare(Questionnaire q1, Questionnaire q2) {
-				return q1.getPriority () - q2.getPriority ();
-			}
-		});
+		Collections.sort(this.questionnaireList, (q1, q2) -> Integer.compare(q1.getPriority(), q2.getPriority()));
 	}
 
 	// change shared preference settings
 	public String getPreferenceValue ()	{
 		SharedPreferences sp = getSharedPreferences(username,0);
-		String str = sp.getString("key","");
-		return str;
+		return sp.getString("key", "");
 	}
 	public void writeToPreference (String thePreference) {
 		SharedPreferences.Editor editor = getSharedPreferences(username,0).edit();
 		editor.putString("key", thePreference);
-		editor.commit();
+		editor.apply();
 	}
 }

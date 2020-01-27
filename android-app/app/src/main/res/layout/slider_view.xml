@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/SliderLayout"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+    android:layout_height="match_parent">
 
 	<TextView
 		android:id="@+id/SliderQuestionText"
@@ -27,23 +27,6 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_bias="0.0" />
 
-	<TextView
-		android:id="@+id/SliderQuestionTypeText"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Fragetyp"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
-
-	<TextView
-		android:id="@+id/questionNumber"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Fragenummer"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
-
 	<View
 		android:id="@+id/SliderDividingLine"
 		android:layout_width="match_parent"
@@ -59,6 +42,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="100dp"
+		android:layout_marginRight="20dp"
+		android:layout_marginLeft="20dp"
 		app:isb_indicator_color="@color/Orange"
 		app:isb_indicator_text_color="@color/White"
 		app:isb_indicator_text_size="18sp"

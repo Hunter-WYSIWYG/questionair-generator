@@ -35,7 +35,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 		Notification notify = builder
 				.setContentTitle("Es wartet vielleicht ein Fragebogen auf dich!")
 				.setContentText("Sie haben ihr Handy neu gestartet, bitte überprüfen sie ihre Fragebögen.")
-				.setSmallIcon(R.drawable.smiley)
+				.setSmallIcon(R.drawable.baseline_alarm_black_18)
 				.setContentIntent (pendingIntent)
 				.build ();
 		

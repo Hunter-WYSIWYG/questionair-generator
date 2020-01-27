@@ -33,7 +33,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 					builder = new NotificationCompat.Builder (context, channelId);
 					Notification notify = builder
 							.setContentTitle("Bitte füllen Sie Fragebogen " + recintent.getStringExtra ("questionnaire") +" aus.")
-							.setSmallIcon (R.drawable.smiley)
+							.setSmallIcon (R.drawable.baseline_alarm_black_18)
 							.setContentIntent (pendingIntent)
 							.build ();
 					//send notification

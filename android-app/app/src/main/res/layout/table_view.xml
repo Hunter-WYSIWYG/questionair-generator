@@ -68,7 +68,6 @@
 		app:layout_constraintEnd_toStartOf="@+id/rightPlaceholder"
 		app:layout_constraintStart_toEndOf="@+id/leftPlaceholder"
 		app:layout_constraintTop_toBottomOf="@+id/topName"
-		app:layout_constraintWidth_default="wrap"
 		tools:visibility="visible" />
 
 	<com.example.app.view.VerticalTextView

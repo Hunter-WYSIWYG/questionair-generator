@@ -12,7 +12,7 @@ module Edit exposing (answersTable, getAnswerTable, getQuestionOptions, getQuest
 import Answer exposing (Answer)
 import Condition exposing (Condition)
 import Html exposing (Html, a, br, button, div, footer, h1, header, i, input, label, li, option, p, section, select, small, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value, disabled)
+import Html.Attributes exposing (class, disabled, hidden, id, maxlength, minlength, multiple, name, placeholder, selected, style, type_, value, disabled)
 import Html.Events exposing (onClick, onInput)
 import List exposing (member, map)
 import Model exposing (ModalType(..), Model, Msg(..), ValidationResult(..))
@@ -345,7 +345,7 @@ viewNewQuestionModal model =
                         , text ("Typ: " ++ QElement.getQuestionTyp model.newElement)
                         , br [] []
                         , div [class "grid-container2"] [
-                            selectedRadio " Single Choice" (ChangeQuestionType "Single Choice")
+                            selectedRadio "Single Choice" (ChangeQuestionType "Single Choice")
                             , radio "Multiple Choice" (ChangeQuestionType "Multiple Choice")
                             , radio "Ja/Nein Frage" (ChangeQuestionType "Ja/Nein Frage")
                             , radio "Skaliert unipolar" (ChangeQuestionType "Skaliert unipolar")
@@ -453,19 +453,17 @@ viewNewAnswerModal model =
                         ]
                     , br [] []
                     , div []
-<<<<<<< HEAD
                         [ text ("Typ: " ++ model.newAnswer.typ)
                         , div [class "grid-container2"] [
                             radio "Fester Wert" (ChangeAnswerType "regular")
                             , radio "Freie Eingabe" (ChangeAnswerType "free")
                         ]
-=======
-                        [ text ("Ausgewählt: " ++ Answer.getDisplayAnswerTyp (model.newAnswer))
-                        , br [] []
-                        , radio "Fester Wert" (ChangeAnswerType "regular")
-                        , radio "Freie Eingabe" (ChangeAnswerType "free")
->>>>>>> master
-                        ]
+                        , text ("Ausgewählt: " ++ Answer.getDisplayAnswerTyp (model.newAnswer))
+                        , div [class "grid-container2"] [
+                            radio "Fester Wert" (ChangeAnswerType "regular")
+                            , radio "Freie Eingabe" (ChangeAnswerType "free")
+                            ]
+                        ]   
                     ]
                 , footer [ class "modal-card-foot mediumlightblue"]
                     [ button
@@ -476,7 +474,6 @@ viewNewAnswerModal model =
                     ]
                 ]
             ]
-
     else
         div [] []
 

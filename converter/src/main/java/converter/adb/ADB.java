@@ -53,4 +53,34 @@ public class ADB {
             System.err.println(exc);
         }
     }
+
+    /**
+     * Uploads the file under the given path to the connected Android device.
+     *
+     * @param path the file to be uploaded
+     */
+    public static void pushFile(String path) {
+        try {
+            Process process = Runtime.getRuntime().exec("adb push " + path + " sdcard/Android/data/com.example.app/files/fragebogen/");
+            process.waitFor();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            if (reader.readLine().equals("adb: error: failed to get feature set: no devices/emulators found")) {
+                String message = "Es wurde kein angeschlossenes Gerät gefunden!";
+                JOptionPane.showMessageDialog(null, message,"Fehler", JOptionPane.CANCEL_OPTION);
+                return;
+            }
+
+            String message = "Fragebogen erfolgreich hochgeladen.";
+            JOptionPane.showMessageDialog(null, message,"Upload erfolgreich", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException exc) {
+            String message = "Es gab einen Fehler mit der adb Konsole. Überprüfen Sie die Installation.";
+            JOptionPane.showMessageDialog(null, message,"Fehler", JOptionPane.CANCEL_OPTION);
+            System.err.println(exc);
+        } catch (InterruptedException exc) {
+            String message = "Die Fragebögen konnten nicht abgerufen werden, weil ein wichtiger Prozess unterbrochen wurde";
+            JOptionPane.showMessageDialog(null, message,"Fehler", JOptionPane.CANCEL_OPTION);
+            System.err.println(exc);
+        }
+    }
 }

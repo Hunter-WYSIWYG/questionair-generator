@@ -27,7 +27,7 @@ public class Layout extends JPanel {
      */
     private Layout() {
         super(new GridBagLayout());
-        
+
         GridBagConstraints constraints = new GridBagConstraints();
 
         jsonComboBox = new JComboBox();

@@ -23,11 +23,10 @@ public class GUI extends JFrame {
         setSize(400,400);
         setResizable(false);
         setLocationRelativeTo(null);
+        //setJMenuBar(Menu.getMenuBar());
         setContentPane(Layout.getInstance());
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        initMenu();
     }
 
     /**
@@ -41,19 +40,6 @@ public class GUI extends JFrame {
         return instance;
     }
 
-    /**
-     * Initiates the menu for selecting devices.
-     */
-    private void initMenu() {
-        JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Gerät");
-        JMenu chooseDevice = new JMenu("Gerät auswählen");
-        JMenuItem uploadAPK = new JMenuItem("APK hochladen");
 
-        menu.add(chooseDevice);
-        menu.add(uploadAPK);
-        menuBar.add(menu);
 
-        setJMenuBar(menuBar);
-    }
 }

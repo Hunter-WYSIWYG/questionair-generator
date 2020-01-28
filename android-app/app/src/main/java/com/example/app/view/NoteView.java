@@ -1,5 +1,6 @@
 package com.example.app.view;
 
+import android.content.SharedPreferences;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import com.example.app.question.QuestionType;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static com.example.app.MainActivity.username;
 
 public class NoteView extends QuestionDisplayView {
 	
@@ -60,7 +63,14 @@ public class NoteView extends QuestionDisplayView {
 		Answer answer = new Answer (QuestionType.Note.toString (), -1 , "");
 		List<Answer> answerList = new ArrayList<Answer> ();
 		answerList.add (answer);
-		AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
+		AnswerCollection answerCollection = new AnswerCollection (this.questionnaireState.getQuestionnaire ().getName (), getPreferenceValue (), calendar.getTime (), (int) (this.questionnaireState.getQuestionnaire ().getID ()), this.question.type, this.question.id, this.question.questionText, answerList);
 		return answerCollection;
+	}
+
+	// get shared preference username
+	public String getPreferenceValue ()	{
+		SharedPreferences sp = this.getActivity ().getSharedPreferences (username, 0);
+		String str = sp.getString ("key","");
+		return str;
 	}
 }

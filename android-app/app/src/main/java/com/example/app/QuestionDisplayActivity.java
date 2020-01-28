@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,23 +83,24 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		
 		
 		// if question has edit time
-		if (q.questionTime != null && !"0000:00".equals(q.questionTime)) {
+		if (q.questionTime != null && !"0000:00".equals (q.questionTime)) {
 			// if time is up
-			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime()) {
+			if (System.currentTimeMillis() > state.getCurrentQuestionEndTime ()) {
 				// create invalid answer and add it to the answer list
 				AnswerCollection answerCollection = questionView.getCurrentAnswer ();
-				List<Answer> dummyList = new ArrayList<>();
-				dummyList.add(new Answer());
-				AnswerCollection dummy = new AnswerCollection(
-																answerCollection.getTitle(),
-																answerCollection.getQuestionnaireAnswerTime(),
-																answerCollection.getQuestionnaireId(),
-																answerCollection.getQuestionType(),
-																answerCollection.getQuestionId(),
-																answerCollection.getText(),
-																dummyList
-											);
-				state.currentQuestionAnswered(dummy);
+				List<Answer> dummyList = new ArrayList<> ();
+				dummyList.add (new Answer ());
+				AnswerCollection dummy = new AnswerCollection (
+					answerCollection.getTitle (),
+					answerCollection.getUsername (),
+					answerCollection.getQuestionnaireAnswerTime (),
+					answerCollection.getQuestionnaireId (),
+					answerCollection.getQuestionType (),
+					answerCollection.getQuestionId (),
+					answerCollection.getText (),
+					dummyList
+				);
+				state.currentQuestionAnswered (dummy);
 			} else {
 				// else, add the actual answer
 				AnswerCollection answerCollection = questionView.getCurrentAnswer ();
@@ -162,7 +164,9 @@ public class QuestionDisplayActivity extends AppCompatActivity {
 		}
 
 		// Create a new file that points to the root directory, with the given name:
-		File file = new File (MainActivity.ANSWERS_DIR, getState ().getQuestionnaire ().getName () + ".json");
+		String pattern = "yyyy_MM_dd_HH_mm_ss";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		File file = new File (MainActivity.ANSWERS_DIR, getState ().getQuestionnaire ().getName ().replaceAll(" ", "_")+ "_" + simpleDateFormat.format(this.state.getStarttime()) + ".json");
 
 		// This point and below is responsible for the write operation
 		try {

@@ -447,16 +447,24 @@ viewNewAnswerModal model =
                             , type_ "text"
                             , style "width" "100%"
                             , onInput ChangeAnswerText
+                            , value (Answer.getAnswerText model.newAnswer)
                             ]
                             []
                         ]
                     , br [] []
                     , div []
+<<<<<<< HEAD
                         [ text ("Typ: " ++ model.newAnswer.typ)
                         , div [class "grid-container2"] [
                             radio "Fester Wert" (ChangeAnswerType "regular")
                             , radio "Freie Eingabe" (ChangeAnswerType "free")
                         ]
+=======
+                        [ text ("Ausgewählt: " ++ Answer.getDisplayAnswerTyp (model.newAnswer))
+                        , br [] []
+                        , radio "Fester Wert" (ChangeAnswerType "regular")
+                        , radio "Freie Eingabe" (ChangeAnswerType "free")
+>>>>>>> master
                         ]
                     ]
                 , footer [ class "modal-card-foot mediumlightblue"]
@@ -696,7 +704,7 @@ getAnswerTable index answer =
     tr [ id (String.fromInt index) ]
         [ td [] [ text (String.fromInt index) ]
         , td [] [ text answer.text ]
-        , td [] [ text answer.typ ]
+        , td [] [ text (Answer.getDisplayAnswerTyp answer) ]
         , td []
             [ i
                 [ class "fas fa-arrow-up"
@@ -1084,7 +1092,7 @@ getAnswersId list =
     List.map Answer.getAnswerId list
 
 
-{-| accepts only validate Condition 
+{-| accepts only valid Condition
 -}
 buttonDisabled : Condition -> Bool
 buttonDisabled con = 
@@ -1095,6 +1103,9 @@ buttonDisabled con =
         True
 
     else if con.answer_id == -1 then
+        True
+
+    else if con.parent_id > con.child_id then
         True
 
     else False

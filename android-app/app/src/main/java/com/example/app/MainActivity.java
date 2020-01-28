@@ -4,8 +4,8 @@ import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -36,18 +37,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 	// list of all questionnaires
 	private final List<Questionnaire> questionnaireList = new ArrayList<> ();
-	
+
 	private DrawerLayout drawerlayout;
 	// list view of all questionnaires
 	private ListView listView;
+
+	// saved user name
+	public static String username = "";
 
 	public static final String questionnaireDirName = "fragebogen";
 	public static final String answersDirName = "antworten";
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	@Nullable
 	@SuppressWarnings("StaticNonFinalField")
 	public static File ANSWERS_DIR;
-	
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate (savedInstanceState);
@@ -101,12 +103,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				break;
 		}
 
+		if (getPreferenceValue ().equals (""))	{
+			UsernameFragment.changeUsernameDialog (this);
+		}
+
 		this.importQuestionnaires ();
 		this.notifyStart ();
 		this.init ();
 	}
 
-	// first time stting up the answers and questionnaires directories
+	// first time setting up the answers and questionnaires directories
 	private int firstTimeSetup () {
 		// Checking the availability state of the External Storage.
 		String state = Environment.getExternalStorageState ();
@@ -264,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean onCreateOptionsMenu (Menu menu) {
 		ActionBar actionBar = getActionBar ();
 		if (actionBar != null) {
@@ -274,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		}
 		return true;
 	}
-	
+
 	// create popup if back button is pressed
 	public void onBackPressed () {
 		if (this.drawerlayout.isDrawerOpen (GravityCompat.START)) {
@@ -293,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		AlertDialog alert = alertDialog.create ();
 		alert.show ();
 	}
-	
+
 	public void startButtonClick (View view) {
 		// chosen questionnaire that the user will answer
 		final Questionnaire currentQuestionnaire = getCurrentQuestionnaire();
@@ -305,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		QuestionnaireState questionnaireState = new QuestionnaireState (currentQuestionnaire);
 		QuestionDisplayActivity.displayCurrentQuestion (questionnaireState, this);
 	}
-	
+
 	public Questionnaire getCurrentQuestionnaire() {
 		int position = this.listView.getCheckedItemPosition ();
 		if (position >= 0 && position < this.questionnaireList.size())
@@ -313,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		else
 			return null;
 	}
-	
+
 	public void notifyStart () {
 		//use all reminders
 		int reminderNumber = 0;
@@ -335,12 +341,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onNavigationItemSelected (@NonNull final MenuItem menuItem) {
 		switch (menuItem.getItemId ()) {
 			case R.id.nav_home:
 				getSupportFragmentManager ().popBackStackImmediate ();
+				break;
+			case R.id.nav_username:
+				getSupportFragmentManager ().beginTransaction ().replace (R.id.fragment_container, new UsernameFragment ()).addToBackStack (null).commit ();
 				break;
 			case R.id.nav_licence:
 				getSupportFragmentManager ().beginTransaction ().replace (R.id.fragment_container, new LicenceFragment ()).addToBackStack (null).commit ();
@@ -351,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		this.drawerlayout.closeDrawer (GravityCompat.START);
 		return true;
 	}
-	
+
 	// sort questionnaires by priority
 	public void sortQuestionnaires () {
 		Collections.sort(this.questionnaireList, new Comparator<Questionnaire> () {
@@ -360,5 +369,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				return q1.getPriority () - q2.getPriority ();
 			}
 		});
+	}
+
+	// change shared preference settings
+	public String getPreferenceValue ()	{
+		SharedPreferences sp = getSharedPreferences(username,0);
+		String str = sp.getString("key","");
+		return str;
+	}
+	public void writeToPreference (String thePreference) {
+		SharedPreferences.Editor editor = getSharedPreferences(username,0).edit();
+		editor.putString("key", thePreference);
+		editor.commit();
 	}
 }

@@ -134,6 +134,30 @@ update msg model =
                                         , polarMin = 0
                                         , polarMax = 0 
                                     }
+                            else if string == "Raster-Auswahl" then
+                                Question 
+                                    { record
+                                        | typ = string
+                                        , tableSize = 3
+                                        , topText = ""
+                                        , rightText = ""
+                                        , bottomText = ""
+                                        , leftText = ""
+                                        , polarMin = 0
+                                        , polarMax = 0
+                                    }
+                            else if string == "Button Slider" then
+                                Question
+                                    { record
+                                        | typ = string
+                                        , tableSize = 1
+                                        , topText = ""
+                                        , rightText = ""
+                                        , bottomText = ""
+                                        , leftText = ""
+                                        , polarMin = 0
+                                        , polarMax = 0
+                                    }
                             else
                                 Question 
                                     { record 

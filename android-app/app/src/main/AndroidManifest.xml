@@ -13,13 +13,21 @@
 			android:roundIcon="@mipmap/app_icon_round"
 			android:supportsRtl="true"
 			android:theme="@style/AppTheme.NoActionBar">
-		<activity android:name=".view.PercentSliderView">
+		<activity
+			android:name=".view.PercentSliderView"
+			android:configChanges="orientation|screenSize|keyboardHidden">
 		</activity>
-		<activity android:name=".QuestionnaireFinishedActivity">
+		<activity
+			android:name=".QuestionnaireFinishedActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden">
 		</activity>
-		<activity android:name=".QuestionDisplayActivity">
+		<activity
+			android:name=".QuestionDisplayActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden">
 		</activity>
-		<activity android:name=".MainActivity">
+		<activity
+			android:name=".MainActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 

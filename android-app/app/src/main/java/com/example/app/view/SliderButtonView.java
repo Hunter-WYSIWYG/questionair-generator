@@ -56,13 +56,7 @@ public class SliderButtonView extends QuestionDisplayView {
 	private void init () {
 		this.container = (ConstraintLayout) View.inflate(this.getActivity (), R.layout.slider_button_view, null);
 		
-		// set questionTypeText
-		TextView questionTypeTextView = this.container.findViewById (R.id.sliderButtonQuestionTypeText);
-		questionTypeTextView.setText (this.question.type.name ());
-		
-		// set question Number
-		TextView questionNumber = this.container.findViewById (R.id.questionNumber);
-		questionNumber.setText ("Fragenummer: " + this.question.id);
+	
 		
 		// set questionText
 		TextView questionTextView = this.container.findViewById (R.id.sliderButtonQuestionText);

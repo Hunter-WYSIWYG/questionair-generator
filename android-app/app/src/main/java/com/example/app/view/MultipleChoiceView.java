@@ -188,17 +188,12 @@ public class MultipleChoiceView extends QuestionDisplayView {
 		this.rootView = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.multiple_choice_view, null);
 		this.optionContainer = this.rootView.findViewById (R.id.MultipleChoiceOptionContainer);
 		
-		// set questionTypeText
-		TextView questionTypeTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionTypeText);
-		questionTypeTextView.setText (this.question.type.name ());
+
 		
 		// set hint
 		TextView hintTextView = this.rootView.findViewById (R.id.hint);
 		hintTextView.setText (this.question.hint);
 		
-		// set question Number
-		TextView questionNumber = this.rootView.findViewById (R.id.questionNumber);
-		questionNumber.setText ("Fragenummer: " + question.id);
 		
 		// set questionText
 		TextView questionTextView = this.rootView.findViewById (R.id.MultipleChoiceQuestionText);

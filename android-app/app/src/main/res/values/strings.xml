@@ -117,7 +117,7 @@
 	<string name="_9">9</string>
 	<string name="navigation_drawer_open">Open navigation drawer</string>
 	<string name="navigation_drawer_close">Close navigation drawer</string>
-	<string name="nav_home_text">Home</string>
+	<string name="nav_home_text">Fragebögen</string>
 	<string name="nav_licence_text">Lizenz</string>
 	<string name="nav_header_text">Menu</string>
 	<string name="button_start_quest_text">Starte Fragebogen</string>

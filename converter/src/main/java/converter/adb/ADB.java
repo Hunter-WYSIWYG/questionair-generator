@@ -83,4 +83,33 @@ public class ADB {
             System.err.println(exc);
         }
     }
+
+    /**
+     * Installs the APK on a connected smartphone.
+     */
+    public static void installAPK() {
+        try {
+            Process process = Runtime.getRuntime().exec("adb install ../android-app/app.apk");
+            process.waitFor();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("error: no devices/emulators found")
+                    || line.equals("adb: failed to stat app.apk: No such file or directory")) {
+                    String message = "Gerät oder app.apk nicht gefunden.";
+                    JOptionPane.showMessageDialog(null, message, "Fehler", JOptionPane.CANCEL_OPTION);
+                    return;
+                }
+            }
+
+            String message = "App erfolgreich installiert.";
+            JOptionPane.showMessageDialog(null, message,"Upload erfolgreich", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException | InterruptedException exc) {
+            String message = "Die Fragebögen konnten nicht abgerufen werden, weil ein wichtiger Prozess unterbrochen wurde oder es zu einem I/O-Fehler kam";
+            JOptionPane.showMessageDialog(null, message,"Fehler", JOptionPane.CANCEL_OPTION);
+            System.err.println(exc);
+        }
+    }
 }

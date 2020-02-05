@@ -2,6 +2,7 @@ package converter.graphical.ui;
 
 import converter.adb.ADB;
 import converter.graphical.events.ComboBoxChanged;
+import converter.graphical.events.InstallBtnClick;
 import converter.graphical.events.RefreshBtnClick;
 import converter.graphical.events.SaveBtnEvent;
 import converter.graphical.table.CsvTable;
@@ -61,6 +62,13 @@ public class Layout extends JPanel {
         constraints.insets = new Insets(10, 10, 10, 0);
         saveButton.addActionListener(new SaveBtnEvent());
         add(saveButton, constraints);
+
+        JButton install = new JButton("App instalieren");
+        install.addActionListener(new InstallBtnClick());
+        constraints.gridx = 1;
+        constraints.gridy = 3;
+        constraints.insets = new Insets(10, 0, 10, 0);
+        add(install, constraints);
     }
 
     public static boolean isNotInstantiated() {

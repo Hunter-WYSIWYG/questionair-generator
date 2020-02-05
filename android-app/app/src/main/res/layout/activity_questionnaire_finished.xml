@@ -15,10 +15,7 @@
 			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
 	/>
 
-<<<<<<< android-app/app/src/main/res/layout/activity_questionnaire_finished.xml
 
-=======
->>>>>>> android-app/app/src/main/res/layout/activity_questionnaire_finished.xml
 	<TextView
 		android:id="@+id/textView"
 		android:layout_width="wrap_content"

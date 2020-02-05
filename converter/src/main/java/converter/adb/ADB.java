@@ -92,7 +92,7 @@ public class ADB {
             Process process = Runtime.getRuntime().exec("adb install ../android-app/app.apk");
             process.waitFor();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
             String line;
             while ((line = reader.readLine()) != null) {

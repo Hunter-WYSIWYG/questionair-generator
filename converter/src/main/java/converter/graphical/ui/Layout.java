@@ -65,9 +65,9 @@ public class Layout extends JPanel {
 
         JButton install = new JButton("App instalieren");
         install.addActionListener(new InstallBtnClick());
-        constraints.gridx = 1;
-        constraints.gridy = 3;
-        constraints.insets = new Insets(10, 0, 10, 0);
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        constraints.insets = new Insets(0, 10, 10, 0);
         add(install, constraints);
     }
 

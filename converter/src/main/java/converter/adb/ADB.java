@@ -106,8 +106,12 @@ public class ADB {
 
             String message = "App erfolgreich installiert.";
             JOptionPane.showMessageDialog(null, message,"Upload erfolgreich", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException | InterruptedException exc) {
-            String message = "Die Fragebögen konnten nicht abgerufen werden, weil ein wichtiger Prozess unterbrochen wurde oder es zu einem I/O-Fehler kam";
+        } catch (InterruptedException exc) {
+            String message = "Die Fragebögen konnten nicht abgerufen werden, weil ein wichtiger Prozess unterbrochen wurde.";
+            JOptionPane.showMessageDialog(null, message,"Fehler", JOptionPane.CANCEL_OPTION);
+            System.err.println(exc);
+        } catch (IOException exc) {
+            String message = "Die Fragebögen konnten nicht abgerufen werden, weil es zu einem I/O-Fehler kam";
             JOptionPane.showMessageDialog(null, message,"Fehler", JOptionPane.CANCEL_OPTION);
             System.err.println(exc);
         }

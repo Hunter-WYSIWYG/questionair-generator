@@ -3,6 +3,7 @@ package com.example.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import static com.example.app.MainActivity.username;
 
 public class UsernameFragment extends Fragment {
 	private TextView usernameTextView = null;
+	private String password = "";
 
 	@Override
 	public View onCreateView (@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
@@ -36,9 +38,36 @@ public class UsernameFragment extends Fragment {
 	}
 
 	public void changeUsername (View changeUsername) {
-		changeUsernameDialog (this.getActivity (), () -> {
-			this.usernameTextView.setText (getPreferenceValue (this.getActivity ()));
+		checkPassword (this.getActivity ());
+	}
+
+	public void checkPassword (Activity activity) {
+		String check;
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder (activity);
+		alertDialog.setTitle ("Passwort");
+		alertDialog.setMessage ("Bitte geben Sie das Passwort zum Ändern des Benutzernamens ein.");
+		EditText input = new EditText (activity);
+		alertDialog.setView (input);
+		alertDialog.setCancelable (true);
+		alertDialog.setPositiveButton ("Ok", (dialog, id) -> {
+			if (input.getText ().toString ().equals ("passwort")) {
+				changeUsernameDialog (activity, () -> {
+					this.usernameTextView.setText (getPreferenceValue (activity));
+				});
+			}
+			else {
+				AlertDialog.Builder falsePassword = new AlertDialog.Builder (activity);
+				falsePassword.setTitle ("Passwort");
+				falsePassword.setMessage ("Passwort falsch!");
+				falsePassword.setPositiveButton("Ok", (dialog2, id2) -> dialog2.cancel ());
+				AlertDialog falsePw = falsePassword.create ();
+				falsePw.show ();
+			}
+			dialog.cancel();
 		});
+		alertDialog.setNegativeButton ("Abbrechen", (dialog, id) -> dialog.cancel ());
+		AlertDialog alert = alertDialog.create ();
+		alert.show ();
 	}
 
 	// get shared preference username

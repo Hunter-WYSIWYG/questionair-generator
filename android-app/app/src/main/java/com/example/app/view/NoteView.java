@@ -39,9 +39,6 @@ public class NoteView extends QuestionDisplayView {
 	private void init () {
 		this.container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.note_view, null);
 		
-		// set questionTypeText
-		TextView questionTypeTextView = this.container.findViewById (R.id.NoteTypeText);
-		questionTypeTextView.setText ("Notiz");
 		
 		// set questionText
 		TextView questionTextView = this.container.findViewById (R.id.NoteViewText);

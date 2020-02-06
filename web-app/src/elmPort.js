@@ -75,6 +75,7 @@ function appendToTimesTable() {
         end.setHours(23,59,59);
     } else {
         var end = parseDate(parts[2]);
+        end.setDate(end.getDate()+1);
     }
     
     for (var i = 0; begin <= end; i++) {

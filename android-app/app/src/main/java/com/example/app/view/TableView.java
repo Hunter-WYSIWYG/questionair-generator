@@ -57,10 +57,6 @@ public class TableView extends QuestionDisplayView {
 	private void init () {
 		container = (ConstraintLayout) View.inflate (this.getActivity (), R.layout.table_view, null);
 		
-		// set questionTypeText
-		TextView questionTypeTextView = this.container.findViewById (R.id.tableQuestionTypeText);
-		questionTypeTextView.setText (this.question.type.name ());
-		
 		// set questionText
 		TextView questionTextView = this.container.findViewById (R.id.tableQuestionText);
 		questionTextView.setText (this.question.questionText);

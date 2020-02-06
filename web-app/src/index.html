@@ -75,23 +75,27 @@
         </div>
         <form id="reminderTimesForm">
           <input type="text" id="basicDate" placeholder="Bitte wählen sie Zeiten aus" style="margin-bottom:20px; width:200px" data-input>
-          <fieldset>
-            <input type="radio" id="stündlichTag" name="Häufigkeit">
-            <label for="stündlichTag" style="margin-right:20px"> stündlich (gleicher Tag)</label>
-            <input type="radio" id="stündlichGesamt" name="Häufigkeit">
-            <label for="stündlichGesamt" style="margin-right:20px"> stündlich (gesamter Zeitraum)</label>
-            <br>
-            <input type="radio" id="täglich" name="Häufigkeit">
-            <label for="täglich" style="margin-right:20px"> täglich</label>
-            <input type="radio" id="wöchentlich" name="Häufigkeit">
-            <label for="wöchentlich" style="margin-right:20px"> wöchentlich</label>
-            <input type="radio" id="monatlich" name="Häufigkeit">
-            <label for="monatlich"> monatlich</label>            
-          </fieldset>
+          <div class="grid-container">
+            <div> <input type="radio" id="stündlichTag" name="Häufigkeit">
+                <label for="stündlichTag"> stündlich (gleicher Tag)</label>
+            </div>
+            <div> <input type="radio" id="stündlichGesamt" name="Häufigkeit">
+                <label for="stündlichGesamt"> stündlich (gesamter Zeitraum)</label>
+            </div> 
+            <div> <input type="radio" id="täglich" name="Häufigkeit">
+                <label for="täglich"> täglich</label>
+            </div> 
+            <div> <input type="radio" id="wöchentlich" name="Häufigkeit">
+                <label for="wöchentlich"> wöchentlich</label>
+            </div> 
+            <div> <input type="radio" id="monatlich" name="Häufigkeit">
+                <label for="monatlich"> monatlich</label>        
+            </div>     
+          </div>
         </form>
         <br>
         <button class="qnButton" onclick="appendToTimesTable()" style="margin-right:20px">Zeit hinzufügen</button>
-        <button class="qnButton" onclick="resetTimesTable()">Reset</button>
+        <button class="qnButton" onclick="resetTimesTable()" style="margin-bottom:20px">Reset</button>
       </section>
       <footer class="modal-card-foot mediumlightblue">
         <button class="qnButton" onclick="closeDTPModal('reminderTimes')">Übernehmen</button>  
@@ -108,10 +112,11 @@
       </header>
       <section class="modal-card-body">
         <text>Minuten:</text>
-        <input id="editTimeMinutes" oninput="editTimeChanged()">
+        <input id="editTimeMinutes" oninput="editTimeChanged()" style="margin-right:30px; margin-left:7px">
         <text>Sekunden:</text>
-        <input id="editTimeSeconds" oninput="editTimeChanged()">
-        <button class="qnButton" onclick="resetInput('timePicker')">Reset</button>
+        <input id="editTimeSeconds" oninput="editTimeChanged()"style="margin-left:7px">
+        <br>
+        <button class="qnButton" onclick="resetInput('timePicker')" style="margin-top:15px">Reset</button>
         <script src="./datetimepicker.js"></script>
       </section>
       <footer class="modal-card-foot mediumlightblue">

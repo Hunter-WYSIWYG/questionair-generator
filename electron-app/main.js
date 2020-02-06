@@ -1,7 +1,8 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, dialog } = require('electron')
 
 // global reference to browser window
 let win
+let contents
 
 // Creates the browser window
 function createWindow () {
@@ -12,6 +13,21 @@ function createWindow () {
       nodeIntegration: true
     }
   })
+
+  win.webContents.session.on('will-download', (event, downloadItem, webContents) => {
+
+    var fileName = dialog.showSaveDialogSync(win, {
+      filters: [
+        { name: 'Fragebogen', extensions: ['json'] }]
+    });
+
+    if (typeof fileName == "undefined") {
+      downloadItem.cancel()
+    }
+    else {
+      downloadItem.setSavePath(fileName);
+    }
+  });
 
   // Hides the menu.
   win.setAutoHideMenuBar(true)

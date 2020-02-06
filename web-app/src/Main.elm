@@ -36,7 +36,7 @@ import Time exposing (..)
 main : Program () Model Msg
 main =
     Browser.element
-        { init = Model.initModel
+        { init = (\e -> (Model.initModel, Cmd.none))
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -656,7 +656,7 @@ update msg model =
             )
 
         EditQuestionnaire ->
-            ( { model | upload = False, editQuestionnaire = True }, leaveUpload () )
+            ( Model.initModel, leaveUpload () )
 
         --Change order of elements
         PutDownEl element ->

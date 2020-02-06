@@ -14,6 +14,18 @@
 			android:layout_height="match_parent">
 
 		<Button
+				android:id="@+id/refresh_button"
+				android:layout_width="48dp"
+				android:layout_height="48dp"
+				android:foreground="@drawable/ic_refresh_black_24dp"
+				android:foregroundGravity="center"
+				android:onClick="refreshButtonClick"
+				app:layout_constraintBottom_toBottomOf="@+id/startButton"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/startButton"
+				app:layout_constraintTop_toTopOf="@+id/startButton" />
+
+		<Button
 				android:id="@+id/startButton"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

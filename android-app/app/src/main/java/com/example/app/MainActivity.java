@@ -382,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	public void refreshButtonClick(View view) {
 		questionnaireList.clear();
 		importQuestionnaires();
+		notifyStart();
 		init();
 	}
 }

@@ -161,53 +161,51 @@ type
 
 {-| The initial state of the model.
 -}
-initModel : () -> ( Model, Cmd Msg )
-initModel _ =
-    ( { questionnaire = Questionnaire.initQuestionnaire
+initModel : Model
+initModel =
+  { questionnaire = Questionnaire.initQuestionnaire
 
-      --modals
-      , showTitleModal = False
-      , showEditTimeModal = False
-      , showViewingTimeModal = False
-      , showNewNoteModal = False
-      , showNewQuestionModal = False
-      , showNewAnswerModal = False
-      , showNewConditionModalOverview = False
-      , showNewConditionModalCreate = False
+    --modals
+    , showTitleModal = False
+    , showEditTimeModal = False
+    , showViewingTimeModal = False
+    , showNewNoteModal = False
+    , showNewQuestionModal = False
+    , showNewAnswerModal = False
+    , showNewConditionModalOverview = False
+    , showNewConditionModalCreate = False
 
-      --editQElement for EditQuestion and EditNote
-      , editQElement = False
-      , editAnswer = False
-      , editCondition = False
+    --editQElement for EditQuestion and EditNote
+    , editQElement = False
+    , editAnswer = False
+    , editCondition = False
 
-      --new inputs
-      , inputTitle = ""
-      , inputPriority = 0
-      , validationResult = NotDone
-      , inputEditTime = ""
-      , inputViewingTime = ""
-      , inputReminderTimes = []
-      , inputQuestionTime = ""
-      , questionValidationResult = NotDone
-      , questionTimeValidationResult = NotDone
-      , inputParentId = -1
-      , inputChildId = -1
-      , newCondition = Condition.initCondition
-      , newAnswerID_Condition = ""
-      , newElement = QElement.initQuestion
-      , newAnswer = Answer.initAnswer
-      , inputQuestionTimeMinutes = ""
-      , inputQuestionTimeSeconds = ""
+    --new inputs
+    , inputTitle = ""
+    , inputPriority = 0
+    , validationResult = NotDone
+    , inputEditTime = ""
+    , inputViewingTime = ""
+    , inputReminderTimes = []
+    , inputQuestionTime = ""
+    , questionValidationResult = NotDone
+    , questionTimeValidationResult = NotDone
+    , inputParentId = -1
+    , inputChildId = -1
+    , newCondition = Condition.initCondition
+    , newAnswerID_Condition = ""
+    , newElement = QElement.initQuestion
+    , newAnswer = Answer.initAnswer
+    , inputQuestionTimeMinutes = ""
+    , inputQuestionTimeSeconds = ""
 
-      --upload determines if the users wants to upload a questionnaire
-      --if upload is false show UI to create new questionnaire
-      , upload = False
+    --upload determines if the users wants to upload a questionnaire
+    --if upload is false show UI to create new questionnaire
+    , upload = False
 
-      -- a page to edit Questionnaires
-      , editQuestionnaire = True
-      }
-    , Cmd.none
-    )
+    -- a page to edit Questionnaires
+    , editQuestionnaire = True
+  }
 
 {-| Method for validating the question time format.
 -}

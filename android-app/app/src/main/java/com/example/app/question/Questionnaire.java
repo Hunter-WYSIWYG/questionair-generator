@@ -34,6 +34,9 @@ public class Questionnaire implements Serializable {
 	@SerializedName("editTime")
 	@Nullable
 	private final String editTime;
+
+	@SerializedName("viewingTime")
+	private final String viewingTime;
 	
 	// path to the Questionnaire file
 	@Expose (serialize = false, deserialize = false)
@@ -52,6 +55,7 @@ public class Questionnaire implements Serializable {
 		this.conditionList = null;
 		this.priority = 0;
 		this.editTime = null;
+		this.viewingTime = null;
 	}
 	
 	// getter
@@ -86,6 +90,10 @@ public class Questionnaire implements Serializable {
 	@Nullable
 	public String getEditTime() {
 		return editTime;
+	}
+
+	public String getViewingTime () {
+		return this.viewingTime;
 	}
 	
 	

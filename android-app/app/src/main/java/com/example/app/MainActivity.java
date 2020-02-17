@@ -37,6 +37,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -105,6 +107,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		}
 		
 		this.importQuestionnaires();
+		// delete questionnaires which are not in the viewing time
+		try {
+			this.checkViewingTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		this.notifyStart();
 		this.init();
 	}
@@ -242,6 +250,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	// sort questionnaires by priority
 	public void sortQuestionnaires() {
 		Collections.sort(this.questionnaireList, (q1, q2) -> Integer.compare(q1.getPriority(), q2.getPriority()));
+	}
+
+	public void checkViewingTime () throws ParseException {
+		List<Questionnaire> deleteFromQuestionnaire = new ArrayList<>();
+		for (Questionnaire quest : this.questionnaireList) {
+			if (quest.getViewingTime() != null) {
+				if (!quest.getViewingTime().equals("")) {
+					String[] parts = quest.getViewingTime().split(";");
+					Date start = new SimpleDateFormat("dd-MM-yyyy").parse(parts[0]);
+					Date end = new SimpleDateFormat("dd-MM-yyyy").parse(parts[1]);
+					Date today = Calendar.getInstance().getTime();
+
+					boolean isTodayBetweenStartAndEnd = ((today.after(start)) && (today.before(end)));
+					if (!isTodayBetweenStartAndEnd) {
+						deleteFromQuestionnaire.add(quest);
+					}
+				}
+			}
+		}
+		for (Questionnaire q : deleteFromQuestionnaire) {
+			this.questionnaireList.remove(q);
+
+		}
 	}
 	
 	private void importQuestionnaires() {

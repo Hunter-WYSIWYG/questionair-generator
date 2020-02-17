@@ -30,6 +30,17 @@
 				app:layout_constraintStart_toStartOf="parent" />
 
 
+		<Button
+				android:id="@+id/refresh_button"
+				android:layout_width="48dp"
+				android:layout_height="48dp"
+				android:foreground="@drawable/ic_refresh_black_24dp"
+				android:foregroundGravity="center"
+				android:onClick="refreshButtonClick"
+				app:layout_constraintBottom_toBottomOf="@+id/startButton"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/startButton"
+				app:layout_constraintTop_toTopOf="@+id/startButton" />
 
 		<LinearLayout
 				android:id="@+id/linearLayout"
@@ -72,7 +83,9 @@
 		<FrameLayout
 				android:id="@+id/fragment_container"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent" />
+				android:layout_height="match_parent">
+
+		</FrameLayout>
 	</LinearLayout>
 
 	<android.support.design.widget.NavigationView

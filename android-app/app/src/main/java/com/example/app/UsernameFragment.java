@@ -42,7 +42,6 @@ public class UsernameFragment extends Fragment {
 	}
 
 	public void checkPassword (Activity activity) {
-		String check;
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder (activity);
 		alertDialog.setTitle ("Passwort");
 		alertDialog.setMessage ("Bitte geben Sie das Passwort zum Ändern des Benutzernamens ein.");

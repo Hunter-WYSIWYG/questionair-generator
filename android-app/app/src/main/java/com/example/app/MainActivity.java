@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -29,6 +31,8 @@ import android.widget.Toast;
 import com.example.app.question.Questionnaire;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -421,5 +425,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		}
 		notifyStart();
 		init();
+	}
+
+	public void deleteButtonClick (View view) {
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder (this);
+		alertDialog.setTitle ("Passwort");
+		alertDialog.setMessage ("Bitte geben Sie das Passwort zum Ändern des Benutzernamens ein.");
+		EditText input = new EditText (this);
+		alertDialog.setView (input);
+		alertDialog.setCancelable (true);
+		alertDialog.setPositiveButton ("Ok", (dialog, id) -> {
+			if (input.getText ().toString ().equals ("GBpsych")) {
+				AlertDialog.Builder rightPassword = new AlertDialog.Builder (this);
+				rightPassword.setTitle ("Alle Fragebogen löschen?");
+				rightPassword.setPositiveButton ("Ok", (dialog1, id1) -> {
+					for(File tempFile : QUESTIONNAIRE_DIR.listFiles()) {
+						tempFile.delete();
+					}
+					refreshButtonClick(view);
+					dialog.cancel();
+				});
+				rightPassword.setNegativeButton ("Abbrechen", (dialog1, id1) -> dialog.cancel ());
+				AlertDialog rightPW = rightPassword.create ();
+				rightPW.show ();
+			}
+			else {
+				AlertDialog.Builder falsePassword = new AlertDialog.Builder (this);
+				falsePassword.setTitle ("Passwort");
+				falsePassword.setMessage ("Passwort falsch!");
+				falsePassword.setPositiveButton("Ok", (dialog2, id2) -> dialog2.cancel ());
+				AlertDialog falsePw = falsePassword.create ();
+				falsePw.show ();
+			}
+			dialog.cancel();
+		});
+		alertDialog.setNegativeButton ("Abbrechen", (dialog, id) -> dialog.cancel ());
+		AlertDialog alert = alertDialog.create ();
+		alert.show ();
 	}
 }

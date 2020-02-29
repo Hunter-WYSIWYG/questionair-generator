@@ -26,6 +26,18 @@
 				app:layout_constraintTop_toTopOf="@+id/startButton" />
 
 		<Button
+				android:id="@+id/deleteButton"
+				android:layout_width="48dp"
+				android:layout_height="48dp"
+				android:foreground="@drawable/ic_delete_24px"
+				android:foregroundGravity="center"
+				android:onClick="deleteButtonClick"
+				app:layout_constraintBottom_toBottomOf="@+id/startButton"
+				app:layout_constraintEnd_toStartOf="@+id/startButton"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@+id/startButton" />
+
+		<Button
 				android:id="@+id/startButton"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

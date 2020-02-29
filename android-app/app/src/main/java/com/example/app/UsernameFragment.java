@@ -42,7 +42,6 @@ public class UsernameFragment extends Fragment {
 	}
 
 	public void checkPassword (Activity activity) {
-		String check;
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder (activity);
 		alertDialog.setTitle ("Passwort");
 		alertDialog.setMessage ("Bitte geben Sie das Passwort zum Ändern des Benutzernamens ein.");
@@ -50,7 +49,7 @@ public class UsernameFragment extends Fragment {
 		alertDialog.setView (input);
 		alertDialog.setCancelable (true);
 		alertDialog.setPositiveButton ("Ok", (dialog, id) -> {
-			if (input.getText ().toString ().equals ("passwort")) {
+			if (input.getText ().toString ().equals ("GBpsych")) {
 				changeUsernameDialog (activity, () -> {
 					this.usernameTextView.setText (getPreferenceValue (activity));
 				});

@@ -50,7 +50,7 @@ public class UsernameFragment extends Fragment {
 		alertDialog.setView (input);
 		alertDialog.setCancelable (true);
 		alertDialog.setPositiveButton ("Ok", (dialog, id) -> {
-			if (input.getText ().toString ().equals ("passwort")) {
+			if (input.getText ().toString ().equals ("GBpsych")) {
 				changeUsernameDialog (activity, () -> {
 					this.usernameTextView.setText (getPreferenceValue (activity));
 				});

@@ -413,6 +413,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	public void refreshButtonClick(View view) {
 		questionnaireList.clear();
 		importQuestionnaires();
+		// delete questionnaires which are not in the viewing time
+		try {
+			this.checkViewingTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		notifyStart();
 		init();
 	}

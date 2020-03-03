@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	public void deleteButtonClick (View view) {
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder (this);
 		alertDialog.setTitle ("Passwort");
-		alertDialog.setMessage ("Bitte geben Sie das Passwort zum Ändern des Benutzernamens ein.");
+		alertDialog.setMessage ("Bitte geben Sie das Passwort zum Löschen der Fragebögen ein.");
 		EditText input = new EditText (this);
 		alertDialog.setView (input);
 		alertDialog.setCancelable (true);

@@ -453,12 +453,7 @@ viewNewAnswerModal model =
                         ]
                     , br [] []
                     , div []
-                        [ text ("Typ: " ++ model.newAnswer.typ)
-                        , div [class "grid-container2"] [
-                            radio "Fester Wert" (ChangeAnswerType "regular")
-                            , radio "Freie Eingabe" (ChangeAnswerType "free")
-                        ]
-                        , text ("Ausgewählt: " ++ Answer.getDisplayAnswerTyp (model.newAnswer))
+                        [ text ("Ausgewählt: " ++ Answer.getDisplayAnswerTyp (model.newAnswer))
                         , div [class "grid-container2"] [
                             radio "Fester Wert" (ChangeAnswerType "regular")
                             , radio "Freie Eingabe" (ChangeAnswerType "free")
